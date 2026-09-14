@@ -1,0 +1,18 @@
+# build.py ghi war3map.lua bằng LF, World Editor cũng vậy. Để git đổi
+# sang CRLF lúc checkout sẽ tạo diff giả toàn file mỗi lần build.
+* text=auto eol=lf
+
+# File nhị phân của World Editor — git không được đụng vào nội dung
+*.blp binary
+*.doo binary
+*.mmp binary
+*.shd binary
+*.w3c binary
+*.w3e binary
+*.w3i binary
+*.w3r binary
+*.w3u binary
+*.wct binary
+*.wpm binary
+*.wtg binary
+*.wts binary

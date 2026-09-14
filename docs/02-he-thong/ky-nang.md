@@ -1,0 +1,121 @@
+# Hệ thống: Kỹ năng hero
+
+> **Trạng thái:** Cơ chế đã cài — **chờ ability trong Object Editor**
+> **Cập nhật:** 2026-09-15
+> **Code:** [07_heropick.lua](../../src/07_heropick.lua), [04_player.lua](../../src/04_player.lua)
+> **Khoá CFG:** `SKILL_MODE` `SKILL_POINTS_START` `HEROES[i].abilities` `HERO_COMMON_ABILITIES`
+
+## Ba chế độ
+
+| `SKILL_MODE` | Người chơi thấy gì | Icon & tooltip |
+|---|---|---|
+| `"none"` | Không học được gì | — |
+| `"learn"` | Nút **+** → lưới icon của Warcraft III | **Có, đầy đủ** |
+| `"pick"` | Popup của ta, chọn theo slot | **Không, chỉ chữ** |
+
+Kỹ năng cố định (`CFG.HEROES[i].abilities`) gắn thẳng lên hero ở **cả ba** chế
+độ — chúng độc lập với phần học được.
+
+### Khuyến nghị: `"learn"`
+
+Nút **+** không chỉ là nút. Bấm vào là ra **lưới icon kèm tooltip đầy đủ** — tên
+kỹ năng, mô tả, hiệu ứng từng cấp. Đó chính là "danh sách kỹ năng trực quan" mà
+một map cần, và nó có sẵn, không phải viết dòng UI nào.
+
+`"pick"` dùng dialog của Warcraft III, mà dialog **chỉ hiển thị chữ**. Người chơi
+đọc "Chem manh" thì không biết nó làm gì. Chỉ chọn `"pick"` khi bắt buộc phải
+nhóm lựa chọn theo slot và chấp nhận đánh đổi đó.
+
+### "Chọn M trong N" bằng chế độ `"learn"`
+
+Đây là cách làm hệ thống lựa chọn mà vẫn giữ được icon:
+
+1. Cho hero **N** ability học được trong `Techtree - Hero Abilities`.
+2. Đặt `Stats - Levels = 1` trên mỗi ability — để không dồn hết điểm vào một cái.
+3. Chỉ phát **M** điểm (`SKILL_POINTS_START`, hoặc `API.grantSkillPoints`).
+
+Người chơi mở lưới icon, đọc tooltip, chọn M trong N. Không cần slot, không cần
+popup riêng, không cần code.
+
+## Không viết giao diện nào cả
+
+Warcraft III đã có sẵn đúng giao diện nâng cấp kỹ năng mà một map cần: nút **+**,
+lưới icon, tooltip mô tả từng cấp, chấm đánh dấu cấp đã học. Viết lại bằng
+`BlzCreateFrame` sẽ tốn nhiều lần công sức để ra thứ xấu hơn.
+
+Thứ duy nhất trước đây cản đường là hero không lên cấp nên không có điểm kỹ năng.
+
+**Cách gỡ:** phát điểm bằng tay. `UnitModifySkillPoints` chạy được — đã đo, xem
+[ADR 0008](../05-quyet-dinh/0008-ky-nang-hero-phai-sua-o-object-editor.md). Nên
+hero vẫn đứng ở cấp 1, còn điểm thì code phát theo bất kỳ điều kiện nào: lúc sinh
+ra, dọn sạch đợt quái, mốc thời gian, mua bằng tài nguyên.
+
+Nghĩa là **tiến độ tách khỏi cấp độ**. Đây là tự do thiết kế, không phải cách lách.
+
+## Ba việc trong Object Editor
+
+Thiếu bất kỳ việc nào là kỹ năng không bao giờ học được.
+
+**1. Đưa ability vào danh sách học.**
+Units → từng hero → `Techtree - Hero Abilities` → thêm các ability.
+
+**2. Đặt `Stats - Required Level` = 1** trên mọi ability.
+Hero đứng yên ở cấp 1. Ability nào đòi cấp cao hơn thì vĩnh viễn không đủ điều
+kiện, dù có bao nhiêu điểm.
+
+**3. Đặt `Levels - Level Skip Requirement` = 0.**
+Mặc định Warcraft III bắt cách nhau vài cấp giữa hai lần nâng cùng một kỹ năng.
+Hero không lên cấp nên điều kiện đó không bao giờ thoả.
+
+**4. Đặt `Stats - Levels` = 1** nếu muốn "chọn M trong N".
+Nhiều cấp thì người chơi dồn hết điểm vào một kỹ năng được, và lựa chọn mất ý
+nghĩa.
+
+> Ability ở đây phải là **hero ability**, ngược với kỹ năng cố định trong
+> `CFG.HEROES[i].abilities` — chỗ đó phải dùng ability **thường**.
+
+> Hero ability gắn thẳng bằng `UnitAddAbility` (chế độ `"pick"`) ra ở **cấp 0**,
+> nút hiện nhưng bấm không được. Code tự gọi `SetUnitAbilityLevel(u, id, 1)` ngay
+> sau đó. Triệu chứng "nút có mà bấm không được" rất khó đoán nếu không biết.
+
+## Vị trí nút trong command card
+
+Do chính ability quyết định, ở `Art - Button Position (X)` và `(Y)`. Không phải
+code.
+
+| | X=0 | X=1 | X=2 | X=3 |
+|---|---|---|---|---|
+| **Y=0** | Move | Stop | Hold | Attack |
+| **Y=1** | Patrol | trống | trống | trống |
+| **Y=2** | trống | trống | trống | trống |
+
+Bảy ô trống. Hai ability trùng vị trí thì **đè lên nhau**, một cái bấm không được,
+và không có cảnh báo nào. Ô `(3,2)` là chỗ nút Cancel xuất hiện khi mở submenu —
+tránh ra nếu sau này hero có spellbook.
+
+## Phát điểm ở chỗ khác
+
+```lua
+API.grantSkillPoints(S.p[pid].hero, 1)
+```
+
+Gọi từ bất cứ đâu. Hàm này cảnh báo nếu `STRIP_SKILL_POINTS` còn bật — bộ quét 5
+giây sẽ ăn mất điểm vừa phát, và đó là kiểu hỏng rất khó lần ra nếu không được báo.
+
+## Cách kiểm
+
+1. `CFG.SKILL_MODE = "learn"`, chạy `python build.py`.
+2. Vào map, chọn hero. Phải thấy nút **+** với đúng số điểm đã phát.
+3. Bấm **+**, phải thấy icon và tooltip của ability tự tạo.
+4. Với `CFG.DEBUG = true`, gõ `-sp` để phát thêm một điểm mà không phải chờ.
+
+Không thấy nút **+** thì gần như chắc chắn là `Techtree - Hero Abilities` còn
+rỗng. Thấy nút nhưng ability bị mờ thì là `Required Level` hoặc
+`Level Skip Requirement`.
+
+## Chưa làm
+
+- Chưa quyết điểm kỹ năng đến từ đâu ngoài lúc sinh hero. Đây là câu hỏi thiết kế
+  chính còn lại: thưởng theo đợt quái, theo thời gian, hay mua bằng tài nguyên.
+- Chưa có cách hoàn điểm hoặc đổi kỹ năng.
+- `SKILL_POINTS_START` áp cho mọi hero như nhau, không phân biệt vai.

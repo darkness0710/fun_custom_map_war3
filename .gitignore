@@ -1,0 +1,11 @@
+# Bản sao war3map.lua trước mỗi lần build. Chỉ để cứu hộ tại chỗ,
+# không có giá trị lịch sử — git đã giữ lịch sử rồi.
+build/
+
+# Cache của Python
+__pycache__/
+*.pyc
+
+# File tạm của World Editor
+*.bak
+*.w3x.orig

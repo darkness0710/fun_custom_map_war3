@@ -1,0 +1,81 @@
+﻿STRING 1
+{
+Just another Warcraft III mapx
+}
+
+STRING 2
+{
+Any
+}
+
+STRING 3
+{
+Nondescript
+}
+
+STRING 4
+{
+Unknown
+}
+
+STRING 5
+{
+Player 1
+}
+
+STRING 6
+{
+Player 2
+}
+
+STRING 7
+{
+Player 3
+}
+
+STRING 8
+{
+Player 12
+}
+
+STRING 9
+{
+Force 1
+}
+
+STRING 10
+// Units: H001 (Warrior), Name (Name)
+{
+Warrior
+}
+
+STRING 11
+// Units: H001 (Warrior), Propernames (Proper Names)
+{
+Warrior
+}
+
+STRING 12
+// Units: H003 (Mage), Name (Name)
+{
+Mage
+}
+
+STRING 13
+// Units: H003 (Mage), Propernames (Proper Names)
+{
+Mage
+}
+
+STRING 14
+// Units: H002 (Shooter), Propernames (Proper Names)
+{
+Shooter
+}
+
+STRING 15
+// Units: H002 (Shooter), Name (Name)
+{
+Shooter
+}
+

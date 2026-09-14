@@ -1,0 +1,9 @@
+-- ============================================================
+--  05_wave.lua  --  Dot quai  [RONG]
+--
+--  Chua dung o buoc nay. File giu cho de thu tu noi khong doi.
+--  Du kien: Sinh quai theo dot, cuong hoa, dem so con song.
+--
+--  Nho: goi ham cua file khac phai qua API, khai bao local cua file
+--  nay khong nhin thay duoc tu cac file truoc no.
+-- ============================================================
