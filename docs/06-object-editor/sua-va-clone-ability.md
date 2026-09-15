@@ -124,6 +124,10 @@ duy nhất trong nhóm Text cần viết riêng cho từng level.
 |---|---|---|
 | `AHav` | Avatar | `Hav1` `Hav2` `Hav3` `Hav4` |
 | `Aamk` | Attribute Bonus | `Istr` `Iagi` `Iint` |
+| `AOsh` | Shockwave | chưa đo — cần `Levels = 10` |
+| `AHhb` | Holy Light | chưa đo |
+| `AHad` | Devotion Aura | chưa đo |
+| `ACce` | Cleaving Attack (**lấy từ unit**, không phải hero) | chưa đo |
 
 Mã Data **mỗi ability gốc một khác**, và đoán sai thì World Editor nuốt lặng,
 không báo gì. Chỉ có một cách biết: đọc từ file do nó ghi ra.
@@ -223,12 +227,14 @@ Sửa số trong World Editor là lần sinh sau đè mất. Thứ tự bắt bu
 
 ```
 A001  AOsh  Shockwave          1 trường   <- chưa đặt Levels
-A002  AHhb  ?                  1 trường   <- chưa đặt Levels
+A002  AHhb  Holy Light         1 trường   <- chưa đặt Levels
 A003  AHad  Devotion Aura      1 trường   <- chưa đặt Levels
-A004  Aamk  Attribute Bonus   32 trường   Levels=10, mọi chỉ số = 0
-A005  ACce  ?                  2 trường   Hero Ability = có
-A006  Aamk  Attribute Bonus   16 trường   đủ tên + tooltip + icon
+A004  Aamk  Attribute Bonus   32 trường   Levels=10 ✓
+A005  ACce  Cleaving Attack    2 trường   Hero Ability = có, <- chưa đặt Levels
+A006  Aamk  vỏ rỗng           16 trường   đủ tên + tooltip + icon
 A007  AHav  Avatar             1 trường   <- chưa đặt Levels
+
+Mới **1 / 7** đặt `Levels = 10`. Sáu cái còn lại chưa nhả mã Data nào.
 ```
 
 `A004` là **vỏ rỗng chuẩn**: Attribute Bonus với cả ba chỉ số bằng 0 thì không
@@ -239,5 +245,16 @@ làm gì cả, nhưng vẫn có icon và ô trong command card. Hợp hơn Criti
 
 - `Text - Tooltip - Normal` chưa biết mã.
 - Mã Data của 19 ability gốc còn lại — lấy bằng cách đặt `Levels = 10`.
+
+### Ability lấy từ unit, gắn lên hero
+
+`ACce` Cleaving Attack lấy từ một unit chứ không phải từ hero. Chạy được,
+nhưng ba chỗ phải kiểm vì ability unit không được thiết kế để nằm trên hero:
+
+1. **`Stats - Hero Ability` phải bật** — đã bật (`aher = 1` trong file).
+2. **`Stats - Levels`** — ability unit thường chỉ có 1 bậc. Không đặt lên 10 thì
+   `SetUnitAbilityLevel(hero, 'A005', 7)` không lên được, và **không báo lỗi**.
+3. **Icon và ô nút** — ability unit hay không có `Art - Button Position`, nên
+   nó có thể đè lên một ô khác trong command card.
 - Bộ sinh chưa viết. Cần bảng số liệu 21 skill trước.
 - Chưa đo World Editor có giữ nguyên file script ghi ra sau khi Save không.
