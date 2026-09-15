@@ -1,6 +1,16 @@
 # 0011 — Nhà chính đếm mạng thay vì đếm máu
 
-> **Trạng thái:** Nháp — **cần bạn chốt trước khi code hệ wave**
+> **Trạng thái:** ĐÃ BỊ LẬT — 2026-09-15
+>
+> Đề xuất "nhà đếm mạng" **không được chọn**. Chủ dự án quyết: nhà nhận sát thương
+> bình thường, và **điều kiện thua duy nhất là nhà chết**. Cơ chế lọt-một-con-trừ-
+> một-mạng đã gỡ khỏi code.
+>
+> Phần phân tích bên dưới giữ lại vì nó nêu đúng một vấn đề thật: **sát thương địch
+> tăng ×279 qua 220 stage**, nên máu nhà cố định là vô nghĩa. Cách giải hiện tại:
+> `CFG.HOUSE_HP_HITS` — máu nhà = số đòn chịu được × sát thương một con lính ở
+> stage đó, tính lại mỗi wave. Tỉ lệ sống sót giữ nguyên suốt ván, và chỉ còn **một**
+> con số chỉnh độ khoan dung.
 > **Ngày:** 2026-09-15
 
 Đây là ADR duy nhất trong thư mục này chưa chốt. Nó mâu thuẫn với

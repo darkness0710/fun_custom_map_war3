@@ -99,11 +99,7 @@ local function createHouse()
   return S.house
 end
 
--- Goi tu 08_events khi nha chinh chet.
---
--- Voi ADR 0011 (nha dem mang) thi nha bat tu, nen duong nay khong bao
--- gio chay. Giu lai de neu ai do tat HOUSE_INVULNERABLE thi van co
--- dieu kien thua chu khong phai nha chet ma van choi tiep.
+-- Goi tu 08_events khi nha chinh chet. Day la dieu kien thua DUY NHAT.
 local function onHouseDeath()
   if not S.running then return end
   if not CFG.HOUSE_DEATH_ENDS_GAME then return end

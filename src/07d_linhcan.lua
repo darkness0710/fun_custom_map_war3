@@ -5,14 +5,19 @@
 --  (docs/03-du-lieu/duong-cong-suc-manh.md). 20 bac, dung chung thang
 --  ten voi 20 canh gioi cua phe dich.
 --
---  Cung kien truc dong bo nhu 07b/07c: bam frame chi no tren may nguoi
---  bam, nen bam KHONG doi trang thai -- no gui BlzSendSyncData, va moi
---  may goi breakthrough() khi nhan duoc.
+--  Bang hien THANG BAC chu khong chi hien bac hien tai: nguoi choi phai
+--  thay duoc minh dang o dau, sap len cai gi, va con bao xa nua.
+--
+--  Dong bo: bam frame chi no tren may nguoi bam, nen no gui
+--  BlzSendSyncData va moi may moi goi breakthrough().
+--  Rieng MO/DONG bang la UI thuan -- lam cuc bo duoc, khong can dong bo.
 --
 --  Nho: goi ham cua file khac phai qua API.
 -- ============================================================
 
 local SYNC_PREFIX = "DLC"
+local ROWS_AHEAD  = 5    -- so bac ke tiep hien trong bang
+local ROWS_BACK   = 1    -- so bac da qua hien trong bang
 
 local FRAME_OK, SYNC_OK = nil, nil
 
@@ -24,7 +29,8 @@ local function framesAvailable()
           and BlzFrameSetVisible ~= nil and BlzFrameSetText ~= nil
           and BlzTriggerRegisterFrameEvent ~= nil and BlzGetTriggerFrame ~= nil
           and ORIGIN_FRAME_GAME_UI ~= nil and FRAMEEVENT_CONTROL_CLICK ~= nil
-          and FRAMEPOINT_CENTER ~= nil and FRAMEPOINT_TOP ~= nil)
+          and FRAMEPOINT_CENTER ~= nil and FRAMEPOINT_TOP ~= nil
+          and FRAMEPOINT_TOPLEFT ~= nil)
   if not FRAME_OK then API.trace("linhcan: THIEU native frame") end
   return FRAME_OK
 end
@@ -38,9 +44,7 @@ end
 
 -- ---------- Toan ----------
 
-local function maxRank()
-  return #CFG.REALMS
-end
+local function maxRank() return #CFG.REALMS end
 
 local function rankName(r)
   local e = CFG.REALMS[r]
@@ -48,10 +52,7 @@ local function rankName(r)
   return e.ten
 end
 
--- Suc manh cong don tai bac r.
-local function powerAt(r)
-  return CFG.LINHCAN_STEP ^ (r - 1)
-end
+local function powerAt(r) return CFG.LINHCAN_STEP ^ (r - 1) end
 
 -- Chi so can dat tai bac r.
 --
@@ -66,8 +67,6 @@ end
 local function costOf(r)
   return math.floor(CFG.LINHCAN_COST_BASE * CFG.LINHCAN_COST_STEP ^ (r - 1) + 0.5)
 end
-
--- ---------- Ap dung ----------
 
 -- Cong PHAN CHENH giua hai bac, khong dat lai tu dau -- SetHeroStr cong
 -- don, dat lai tu dau se de len bonus cua trang bi sau nay.
@@ -86,33 +85,67 @@ local function stateOf(pid)
   local f = S.lcframe
   if f.byPid[pid] == nil then
     f.byPid[pid] = { panel = nil, btnUp = nil, btnClose = nil,
-                     txtNow = nil, txtNext = nil, shown = false }
+                     head = nil, foot = nil, rows = {}, shown = false }
   end
   return f.byPid[pid]
+end
+
+-- Mot dong cua thang bac.
+local function rowText(pid, r, cur)
+  local name = rankName(r)
+  local pw   = string.format("x%.2f", powerAt(r))
+
+  if r < cur then
+    return CFG.C_GREY .. "  " .. r .. "  " .. name .. "   " .. pw ..
+           "   da qua" .. CFG.C_END
+  elseif r == cur then
+    return CFG.C_GOLD .. "> " .. r .. "  " .. name .. "   " .. pw ..
+           "   dang o day" .. CFG.C_END
+  end
+
+  -- Bac tuong lai: hien gia de len TU BAC HIEN TAI toi bac do.
+  local sum = 0
+  for k = cur, r - 1 do sum = sum + costOf(k) end
+  local co = (API.getLinhKhi(pid) >= sum) and CFG.C_JADE or CFG.C_GREY
+  return "  " .. r .. "  " .. name .. "   " .. pw ..
+         "   " .. co .. API.num(sum) .. CFG.C_END
 end
 
 local function refreshText(pid)
   local st = stateOf(pid)
   if st.panel == nil then return end
 
-  local d = S.p[pid]
-  local r = d.linhCan
+  local d   = S.p[pid]
+  local cur = d.linhCan
 
-  if st.txtNow ~= nil then
-    BlzFrameSetText(st.txtNow, CFG.C_GOLD .. "Linh Can: " .. rankName(r) ..
-      CFG.C_END .. "   bac " .. r .. "/" .. maxRank() ..
-      "   suc manh x" .. string.format("%.2f", powerAt(r)))
+  if st.head ~= nil then
+    BlzFrameSetText(st.head, CFG.C_GOLD .. "== LINH CAN ==" .. CFG.C_END ..
+      "   bac " .. cur .. "/" .. maxRank() ..
+      "   suc manh " .. CFG.C_JADE .. string.format("x%.2f", powerAt(cur)) .. CFG.C_END ..
+      "   chi so +" .. API.num(statAt(cur) - CFG.LINHCAN_STAT_BASE))
   end
 
-  if st.txtNext ~= nil then
-    if r >= maxRank() then
-      BlzFrameSetText(st.txtNext, CFG.C_JADE .. "Da toi dinh." .. CFG.C_END)
+  local first = cur - ROWS_BACK
+  if first < 1 then first = 1 end
+  for i = 1, #st.rows do
+    local r = first + i - 1
+    if r <= maxRank() then
+      BlzFrameSetText(st.rows[i], rowText(pid, r, cur))
     else
-      local c = costOf(r)
+      BlzFrameSetText(st.rows[i], "")
+    end
+  end
+
+  if st.foot ~= nil then
+    if cur >= maxRank() then
+      BlzFrameSetText(st.foot, CFG.C_JADE .. "Da toi dinh cua thang tu vi." .. CFG.C_END)
+    else
+      local c  = costOf(cur)
       local co = (API.getLinhKhi(pid) >= c) and CFG.C_JADE or CFG.C_RED
-      BlzFrameSetText(st.txtNext, "Bac ke: " .. rankName(r + 1) ..
-        "  x" .. string.format("%.2f", powerAt(r + 1)) ..
-        "   gia " .. co .. API.num(c) .. CFG.C_END .. " linh khi")
+      BlzFrameSetText(st.foot,
+        "Dot pha len " .. CFG.C_GOLD .. rankName(cur + 1) .. CFG.C_END ..
+        "  gia " .. co .. API.num(c) .. CFG.C_END ..
+        "   dang co " .. API.num(API.getLinhKhi(pid)))
     end
   end
 end
@@ -136,72 +169,66 @@ local function buildPanel(pid)
   BlzFrameSetSize(st.panel, CFG.LINHCAN_W, CFG.LINHCAN_H)
   BlzFrameSetTexture(st.panel, CFG.FRAME_BG, 0, true)
 
-  local function line(name, dy)
+  -- Can trai cho thang bac doc thanh cot, khong phai chu can giua.
+  local function text(name, dx, dy)
     local t = BlzCreateFrameByType("TEXT", name, st.panel, "", pid)
     if t ~= nil then
-      BlzFrameSetPoint(t, FRAMEPOINT_TOP, st.panel, FRAMEPOINT_TOP, 0.0, dy)
+      BlzFrameSetPoint(t, FRAMEPOINT_TOPLEFT, st.panel, FRAMEPOINT_TOPLEFT, dx, dy)
     end
     return t
   end
 
-  local title = line("LinhCanTitle", -0.010)
-  if title ~= nil then
-    BlzFrameSetText(title, CFG.C_GOLD .. "== LINH CAN ==" .. CFG.C_END)
-  end
-  st.txtNow  = line("LinhCanNow",  -0.045)
-  st.txtNext = line("LinhCanNext", -0.075)
+  st.head = text("LinhCanHead", 0.012, -0.012)
 
-  st.btnUp = BlzCreateFrameByType("GLUEBUTTON", "LinhCanUp", st.panel,
-                                  CFG.FRAME_BUTTON_TEMPLATE, pid)
-  if st.btnUp ~= nil then
-    BlzFrameSetSize(st.btnUp, 0.11, 0.028)
-    BlzFrameSetPoint(st.btnUp, FRAMEPOINT_TOP, st.panel, FRAMEPOINT_TOP,
-                     -0.065, -0.112)
-    local t = BlzCreateFrameByType("TEXT", "LinhCanUpTxt", st.btnUp, "", pid)
-    if t ~= nil then
-      BlzFrameSetPoint(t, FRAMEPOINT_CENTER, st.btnUp, FRAMEPOINT_CENTER, 0, 0)
-      BlzFrameSetText(t, "Dot pha")
-    end
-    BlzTriggerRegisterFrameEvent(S.lcframe.trig, st.btnUp, FRAMEEVENT_CONTROL_CLICK)
+  local n = ROWS_BACK + 1 + ROWS_AHEAD
+  st.rows = {}
+  for i = 1, n do
+    st.rows[i] = text("LinhCanRow" .. i, 0.012, -0.044 - (i - 1) * 0.021)
   end
 
-  st.btnClose = BlzCreateFrameByType("GLUEBUTTON", "LinhCanClose", st.panel,
-                                     CFG.FRAME_BUTTON_TEMPLATE, pid)
-  if st.btnClose ~= nil then
-    BlzFrameSetSize(st.btnClose, 0.08, 0.028)
-    BlzFrameSetPoint(st.btnClose, FRAMEPOINT_TOP, st.panel, FRAMEPOINT_TOP,
-                     0.075, -0.112)
-    local t = BlzCreateFrameByType("TEXT", "LinhCanCloseTxt", st.btnClose, "", pid)
+  st.foot = text("LinhCanFoot", 0.012, -0.050 - n * 0.021)
+
+  local function button(name, label, dx)
+    local b = BlzCreateFrameByType("GLUEBUTTON", name, st.panel,
+                                   CFG.FRAME_BUTTON_TEMPLATE, pid)
+    if b == nil then return nil end
+    BlzFrameSetSize(b, 0.10, 0.026)
+    BlzFrameSetPoint(b, FRAMEPOINT_TOPLEFT, st.panel, FRAMEPOINT_TOPLEFT,
+                     dx, -0.076 - n * 0.021)
+    local t = BlzCreateFrameByType("TEXT", name .. "Txt", b, "", pid)
     if t ~= nil then
-      BlzFrameSetPoint(t, FRAMEPOINT_CENTER, st.btnClose, FRAMEPOINT_CENTER, 0, 0)
-      BlzFrameSetText(t, "Dong")
+      BlzFrameSetPoint(t, FRAMEPOINT_CENTER, b, FRAMEPOINT_CENTER, 0, 0)
+      BlzFrameSetText(t, label)
     end
-    BlzTriggerRegisterFrameEvent(S.lcframe.trig, st.btnClose, FRAMEEVENT_CONTROL_CLICK)
+    BlzTriggerRegisterFrameEvent(S.lcframe.trig, b, FRAMEEVENT_CONTROL_CLICK)
+    return b
   end
+
+  st.btnUp    = button("LinhCanUp",    "Dot pha", 0.012)
+  st.btnClose = button("LinhCanClose", "Dong",    0.130)
 
   BlzFrameSetVisible(st.panel, false)
-  API.trace("linhcan: da dung bang cho pid " .. pid)
+  API.trace("linhcan: dung bang cho pid " .. pid .. " (" .. n .. " dong)")
   return true
 end
 
--- Mo/dong. Doi hien theo tung may la an toan: no khong dung trang thai game.
-local function toggle(pid)
+-- Mo/dong. UI thuan nen lam cuc bo duoc.
+local function setShown(pid, want)
   if not framesAvailable() then
-    -- Khong ve duoc thi van choi duoc: bao bang chu.
     local d = S.p[pid]
     local r = d.linhCan
     API.msg(pid, CFG.C_GOLD .. "Linh Can: " .. rankName(r) .. " (bac " .. r ..
       "/" .. maxRank() .. ", x" .. string.format("%.2f", powerAt(r)) .. ")" .. CFG.C_END)
     if r < maxRank() then
-      API.msg(pid, "Dot pha len " .. rankName(r + 1) .. " gia " ..
-        API.num(costOf(r)) .. " linh khi. Go -lc up de dot pha.")
+      API.msg(pid, "Bac ke " .. rankName(r + 1) .. " gia " ..
+        API.num(costOf(r)) .. ". Go -lc up de dot pha.")
     end
     return
   end
 
   if not buildPanel(pid) then return end
   local st = stateOf(pid)
-  st.shown = not st.shown
+  st.shown = want
   refreshText(pid)
 
   BlzFrameSetVisible(st.panel, false)
@@ -210,9 +237,33 @@ local function toggle(pid)
   end
 end
 
+local function toggle(pid)
+  local st = stateOf(pid)
+  setShown(pid, not st.shown)
+end
+
 -- ---------- Dot pha ----------
--- Chay tren MOI may, tu su kien dong bo. Day la cho duy nhat duoc phep
--- doi trang thai.
+-- Chay tren MOI may, tu su kien dong bo.
+
+local function setRank(pid, newR, free)
+  local d = S.p[pid]
+  if d == nil then return end
+  if newR < 1 then newR = 1 end
+  if newR > maxRank() then newR = maxRank() end
+
+  local old = d.linhCan
+  if newR == old then return end
+
+  d.linhCan = newR
+  applyRank(d.hero, old, newR)
+  refreshText(pid)
+
+  if free then
+    API.msg(pid, CFG.C_GREY .. "[dev] Linh Can -> " .. rankName(newR) ..
+      " (bac " .. newR .. ", x" .. string.format("%.2f", powerAt(newR)) .. ")" .. CFG.C_END)
+  end
+end
+
 local function breakthrough(pid)
   local d = S.p[pid]
   if d == nil then return end
@@ -227,13 +278,11 @@ local function breakthrough(pid)
   if not API.spendLinhKhi(pid, c) then
     API.msg(pid, CFG.C_RED .. "Khong du linh khi." .. CFG.C_END ..
       " Can " .. API.num(c) .. ", dang co " .. API.num(API.getLinhKhi(pid)) .. ".")
+    refreshText(pid)
     return
   end
 
-  d.linhCan = r + 1
-  applyRank(d.hero, r, r + 1)
-  refreshText(pid)
-
+  setRank(pid, r + 1, false)
   API.msg(nil, CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END ..
     " dot pha len " .. CFG.C_JADE .. rankName(r + 1) .. CFG.C_END ..
     " (x" .. string.format("%.2f", powerAt(r + 1)) .. ")")
@@ -259,7 +308,7 @@ local function onClick()
         if syncAvailable() then
           BlzSendSyncData(SYNC_PREFIX, "up")
         else
-          breakthrough(pid)   -- chi dung cho mot nguoi choi
+          breakthrough(pid)
         end
         return
       end
@@ -268,15 +317,23 @@ local function onClick()
 end
 
 local function onSync()
-  local pid = GetPlayerId(GetTriggerPlayer())
+  local pid  = GetPlayerId(GetTriggerPlayer())
   local data = BlzGetTriggerSyncData()
-  if data == "up" then breakthrough(pid) end
+  if data == nil then return end
+
+  if data == "up" then
+    breakthrough(pid)
+  else
+    local n = tonumber(data:match("^set:(%d+)$"))
+    if n ~= nil then setRank(pid, n, true) end
+  end
 end
 
--- Bang "-lc" mo bang, "-lc up" dot pha khong can bang (cho ban nao
--- khong ve duoc frame).
+-- "-lc" mo bang · "-lc up" dot pha · "-lc <so>" nhay thang toi bac (dev)
 local function onChat(pid, raw)
-  if raw ~= nil and raw:match("^%s*%-lc%s+up") then
+  if raw == nil then toggle(pid); return end
+
+  if raw:match("^%s*%-lc%s+up") then
     if syncAvailable() then
       if GetLocalPlayer() == Player(pid) then BlzSendSyncData(SYNC_PREFIX, "up") end
     else
@@ -284,7 +341,43 @@ local function onChat(pid, raw)
     end
     return
   end
+
+  local n = tonumber(raw:match("^%s*%-lc%s+(%d+)"))
+  if n ~= nil then
+    if not CFG.DEV_COMMANDS then
+      API.msg(pid, CFG.C_RED .. "Lenh dev dang tat (CFG.DEV_COMMANDS)." .. CFG.C_END)
+      return
+    end
+    if syncAvailable() then
+      if GetLocalPlayer() == Player(pid) then
+        BlzSendSyncData(SYNC_PREFIX, "set:" .. n)
+      end
+    else
+      setRank(pid, n, true)
+    end
+    return
+  end
+
   toggle(pid)
+end
+
+-- Phim E. Su kien phim la CUC BO, nhung mo/dong bang cung la UI thuan
+-- nen khong can dong bo.
+local function bindKey()
+  if BlzTriggerRegisterPlayerKeyEvent == nil or OSKEY_E == nil then
+    API.trace("linhcan: KHONG co BlzTriggerRegisterPlayerKeyEvent/OSKEY_E -- chi con -lc")
+    return false
+  end
+
+  local t = CreateTrigger()
+  for i = 1, #S.pids do
+    BlzTriggerRegisterPlayerKeyEvent(t, Player(S.pids[i]), OSKEY_E, 0, true)
+  end
+  TriggerAddAction(t, function()
+    toggle(GetPlayerId(GetTriggerPlayer()))
+  end)
+  API.trace("linhcan: da gan phim E")
+  return true
 end
 
 local function startLinhCan()
@@ -301,11 +394,13 @@ local function startLinhCan()
     end
     TriggerAddAction(S.lcframe.syncTrig, onSync)
   end
-  API.trace("linhcan: san sang, dong bo " .. tostring(syncAvailable()))
+
+  S.keyBound = bindKey()
+  API.trace("linhcan: san sang, dong bo=" .. tostring(syncAvailable()) ..
+            " phimE=" .. tostring(S.keyBound))
 end
 
--- Goi khi hero vua duoc tao: ap lai bac hien tai (thuong la 1, nhung
--- neu nguoi choi doi hero sau nay thi khong mat tu vi).
+-- Goi khi hero vua duoc tao: ap lai bac hien tai, de doi hero khong mat tu vi.
 local function applyToHero(pid, hero)
   local d = S.p[pid]
   if d == nil or hero == nil then return end
@@ -317,6 +412,7 @@ API.linhCanPower   = function(pid) return powerAt(API.linhCanRank(pid)) end
 API.linhCanCost    = costOf
 API.linhCanStatAt  = statAt
 API.linhCanToggle  = toggle
+API.linhCanRefresh = refreshText
 API.linhCanChat    = onChat
 API.linhCanApply   = applyToHero
 API.startLinhCan   = startLinhCan

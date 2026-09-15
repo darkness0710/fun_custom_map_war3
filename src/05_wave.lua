@@ -193,12 +193,39 @@ end
 
 -- ---------- Mot wave ----------
 
+-- Mau nha tinh lai moi wave theo sat thuong mot con linh o stage do.
+-- Khong tinh lai thi den canh gioi 5 nha da thanh giay.
+--
+-- Giu nguyen TI LE mau dang co, roi hoi them REGEN_PER_WAVE -- neu dat
+-- lai day mau moi wave thi lot bao nhieu cung khong sao.
+local function rescaleHouse(stage, realm)
+  if S.house == nil or BlzSetUnitMaxHP == nil then return end
+
+  local oldMax = GetUnitState(S.house, UNIT_STATE_MAX_LIFE)
+  local ratio  = 1.0
+  if oldMax > 0 then
+    ratio = GetUnitState(S.house, UNIT_STATE_LIFE) / oldMax
+  end
+
+  local P = S.wave.players
+  local newMax = CFG.HOUSE_HP_HITS * dmgOf(stage, realm)
+               * (1 + CFG.SCALE_DMG_PER_PLAYER * (P - 1))
+  newMax = math.floor(newMax + 0.5)
+  if newMax < 1 then newMax = 1 end
+
+  BlzSetUnitMaxHP(S.house, newMax)
+  local heal = ratio + CFG.HOUSE_REGEN_PER_WAVE
+  if heal > 1.0 then heal = 1.0 end
+  SetUnitState(S.house, UNIT_STATE_LIFE, newMax * heal)
+end
+
 local function spawnStage(stage)
   local realm, tier, isBoss = decode(stage)
 
   S.stage = stage
   S.wave.players = playerCount()
   S.wave.spawnFail = 0
+  rescaleHouse(stage, realm)
 
   if isBoss then
     spawnOne(stage, realm, "boss")
@@ -246,49 +273,13 @@ local function onWaveTimer()
   TimerStart(S.waveTimer, waveSeconds(nextStage), false, onWaveTimer)
 end
 
--- ---------- Nhip 2 giay: ra lenh lai + kiem lot ----------
-
-local function leakCost(kind)
-  if kind == "elite" then return CFG.LEAK_COST_ELITE end
-  return CFG.LEAK_COST_MOB
-end
-
-local function onLeak(u, kind)
-  S.mobs[u] = nil
-  S.alive = S.alive - 1
-  if S.alive < 0 then S.alive = 0 end
-  RemoveUnit(u)
-
-  if kind == "boss" then
-    API.endGame(false, "Boss da cham toi nha chinh.")
-    return
-  end
-
-  S.lives = S.lives - leakCost(kind)
-  if S.lives < 0 then S.lives = 0 end
-  API.msg(nil, CFG.C_RED .. "Lot mot con! Linh Khi con " .. S.lives ..
-    "/" .. CFG.HOUSE_LIVES .. CFG.C_END)
-
-  if S.lives <= 0 then
-    API.endGame(false, "Nha chinh da mat het linh khi.")
-  end
-end
+-- ---------- Nhip 2 giay: ra lenh lai ----------
+-- Quai bi danh lac huong khong tu quay ve nha.
 
 local function tick()
   if not S.running or S.houseX == nil then return end
-
-  for u, kind in pairs(S.mobs) do
-    if u ~= nil then
-      if not API.alive(u) then
-        -- Chet o dau do ma su kien chua kip xu ly; bo qua, 08_events lo.
-      elseif API.distXY(GetUnitX(u), GetUnitY(u), S.houseX, S.houseY)
-             <= CFG.LEAK_RADIUS then
-        onLeak(u, kind)
-      else
-        -- Quai bi danh lac huong khong tu quay ve nha.
-        sendToHouse(u)
-      end
-    end
+  for u, _ in pairs(S.mobs) do
+    if u ~= nil and API.alive(u) then sendToHouse(u) end
   end
 end
 
@@ -322,7 +313,6 @@ end
 
 local function startWaves()
   S.stage = 0
-  S.lives = CFG.HOUSE_LIVES
   S.mobs  = {}
   S.alive = 0
   S.wave  = { players = 1, spawnFail = 0 }

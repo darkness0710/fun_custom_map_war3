@@ -36,11 +36,11 @@ S.skillTrigger= nil
 S.sframe      = {}     -- giao dien ky nang, do 07b_skillframe dung
 S.hframe      = {}     -- the chon hero,   do 07c_heroframe dung
 S.lcframe     = {}     -- bang Linh Can,   do 07d_linhcan dung
+S.keyBound    = false  -- gan duoc phim E khong
 S.xpTimer     = nil    -- bo quet khoa hero
 
 -- Dot quai, do 05_wave dung
 S.stage      = 0       -- 1..220, MOT bien duy nhat
-S.lives      = 0       -- linh khi con lai cua nha chinh (ADR 0011)
 S.mobs       = {}      -- [unit] = "mob" | "elite" | "boss"
 S.alive      = 0
 S.wave       = {}      -- { players, spawnFail } cua wave hien tai

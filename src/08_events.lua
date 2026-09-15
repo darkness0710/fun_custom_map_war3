@@ -97,6 +97,33 @@ local function onLinhCanCmd()
   API.linhCanChat(GetPlayerId(GetTriggerPlayer()), GetEventPlayerChatString())
 end
 
+-- Lenh dev cho tien: "-lk 50000" them linh khi, "-tt 300" them tinh thach.
+-- Khong co no thi muon thu bac Linh Can 15 phai cay 155 wave.
+local function onMoneyCmd()
+  local pid = GetPlayerId(GetTriggerPlayer())
+  local raw = GetEventPlayerChatString()
+  if raw == nil then return end
+
+  local n = tonumber(raw:match("^%s*%-lk%s+(%d+)"))
+  if n ~= nil then
+    API.addLinhKhi(pid, n)
+    API.msg(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " linh khi -> " ..
+      API.num(API.getLinhKhi(pid)) .. CFG.C_END)
+    API.linhCanRefresh(pid)
+    return
+  end
+
+  n = tonumber(raw:match("^%s*%-tt%s+(%d+)"))
+  if n ~= nil then
+    API.addTinhThach(pid, n)
+    API.msg(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " tinh thach -> " ..
+      API.num(API.getTinhThach(pid)) .. CFG.C_END)
+    return
+  end
+
+  API.msg(pid, CFG.C_RED .. "Dung: -lk <so>  hoac  -tt <so>" .. CFG.C_END)
+end
+
 local function registerEvents()
   local tDeath = CreateTrigger()
   TriggerRegisterAnyUnitEventBJ(tDeath, EVENT_PLAYER_UNIT_DEATH)
@@ -124,6 +151,15 @@ local function registerEvents()
       TriggerRegisterPlayerChatEvent(tWave, Player(S.pids[i]), "-wave", false)
     end
     TriggerAddAction(tWave, onWaveCmd)
+  end
+
+  if CFG.DEV_COMMANDS then
+    local tMoney = CreateTrigger()
+    for i = 1, #S.pids do
+      TriggerRegisterPlayerChatEvent(tMoney, Player(S.pids[i]), "-lk", false)
+      TriggerRegisterPlayerChatEvent(tMoney, Player(S.pids[i]), "-tt", false)
+    end
+    TriggerAddAction(tMoney, onMoneyCmd)
   end
 
   -- Linh Can KHONG phai lenh dev -- no la loi choi, luon dang ky.

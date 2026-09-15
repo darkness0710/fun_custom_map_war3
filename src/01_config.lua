@@ -97,10 +97,8 @@ CFG.HOUSE_CAN_ATTACK = false
 -- moc HOUSE_HP da dat.
 CFG.HOUSE_SUSPEND_XP = true
 
--- Nha dem MANG chu khong dem mau (ADR 0011), nen no bat tu: toan bo
--- duong cong sat thuong dich chi con tac dung len hero -- noi no NEN co
--- tac dung. Quai cham nha thi bien mat va tru mang, xem CFG.HOUSE_LIVES.
-CFG.HOUSE_INVULNERABLE = true
+-- Nha nhan sat thuong binh thuong. Chet la thua. (ADR 0011 bi lat)
+CFG.HOUSE_INVULNERABLE = false
 
 -- Nha chinh chet la ca ba nguoi choi thua.
 CFG.HOUSE_DEATH_ENDS_GAME = true
@@ -389,12 +387,23 @@ CFG.MOB_UNIT = {
   id('ufro'),   -- Than : Frost Wyrm
 }
 
--- ---------- Nha chinh dem mang (ADR 0011) ----------
--- Nha khong nhan sat thuong. Quai cham nha thi BIEN MAT va tru mang.
-CFG.HOUSE_LIVES     = 20
-CFG.LEAK_COST_MOB   = 1
-CFG.LEAK_COST_ELITE = 3
-CFG.LEAK_RADIUS     = 350.0   -- cham nha trong ban kinh nay la tinh lot
+-- ---------- Mau nha chinh ----------
+-- Nha nhan sat thuong, chet la thua. Khong co dem mang, khong co lot.
+--
+-- Mau CO DINH khong dung duoc: sat thuong dich tang x279 qua 220 stage,
+-- nen 1000 mau o stage 220 chet trong DUOI MOT GIAY. Thay vao do tinh
+-- theo "chiu duoc bao nhieu don cua mot con linh", va tinh lai moi wave
+-- -- ti le song sot giu nguyen suot van:
+--
+--   mau toi da = HOUSE_HP_HITS x sat thuong mot con linh o stage do
+--
+-- Voi 400: 3 con lot thi nha cam 133 giay, 50 con lot thi 8 giay.
+-- Day la MOT con so duy nhat chinh do khoan dung cua ca map.
+CFG.HOUSE_HP_HITS = 400
+
+-- Hoi bao nhieu phan mau toi da moi wave. Khong co hoi mau thi sat
+-- thuong tich luy va nha chet chac chan du choi gioi den may.
+CFG.HOUSE_REGEN_PER_WAVE = 0.20
 
 -- ---------- Kinh te ----------
 -- Thu nhap bam x967 (hop dong suc manh), KHONG bam x2176 (duong cong
@@ -439,5 +448,5 @@ CFG.LINHCAN_STAT_BASE = 20.0   -- chi so hero luc bac 1
 -- Giao dien bang Linh Can
 CFG.LINHCAN_X = 0.40
 CFG.LINHCAN_Y = 0.42
-CFG.LINHCAN_W = 0.30
-CFG.LINHCAN_H = 0.17
+CFG.LINHCAN_W = 0.32
+CFG.LINHCAN_H = 0.27
