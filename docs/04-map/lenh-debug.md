@@ -44,6 +44,7 @@ Không phụ thuộc công tắc nào. Đây là lối chơi, không phải debu
 | `-lc` | Mở thẳng thẻ Linh Căn |
 | `-lc up` | Đột phá một bậc, không cần mở bảng |
 | `-sync` | Đường đồng bộ nào đang chạy, native nào có, ping có về không |
+| `-nat` | Bản Warcraft này có những native nào — xem [5_natives.lua](../../src/1_nen/5_natives.lua) |
 
 > **Lệnh chat luôn đúng trong nhiều người chơi.** `EVENT_PLAYER_CHAT_STRING` nổ
 > trên mọi máy cùng lúc, nên `-lc up` đổi trạng thái game thẳng, không qua kênh
@@ -112,6 +113,7 @@ Những dòng đáng để mắt:
 | `fct: THIEU su kien sat thuong` | 1.31.1 không có event đó, chữ bay tự tắt |
 | `sync: mode=...` | Đường đồng bộ nào đang chạy — xem phần dưới |
 | `sync: tu kiem [...] ve=... mat=...` | Ping ai về, ai mất |
+| `native [...] co N/M` | Ban này thiếu native nào. Thiếu là hệ dùng nó tự tắt |
 | `stage N (...) P=k song=m` | Mỗi wave: stage, số người, số quái đang sống |
 
 ## Đồng bộ nhiều người chơi — phép đo phải làm một lần

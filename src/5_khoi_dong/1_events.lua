@@ -179,6 +179,16 @@ local function registerEvents()
     API.syncChat(GetPlayerId(GetTriggerPlayer()))
   end)
 
+  -- "-nat" liet ke native ban nay co. Luon dang ky: khi mot he im lang
+  -- khong chay, day la cho thu hai phai nhin sau file vet.
+  local tNat = CreateTrigger()
+  for i = 1, #S.pids do
+    TriggerRegisterPlayerChatEvent(tNat, Player(S.pids[i]), "-nat", true)
+  end
+  TriggerAddAction(tNat, function()
+    API.nativeChat(GetPlayerId(GetTriggerPlayer()))
+  end)
+
   -- "-c" mo bang nhan vat, duong lui neu phim E khong gan duoc.
   local tPanel = CreateTrigger()
   for i = 1, #S.pids do

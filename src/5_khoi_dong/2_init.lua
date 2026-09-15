@@ -78,6 +78,10 @@ local function bootstrap()
   -- nhan cua minh trong ham start cua chung.
   API.startSync()
 
+  -- Do xem ban nay co nhung native nao. Khong doi gi, chi ghi vet --
+  -- nhung moi lan doan thay vi do, du an nay deu doan sai (ADR 0012).
+  API.startNatives()
+
   API.buildGrid()
   API.trace("buildGrid: xong")
 
