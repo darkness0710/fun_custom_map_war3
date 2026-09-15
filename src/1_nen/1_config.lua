@@ -439,6 +439,26 @@ CFG.LINHKHI_BASE   = 60.0
 CFG.LINHKHI_GROWTH = 1.0319    -- = 967^(1/219)
 CFG.LINHKHI_MOB_SHARE = 0.60   -- 50 linh chia 60%, tinh anh 40%
 
+-- Tien thuong vao MOI nguoi hay chi nguoi ket lieu.
+-- PHAI la true: xem giai thich trong 3_tran_dau/2_wave.lua, onMobDeath.
+CFG.LINHKHI_SHARE_ALL = true
+
+-- ---------- Gia nang cap ky nang ----------
+-- Moi bac ky nang trai 2 canh gioi, nen buoc gia = buoc Linh Can binh
+-- phuong (1.412^2). Nho vay "nang ca 7 skill mot bac" luon xap xi "mot
+-- lan dot pha Linh Can" cung thoi diem -- ti le 0.99..1.01 suot 220 stage.
+-- Do la mot lua chon doc duoc, khong phai hai duong cong khong lien quan.
+CFG.SKILL_COST_BASE = 89.0     -- bac 1 -> 2
+CFG.SKILL_COST_STEP = 1.99
+CFG.SKILL_MAX_LEVEL = 10
+
+-- Suc manh moi bac. Ngan sach cho ca he nang cap la x2 (xem
+-- docs/03-du-lieu/duong-cong-suc-manh.md). x2 la TICH cua moi nut chinh,
+-- khong phai rieng sat thuong.
+CFG.SKILL_DMG_STEP  = 1.0322   -- 1.33 sau 9 lan nang
+CFG.SKILL_CD_STEP   = 0.9560   -- 0.667 sau 9 lan nang -> tan suat x1.5
+CFG.SKILL_PASSIVE_STEP = 1.0801 -- 2.00 sau 9 lan nang (bi dong khong co cooldown)
+
 CFG.TINHTHACH_BOSS_BASE = 10   -- boss canh gioi r roi BASE + STEP*(r-1)
 CFG.TINHTHACH_BOSS_STEP = 5
 

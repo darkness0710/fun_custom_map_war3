@@ -89,6 +89,7 @@ docs/
      canh-gioi.md        Bảng 20 cảnh giới, chỉ số hoá stage 1..220
      duong-cong-suc-manh.md  Công thức chỉ số địch + hợp đồng người chơi
      curve.py            Sinh lại bảng tra trong file trên
+     nang-cap-ky-nang.md Đường cong giá và sức mạnh 10 bậc kỹ năng
   04-map/
      kich-thuoc.md       Số đo thật, đọc từ war3map.w3e
      luoi-25-o.md        Lưới 5x5 và các dòng sông

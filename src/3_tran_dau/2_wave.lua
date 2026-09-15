@@ -293,11 +293,24 @@ local function onMobDeath(u, killer)
   S.alive = S.alive - 1
   if S.alive < 0 then S.alive = 0 end
 
-  if killer ~= nil then
-    local pid = GetPlayerId(GetOwningPlayer(killer))
-    if S.p[pid] ~= nil then
-      payBounty(pid, bountyOf(S.stage, kind))
+  -- Tien thuong vao MOI nguoi, khong chia, khong phu thuoc ai ket lieu.
+  --
+  -- Truoc day chi nguoi ket lieu duoc tien. Tinh ra thi 3 nguoi moi nguoi
+  -- chi thu duoc 1/3 thu nhap, trong khi gia Linh Can va nang ky nang thi
+  -- TUNG NGUOI tu tra nguyen gia -- va do kho con tang theo so nguoi (EHP
+  -- linh x2.2 khi ba nguoi). Ket qua: solo du 78% so tien can, ba nguoi
+  -- THIEU 41%. Ru ban vao choi la ca ba cung ngheo di.
+  --
+  -- Tra du cho moi nguoi thi kinh te cua tung nguoi giong het solo, dung
+  -- y dinh: do kho tang theo so nguoi, con tui tien thi khong.
+  local amount = bountyOf(S.stage, kind)
+  if CFG.LINHKHI_SHARE_ALL then
+    for i = 1, #S.pids do
+      if S.p[S.pids[i]] ~= nil then payBounty(S.pids[i], amount) end
     end
+  elseif killer ~= nil then
+    local pid = GetPlayerId(GetOwningPlayer(killer))
+    if S.p[pid] ~= nil then payBounty(pid, amount) end
   end
 
   if kind == "boss" then
