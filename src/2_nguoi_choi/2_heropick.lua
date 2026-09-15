@@ -386,6 +386,33 @@ local function startSkillPicking()
   TriggerAddAction(S.skillTrigger, onSkillPick)
 end
 
+-- ---------- Nap truoc model hero ----------
+--
+-- Warcraft nap model cua nhung LOAI unit co mat tren map luc vao game.
+-- Loai nao khong xuat hien o dau thi model nap theo yeu cau -- va model
+-- tu import nap kieu do thi hong: unit hien ra den si, khong loi nao bao.
+--
+-- Do duoc: cung mot H001, con dat san trong World Editor thi co mau, con
+-- tao bang CreateUnit luc chay thi den.
+--
+-- Cach chua: tao mot con moi loai luc khoi dong roi xoa ngay. Engine da
+-- nap model roi thi lan tao sau khong con phai nap theo yeu cau nua.
+local function preloadHeroes()
+  local x, y = API.blockCenter(3, 3)
+  local n = 0
+  for i = 1, #CFG.HEROES do
+    local u = CreateUnit(Player(bj_PLAYER_NEUTRAL_EXTRA), CFG.HEROES[i].id,
+                         x, y, 270.0)
+    if u ~= nil then
+      ShowUnit(u, false)
+      RemoveUnit(u)
+      n = n + 1
+    end
+  end
+  API.trace("heropick: nap truoc model cho " .. n .. "/" .. #CFG.HEROES .. " hero")
+end
+
+API.preloadHeroes     = preloadHeroes
 API.heroesAvailable   = available
 API.heroNameOf        = heroNameOf
 API.heroDef           = heroDef

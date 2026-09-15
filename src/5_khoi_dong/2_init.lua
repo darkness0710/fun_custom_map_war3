@@ -93,6 +93,9 @@ local function bootstrap()
   API.resolveEnemyRegion()
   API.trace("resolveEnemyRegion: xong")
 
+  -- Phai chay TRUOC khi nguoi choi kip chon hero.
+  API.preloadHeroes()
+
   API.startHeroLock()
   API.trace("startHeroLock: xong")
 
