@@ -51,7 +51,11 @@ Thiết kế xong không có nghĩa là cài cùng lúc. Thứ tự đề xuất
 Một thẻ mở ra trống rỗng tệ hơn là chưa có thẻ đó. Chỉ thêm tab khi nội dung của
 nó đã chạy được.
 
-## Thẻ Linh Căn
+## Thẻ Linh Căn — **đã cài**
+
+> Code: [07d_linhcan.lua](../../src/07d_linhcan.lua). Mở bằng `-lc`.
+> Không vẽ được frame thì tự lùi về thông báo chữ, và `-lc up` đột phá
+> thẳng không cần bảng.
 
 ```
 Tu vi hiện tại:  Trúc Cơ  (bậc 3/20)
@@ -66,6 +70,17 @@ Một nút. Mờ đi khi không đủ Linh Khí. Giá lấy từ bảng
 **Nhân vào đâu?** Tăng chỉ số hero trực tiếp — `SetHeroStr/Agi/Int` cộng dồn theo
 bậc. Không đụng tới cấp độ hero, nên `LOCK_HERO_XP` và mốc máu nhà chính không
 phải sửa gì.
+
+> **Không nhân thẳng chỉ số lên ×1.17.** Sát thương hero = *sát thương nền + chỉ
+> số*, nên phần nền làm loãng nhân số: đẩy chỉ số ×19.7 chỉ cho **×10.4** sát
+> thương — thiếu một nửa. Phải giải ngược để bù:
+>
+> ```
+> chiSo(r) = (DMG_BASE + STAT_BASE) × STEP^(r-1) − DMG_BASE
+> ```
+>
+> `CFG.LINHCAN_DMG_BASE` và `LINHCAN_STAT_BASE` phải khớp hero thật trong Object
+> Editor thì nhân số mới đúng. Bảng `-lc` in ra nhân số thực để đối chiếu.
 
 ## Thẻ Kỹ Năng
 

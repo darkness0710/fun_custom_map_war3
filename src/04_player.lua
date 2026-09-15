@@ -17,7 +17,8 @@ local function initPlayers()
        and GetPlayerController(p) == MAP_CONTROL_USER then
       S.p[pid] = { active = true, hero = nil, heroCount = 0,
                    purseGold = 0, purseWood = 0, slots = {},
-                   linhKhiTotal = 0, lkFrac = 0.0 }
+                   linhKhiTotal = 0, lkFrac = 0.0,
+                   linhCan = 1 }
       S.pids[#S.pids + 1] = pid
     end
   end

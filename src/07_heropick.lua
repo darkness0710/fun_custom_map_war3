@@ -91,6 +91,7 @@ local function spawnHero(pid, uid)
   if u ~= nil then
     API.lockHero(u)
     giveAbilities(u, uid)
+    API.linhCanApply(pid, u)   -- giu tu vi khi doi hero
     if CFG.SKILL_MODE == "learn" then
       API.grantSkillPoints(u, CFG.SKILL_POINTS_START)
     end

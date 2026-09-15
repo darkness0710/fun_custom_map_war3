@@ -87,6 +87,7 @@ local function bootstrap()
   API.startHeroLock()
   API.trace("startHeroLock: xong")
 
+  API.startLinhCan()
   API.startWaves()
   API.startHeroFrame()
   API.startSkillFrame()

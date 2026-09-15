@@ -92,6 +92,11 @@ local function onWaveCmd()
   API.msg(pid, CFG.C_GOLD .. "Nhay toi stage " .. n .. "." .. CFG.C_END)
 end
 
+-- "-lc" mo bang Linh Can, "-lc up" dot pha thang khong can bang.
+local function onLinhCanCmd()
+  API.linhCanChat(GetPlayerId(GetTriggerPlayer()), GetEventPlayerChatString())
+end
+
 local function registerEvents()
   local tDeath = CreateTrigger()
   TriggerRegisterAnyUnitEventBJ(tDeath, EVENT_PLAYER_UNIT_DEATH)
@@ -120,6 +125,13 @@ local function registerEvents()
     end
     TriggerAddAction(tWave, onWaveCmd)
   end
+
+  -- Linh Can KHONG phai lenh dev -- no la loi choi, luon dang ky.
+  local tLC = CreateTrigger()
+  for i = 1, #S.pids do
+    TriggerRegisterPlayerChatEvent(tLC, Player(S.pids[i]), "-lc", false)
+  end
+  TriggerAddAction(tLC, onLinhCanCmd)
 
   API.dbg("Trigger da dang ky.")
 end

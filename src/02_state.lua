@@ -35,6 +35,7 @@ S.skillPick   = {}     -- [pid] = { dlg, map, slot }
 S.skillTrigger= nil
 S.sframe      = {}     -- giao dien ky nang, do 07b_skillframe dung
 S.hframe      = {}     -- the chon hero,   do 07c_heroframe dung
+S.lcframe     = {}     -- bang Linh Can,   do 07d_linhcan dung
 S.xpTimer     = nil    -- bo quet khoa hero
 
 -- Dot quai, do 05_wave dung
@@ -142,6 +143,13 @@ API.idToStr = idToStr
 API.trace = trace
 API.msg   = msg
 API.dbg   = dbg
+-- Hieu ung roi tu huy sau khi dien xong.
+local function fx(model, x, y)
+  if model == nil then return end
+  DestroyEffect(AddSpecialEffect(model, x, y))
+end
+
+API.fx    = fx
 API.alive = alive
 API.clamp = clamp
 API.round = round

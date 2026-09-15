@@ -405,3 +405,39 @@ CFG.LINHKHI_MOB_SHARE = 0.60   -- 50 linh chia 60%, tinh anh 40%
 
 CFG.TINHTHACH_BOSS_BASE = 10   -- boss canh gioi r roi BASE + STEP*(r-1)
 CFG.TINHTHACH_BOSS_STEP = 5
+
+-- ============================================================
+--  LINH CAN  --  tu vi cua nguoi choi
+--  docs/02-he-thong/kinh-te.md · bang-nhan-vat.md
+--
+--  Nguon suc manh LON NHAT cua nguoi choi: x20 trong hop dong x967.
+--  Dung chung thang ten voi 20 canh gioi cua phe dich -- nguoi choi va
+--  ke dich tu tien tren cung mot con duong.
+-- ============================================================
+
+CFG.LINHCAN_STEP = 1.17     -- suc manh moi bac. 19 buoc -> x19.7
+
+-- Gia dot pha bac r = BASE x STEP^(r-1).
+-- 1.412 = 1.0319^11 = thu nhap tron mot canh gioi, nen gia luon dang
+-- dung 7,1 wave o MOI bac. Xem kinh-te.md.
+CFG.LINHCAN_COST_BASE = 439.0
+CFG.LINHCAN_COST_STEP = 1.412
+
+-- Hai so de GIAI NGUOC ra chi so can dat.
+--
+-- Nhan thang chi so len x1.17 moi bac la SAI: sat thuong hero =
+-- sat thuong nen + chi so chinh, phan nen lam loang nhan so. Do thang
+-- chi so x19.7 chi cho x10.4 sat thuong -- thieu mot nua.
+--
+--   chiSo(r) = (DMG_BASE + STAT_BASE) x STEP^(r-1) - DMG_BASE
+--
+-- Doi hai so nay cho khop hero that trong Object Editor thi nhan so moi
+-- dung. Bang "-lc" trong game in ra nhan so THUC DO duoc de doi chieu.
+CFG.LINHCAN_DMG_BASE  = 20.0   -- sat thuong hero khi chi so = 0
+CFG.LINHCAN_STAT_BASE = 20.0   -- chi so hero luc bac 1
+
+-- Giao dien bang Linh Can
+CFG.LINHCAN_X = 0.40
+CFG.LINHCAN_Y = 0.42
+CFG.LINHCAN_W = 0.30
+CFG.LINHCAN_H = 0.17
