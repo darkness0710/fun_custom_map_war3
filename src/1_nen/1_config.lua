@@ -439,9 +439,8 @@ CFG.LINHKHI_BASE   = 60.0
 CFG.LINHKHI_GROWTH = 1.0319    -- = 967^(1/219)
 CFG.LINHKHI_MOB_SHARE = 0.60   -- 50 linh chia 60%, tinh anh 40%
 
--- Tien thuong vao MOI nguoi hay chi nguoi ket lieu.
--- PHAI la true: xem giai thich trong 3_tran_dau/2_wave.lua, onMobDeath.
-CFG.LINHKHI_SHARE_ALL = true
+-- Khong co cong tac "chia theo nguoi ket lieu". Da do: cach do lam ba
+-- nguoi choi moi nguoi thieu 41% so tien can. Xem ADR 0013.
 
 -- ---------- Gia nang cap ky nang ----------
 -- Moi bac ky nang trai 2 canh gioi, nen buoc gia = buoc Linh Can binh

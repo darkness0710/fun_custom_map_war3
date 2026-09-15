@@ -88,8 +88,9 @@ kỹ năng thì **từng người tự trả nguyên giá**, còn độ khó l�
 | 3 | 626 729 | 1 055 196 | **−41%** |
 
 Rủ bạn vào chơi là cả ba cùng nghèo đi. Đã đổi thành **trả đủ cho mọi người**
-(`CFG.LINHKHI_SHARE_ALL`): kinh tế mỗi người giống hệt solo, đúng ý định — độ
-khó tăng theo số người, túi tiền thì không.
+— quái thường, tinh anh, boss, cả hai loại tiền, qua một hàm `rewardAll` duy
+nhất. Kinh tế mỗi người giống hệt solo:
+[ADR 0013](../05-quyet-dinh/0013-thuong-chia-deu-cho-moi-nguoi.md).
 
 ## Cái bẫy: giáp không chịu quy tắc ×2
 
@@ -121,19 +122,39 @@ kiểm `BlzSetUnitArmor` có trên bản này không — gõ `-nat` trong game.
 
 Đọc từ `war3map.w3a`:
 
-| ID | Gốc | Là gì | Nút chính mỗi bậc |
-|---|---|---|---|
-| `A001` | `AOsh` Shockwave | chủ động, sát thương | hệ số ×1,03 · hồi chiêu ×0,956 |
-| `A002` | `AHhb` Holy Light | chủ động, hồi máu | lượng hồi ×1,03 · hồi chiêu ×0,956 |
-| `A003` | `AHad` Devotion Aura | bị động, aura giáp | **xem bẫy giáp ở trên** |
-| `A004` | `Aamk` vỏ rỗng | ? | |
-| `A005` | `ACce` | ? | |
-| `A006` | `Aamk` vỏ rỗng "Defend Percent" | bị động, giảm % sát thương | % ×1,08 |
-| `A007` | `AHav` Avatar | chủ động, tăng chỉ số | lượng cộng ×1,03 · hồi chiêu ×0,956 |
+| ID | Gốc | Là gì | Loại số | Nút chính mỗi bậc |
+|---|---|---|---|---|
+| `A001` | `AOsh` Shockwave | chủ động, sát thương | hệ số | ×1,03 · hồi chiêu ×0,956 |
+| `A002` | `AHhb` Holy Light | chủ động, hồi máu | hệ số | ×1,03 · hồi chiêu ×0,956 |
+| `A003` | `AHad` Devotion Aura | bị động, aura giáp | **cộng thẳng** | ⚠ teo dần — xem dưới |
+| `A004` | `Aamk` Attribute Bonus | bị động, cộng cả ba chỉ số | **cộng thẳng** | ⚠ teo dần — xem dưới |
+| `A005` | `ACce` Cleaving Attack | bị động, đánh lan | phần trăm | % ×1,08 |
+| `A006` | `Aamk` vỏ rỗng | bị động, giảm % sát thương | phần trăm | % ×1,08 |
+| `A007` | `AHav` Avatar | chủ động, tăng chỉ số | hệ số | ×1,03 · hồi chiêu ×0,956 |
 
-`A004` là vỏ rỗng chuẩn: Attribute Bonus với cả ba chỉ số bằng 0, `Levels = 10`.
-Không làm gì, nhưng có icon và ô trong command card — hợp hơn Critical Strike đặt
-0% vì nó không có tỉ lệ nào để lỡ kích hoạt.
+### Cộng thẳng thì chết, phần trăm thì sống
+
+Đây là lằn ranh quan trọng nhất của cả bảng. Linh Căn cộng **+770 mỗi chỉ số** ở
+bậc 20. Mọi kỹ năng cộng một lượng **cố định** vào thứ Linh Căn cũng cộng vào đều
+bị nuốt.
+
+`A004` cộng +20 (bậc 1) → +40 (bậc 10), tính theo % chỉ số hero:
+
+| Linh Căn | Chỉ số hero | A004 bậc 1 | A004 bậc 10 |
+|---|---|---|---|
+| bậc 1 | 40 | +50% | **+100%** |
+| bậc 10 | 164 | +12% | +24% |
+| bậc 20 | 790 | +3% | **+5%** |
+
+Kỹ năng vẫn ×2 đúng ngân sách. Nhưng giá trị thực của nó **rơi từ +100% xuống
++5%** — cuối game gần như vô nghĩa. `A003` (aura giáp) y hệt.
+
+`A005` đánh lan và `A006` giảm % sát thương thì **không dính**, vì chúng là phần
+trăm — tự bám theo sát thương và giáp của chính hero.
+
+**Luật:** kỹ năng bị động phải cộng **phần trăm của chính hero**, không cộng số
+cố định. `A003` và `A004` phải viết bằng Lua để làm điều đó — đã đo, bản này
+có đủ native (xem dưới).
 
 ### Giảm % sát thương: trần cứng
 
@@ -141,9 +162,33 @@ Không làm gì, nhưng có icon và ô trong command card — hợp hơn Critic
 ×2; hai nguồn giảm % nhân nhau rất nhanh thành bất tử. Đề xuất bậc 1 = 5%, bậc 10
 = 10% — đúng ×2, và trần 10% thì cộng với mọi thứ khác vẫn an toàn.
 
+## Đã đo: bản 1.31.1 có đủ native cần thiết
+
+Gõ `-nat` trong game:
+
+```
+Su kien sat thuong          : 7/7
+Sua so lieu ability luc CHAY: 8/9   thieu ABILITY_RLF_DAMAGE_HCA1
+Ky nang tu viet             : 5/5
+Chi so hero                 : 5/5
+```
+
+| Nhóm | Mở ra cái gì |
+|---|---|
+| Sát thương 7/7 | Có `EVENT_PLAYER_UNIT_DAMAGING` + `BlzSetEventDamage` → chặn được sát thương **trước khi nó vào máu**. Né đòn và giảm % làm đúng được |
+| Chỉ số hero 5/5 | Có `BlzSetUnitArmor` → aura cộng **% giáp** chạy được, chữa được `A003` |
+| Ability lúc chạy 8/9 | Có `BlzSetAbilityRealLevelField` → **sửa số liệu ability từ Lua lúc chạy** |
+
+Nhóm thứ ba đổi cả kế hoạch sinh file: nếu số liệu đặt được lúc chạy thì
+`war3map.w3a` chỉ cần chứa **vỏ** (tên, icon, ô nút, `Levels`), còn 210 dòng số
+nằm trong bảng Lua — chỉnh cân bằng không cần build lại file nhị phân nào.
+
+> Thiếu `ABILITY_RLF_DAMAGE_HCA1` chỉ là **một hằng số tên trường**, không phải
+> hàm. Các hàm đều có. Phải dò xem bản này dùng tên hằng nào — và còn **chưa
+> đo** liệu sửa xong có ăn ngay hay phải `IncUnitAbilityLevel` để làm mới.
+
 ## Chưa làm
 
-- `A004` và `A005` chưa rõ định làm skill gì. `ACce` chưa tra được là ability nào.
 - Chưa có con số gốc cho từng skill ở bậc 1 (sát thương bao nhiêu, hồi bao nhiêu).
   Phải suy từ DPS hero ở stage 1 — mà [con số đó vẫn là phỏng đoán](duong-cong-suc-manh.md).
 - Hvwd và Hkal chưa gán nút chỉnh.

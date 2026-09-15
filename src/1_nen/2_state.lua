@@ -46,6 +46,7 @@ S.xpTimer     = nil    -- bo quet khoa hero
 -- Dot quai, do 05_wave dung
 S.stage      = 0       -- 1..220, MOT bien duy nhat
 S.mobs       = {}      -- [unit] = "mob" | "elite" | "boss"
+S.mobStage   = {}      -- [unit] = stage luc SINH, de tra thuong dung gia
 S.alive      = 0
 S.wave       = {}      -- { players, spawnFail } cua wave hien tai
 S.waveTimer  = nil

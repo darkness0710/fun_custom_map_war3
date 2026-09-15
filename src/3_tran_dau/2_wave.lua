@@ -151,6 +151,10 @@ local function spawnOne(stage, realm, kind)
 
   applyStats(u, ehp, dmg, armor)
   S.mobs[u] = kind
+  -- Ghi lai stage luc SINH, khong dung stage hien tai luc chet.
+  -- Quai don lai qua nhieu wave (do duoc: stage 6 con 174 con song),
+  -- nen tra theo stage hien tai la tu thuong them cho viec giet cham.
+  S.mobStage[u] = stage
   S.alive = S.alive + 1
   sendToHouse(u)
   return u
@@ -283,6 +287,36 @@ local function tick()
   end
 end
 
+-- ---------- Phat thuong ----------
+--
+-- MOI phan thuong di qua day. Quai thuong, tinh anh, boss -- ca hai loai
+-- tien -- deu chia deu cho MOI nguoi choi, khong phu thuoc ai ket lieu.
+-- Xem ADR 0013.
+--
+-- Mot cho duy nhat, vi truoc day Linh Khi va Tinh Thach moi cai mot vong
+-- lap rieng: thu them mot loai thuong nua la quen mot cho.
+local function rewardAll(stage, kind)
+  local lk = bountyOf(stage, kind)
+  local realm = decode(stage)
+  local tt = 0
+  if kind == "boss" then
+    tt = CFG.TINHTHACH_BOSS_BASE + CFG.TINHTHACH_BOSS_STEP * (realm - 1)
+  end
+
+  for i = 1, #S.pids do
+    local pid = S.pids[i]
+    if S.p[pid] ~= nil and S.p[pid].active then
+      payBounty(pid, lk)
+      if tt > 0 then API.addTinhThach(pid, tt) end
+    end
+  end
+
+  if kind == "boss" then
+    API.msg(nil, CFG.C_JADE .. "Ha duoc boss " .. realmName(realm) ..
+      ". Moi nguoi nhan " .. tt .. " Tinh Thach." .. CFG.C_END)
+  end
+end
+
 -- ---------- Goi tu 08_events khi mot con chet ----------
 
 local function onMobDeath(u, killer)
@@ -293,33 +327,10 @@ local function onMobDeath(u, killer)
   S.alive = S.alive - 1
   if S.alive < 0 then S.alive = 0 end
 
-  -- Tien thuong vao MOI nguoi, khong chia, khong phu thuoc ai ket lieu.
-  --
-  -- Truoc day chi nguoi ket lieu duoc tien. Tinh ra thi 3 nguoi moi nguoi
-  -- chi thu duoc 1/3 thu nhap, trong khi gia Linh Can va nang ky nang thi
-  -- TUNG NGUOI tu tra nguyen gia -- va do kho con tang theo so nguoi (EHP
-  -- linh x2.2 khi ba nguoi). Ket qua: solo du 78% so tien can, ba nguoi
-  -- THIEU 41%. Ru ban vao choi la ca ba cung ngheo di.
-  --
-  -- Tra du cho moi nguoi thi kinh te cua tung nguoi giong het solo, dung
-  -- y dinh: do kho tang theo so nguoi, con tui tien thi khong.
-  local amount = bountyOf(S.stage, kind)
-  if CFG.LINHKHI_SHARE_ALL then
-    for i = 1, #S.pids do
-      if S.p[S.pids[i]] ~= nil then payBounty(S.pids[i], amount) end
-    end
-  elseif killer ~= nil then
-    local pid = GetPlayerId(GetOwningPlayer(killer))
-    if S.p[pid] ~= nil then payBounty(pid, amount) end
-  end
+  local stage = S.mobStage[u] or S.stage
+  S.mobStage[u] = nil
 
-  if kind == "boss" then
-    local realm = decode(S.stage)
-    local tt = CFG.TINHTHACH_BOSS_BASE + CFG.TINHTHACH_BOSS_STEP * (realm - 1)
-    for i = 1, #S.pids do API.addTinhThach(S.pids[i], tt) end
-    API.msg(nil, CFG.C_JADE .. "Ha duoc boss " .. realmName(realm) ..
-      ". Moi nguoi nhan " .. tt .. " Tinh Thach." .. CFG.C_END)
-  end
+  rewardAll(stage, kind)
 end
 
 -- ---------- Khoi dong ----------
@@ -327,6 +338,7 @@ end
 local function startWaves()
   S.stage = 0
   S.mobs  = {}
+  S.mobStage = {}
   S.alive = 0
   S.wave  = { players = 1, spawnFail = 0 }
 
