@@ -198,6 +198,30 @@ báo to nếu có:
 > **Dấu hiệu nhận ra:** file vết không đổi giờ sau khi chạy game. So
 > `DarknessTrace.txt` với giờ bạn vừa vào map — cũ hơn là code không chạy dòng nào.
 
+### Cách kiểm dứt điểm
+
+World Editor đóng gói bản test ra `%TEMP%\WorldEditTestMap.w3x`. Mở file đó ra
+xem có code của mình trong đó không:
+
+```
+grep -ac "TUTIEN BUILD" "$TEMP/WorldEditTestMap.w3x"
+```
+
+Đã đo một lần: file WE đóng gói **1,27 MB** trong khi thư mục map trên đĩa
+**3,78 MB** (có model 1,5 MB). Không chứa cả code lẫn model — bằng chứng dứt
+điểm rằng Ctrl+F9 đóng gói bản trong bộ nhớ.
+
+### Đường vòng: chạy thẳng, không qua World Editor
+
+```
+python build.py --run
+python build.py --run --wc3 "D:\Warcraft III_64\Warcraft III.exe"
+```
+
+Warcraft đọc **thư mục map trên đĩa**, nên không có khâu bộ nhớ của World
+Editor ở giữa. Đây là cách test khi chỉ sửa code — chỉ cần World Editor khi sửa
+địa hình hoặc Object Editor.
+
 ## Tắt riêng chữ bay
 
 Chữ bay có công tắc riêng, không theo `CFG.DEBUG`:

@@ -78,6 +78,41 @@ def find_map(explicit):
     return found[0]
 
 
+WC3_CANDIDATES = [
+    os.path.join("D:" + os.sep, "Warcraft III", "x86_64", "Warcraft III.exe"),
+    os.path.join("C:" + os.sep, "Program Files (x86)", "Warcraft III",
+                 "x86_64", "Warcraft III.exe"),
+    os.path.join("C:" + os.sep, "Program Files", "Warcraft III",
+                 "x86_64", "Warcraft III.exe"),
+]
+
+
+def find_wc3(explicit):
+    for p in ([explicit] if explicit else []) + WC3_CANDIDATES:
+        if p and os.path.isfile(p):
+            return p
+    return None
+
+
+def run_map(map_dir, explicit):
+    """Chay thang map bang Warcraft III, khong qua World Editor.
+
+    Ctrl+F9 dong goi ban map trong BO NHO cua World Editor, khong phai
+    ban tren dia. Sua file bang script xong ma khong dong-mo lai map thi
+    no dong goi ban cu -- do la ly do mat ba luot test lien.
+
+    Chay thang thi khong co khau do: Warcraft doc thu muc map tren dia.
+    """
+    exe = find_wc3(explicit)
+    if exe is None:
+        print("[loi] khong thay Warcraft III.exe. Dung --wc3 <duong dan> de chi dinh.")
+        return 1
+    print("[run] " + exe)
+    print("[run] " + map_dir)
+    subprocess.Popen([exe, "-launch", "-loadfile", map_dir])
+    return 0
+
+
 def world_editor_running():
     """World Editor co dang mo khong.
 
@@ -497,6 +532,9 @@ def main():
     ap.add_argument("--no-backup", action="store_true", help="khong luu ban truoc do")
     ap.add_argument("--lang", choices=["en", "vi"],
                     help="tieng hien cho nguoi choi; ghi de CFG.LANG")
+    ap.add_argument("--run", action="store_true",
+                    help="build xong chay thang map, khong qua World Editor")
+    ap.add_argument("--wc3", help="duong dan Warcraft III.exe neu tu tim khong ra")
     args = ap.parse_args()
 
     map_dir = find_map(args.map)
@@ -574,6 +612,9 @@ def main():
     print("[ok] cu phap : %s" % note)
     print("[ok] ghi     : %s -- %s, tong %d dong"
           % (os.path.relpath(target, ROOT), label, final.count("\n")))
+    if args.run:
+        return run_map(map_dir, args.wc3)
+
     if world_editor_running():
         print("")
         print("[!] WORLD EDITOR DANG MO -- DONG MAP ROI MO LAI TRUOC KHI Ctrl+F9.")
