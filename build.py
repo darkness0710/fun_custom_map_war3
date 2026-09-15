@@ -101,8 +101,20 @@ def pack_map(map_dir):
     out = os.path.join(BAK_DIR, os.path.basename(map_dir))
     os.makedirs(BAK_DIR, exist_ok=True)
     n, size = w3mpq.pack(map_dir, out)
-    print("[ok] dong goi: %s -- %d file, %s byte"
-          % (os.path.relpath(out, ROOT), n, format(size, ",")))
+    print("[ok] dong goi: %d file, %s byte" % (n, format(size, ",")))
+    print("[ok] FILE MAP : %s" % out)
+
+    # Chep them vao thu muc Maps de hien trong danh sach map cua game.
+    maps = os.path.join(os.path.expanduser("~"), "Documents", "Warcraft III",
+                        "Maps")
+    if os.path.isdir(maps):
+        dest = os.path.join(maps, os.path.basename(map_dir))
+        try:
+            shutil.copyfile(out, dest)
+            print("[ok] va chep : %s" % dest)
+            print("            (mo Warcraft -> Single Player -> Custom Game)")
+        except Exception as e:
+            print("[canh bao] khong chep duoc vao Maps: %s" % e)
     return out
 
 
@@ -759,6 +771,7 @@ def main():
 
     if args.pack and not args.run:
         pack_map(map_dir)
+        return 0
 
     if args.run:
         return run_map(map_dir, args.wc3)
