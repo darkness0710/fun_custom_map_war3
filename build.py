@@ -20,6 +20,7 @@ da chen lan truoc (nhan dien bang dong marker) roi chen lai tu dau.
 """
 
 import argparse
+import struct
 import datetime
 import os
 import re
@@ -111,6 +112,46 @@ def run_map(map_dir, explicit):
     print("[run] " + map_dir)
     subprocess.Popen([exe, "-launch", "-loadfile", map_dir])
     return 0
+
+
+def write_wct(map_dir, block):
+    """Chen khoi code vao o "Custom Script" cua World Editor.
+
+    DAY MOI LA CHO DUNG. World Editor SINH LAI war3map.lua moi lan Save
+    -- chen vao do thi lan Save nao cung mat, va vong lap "build -> Save
+    -> mat -> build lai" khong bao gio het.
+
+    war3map.wct la noi World Editor luu doan script tu viet cua map, va
+    no CHEP doan do vao war3map.lua moi lan sinh. Dat code o day thi Save
+    khong xoa nua -- no tai tao.
+
+    Dinh dang (do tu file World Editor tu ghi):
+
+        uint32  phien ban = 0x80000004
+        int32   1
+        cstring doan custom script      <- chen o day
+        int32   so trigger co text rieng = 0
+
+    Tra ve (da ghi chua, ghi chu).
+    """
+    p = os.path.join(map_dir, "war3map.wct")
+    if not os.path.isfile(p):
+        return False, "khong thay war3map.wct"
+
+    raw = open(p, "rb").read()
+    if len(raw) < 12:
+        return False, "war3map.wct qua ngan"
+
+    ver, one = struct.unpack_from("<Ii", raw, 0)
+    end = raw.find(bytes(1), 8)
+    if end < 0:
+        return False, "war3map.wct: khong thay ket chuoi"
+    duoi = raw[end + 1:]
+
+    out = struct.pack("<Ii", ver, one) + block.encode("utf-8") + bytes(1) + duoi
+    with open(p, "wb") as f:
+        f.write(out)
+    return True, "war3map.wct -- %d byte" % len(out)
 
 
 def world_editor_running():
@@ -571,6 +612,8 @@ def main():
     ap.add_argument("--run", action="store_true",
                     help="build xong chay thang map, khong qua World Editor")
     ap.add_argument("--wc3", help="duong dan Warcraft III.exe neu tu tim khong ra")
+    ap.add_argument("--no-wct", action="store_true",
+                    help="khong chen vao o Custom Script cua World Editor")
     args = ap.parse_args()
 
     map_dir = find_map(args.map)
@@ -648,6 +691,12 @@ def main():
     print("[ok] cu phap : %s" % note)
     print("[ok] ghi     : %s -- %s, tong %d dong"
           % (os.path.relpath(target, ROOT), label, final.count("\n")))
+    # Chen them vao o Custom Script cua World Editor. Day moi la cho
+    # song sot qua moi lan Save -- xem write_wct.
+    if not args.no_wct:
+        ok, note = write_wct(map_dir, build_block(sources, args.lang))
+        print("[%s] wct     : %s" % ("ok" if ok else "canh bao", note))
+
     if args.run:
         return run_map(map_dir, args.wc3)
 

@@ -145,12 +145,28 @@ API.bootstrap  = bootstrap
 API.trace("chunk: da nap, dang moc InitGlobals")
 
 do
+  local function chay()
+    TimerStart(CreateTimer(), 0.00, false, function()
+      DestroyTimer(GetExpiredTimer())
+      bootstrap()   -- tu chan neu da chay roi (S.running)
+    end)
+  end
+
+  -- HAI DUONG, chu khong mot.
+  --
+  -- Khi code duoc nhet vao war3map.wct (o custom script cua World
+  -- Editor), World Editor quyet dinh dat no o dau trong war3map.lua --
+  -- va no co the dat TRUOC "function InitGlobals()". Luc do
+  -- prevInitGlobals bat duoc nil, roi dinh nghia that cua InitGlobals
+  -- de len ban thay the cua ta: moc mat, khong bao gi.
+  --
+  -- Nen ngoai moc do con hen thang mot timer ngay luc nap chunk. Cai
+  -- nao toi truoc thi chay, bootstrap tu chan lan thu hai.
   local prevInitGlobals = InitGlobals
   InitGlobals = function()
     if prevInitGlobals ~= nil then prevInitGlobals() end
-    TimerStart(CreateTimer(), 0.00, false, function()
-      DestroyTimer(GetExpiredTimer())
-      bootstrap()
-    end)
+    chay()
   end
+
+  chay()
 end
