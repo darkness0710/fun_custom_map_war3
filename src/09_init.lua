@@ -87,7 +87,18 @@ local function bootstrap()
   API.startHeroLock()
   API.trace("startHeroLock: xong")
 
+  -- Cac he dang ky the TRUOC, roi bang moi dung -- bang can biet co
+  -- bao nhieu the de chia be ngang.
   API.startLinhCan()
+  API.panelAddTab(API.panelPlaceholder("Ky Nang",
+    "Can ability trong Object Editor truoc. Xem docs/02-he-thong/thiet-ke-hero.md"))
+  API.panelAddTab(API.panelPlaceholder("Trang Bi",
+    "Can mon do trong Object Editor truoc."))
+  API.panelAddTab(API.panelPlaceholder("Phap Bao",
+    "Mua bang Tinh Thach tu boss. Chua co mon nao."))
+  API.startPanel()
+
+  API.startFct()
   API.startWaves()
   API.startHeroFrame()
   API.startSkillFrame()

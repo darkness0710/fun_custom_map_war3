@@ -103,10 +103,16 @@ CFG.HOUSE_INVULNERABLE = false
 -- Nha chinh chet la ca ba nguoi choi thua.
 CFG.HOUSE_DEATH_ENDS_GAME = true
 
--- false = nguoi choi khong chon duoc nha chinh. Nha la muc tieu phai
--- giu, khong phai quan de dieu khien -- lot vao Ctrl+A roi lo ra lenh
--- cho no la hong.
-CFG.HOUSE_SELECTABLE = false
+-- true = chon duoc nha chinh de XEM chi so.
+--
+-- Truoc day dat false de chan Ctrl+A. Nhung thu chan that su la quyen
+-- DIEU KHIEN, va cai do da duoc chan boi quyen so huu: nha thuoc slot
+-- rieng, khong chia quyen dieu khien (04_player). Bo chon thu cong chi
+-- lam khong xem duoc chi so -- hai nhieu hon loi.
+--
+-- Neu Ctrl+A van gom nha vao thi dat lai false va bao, luc do can cach
+-- khac chu khong phai cach nay.
+CFG.HOUSE_SELECTABLE = true
 
 -- ---------- Khoa hero: kinh nghiem & ky nang ----------
 -- Khong hero nao tren map duoc len cap: nha chinh, hero nguoi choi, va
@@ -365,7 +371,7 @@ CFG.ARMOR_DR_PER_POINT  = 0.06   -- cong thuc giap cua Warcraft III
 
 CFG.ELITE_EHP = 10.0
 CFG.ELITE_DMG = 2.5
-CFG.ELITE_SCALE = 1.6
+CFG.ELITE_SCALE = 3.2   -- gap doi 1.6 cu: tinh anh phai nhin ra ngay
 CFG.BOSS_EHP  = 80.0
 CFG.BOSS_DMG  = 3.0
 CFG.BOSS_SCALE = 2.2
@@ -445,8 +451,22 @@ CFG.LINHCAN_COST_STEP = 1.412
 CFG.LINHCAN_DMG_BASE  = 20.0   -- sat thuong hero khi chi so = 0
 CFG.LINHCAN_STAT_BASE = 20.0   -- chi so hero luc bac 1
 
--- Giao dien bang Linh Can
-CFG.LINHCAN_X = 0.40
-CFG.LINHCAN_Y = 0.42
-CFG.LINHCAN_W = 0.32
-CFG.LINHCAN_H = 0.27
+-- ---------- Chu bay (floating combat text) ----------
+-- Warcraft III chi cho ~100 text tag ton tai cung luc. Mot wave 50 con,
+-- ve moi don danh mot chu la vai giay sau dat tran va TU DO khong con
+-- chu nao hien nua. Nen sat thuong duoc cong don roi moi ve.
+CFG.FCT_ENABLED   = true
+CFG.FCT_SHOW_GOLD = true
+CFG.FCT_FLUSH     = 0.40    -- giay gom sat thuong truoc khi ve
+CFG.FCT_MAX_TAGS  = 12      -- toi da bao nhieu chu moi lan ve
+CFG.FCT_MIN       = 1.0     -- duoi nguong nay khong ve
+CFG.FCT_SIZE      = 0.022
+CFG.FCT_HEIGHT    = 16.0
+CFG.FCT_RISE      = 0.045
+CFG.FCT_LIFE      = 1.4
+
+-- Giao dien bang nhan vat (phim E). Bon he dung chung khung nay.
+CFG.PANEL_X = 0.40
+CFG.PANEL_Y = 0.40
+CFG.PANEL_W = 0.34
+CFG.PANEL_H = 0.30

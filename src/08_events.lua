@@ -109,7 +109,7 @@ local function onMoneyCmd()
     API.addLinhKhi(pid, n)
     API.msg(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " linh khi -> " ..
       API.num(API.getLinhKhi(pid)) .. CFG.C_END)
-    API.linhCanRefresh(pid)
+    API.panelRefresh(pid)
     return
   end
 
@@ -162,12 +162,21 @@ local function registerEvents()
     TriggerAddAction(tMoney, onMoneyCmd)
   end
 
-  -- Linh Can KHONG phai lenh dev -- no la loi choi, luon dang ky.
+  -- Loi choi, khong phai lenh dev -- luon dang ky.
   local tLC = CreateTrigger()
   for i = 1, #S.pids do
     TriggerRegisterPlayerChatEvent(tLC, Player(S.pids[i]), "-lc", false)
   end
   TriggerAddAction(tLC, onLinhCanCmd)
+
+  -- "-c" mo bang nhan vat, duong lui neu phim E khong gan duoc.
+  local tPanel = CreateTrigger()
+  for i = 1, #S.pids do
+    TriggerRegisterPlayerChatEvent(tPanel, Player(S.pids[i]), "-c", true)
+  end
+  TriggerAddAction(tPanel, function()
+    API.panelToggle(GetPlayerId(GetTriggerPlayer()))
+  end)
 
   API.dbg("Trigger da dang ky.")
 end

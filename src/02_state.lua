@@ -35,7 +35,11 @@ S.skillPick   = {}     -- [pid] = { dlg, map, slot }
 S.skillTrigger= nil
 S.sframe      = {}     -- giao dien ky nang, do 07b_skillframe dung
 S.hframe      = {}     -- the chon hero,   do 07c_heroframe dung
-S.lcframe     = {}     -- bang Linh Can,   do 07d_linhcan dung
+S.panel       = { tabs = {}, byPid = {}, trig = nil }  -- bang phim E, 07e
+S.lcTabIndex  = nil    -- so thu tu the Linh Can trong bang
+S.lcSyncTrig  = nil
+S.fct         = { pending = {}, count = 0 }   -- chu bay, 08b
+S.fctTimer    = nil
 S.keyBound    = false  -- gan duoc phim E khong
 S.xpTimer     = nil    -- bo quet khoa hero
 

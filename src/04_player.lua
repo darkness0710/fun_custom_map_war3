@@ -18,7 +18,7 @@ local function initPlayers()
       S.p[pid] = { active = true, hero = nil, heroCount = 0,
                    purseGold = 0, purseWood = 0, slots = {},
                    linhKhiTotal = 0, lkFrac = 0.0,
-                   linhCan = 1 }
+                   linhCan = 1, fctGold = 0 }
       S.pids[#S.pids + 1] = pid
     end
   end
@@ -227,6 +227,7 @@ local function addLinhKhi(pid, amount)
   SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, cur + amount)
   local d = S.p[pid]
   if d ~= nil then d.linhKhiTotal = (d.linhKhiTotal or 0) + amount end
+  if amount > 0 then API.fctOnLinhKhi(pid, amount) end
 end
 
 local function getLinhKhi(pid)
