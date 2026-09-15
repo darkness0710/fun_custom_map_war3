@@ -304,7 +304,12 @@ end
 -- Khong goi thang onWaveTimer(): lam vay thi bo dem cu van chay va mot
 -- luc nua lai no them mot dot nua. Phai dung no truoc.
 local function waveNow()
-  if not S.running or S.waveTimer == nil then return false end
+  if not S.running or S.waveTimer == nil then
+    API.trace("waveNow: TU CHOI -- running=" .. tostring(S.running) ..
+              " timer=" .. tostring(S.waveTimer ~= nil))
+    return false
+  end
+  API.trace("waveNow: keo dot ke tiep (stage hien tai " .. S.stage .. ")")
   if S.waveDlg ~= nil then TimerDialogDisplay(S.waveDlg, true) end
   PauseTimer(S.waveTimer)
   TimerStart(S.waveTimer, 0.02, false, onWaveTimer)

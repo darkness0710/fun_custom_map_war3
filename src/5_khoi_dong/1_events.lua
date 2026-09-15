@@ -178,10 +178,14 @@ local function registerEvents()
   do
     local tNext = CreateTrigger()
     for i = 1, #S.pids do
-      TriggerRegisterPlayerChatEvent(tNext, Player(S.pids[i]), "-next", true)
+      -- false = khop TIEN TO. Voi true thi go du mot dau cach thua la
+      -- khong khop, va khong khop thi im lang hoan toan.
+      TriggerRegisterPlayerChatEvent(tNext, Player(S.pids[i]), "-next", false)
     end
     TriggerAddAction(tNext, function()
       local pid = GetPlayerId(GetTriggerPlayer())
+      API.trace("-next: pid " .. pid .. ", song=" .. S.alive ..
+                ", stage=" .. S.stage)
       -- Chi goi som duoc khi da don sach. Cho phep goi som luc con quai
       -- la cho nguoi choi bo qua phan kho cua wave nay va nhan tien cua
       -- wave sau -- pha dung cai duong cong dang giu ca van.
