@@ -112,6 +112,7 @@ docs/
      0013-thuong-chia-deu-cho-moi-nguoi.md
   06-object-editor/
      sua-va-clone-ability.md  Đọc/ghi war3map.w3a bằng script, mã trường đã đo
+     import-model.md         Import model/texture bằng script, bẫy World Editor giữ bộ nhớ
   mau/                   Mẫu để copy khi viết tài liệu mới
      he-thong.md
      quyet-dinh.md

@@ -184,8 +184,19 @@ Vào map mà im lìm, không thấy dòng vàng `[build x.y.z] code da chay.` �
 chắc chắn là quên build. Đã dính nhiều lần.
 
 **World Editor cũng giữ bản map trong bộ nhớ nó.** Nếu WE mở map suốt buổi mà
-`build.py` sửa file trên đĩa, có lúc Ctrl+F9 đóng gói bản cũ. Nghi ngờ thì đóng
-map trong WE rồi mở lại.
+script sửa file trên đĩa, Ctrl+F9 đóng gói **bản cũ trong bộ nhớ** — vào game
+không thấy gì đổi, không lỗi nào báo, file vết không được ghi mới.
+
+Đã cắn hai lần. Lần thứ hai mất cả buổi đi tìm lỗi trong code trong khi code
+hoàn toàn đúng. Nên `build.py` giờ **dò xem World Editor có đang chạy không** và
+báo to nếu có:
+
+```
+[!] WORLD EDITOR DANG MO -- DONG MAP ROI MO LAI TRUOC KHI Ctrl+F9.
+```
+
+> **Dấu hiệu nhận ra:** file vết không đổi giờ sau khi chạy game. So
+> `DarknessTrace.txt` với giờ bạn vừa vào map — cũ hơn là code không chạy dòng nào.
 
 ## Tắt riêng chữ bay
 

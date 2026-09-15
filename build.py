@@ -78,6 +78,23 @@ def find_map(explicit):
     return found[0]
 
 
+def world_editor_running():
+    """World Editor co dang mo khong.
+
+    No giu ban map trong bo nho no. Sua file tren dia xong ma Ctrl+F9
+    ngay thi World Editor dong goi ban CU -- vao game khong thay gi doi,
+    va khong co loi nao bao. Da dinh hai lan; lan thu hai mat mot buoi
+    di tim loi trong code trong khi code hoan toan dung.
+    """
+    try:
+        out = subprocess.check_output(
+            ["tasklist", "/FI", "IMAGENAME eq World Editor.exe"],
+            stderr=subprocess.DEVNULL)
+        return b"World Editor.exe" in out
+    except Exception:
+        return False   # khong doan duoc thi im lang, dung canh bao bua
+
+
 def part_key(name):
     """Mot doan duong dan -> khoa sap xep. Co so dau ten thi sap theo so."""
     m = re.match(r"^(\d+)", name)
@@ -557,7 +574,15 @@ def main():
     print("[ok] cu phap : %s" % note)
     print("[ok] ghi     : %s -- %s, tong %d dong"
           % (os.path.relpath(target, ROOT), label, final.count("\n")))
-    print("[ok] Gio bam Ctrl+F9 trong World Editor de test.")
+    if world_editor_running():
+        print("")
+        print("[!] WORLD EDITOR DANG MO -- DONG MAP ROI MO LAI TRUOC KHI Ctrl+F9.")
+        print("    World Editor giu ban map trong bo nho no. File tren dia vua doi,")
+        print("    nhung Ctrl+F9 se dong goi ban CU trong bo nho -- vao game khong")
+        print("    thay gi doi, va KHONG co loi nao bao.")
+        print("")
+    else:
+        print("[ok] Gio bam Ctrl+F9 trong World Editor de test.")
 
 
 if __name__ == "__main__":
