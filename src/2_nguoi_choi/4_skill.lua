@@ -104,14 +104,19 @@ local function pctAt(sk, level)
   return (sk.pct or 0) * CFG.SKILL_PASSIVE_STEP ^ (level - 1)
 end
 
+local function manaAt(sk, level)
+  if sk.mana == nil or sk.mana <= 0 then return 0 end
+  return math.floor(sk.mana * CFG.SKILL_MANA_STEP ^ (level - 1) + 0.5)
+end
+
 -- Chi so cao nhat cua hero. Dung CHUNG cho moi skill, nen doi hero hay
 -- doi trang bi deu khong lam skill nao bi bo lai.
 local function topStat(u)
   if u == nil then return 0 end
   local s, a, i = GetHeroStr(u, true), GetHeroAgi(u, true), GetHeroInt(u, true)
-  if s >= a and s >= i then return s end
-  if a >= i then return a end
-  return i
+  if s >= a and s >= i then return s, "str" end
+  if a >= i then return a, "agi" end
+  return i, "int"
 end
 
 -- Sat thuong/hoi mau cua mot skill. Day la ham ma cac skill se goi khi
@@ -126,8 +131,23 @@ end
 local function applyLevel(pid, sk, level)
   local d = S.p[pid]
   if d == nil or d.hero == nil then return end
-  if GetUnitAbilityLevel(d.hero, sk.id) > 0 then
-    SetUnitAbilityLevel(d.hero, sk.id, level)
+  if GetUnitAbilityLevel(d.hero, sk.id) <= 0 then return end
+
+  SetUnitAbilityLevel(d.hero, sk.id, level)
+
+  -- Mana va hoi chieu dat TU LUA, de o Object Editor thi chinh can bang
+  -- phai mo World Editor. Ca hai native nay deu co tren 1.31.1 (-nat).
+  -- Dat cho MOI bac, khong chi bac hien tai: unit nho bac nao thi doc
+  -- bac do, va ta khong biet no se nhay len bac nao truoc khi ta kip
+  -- goi lai.
+  local tran = maxOf(sk.id)
+  for lv = 1, tran do
+    if BlzSetUnitAbilityManaCost ~= nil and sk.mana ~= nil then
+      BlzSetUnitAbilityManaCost(d.hero, sk.id, lv - 1, manaAt(sk, lv))
+    end
+    if BlzSetUnitAbilityCooldown ~= nil and sk.cd ~= nil and sk.cd > 0 then
+      BlzSetUnitAbilityCooldown(d.hero, sk.id, lv - 1, cdAt(sk, lv))
+    end
   end
 end
 
@@ -235,8 +255,18 @@ local function tabRows(pid)
 
     local dong = CFG.C_GOLD .. API.pick(sk) .. CFG.C_END .. bac ..
                  "   " .. CFG.C_JADE .. fmt(sk, lv) .. CFG.C_END
+    if sk.heSo ~= nil and sk.heSo > 0 then
+      -- Ghi ro dang an theo chi so nao. Cong thuc lay chi so CAO NHAT,
+      -- ma nguoi choi khong co cach nao biet do la cai nao neu khong noi.
+      local _, ten = topStat(S.p[pid] and S.p[pid].hero)
+      dong = dong .. CFG.C_GREY .. " (" .. API.t("stat_" .. ten) .. ")" .. CFG.C_END
+    end
     if sk.cd ~= nil and sk.cd > 0 then
       dong = dong .. CFG.C_GREY .. string.format("  %s %.1fs", API.t("panel_cd"), cdAt(sk, lv)) .. CFG.C_END
+    end
+    if manaAt(sk, lv) > 0 then
+      dong = dong .. CFG.C_GREY .. "  " .. API.t("panel_mana") .. " " ..
+             manaAt(sk, lv) .. CFG.C_END
     end
     if gia == nil then
       dong = dong .. CFG.C_GREY .. "   " .. API.t("panel_max") .. CFG.C_END
@@ -340,6 +370,7 @@ API.skillDamage  = skillDamage
 API.skillHeSo    = heSoAt
 API.skillCd      = cdAt
 API.skillPct     = pctAt
+API.skillMana    = manaAt
 API.skillTopStat = topStat
 API.skillApply   = applyToHero
 API.startSkills  = startSkills

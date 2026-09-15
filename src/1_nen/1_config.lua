@@ -41,6 +41,10 @@ CFG.DEV_COMMANDS = true
 CFG.TRACE      = true
 CFG.TRACE_FILE = "DarknessTrace.txt"
 
+-- "-nat <chu>" liet ke toi da bao nhieu hang so ability moi lan.
+-- Cao qua thi ngap chat va tran tran text tag.
+CFG.NAT_FIELD_MAX = 20
+
 -- ---------- Dong bo nhieu nguoi choi ----------
 --
 -- Bam nut frame chi no tren may nguoi bam. Doi trang thai game ngay o do
@@ -302,7 +306,7 @@ CFG.REVEAL_MAP = true
 -- "dialog" popup chu cua Warcraft III -- xau hon nhung chac chan chay
 CFG.HERO_PICK_MODE = "frame"
 
-CFG.PICK_TITLE = "Chon hero cua ban"
+-- CFG.PICK_TITLE da chuyen sang 6_lang.lua, khoa "pick_title".
 
 -- Kich thuoc the chon hero. Toa do man hinh: X 0.0..0.8, Y 0.0..0.6.
 CFG.CARD_W    = 0.115   -- be ngang mot the
@@ -508,13 +512,13 @@ CFG.SKILLS[id('H001')] = {
   { id = id('A005'), ten = "Chem Lan", en = "Cleaving Blow",   loai = "bidong",  pct = 0.20,
     mota = "Don danh van %s sat thuong sang muc tieu ben canh.",
     mota_en = "Attacks splash %s damage to nearby targets." },
-  { id = id('A001'), ten = "Chuong", en = "Palm Strike",       loai = "chudong", heSo = 1.32, cd = 8.0,
+  { id = id('A001'), ten = "Chuong", en = "Palm Strike",       loai = "chudong", heSo = 1.32, cd = 8.0, mana = 25,
     mota = "Gay %s sat thuong len mot duong thang.",
     mota_en = "Deals %s damage in a line." },
 
   -- Nam cai duoi mua bang Linh Khi, THU TU NAO CUNG DUOC. Gia phu thuoc
   -- da mo bao nhieu cai, khong phu thuoc mo cai nao.
-  { id = id('A002'), ten = "Ho The", en = "Guarding Light",    loai = "chudong", heSo = 2.20, cd = 10.0,
+  { id = id('A002'), ten = "Ho The", en = "Guarding Light",    loai = "chudong", heSo = 2.20, cd = 10.0, mana = 30,
     mota = "Hoi %s mau cho ban than hoac dong doi.",
     mota_en = "Heals %s to yourself or an ally." },
   { id = id('A003'), ten = "Hieu Lenh", en = "Rallying Order", loai = "aura",    pct = 0.15,
@@ -526,7 +530,7 @@ CFG.SKILLS[id('H001')] = {
   { id = id('A006'), ten = "Da Sat", en = "Ironhide",          loai = "bidong",  pct = 0.05,
     mota = "Giam %s sat thuong nhan vao. Tran cung 10%%.",
     mota_en = "Reduces incoming damage by %s. Hard cap 10%%." },
-  { id = id('A007'), ten = "Bat Hoai", en = "Indestructible",  loai = "chudong", heSo = 0.0, cd = 60.0,
+  { id = id('A007'), ten = "Bat Hoai", en = "Indestructible",  loai = "chudong", heSo = 0.0, cd = 60.0, mana = 60,
     mota = "Tang manh giap va mau trong thoi gian ngan.",
     mota_en = "Greatly raises armor and health for a short time." },
 }
@@ -545,6 +549,15 @@ CFG.SKILL_DATA_LIVE = false
 CFG.SKILL_DMG_STEP  = 1.0322   -- 1.33 sau 9 lan nang
 CFG.SKILL_CD_STEP   = 0.9560   -- 0.667 sau 9 lan nang -> tan suat x1.5
 CFG.SKILL_PASSIVE_STEP = 1.0801 -- 2.00 sau 9 lan nang (bi dong khong co cooldown)
+
+-- Mana moi bac. Tang CHAM hon nhieu so voi bo mana (Linh Can cong ca ba
+-- chi so nen Int, tuc bo mana, len rat nhanh). Y dinh: dau van mana la
+-- mot rang buoc that, cuoi van thi khong con -- luc do van de la hoi
+-- chieu chu khong phai mana.
+--
+-- Mana goc cua Shockwave la 100, ma Hart cap 1 co 75 mana -- khong cast
+-- noi mot lan nao. Do la ly do phai dat lai tu Lua.
+CFG.SKILL_MANA_STEP = 1.05   -- x1.55 sau 9 lan nang
 
 CFG.TINHTHACH_BOSS_BASE = 10   -- boss canh gioi r roi BASE + STEP*(r-1)
 CFG.TINHTHACH_BOSS_STEP = 5

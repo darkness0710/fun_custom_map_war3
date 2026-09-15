@@ -157,7 +157,7 @@ local function showPicker(pid)
   -- DialogClear huy cac nut cu, nen bang anh xa phai dung lai tu dau.
   DialogClear(slot.dlg)
   slot.map = {}
-  DialogSetMessage(slot.dlg, CFG.PICK_TITLE)
+  DialogSetMessage(slot.dlg, API.t("pick_title"))
   for i = 1, #list do
     local btn = DialogAddButton(slot.dlg, list[i].name, 0)
     slot.map[btn] = list[i].id
@@ -230,8 +230,9 @@ local function applyHeroPick(pid, uid)
   if CFG.HERO_UNIQUE then S.heroTaken[uid] = true end
   pickerHide(pid)
 
-  API.msg(nil, CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END ..
-    " da chon " .. CFG.C_JADE .. heroNameOf(uid) .. CFG.C_END .. ".")
+  API.msg(nil, API.t("pick_done",
+    CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END,
+    CFG.C_JADE .. heroNameOf(uid) .. CFG.C_END))
 
   refreshOthers(pid)
   return true

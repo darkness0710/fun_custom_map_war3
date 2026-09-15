@@ -96,7 +96,33 @@ local function has(name)
   return false
 end
 
-local function onChat(pid)
+-- Liet ke hang so ABILITY_* co ten chua <loc>. Vi du: "-nat dam".
+--
+-- Can thiet vi ten hang so moi ban moi khac: ban 1.31.1 KHONG co
+-- ABILITY_RLF_DAMAGE_HCA1 nhung cac ham Blz*AbilityField thi co du.
+-- Doan ten hang la sai im lang, nen quet thang trong _G roi doc.
+local function fields(pid, loc)
+  loc = loc:upper()
+  local hit, n = {}, 0
+  for k, _ in pairs(_G) do
+    if type(k) == "string" and k:sub(1, 8) == "ABILITY_" and k:find(loc, 1, true) then
+      n = n + 1
+      if n <= CFG.NAT_FIELD_MAX then hit[#hit + 1] = k end
+    end
+  end
+  table.sort(hit)
+  API.msg(pid, CFG.C_GOLD .. "ABILITY_* chua [" .. loc .. "]: " .. n ..
+    " hang so" .. CFG.C_END)
+  for i = 1, #hit do API.msg(pid, "   " .. hit[i]) end
+  if n > #hit then
+    API.msg(pid, CFG.C_GREY .. "   ... con " .. (n - #hit) ..
+      " cai nua, loc hep hon di." .. CFG.C_END)
+  end
+  API.trace("nat fields [" .. loc .. "] = " .. n .. ": " ..
+            table.concat(hit, " "))
+end
+
+local function report(pid)
   local gs = groups()
   API.msg(pid, CFG.C_GOLD .. "=== Ban " .. CFG.VERSION .. " co nhung gi ===" .. CFG.C_END)
   for i = 1, #gs do
@@ -109,10 +135,20 @@ local function onChat(pid)
   end
 end
 
+local function onChat(pid, raw)
+  -- "-nat dam" -> liet ke hang so ability co ten chua "dam"
+  if raw ~= nil then
+    local loc = raw:match("^%s*%-nat%s+(%S+)")
+    if loc ~= nil then return fields(pid, loc) end
+  end
+  return report(pid)
+end
+
 local function startNatives()
   traceAll()
 end
 
 API.nativeHas    = has
 API.nativeChat   = onChat
+API.nativeFields = fields
 API.startNatives = startNatives

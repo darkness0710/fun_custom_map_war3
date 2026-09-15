@@ -139,7 +139,7 @@ local function buildPanel(pid, list)
     local title = BlzCreateFrameByType("TEXT", "HeroPanelTitle", st.panel, "", pid)
     if title ~= nil then
       BlzFrameSetPoint(title, FRAMEPOINT_TOP, st.panel, FRAMEPOINT_TOP, 0.0, -0.008)
-      BlzFrameSetText(title, CFG.PICK_TITLE)
+      BlzFrameSetText(title, API.t("pick_title"))
     end
   end
 

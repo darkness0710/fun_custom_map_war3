@@ -34,6 +34,10 @@ T.en = {
   panel_level     = "lv",
   panel_max       = "max",
   panel_cd        = "cd",
+  panel_mana      = "mana",
+  stat_str        = "Str",
+  stat_agi        = "Agi",
+  stat_int        = "Int",
   panel_empty     = "Nothing here yet.",
 
   -- The Ky Nang
@@ -65,6 +69,8 @@ T.en = {
   boss_down       = "Boss %s defeated. Everyone gains %d Spirit Stone.",
 
   -- Quai
+  pick_title      = "Choose your hero",
+  pick_done       = "%s chose %s.",
   wave_next       = "Next wave",
   wave_cleared    = "Wave cleared.",
   wave_notclear   = "Still %d enemies alive. Clear the wave first.",
@@ -84,6 +90,10 @@ T.vi = {
   panel_level     = "bac",
   panel_max       = "toi da",
   panel_cd        = "hoi",
+  panel_mana      = "mana",
+  stat_str        = "Suc manh",
+  stat_agi        = "Nhanh nhen",
+  stat_int        = "Tri tue",
   panel_empty     = "He nay chua cai.",
 
   skill_none      = "Chua co hero, hoac hero nay chua khai bao ky nang.",
@@ -111,6 +121,8 @@ T.vi = {
   need_have       = " Can %s, dang co %s.",
   boss_down       = "Ha duoc boss %s. Moi nguoi nhan %d Tinh Thach.",
 
+  pick_title      = "Chon hero cua ban",
+  pick_done       = "%s da chon %s.",
   wave_next       = "Dot ke tiep",
   wave_cleared    = "Da don sach dot nay.",
   wave_notclear   = "Con %d con tren map. Don sach roi hay goi dot sau.",

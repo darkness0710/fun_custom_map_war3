@@ -209,7 +209,7 @@ local function registerEvents()
     TriggerRegisterPlayerChatEvent(tNat, Player(S.pids[i]), "-nat", true)
   end
   TriggerAddAction(tNat, function()
-    API.nativeChat(GetPlayerId(GetTriggerPlayer()))
+    API.nativeChat(GetPlayerId(GetTriggerPlayer()), GetEventPlayerChatString())
   end)
 
   -- "-c" mo bang nhan vat, duong lui neu phim E khong gan duoc.
