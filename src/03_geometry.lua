@@ -18,6 +18,10 @@
 local function polarX(x, dist, angDeg) return x + dist * Cos(angDeg * bj_DEGTORAD) end
 local function polarY(y, dist, angDeg) return y + dist * Sin(angDeg * bj_DEGTORAD) end
 
+local function angleXY(x1, y1, x2, y2)
+  return bj_RADTODEG * Atan2(y2 - y1, x2 - x1)
+end
+
 local function distXY(x1, y1, x2, y2)
   local dx, dy = x2 - x1, y2 - y1
   return SquareRoot(dx * dx + dy * dy)
@@ -253,6 +257,7 @@ API.findRegion   = findRegion
 
 API.polarX       = polarX
 API.polarY       = polarY
+API.angleXY      = angleXY
 API.distXY       = distXY
 API.clampToMap   = clampToMap
 API.playableRect = playableRect

@@ -97,9 +97,10 @@ CFG.HOUSE_CAN_ATTACK = false
 -- moc HOUSE_HP da dat.
 CFG.HOUSE_SUSPEND_XP = true
 
--- Bat tu thi khong bao gio chet, ma nha chet la thua -- nen de false.
--- Bat tam thoi thanh true neu can test thu ma khong so thua.
-CFG.HOUSE_INVULNERABLE = false
+-- Nha dem MANG chu khong dem mau (ADR 0011), nen no bat tu: toan bo
+-- duong cong sat thuong dich chi con tac dung len hero -- noi no NEN co
+-- tac dung. Quai cham nha thi bien mat va tru mang, xem CFG.HOUSE_LIVES.
+CFG.HOUSE_INVULNERABLE = true
 
 -- Nha chinh chet la ca ba nguoi choi thua.
 CFG.HOUSE_DEATH_ENDS_GAME = true
@@ -293,3 +294,114 @@ CFG.HERO_UNIQUE = true
 
 -- Hero sinh ra cach nha chinh bao xa.
 CFG.HERO_SPAWN_OFFSET = 500.0
+
+-- ============================================================
+--  DOT QUAI  --  220 stage
+--  Luat: docs/02-he-thong/dot-quai.md
+--  Duong cong: docs/03-du-lieu/duong-cong-suc-manh.md
+-- ============================================================
+
+-- 20 canh gioi. 'ten' phai KHONG DAU: font goc cua WC3 thieu glyph
+-- Latin Extended nen chu co dau hien ra o vuong.
+-- 'coi' 1..4 = Pham / Yeu / Tien / Than -- quyet dinh model va nhip wave.
+CFG.REALMS = {
+  { ten = "Pham Nhan",     coi = 1 },
+  { ten = "Luyen Khi",     coi = 1 },
+  { ten = "Truc Co",       coi = 1 },
+  { ten = "Kim Dan",       coi = 1 },
+  { ten = "Nguyen Anh",    coi = 1 },
+  { ten = "Hoa Than",      coi = 2 },
+  { ten = "Luyen Hu",      coi = 2 },
+  { ten = "Hop The",       coi = 2 },
+  { ten = "Dai Thua",      coi = 2 },
+  { ten = "Do Kiep",       coi = 2 },
+  { ten = "Chan Tien",     coi = 3 },
+  { ten = "Thien Tien",    coi = 3 },
+  { ten = "Kim Tien",      coi = 3 },
+  { ten = "Thai At",       coi = 3 },
+  { ten = "Dai La",        coi = 3 },
+  { ten = "Tien De",       coi = 4 },
+  { ten = "Thanh Nhan",    coi = 4 },
+  { ten = "Dao To",        coi = 4 },
+  { ten = "Hon Don Than",  coi = 4 },
+  { ten = "Sang The Than", coi = 4 },
+}
+
+-- Doi so nay la doi tong so stage. Moi cong thuc suy ra tu no, khong
+-- hard-code so 11 o dau ca.
+CFG.TIERS_PER_REALM = 10
+CFG.TIER_VIEN_MAN   = "vien man"   -- ten rieng cua tang cuoi
+
+-- ---------- Thanh phan wave ----------
+CFG.WAVE_MOB_COUNT   = 50    -- co dinh, khong doi theo so nguoi (ADR 0009)
+CFG.WAVE_ELITE_COUNT = 1
+
+-- Giay moi wave, theo coi. Day la nut chinh THOI LUONG VAN, va no cung
+-- chinh DPS can -- hai thu dinh nhau.
+CFG.WAVE_TIME = { 20.0, 28.0, 36.0, 45.0 }
+CFG.WAVE_FIRST_DELAY = 15.0
+
+-- Tran unit song. Qua nguong thi HOAN wave moi thay vi chong them.
+CFG.WAVE_MAX_ALIVE = 300
+
+-- Xe dich diem sinh de 50 con khong chong len nhau mot cho.
+CFG.SPAWN_JITTER = 384.0
+
+-- Giay giua hai lan ra lenh lai + kiem quai da cham nha chua.
+CFG.WAVE_TICK = 2.0
+
+-- ---------- Duong cong chi so ----------
+-- EHP la dai luong that; mau dat len unit duoc suy nguoc ra tu giap.
+-- Doi MOB_ARMOR_PER_REALM KHONG doi do kho. (ADR 0010)
+CFG.MOB_EHP_BASE       = 20.0
+CFG.MOB_EHP_GROWTH     = 1.018   -- moi stage. Rat nhay: mu 219
+CFG.MOB_EHP_REALM_STEP = 1.22    -- moi canh gioi. Mu 19
+
+CFG.MOB_DMG_BASE       = 6.0
+CFG.MOB_DMG_GROWTH     = 1.016
+CFG.MOB_DMG_REALM_STEP = 1.12
+
+CFG.MOB_ARMOR_BASE      = 0.0
+CFG.MOB_ARMOR_PER_REALM = 1.0
+CFG.ARMOR_DR_PER_POINT  = 0.06   -- cong thuc giap cua Warcraft III
+
+CFG.ELITE_EHP = 10.0
+CFG.ELITE_DMG = 2.5
+CFG.ELITE_SCALE = 1.6
+CFG.BOSS_EHP  = 80.0
+CFG.BOSS_DMG  = 3.0
+CFG.BOSS_SCALE = 2.2
+
+-- ---------- Theo so nguoi choi (ADR 0009) ----------
+-- Phai < 1.0: bang 1.0 la phat nguoi choi vi ru duoc ban.
+CFG.SCALE_EHP_PER_PLAYER      = 0.60
+CFG.SCALE_DMG_PER_PLAYER      = 0.15   -- nho, vi sat thuong da tu loang
+CFG.SCALE_BOSS_EHP_PER_PLAYER = 0.85   -- cao hon: boss mot than, don ha hieu qua hon
+CFG.SCALE_RECOUNT_EACH_WAVE   = true
+
+-- ---------- Mau linh theo coi ----------
+-- PLACEHOLDER. Ban thiet ke can 4 coi x 6 mau = 24 unit type trong
+-- Object Editor. Hien moi coi mot mau de he wave chay duoc truoc.
+CFG.MOB_UNIT = {
+  id('hfoo'),   -- Pham : Footman
+  id('ugho'),   -- Yeu  : Ghoul
+  id('uabo'),   -- Tien : Abomination
+  id('ufro'),   -- Than : Frost Wyrm
+}
+
+-- ---------- Nha chinh dem mang (ADR 0011) ----------
+-- Nha khong nhan sat thuong. Quai cham nha thi BIEN MAT va tru mang.
+CFG.HOUSE_LIVES     = 20
+CFG.LEAK_COST_MOB   = 1
+CFG.LEAK_COST_ELITE = 3
+CFG.LEAK_RADIUS     = 350.0   -- cham nha trong ban kinh nay la tinh lot
+
+-- ---------- Kinh te ----------
+-- Thu nhap bam x967 (hop dong suc manh), KHONG bam x2176 (duong cong
+-- EHP dich). Bam nham la nua sau game qua de.
+CFG.LINHKHI_BASE   = 60.0
+CFG.LINHKHI_GROWTH = 1.0319    -- = 967^(1/219)
+CFG.LINHKHI_MOB_SHARE = 0.60   -- 50 linh chia 60%, tinh anh 40%
+
+CFG.TINHTHACH_BOSS_BASE = 10   -- boss canh gioi r roi BASE + STEP*(r-1)
+CFG.TINHTHACH_BOSS_STEP = 5

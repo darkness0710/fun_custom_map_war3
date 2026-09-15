@@ -10,7 +10,11 @@
 local function onAnyDeath()
   local u = GetTriggerUnit()
   if u == nil then return end
-  if u == S.house then API.onHouseDeath() end
+  if u == S.house then
+    API.onHouseDeath()
+    return
+  end
+  API.onMobDeath(u, GetKillingUnit())
 end
 
 -- Nha chinh la muc tieu phai giu, khong phai quan de dieu khien. Lot
@@ -70,6 +74,24 @@ local function onChat()
   end
 end
 
+-- Lenh dev "-wave N": nhay thang toi stage N.
+-- Khong co no thi khong ai kiem duoc stage 180 -- doi 2 tieng de xem
+-- mot con so khong phai la cach lam viec.
+local function onWaveCmd()
+  local pid = GetPlayerId(GetTriggerPlayer())
+  local raw = GetEventPlayerChatString()
+  if raw == nil then return end
+
+  local n = tonumber(raw:match("^%s*%-wave%s+(%d+)"))
+  if n == nil then
+    API.msg(pid, CFG.C_RED .. "Dung: -wave <so tu 1 den " ..
+      API.totalStages() .. ">" .. CFG.C_END)
+    return
+  end
+  API.jumpToStage(n)
+  API.msg(pid, CFG.C_GOLD .. "Nhay toi stage " .. n .. "." .. CFG.C_END)
+end
+
 local function registerEvents()
   local tDeath = CreateTrigger()
   TriggerRegisterAnyUnitEventBJ(tDeath, EVENT_PLAYER_UNIT_DEATH)
@@ -91,6 +113,12 @@ local function registerEvents()
       TriggerRegisterPlayerChatEvent(tChat, Player(S.pids[i]), "-sp", false)
     end
     TriggerAddAction(tChat, onChat)
+
+    local tWave = CreateTrigger()
+    for i = 1, #S.pids do
+      TriggerRegisterPlayerChatEvent(tWave, Player(S.pids[i]), "-wave", false)
+    end
+    TriggerAddAction(tWave, onWaveCmd)
   end
 
   API.dbg("Trigger da dang ky.")

@@ -36,6 +36,16 @@ S.skillTrigger= nil
 S.sframe      = {}     -- giao dien ky nang, do 07b_skillframe dung
 S.hframe      = {}     -- the chon hero,   do 07c_heroframe dung
 S.xpTimer     = nil    -- bo quet khoa hero
+
+-- Dot quai, do 05_wave dung
+S.stage      = 0       -- 1..220, MOT bien duy nhat
+S.lives      = 0       -- linh khi con lai cua nha chinh (ADR 0011)
+S.mobs       = {}      -- [unit] = "mob" | "elite" | "boss"
+S.alive      = 0
+S.wave       = {}      -- { players, spawnFail } cua wave hien tai
+S.waveTimer  = nil
+S.waveDlg    = nil
+S.tickTimer  = nil
 S.dumped      = {}     -- [unit] = true, da do danh sach ability chua
 S.spReported  = {}     -- [unit] = true, da bao so diem ky nang chua
 S.abilReported= {}     -- [unit] = true, da bao ket qua go ability chua
@@ -82,6 +92,13 @@ local function num(n)
   return out
 end
 
+-- UnitAlive la native 1.31+; lui ve nguong 0.405 cua Warcraft III.
+local function alive(u)
+  if u == nil then return false end
+  if UnitAlive ~= nil then return UnitAlive(u) end
+  return GetUnitState(u, UNIT_STATE_LIFE) > 0.405
+end
+
 -- Chay f sau delay giay (mot lan).
 local function after(delay, f)
   local t = CreateTimer()
@@ -125,6 +142,7 @@ API.idToStr = idToStr
 API.trace = trace
 API.msg   = msg
 API.dbg   = dbg
+API.alive = alive
 API.clamp = clamp
 API.round = round
 API.num   = num

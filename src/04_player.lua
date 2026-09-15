@@ -16,7 +16,8 @@ local function initPlayers()
     if GetPlayerSlotState(p) == PLAYER_SLOT_STATE_PLAYING
        and GetPlayerController(p) == MAP_CONTROL_USER then
       S.p[pid] = { active = true, hero = nil, heroCount = 0,
-                   purseGold = 0, purseWood = 0, slots = {} }
+                   purseGold = 0, purseWood = 0, slots = {},
+                   linhKhiTotal = 0, lkFrac = 0.0 }
       S.pids[#S.pids + 1] = pid
     end
   end
@@ -213,6 +214,47 @@ local function startHeroLock()
   end
 end
 
+-- ---------- Hai dong tien ----------
+-- Linh Khi = VANG cua Warcraft III, Tinh Thach = GO. Dung luon thanh
+-- tai nguyen co san: mien phi cho hien thi, cap nhat tuc thi, va nguoi
+-- choi da quen nhin cho do. Xem docs/02-he-thong/kinh-te.md
+
+local function addLinhKhi(pid, amount)
+  if amount == nil or amount == 0 then return end
+  local p = Player(pid)
+  local cur = GetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD)
+  SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, cur + amount)
+  local d = S.p[pid]
+  if d ~= nil then d.linhKhiTotal = (d.linhKhiTotal or 0) + amount end
+end
+
+local function getLinhKhi(pid)
+  return GetPlayerState(Player(pid), PLAYER_STATE_RESOURCE_GOLD)
+end
+
+local function spendLinhKhi(pid, amount)
+  if getLinhKhi(pid) < amount then return false end
+  addLinhKhi(pid, -amount)
+  return true
+end
+
+local function addTinhThach(pid, amount)
+  if amount == nil or amount == 0 then return end
+  local p = Player(pid)
+  SetPlayerState(p, PLAYER_STATE_RESOURCE_LUMBER,
+                 GetPlayerState(p, PLAYER_STATE_RESOURCE_LUMBER) + amount)
+end
+
+local function getTinhThach(pid)
+  return GetPlayerState(Player(pid), PLAYER_STATE_RESOURCE_LUMBER)
+end
+
+local function spendTinhThach(pid, amount)
+  if getTinhThach(pid) < amount then return false end
+  addTinhThach(pid, -amount)
+  return true
+end
+
 local function activeCount()
   local n = 0
   for i = 1, #S.pids do
@@ -221,6 +263,12 @@ local function activeCount()
   return n
 end
 
+API.addLinhKhi       = addLinhKhi
+API.getLinhKhi       = getLinhKhi
+API.spendLinhKhi     = spendLinhKhi
+API.addTinhThach     = addTinhThach
+API.getTinhThach     = getTinhThach
+API.spendTinhThach   = spendTinhThach
 API.grantSkillPoints = grantSkillPoints
 API.lockHero      = lockHero
 API.sweepHeroes   = sweepHeroes

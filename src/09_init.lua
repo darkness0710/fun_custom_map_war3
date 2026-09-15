@@ -36,6 +36,7 @@ end
 local function endGame(win, reason)
   if not S.running then return end
   S.running = false
+  API.stopWaves()
 
   API.msg(nil, " ")
   if win then
@@ -86,6 +87,7 @@ local function bootstrap()
   API.startHeroLock()
   API.trace("startHeroLock: xong")
 
+  API.startWaves()
   API.startHeroFrame()
   API.startSkillFrame()
   API.startSkillPicking()
