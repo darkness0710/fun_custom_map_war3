@@ -129,7 +129,7 @@ kiểm `BlzSetUnitArmor` có trên bản này không — gõ `-nat` trong game.
 | `A003` | `AHad` Devotion Aura | bị động, aura giáp | **cộng thẳng** | ⚠ teo dần — xem dưới |
 | `A004` | `Aamk` Attribute Bonus | bị động, cộng cả ba chỉ số | **cộng thẳng** | ⚠ teo dần — xem dưới |
 | `A005` | `ACce` Cleaving Attack *(lấy từ unit)* | bị động, đánh lan | phần trăm | % ×1,08 |
-| `A006` | `Aamk` vỏ rỗng | bị động, giảm % sát thương | phần trăm | % ×1,08 |
+| `A006` | `Aamk` Attribute Bonus *(làm vật mang)* | bị động, giảm % sát thương | phần trăm | % ×1,08 |
 | `A007` | `AHav` Avatar | chủ động, tăng chỉ số | hệ số | ×1,03 · hồi chiêu ×0,956 |
 
 ### Cộng thẳng thì chết, phần trăm thì sống

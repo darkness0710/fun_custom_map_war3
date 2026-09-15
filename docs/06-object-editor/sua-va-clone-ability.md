@@ -231,15 +231,22 @@ A002  AHhb  Holy Light         1 trường   <- chưa đặt Levels
 A003  AHad  Devotion Aura      1 trường   <- chưa đặt Levels
 A004  Aamk  Attribute Bonus   32 trường   Levels=10 ✓
 A005  ACce  Cleaving Attack    2 trường   Hero Ability = có, <- chưa đặt Levels
-A006  Aamk  vỏ rỗng           16 trường   đủ tên + tooltip + icon
+A006  Aamk  Attribute Bonus   16 trường   đủ tên + tooltip + icon
 A007  AHav  Avatar             1 trường   <- chưa đặt Levels
 
 Mới **1 / 7** đặt `Levels = 10`. Sáu cái còn lại chưa nhả mã Data nào.
 ```
 
-`A004` là **vỏ rỗng chuẩn**: Attribute Bonus với cả ba chỉ số bằng 0 thì không
-làm gì cả, nhưng vẫn có icon và ô trong command card. Hợp hơn Critical Strike
-đặt 0% vì nó không có tỉ lệ nào để lỡ kích hoạt.
+`A004` và `A006` đều dựa trên **Attribute Bonus** (`Aamk`), nhưng dùng vào hai
+việc khác nhau:
+
+- `A004` **Luyện Thể** dùng đúng công dụng của nó — cộng cả ba chỉ số.
+- `A006` **Da Sắt** mượn nó làm **vật mang**: hiệu ứng thật (giảm % sát thương)
+  viết bằng Lua, vì Attribute Bonus không giảm sát thương được.
+
+Attribute Bonus hợp làm vật mang hơn Critical Strike đặt 0%: nó không có tỉ lệ
+nào để lỡ kích hoạt. Nhưng phải **đặt cả ba chỉ số = 0** — để khác 0 thì nó
+cộng chỉ số thật, chồng lên hiệu ứng Lua mà không ai để ý.
 
 ## Còn thiếu
 
