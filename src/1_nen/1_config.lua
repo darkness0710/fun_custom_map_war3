@@ -257,6 +257,22 @@ CFG.HEROES = {
 -- Ky nang gan cho MOI hero, khong rieng con nao.
 CFG.HERO_COMMON_ABILITIES = {}
 
+-- ---------- Nap truoc tai nguyen tu import ----------
+--
+-- Warcraft nap model cua nhung LOAI unit co mat tren map luc vao game.
+-- Loai nao khong xuat hien o dau thi model nap theo yeu cau -- va model
+-- tu import nap kieu do thi hong: unit hien ra den si, khong loi nao bao.
+--
+-- Do duoc: cung mot H001, con dat san trong World Editor thi co mau, con
+-- tao bang CreateUnit luc chay thi den si.
+--
+-- Duong dan phai KHOP TUNG KY TU voi ten file trong map. Bo dong goi
+-- (w3mpq.py) ghi ten theo duong dan tuong doi, dau gach nguoc.
+CFG.PRELOAD = {
+  [[war3mapImported\UtherV2.mdx]],
+  [[units\HotS\Uther\Uther.blp]],
+}
+
 -- ---------- Chon ky nang theo slot ----------
 --
 -- Moi slot la mot O trong command card, va nguoi choi chon MOT trong so

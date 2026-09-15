@@ -94,6 +94,22 @@ local function bootstrap()
   API.trace("resolveEnemyRegion: xong")
 
   -- Phai chay TRUOC khi nguoi choi kip chon hero.
+  --
+  -- HAI CACH, vi chua biet cach nao an:
+  --   1. Preload() thang duong dan file   <- cach chinh
+  --   2. tao mot con moi loai hero roi xoa ngay
+  --
+  -- PreloadStart/PreloadEnd moi la cap nap THAT. PreloadGenStart/
+  -- PreloadGenEnd la de SINH file preload -- lan trong do thi Preload()
+  -- chi ghi ten vao file chu khong nap gi ca. Bo ghi vet cua du an nay
+  -- dung dung ho PreloadGen*, nen phai goi dung cap o day.
+  if CFG.PRELOAD ~= nil and Preload ~= nil then
+    if PreloadStart ~= nil then PreloadStart() end
+    for i = 1, #CFG.PRELOAD do Preload(CFG.PRELOAD[i]) end
+    if PreloadEnd ~= nil then PreloadEnd(0.5) end
+    API.trace("preload: da goi Preload cho " .. #CFG.PRELOAD .. " file")
+  end
+
   API.preloadHeroes()
 
   API.startHeroLock()
