@@ -3,12 +3,6 @@
 """
 w3import.py -- import file vao map ma khong phai mo Import Manager.
 
-CANH BAO: CHUA DUNG DUOC. Da do: sau khi script nay ghi file vao thu muc
-map, World Editor bo qua luon war3map.lua khi dong goi -- vao game khong
-co dong code nao chay. Chua tach duoc la do byte "co" trong war3map.imp,
-hay do thu muc moi (units/) trong thu muc map. Xem
-docs/06-object-editor/import-model.md
-
     python w3import.py list
     python w3import.py add models/heroes/UtherV2.mdx war3mapImported/UtherV2.mdx
     python w3import.py add models/heroes/Uther.blp  "units/HotS/Uther/Uther.blp"
@@ -33,11 +27,9 @@ DINH DANG war3map.imp:
         byte  co
         chuoi ket thuc bang byte 0
 
-Byte "co" CHUA DO DUOC tren ban nay. Cac tool khac ghi 5, 8, 10 hoac 13
-tuy ban. Script nay ghi CO_MAC_DINH; neu World Editor mo ra thay sai thi
-chay "list" sau khi WE luu de doc lai gia tri that roi sua hang so nay.
-Khong doan mo: file dat dung cho moi la thu lam model hien duoc, con
-war3map.imp chi de Import Manager liet ke.
+Byte "co" la 21 (0x15), DO tu file World Editor tu tao ra. Truoc do
+doan la 13 va World Editor doc phai thi bo qua luon war3map.lua khi dong
+goi -- vao game khong co dong code nao chay, khong loi nao bao.
 """
 
 import os
@@ -46,7 +38,13 @@ import struct
 import sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-CO_MAC_DINH = 13
+# 0x15 = 21. DO DUOC tu file World Editor tu tao, khong phai doan.
+# Truoc do doan la 13 -- World Editor doc phai thi bo qua luon
+# war3map.lua khi dong goi, vao game khong co dong code nao chay va
+# khong loi nao bao. Mat mot buoi.
+#
+# World Editor ghi 21 cho CA duong dan mac dinh lan duong dan tu dat.
+CO_MAC_DINH = 21
 
 
 def find_map():
