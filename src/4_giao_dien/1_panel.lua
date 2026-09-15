@@ -33,7 +33,9 @@ local function framesAvailable()
 end
 
 -- ---------- Dang ky the ----------
--- tab = { ten, rows(pid)->{chuoi}, actionLabel(pid)->chuoi|nil, action(pid) }
+-- tab = { ten, rows(pid)->{chuoi},
+--         actionLabel(pid)->chuoi|nil, action(pid),        -- nut o chan bang
+--         rowLabel(pid,i)->chuoi|nil,  rowAction(pid,i) }  -- nut cua tung dong
 
 local function addTab(tab)
   S.panel.tabs[#S.panel.tabs + 1] = tab
@@ -57,7 +59,7 @@ end
 
 local function stateOf(pid)
   if S.panel.byPid[pid] == nil then
-    S.panel.byPid[pid] = { panel = nil, head = nil, rows = {},
+    S.panel.byPid[pid] = { panel = nil, head = nil, rows = {}, rowBtn = {},
                            tabBtn = {}, btnAction = nil, btnActionTxt = nil,
                            btnClose = nil, tab = 1, shown = false }
   end
@@ -93,6 +95,15 @@ local function refresh(pid)
   local lines = tab.rows(pid) or {}
   for i = 1, ROWS do
     BlzFrameSetText(st.rows[i], lines[i] or "")
+
+    -- Nut rieng cho tung dong. Mot nut chung o chan bang khong du: the
+    -- Ky Nang co bay dong, moi dong mot ky nang nang rieng.
+    local rb = st.rowBtn[i]
+    if rb ~= nil then
+      local nhan = tab.rowLabel and tab.rowLabel(pid, i) or nil
+      BlzFrameSetVisible(rb.btn, nhan ~= nil)
+      if nhan ~= nil and rb.txt ~= nil then BlzFrameSetText(rb.txt, nhan) end
+    end
   end
 
   local label = tab.actionLabel and tab.actionLabel(pid) or nil
@@ -158,8 +169,15 @@ local function build(pid)
   st.head = text("CharHead", 0.012, -0.046)
 
   st.rows = {}
+  st.rowBtn = {}
   for i = 1, ROWS do
-    st.rows[i] = text("CharRow" .. i, 0.012, -0.074 - (i - 1) * 0.021)
+    local y = -0.074 - (i - 1) * 0.021
+    st.rows[i] = text("CharRow" .. i, 0.012, y)
+    local rb = button("CharRowBtn" .. i, "+", CFG.PANEL_W - 0.040, y + 0.004, 0.026)
+    if rb ~= nil then
+      st.rowBtn[i] = rb
+      BlzFrameSetVisible(rb.btn, false)
+    end
   end
 
   local footY = -0.084 - ROWS * 0.021
@@ -222,6 +240,14 @@ local function onClick()
         if st.tabBtn[i] ~= nil and f == st.tabBtn[i].btn then
           st.tab = i
           refresh(pid)
+          return
+        end
+      end
+      for i = 1, ROWS do
+        local rb = st.rowBtn[i]
+        if rb ~= nil and f == rb.btn then
+          local tab = S.panel.tabs[st.tab]
+          if tab ~= nil and tab.rowAction ~= nil then tab.rowAction(pid, i) end
           return
         end
       end

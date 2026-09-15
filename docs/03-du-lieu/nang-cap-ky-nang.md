@@ -187,6 +187,53 @@ nằm trong bảng Lua — chỉnh cân bằng không cần build lại file nh�
 > hàm. Các hàm đều có. Phải dò xem bản này dùng tên hằng nào — và còn **chưa
 > đo** liệu sửa xong có ăn ngay hay phải `IncUnitAbilityLevel` để làm mới.
 
+## Số gốc cho 7 kỹ năng của Hart
+
+Sát thương và hồi máu tính theo **hệ số × (17 + chỉ số cao nhất của hero)**.
+Bị động tính theo **phần trăm**. Cả hai đều tự bám theo Linh Căn.
+
+| Kỹ năng | Loại | Bậc 1 | Bậc 10 |
+|---|---|---|---|
+| Dẫm Đất | chủ động | ×1,32 · hồi 8,0s | ×1,76 · hồi 5,3s |
+| Hộ Thể | chủ động | ×2,20 · hồi 10,0s | ×2,93 · hồi 6,7s |
+| Hiệu Lệnh | aura | 15% giáp | 30% giáp |
+| Luyện Thể | bị động | 12% chỉ số | 24% chỉ số |
+| Chém Lan | bị động | 20% văng | 40% văng |
+| Da Sắt | bị động | 5% giảm | 10% giảm |
+| Bất Hoại | chủ động | hồi 60s | hồi 40s |
+
+### Hệ số 1,32 của Dẫm Đất đến từ đâu
+
+Stage 1 cần **60 EHP/giây** (50 lính × 20 EHP + 1 tinh anh × 200, chia cho 20
+giây). Hart cấp 1: sát thương 12–22 (tb 17), Str 10.
+
+```
+danh thuong + chem lan : 24,3 EHP/giay
+Dam Dat phai bu        : 35,7 EHP/giay
+he so = 35,7 x 8,0 / (8 con x 27) = 1,32
+```
+
+Kiểm ngược ở cuối game (Linh Căn bậc 20, kỹ năng bậc 10, ×12 trang bị):
+**51 595** so với **58 019 cần** — đạt 89%. Nằm trong sai số của ba giả định chưa
+đo: tốc độ đánh 2,0s, Dẫm Đất trúng 8 con, Chém Lan có 4 con đứng gần.
+
+## Lỗ hổng đã vá: Linh Căn thiếu một nửa
+
+Phát hiện khi đi gán số gốc. `CFG.LINHCAN_STEP` đang là **1,17**:
+
+| | Nhân |
+|---|---|
+| Tài liệu ghi | 40 × 12 × 2 = **×960** |
+| Config cài | 19,7 × 12 × 2 = **×474** |
+| Hợp đồng cần | **×967** |
+
+Cuối game người chơi chỉ mạnh bằng **49%** mức cần — thua chắc, mà không có gì
+báo. Đã đổi thành **1,215** (×40,5 → tổng ×971).
+
+Cùng lúc sửa hai số trước đây là phỏng đoán, giờ đọc được từ hero thật:
+`LINHCAN_DMG_BASE` 20 → **17** (sát thương trung bình của Hart),
+`LINHCAN_STAT_BASE` 20 → **10** (Str của Hart cấp 1).
+
 ## Chưa làm
 
 - Chưa có con số gốc cho từng skill ở bậc 1 (sát thương bao nhiêu, hồi bao nhiêu).

@@ -98,8 +98,7 @@ local function bootstrap()
   -- Cac he dang ky the TRUOC, roi bang moi dung -- bang can biet co
   -- bao nhieu the de chia be ngang.
   API.startLinhCan()
-  API.panelAddTab(API.panelPlaceholder("Ky Nang",
-    "Can ability trong Object Editor truoc. Xem docs/02-he-thong/thiet-ke-hero.md"))
+  API.startSkills()
   API.panelAddTab(API.panelPlaceholder("Trang Bi",
     "Can mon do trong Object Editor truoc."))
   API.panelAddTab(API.panelPlaceholder("Phap Bao",

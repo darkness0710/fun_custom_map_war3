@@ -52,6 +52,14 @@ local function giveAbilities(u, uid)
     for i = 1, #def.abilities do list[#list + 1] = def.abilities[i] end
   end
 
+  -- Bay ky nang cua hero. Chung luon co san chu khong hoc bang diem --
+  -- nguoi choi nang bac bang Linh Khi trong bang phim E. Xem
+  -- docs/03-du-lieu/nang-cap-ky-nang.md
+  local sk = CFG.SKILLS[uid]
+  if sk ~= nil then
+    for i = 1, #sk do list[#list + 1] = sk[i].id end
+  end
+
   local bad = {}
   for i = 1, #list do
     if UnitAddAbility(u, list[i]) then
@@ -102,6 +110,7 @@ local function spawnHero(pid, uid)
     API.lockHero(u)
     giveAbilities(u, uid)
     API.linhCanApply(pid, u)   -- giu tu vi khi doi hero
+    API.skillApply(pid)        -- dat lai bac cho dung bang da mua
     if CFG.SKILL_MODE == "learn" then
       API.grantSkillPoints(u, CFG.SKILL_POINTS_START)
     end

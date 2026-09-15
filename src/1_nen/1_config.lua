@@ -451,6 +451,38 @@ CFG.SKILL_COST_BASE = 89.0     -- bac 1 -> 2
 CFG.SKILL_COST_STEP = 1.99
 CFG.SKILL_MAX_LEVEL = 10
 
+-- ---------- Bay ky nang cua tung hero ----------
+--
+-- heSo : sat thuong/hoi mau = heSo x (LINHCAN_DMG_BASE + chi so CAO NHAT
+--        cua hero). An theo chi so cao nhat nen skill khong bao gio phe,
+--        va bam dung duong cong Linh Can.
+-- pct  : ky nang bi dong tinh theo PHAN TRAM. Cong thang mot luong co
+--        dinh thi cuoi game vo nghia -- Linh Can cong +1075 moi chi so.
+-- cd   : hoi chieu bac 1, giay.
+--
+-- Moi so o day la bac 1. Bac 2..10 suy ra tu SKILL_*_STEP o tren.
+-- Cach ra he so 1.32 cua A001: docs/03-du-lieu/nang-cap-ky-nang.md
+CFG.SKILLS = {}
+
+CFG.SKILLS[id('H001')] = {
+  { id = id('A001'), ten = "Dam Dat",   loai = "chudong", heSo = 1.32, cd = 8.0,
+    mota = "Gay %s sat thuong len mot duong thang." },
+  { id = id('A002'), ten = "Ho The",    loai = "chudong", heSo = 2.20, cd = 10.0,
+    mota = "Hoi %s mau cho ban than hoac dong doi." },
+  { id = id('A003'), ten = "Hieu Lenh", loai = "aura",    pct = 0.15,
+    mota = "Dong doi quanh ban duoc +%s giap ban than." },
+  { id = id('A004'), ten = "Luyen The", loai = "bidong",  pct = 0.12,
+    mota = "+%s ca ba chi so." },
+  { id = id('A005'), ten = "Chem Lan",  loai = "bidong",  pct = 0.20,
+    mota = "Don danh van %s sat thuong sang muc tieu ben canh." },
+  { id = id('A006'), ten = "Da Sat",    loai = "bidong",  pct = 0.05,
+    mota = "Giam %s sat thuong nhan vao. Tran cung 10%%." },
+  { id = id('A007'), ten = "Bat Hoai",  loai = "chudong", heSo = 0.0, cd = 60.0,
+    mota = "Tang manh giap va mau trong thoi gian ngan." },
+}
+
+CFG.OP_SKILL_UP = 6   -- arg = so thu tu ky nang trong CFG.SKILLS cua hero
+
 -- Suc manh moi bac. Ngan sach cho ca he nang cap la x2 (xem
 -- docs/03-du-lieu/duong-cong-suc-manh.md). x2 la TICH cua moi nut chinh,
 -- khong phai rieng sat thuong.
@@ -470,7 +502,12 @@ CFG.TINHTHACH_BOSS_STEP = 5
 --  ke dich tu tien tren cung mot con duong.
 -- ============================================================
 
-CFG.LINHCAN_STEP = 1.17     -- suc manh moi bac. 19 buoc -> x19.7
+-- 1.215, KHONG phai 1.17. Voi 1.17 thi 19 buoc chi cho x19.7, nhan voi
+-- trang bi x12 va ky nang x2 la x474 -- trong khi hop dong can x967.
+-- Tuc cuoi game nguoi choi chi manh bang 49% muc can, thua chac.
+-- 1.215^19 = x40.5  ->  40.5 x 12 x 2 = x971 ~ x967. Xem
+-- docs/03-du-lieu/duong-cong-suc-manh.md
+CFG.LINHCAN_STEP = 1.215
 
 -- Gia dot pha bac r = BASE x STEP^(r-1).
 -- 1.412 = 1.0319^11 = thu nhap tron mot canh gioi, nen gia luon dang
@@ -488,8 +525,8 @@ CFG.LINHCAN_COST_STEP = 1.412
 --
 -- Doi hai so nay cho khop hero that trong Object Editor thi nhan so moi
 -- dung. Bang "-lc" trong game in ra nhan so THUC DO duoc de doi chieu.
-CFG.LINHCAN_DMG_BASE  = 20.0   -- sat thuong hero khi chi so = 0
-CFG.LINHCAN_STAT_BASE = 20.0   -- chi so hero luc bac 1
+CFG.LINHCAN_DMG_BASE  = 17.0   -- sat thuong hero khi chi so = 0
+CFG.LINHCAN_STAT_BASE = 10.0   -- chi so hero luc bac 1
 
 -- Cong vao chi so nao:
 --
