@@ -44,7 +44,11 @@ local function giveAbilities(u, uid)
 
   local bad = {}
   for i = 1, #list do
-    if not UnitAddAbility(u, list[i]) then
+    if UnitAddAbility(u, list[i]) then
+      -- Ability nhan ban tu HERO ability ra o cap 0: nut hien nhung bam
+      -- khong duoc. Ability thuong von da cap 1, goi them la vo hai.
+      SetUnitAbilityLevel(u, list[i], 1)
+    else
       bad[#bad + 1] = API.idToStr(list[i])
     end
   end
