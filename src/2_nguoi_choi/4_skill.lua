@@ -61,14 +61,28 @@ local function levelOf(pid, aid, index)
   return 0
 end
 
-local function unlockCost(index)
-  local c = CFG.SKILL_UNLOCK[index]
+-- Gia mo khoa theo SO CAI DA MO, khong theo cai nao. Thich mo cai nao
+-- truoc thi mo -- ep thu tu la lay mat mot lua chon ma chang duoc gi.
+local function unlockCost(pid)
+  local list = CFG.SKILLS[S.p[pid] and S.p[pid].hero
+                          and GetUnitTypeId(S.p[pid].hero) or 0]
+  if list == nil then return nil end
+
+  local daMo = 0
+  local d = S.p[pid]
+  for i = 1, #list do
+    local lv = (d.skill and d.skill[list[i].id])
+               or (i <= CFG.SKILL_START_COUNT and 1 or 0)
+    if lv > 0 then daMo = daMo + 1 end
+  end
+
+  local c = CFG.SKILL_UNLOCK[daMo + 1]
   if c == nil or c <= 0 then return nil end
   return c
 end
 
-local function costOf(level, aid, index)
-  if level <= 0 then return unlockCost(index) end
+local function costOf(pid, level, aid)
+  if level <= 0 then return unlockCost(pid) end
   if level >= (aid and maxOf(aid) or CFG.SKILL_MAX_LEVEL) then return nil end
   return math.floor(CFG.SKILL_COST_BASE * CFG.SKILL_COST_STEP ^ (level - 1) + 0.5)
 end
@@ -127,7 +141,7 @@ local function upgrade(pid, index)
 
   local cur = levelOf(pid, sk.id, index)
   local tran = maxOf(sk.id)
-  local gia = costOf(cur, sk.id, index)
+  local gia = costOf(pid, cur, sk.id)
   if gia == nil then
     if tran < CFG.SKILL_MAX_LEVEL then
       -- Khong tru tien. Bao dung cho phai sua, dung de nguoi choi doan.
@@ -201,7 +215,7 @@ local function tabRows(pid)
     local sk = list[i]
     local lv = levelOf(pid, sk.id, i)
     local tran = maxOf(sk.id)
-    local gia = costOf(lv, sk.id, i)
+    local gia = costOf(pid, lv, sk.id)
 
     -- Hien TRAN THAT, khong hien tran thiet ke. Bang bao 10/10 trong khi
     -- unit chi len duoc bac 3 la bang noi doi.
@@ -250,7 +264,7 @@ local function tabRowLabel(pid, i)
   local sk = listOf(pid)[i]
   if sk == nil then return nil end
   local lv = levelOf(pid, sk.id, i)
-  if costOf(lv, sk.id, i) == nil then return nil end
+  if costOf(pid, lv, sk.id) == nil then return nil end
   if lv <= 0 then return API.t("skill_buy") end
   return "+"
 end

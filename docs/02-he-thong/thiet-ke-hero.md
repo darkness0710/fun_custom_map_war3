@@ -1,17 +1,18 @@
 # Thiết kế hero & bộ kỹ năng
 
-> **Trạng thái:** Nháp — chưa có ability nào trong Object Editor
-> **Cập nhật:** 2026-09-15
+> **Trạng thái:** Hart **đã chốt và có trong map**; Hvwd và Hkal còn là đề xuất
+> **Cập nhật:** 2026-09-16
+> **Số liệu:** [nâng cấp kỹ năng](../03-du-lieu/nang-cap-ky-nang.md)
 > **Liên quan:** [chon-hero.md](chon-hero.md), [ky-nang.md](ky-nang.md), [kinh-te.md](kinh-te.md)
 
-## Một chỗ cần làm rõ
+## Cách đọc tài liệu này
 
-Bạn viết "mỗi hero tối đa 3 skills thôi", rồi ngay sau đó hỏi về skill 4-5-6-7. Tôi
-hiểu là: **ba kỹ năng đầu do bạn chốt, bốn cái sau tôi đề xuất** — tổng vẫn 7, vừa
-đúng 7 ô trống của command card.
+**Hart đã có thật trong map** — bảng dưới chép từ `war3map.w3a` và
+`CFG.SKILLS`, không phải đề xuất nữa.
 
-Nếu ý bạn thật sự là mỗi hero chỉ có 3 kỹ năng thì nói, tôi cắt lại — nhưng lúc đó
-nên nâng số cấp mỗi kỹ năng lên để vẫn còn thứ để tiêu Linh Khí.
+**Hvwd và Hkal vẫn là đề xuất.** Chưa có ability nào, chưa có id. Làm tới đâu
+thì sửa bảng tới đó, giống như đã làm với Hart — bản đề xuất đầu tiên cho Hart
+lệch khá nhiều so với cái cuối cùng làm ra.
 
 ## Ba vai
 
@@ -45,27 +46,40 @@ một ô**, đã tính vào 7.
 
 ---
 
-## Hart — Tanker
+## Hart — Tanker  *(đã có trong map)*
 
-| Ô | Kỹ năng | Loại | Dựa trên | Ghi chú |
-|---|---|---|---|---|
-| 1 | **Dậm Đất** | Chủ động, vùng | **War Stomp** *(Tauren Chieftain)* | Sát thương vùng + choáng quanh Hart |
-| 2 | **Hộ Thể** | Chủ động, hồi máu | **Holy Light** *(Paladin)* | Tự hồi hoặc hồi cho đồng đội — Holy Light tự nhắm mình được |
-| 3 | **Bất Hoại** | Chủ động | **Avatar** *(Mountain King)* | Giáp, máu, kháng phép trong thời gian ngắn |
-| 4 | **Khiêu Khích** | Chủ động | **Taunt** *(Mountain Giant)* | Ép quái đổi mục tiêu sang Hart. **Kỹ năng định nghĩa cả vai này** |
-| 5 | **Da Sắt** | Bị động | **Hardened Skin** *(Mountain Giant)* | Trừ thẳng một lượng sát thương mỗi đòn — rất mạnh trước 50 con quái yếu |
-| 6 | **Hiệu Lệnh** | Bị động, **aura** | **Devotion Aura** *(Paladin)* | Cộng giáp cho đồng đội đứng gần |
-| 7 | **Phản Đòn** | Bị động, **aura** | **Thorns Aura** *(Keeper of the Grove)* | Dội ngược sát thương. Càng đông quái đánh Hart càng lợi |
+| Ô | ID | Kỹ năng | Loại | Dựa trên | Bậc 1 → 10 |
+|---|---|---|---|---|---|
+| 5 | `A005` | **Chém Lan** | Bị động | **Cleaving Attack** *(lấy từ unit)* | 20% → 40% văng |
+| 1 | `A001` | **Chưởng** | Chủ động, đường thẳng | **Shockwave** | ×1,32 → ×1,76 · hồi 8,0s → 5,3s |
+| 2 | `A002` | **Hộ Thể** | Chủ động, hồi máu | **Holy Light** | ×2,20 → ×2,93 · hồi 10,0s → 6,7s |
+| 3 | `A003` | **Hiệu Lệnh** | Bị động, aura | **Devotion Aura** | 15% → 30% giáp |
+| 4 | `A004` | **Luyện Thể** | Bị động | **Attribute Bonus** | 12% → 24% chỉ số |
+| 6 | `A006` | **Da Sắt** | Bị động | **Attribute Bonus** *(làm vật mang)* | 5% → 10% giảm |
+| 7 | `A007` | **Bất Hoại** | Chủ động | **Avatar** | hồi 60s → 40s |
 
-**Chỗ để hở:** gần như không có sát thương đơn mục tiêu. Một mình Hart thì boss không
-bao giờ chết.
+Hai dòng đầu là **kỹ năng phát sẵn**; năm cái còn lại mua bằng Linh Khí, **thứ
+tự nào cũng được** — giá phụ thuộc đã mở bao nhiêu cái, không phụ thuộc mở cái nào.
 
-**Da Sắt là kỹ năng ăn khớp nhất với cấu trúc wave.** Mỗi wave có 50 con yếu — trừ
-thẳng sát thương mỗi đòn có giá trị gấp bội so với giảm theo %.
+### Khác gì so với bản đề xuất đầu tiên
+
+| Đề xuất cũ | Thực tế | Vì sao |
+|---|---|---|
+| Dẫm Đất *(War Stomp)* | **Chưởng** *(Shockwave)* | Đánh theo đường thưởng cho việc đứng đúng góc; vòng tròn quanh thân thì đứng đâu cũng như nhau |
+| Khiêu Khích *(Taunt)* | **Luyện Thể** | Đã bỏ |
+| Phản Đòn *(Thorns Aura)* | đã bỏ | |
+| Da Sắt trừ **thẳng** sát thương | trừ **%** | Trừ thẳng thì cuối game vô nghĩa — sát thương địch ×279 |
+
+**Mất Khiêu Khích là mất thứ định nghĩa vai tanker.** Hart bây giờ là một cái
+bịch bền chứ không phải thứ **ép** quái đánh mình. Khi nào chơi 3 người thật sẽ
+thấy rõ: quái sẽ đi thập lê vào Hvwd và Hkal, không ai giữ được chúng.
+
+**Chỗ để hở:** gần như không có sát thương đơn mục tiêu. Một mình Hart thì boss
+rất lâu mới chết.
 
 ---
 
-## Hvwd — Carry
+## Hvwd — Carry  *(đề xuất, chưa làm)*
 
 | Ô | Kỹ năng | Loại | Dựa trên | Ghi chú |
 |---|---|---|---|---|
@@ -85,7 +99,7 @@ nhau.
 
 ---
 
-## Hkal — Support
+## Hkal — Support  *(đề xuất, chưa làm)*
 
 | Ô | Kỹ năng | Loại | Dựa trên | Ghi chú |
 |---|---|---|---|---|

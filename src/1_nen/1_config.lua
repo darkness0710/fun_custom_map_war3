@@ -482,6 +482,10 @@ CFG.SKILL_MAX_LEVEL = 10
 -- MOC[k] = {3:15, 4:40, 5:75, 6:120, 7:170}, neu danh 22% thu nhap cong
 -- don cho viec mo khoa. Xem docs/03-du-lieu/nang-cap-ky-nang.md
 CFG.SKILL_START_COUNT = 2
+
+-- Gia theo SO CAI DA MO, khong theo cai nao. Mo cai thu 3 la 250 du do
+-- la ky nang nao -- nguoi choi thich mo cai nao truoc thi mo, khong bi
+-- ep thu tu.
 CFG.SKILL_UNLOCK = { 0, 0, 250, 790, 2910, 13560, 68210 }
 
 -- ---------- Bay ky nang cua tung hero ----------
@@ -498,20 +502,33 @@ CFG.SKILL_UNLOCK = { 0, 0, 250, 790, 2910, 13560, 68210 }
 CFG.SKILLS = {}
 
 CFG.SKILLS[id('H001')] = {
-  { id = id('A001'), ten = "Dam Dat", en = "Earthshatter",   loai = "chudong", heSo = 1.32, cd = 8.0,
-    mota = "Gay %s sat thuong len mot duong thang.", mota_en = "Deals %s damage in a line." },
+  -- HAI CAI DAU la ky nang phat san (CFG.SKILL_START_COUNT). Xep dau
+  -- bang la chu dich: Chem Lan don quai dong, Chuong don theo duong --
+  -- du hai viec de song qua nhung canh gioi dau.
+  { id = id('A005'), ten = "Chem Lan", en = "Cleaving Blow",   loai = "bidong",  pct = 0.20,
+    mota = "Don danh van %s sat thuong sang muc tieu ben canh.",
+    mota_en = "Attacks splash %s damage to nearby targets." },
+  { id = id('A001'), ten = "Chuong", en = "Palm Strike",       loai = "chudong", heSo = 1.32, cd = 8.0,
+    mota = "Gay %s sat thuong len mot duong thang.",
+    mota_en = "Deals %s damage in a line." },
+
+  -- Nam cai duoi mua bang Linh Khi, THU TU NAO CUNG DUOC. Gia phu thuoc
+  -- da mo bao nhieu cai, khong phu thuoc mo cai nao.
   { id = id('A002'), ten = "Ho The", en = "Guarding Light",    loai = "chudong", heSo = 2.20, cd = 10.0,
-    mota = "Hoi %s mau cho ban than hoac dong doi.", mota_en = "Heals %s to yourself or an ally." },
+    mota = "Hoi %s mau cho ban than hoac dong doi.",
+    mota_en = "Heals %s to yourself or an ally." },
   { id = id('A003'), ten = "Hieu Lenh", en = "Rallying Order", loai = "aura",    pct = 0.15,
-    mota = "Dong doi quanh ban duoc +%s giap ban than.", mota_en = "Allies near you gain +%s of their armor." },
-  { id = id('A004'), ten = "Luyen The", en = "Body Forging", loai = "bidong",  pct = 0.12,
-    mota = "+%s ca ba chi so.", mota_en = "+%s to all three attributes." },
-  { id = id('A005'), ten = "Chem Lan", en = "Cleaving Blow",  loai = "bidong",  pct = 0.20,
-    mota = "Don danh van %s sat thuong sang muc tieu ben canh.", mota_en = "Attacks splash %s damage to nearby targets." },
-  { id = id('A006'), ten = "Da Sat", en = "Ironhide",    loai = "bidong",  pct = 0.05,
-    mota = "Giam %s sat thuong nhan vao. Tran cung 10%%.", mota_en = "Reduces incoming damage by %s. Hard cap 10%%." },
+    mota = "Dong doi quanh ban duoc +%s giap ban than.",
+    mota_en = "Allies near you gain +%s of their armor." },
+  { id = id('A004'), ten = "Luyen The", en = "Body Forging",   loai = "bidong",  pct = 0.12,
+    mota = "+%s ca ba chi so.",
+    mota_en = "+%s to all three attributes." },
+  { id = id('A006'), ten = "Da Sat", en = "Ironhide",          loai = "bidong",  pct = 0.05,
+    mota = "Giam %s sat thuong nhan vao. Tran cung 10%%.",
+    mota_en = "Reduces incoming damage by %s. Hard cap 10%%." },
   { id = id('A007'), ten = "Bat Hoai", en = "Indestructible",  loai = "chudong", heSo = 0.0, cd = 60.0,
-    mota = "Tang manh giap va mau trong thoi gian ngan.", mota_en = "Greatly raises armor and health for a short time." },
+    mota = "Tang manh giap va mau trong thoi gian ngan.",
+    mota_en = "Greatly raises armor and health for a short time." },
 }
 
 CFG.OP_SKILL_UP = 6   -- arg = so thu tu ky nang trong CFG.SKILLS cua hero
