@@ -91,24 +91,37 @@ local function buildCard(pid, parent, hero, x)
     if ic ~= nil then
       BlzFrameSetSize(ic, CFG.CARD_ICON, CFG.CARD_ICON)
       BlzFrameSetPoint(ic, FRAMEPOINT_TOP, card, FRAMEPOINT_TOP,
-                       0.0, -CFG.CARD_H * 0.10)
+                       0.0, -CFG.CARD_TOP)
       BlzFrameSetTexture(ic, hero.icon, 0, true)
+      API.frameDead(ic)
     end
   end
 
   if BlzFrameSetText ~= nil then
-    local nameLbl = BlzCreateFrameByType("TEXT", "HeroCardName", card, "", pid)
-    if nameLbl ~= nil then
-      BlzFrameSetPoint(nameLbl, FRAMEPOINT_TOP, card, FRAMEPOINT_TOP,
-                       0.0, -(CFG.CARD_H * 0.10 + CFG.CARD_ICON + 0.010))
-      BlzFrameSetText(nameLbl, CFG.C_GOLD .. hero.name .. CFG.C_END)
+    -- Moc theo mot goc CO DINH tinh tu dinh the, khong theo ti le cua
+    -- CARD_H: doi chieu cao the mot cai la moi dong troi di mot kieu.
+    local y = CFG.CARD_TOP + CFG.CARD_ICON + 0.008
+
+    local function dong(ten, chu, dy, mau)
+      local f = BlzCreateFrameByType("TEXT", ten, card, "", pid)
+      if f == nil then return end
+      BlzFrameSetPoint(f, FRAMEPOINT_TOP, card, FRAMEPOINT_TOP, 0.0, -dy)
+      BlzFrameSetText(f, mau .. chu .. CFG.C_END)
+      API.frameDead(f)
     end
+
+    dong("HeroCardName", hero.name, y, CFG.C_GOLD)
     if hero.role ~= nil then
-      local roleLbl = BlzCreateFrameByType("TEXT", "HeroCardRole", card, "", pid)
-      if roleLbl ~= nil then
-        BlzFrameSetPoint(roleLbl, FRAMEPOINT_TOP, card, FRAMEPOINT_TOP,
-                         0.0, -(CFG.CARD_H * 0.10 + CFG.CARD_ICON + 0.030))
-        BlzFrameSetText(roleLbl, CFG.C_GREY .. hero.role .. CFG.C_END)
+      dong("HeroCardRole", hero.role, y + 0.018, CFG.C_GREY)
+    end
+
+    -- Ba gach dau dong. Gach cuoi mau do vi no luon la diem yeu.
+    local list = (API.lang() == "en" and hero.mota_en) or hero.mota
+    if list ~= nil then
+      for i = 1, #list do
+        local mau = (i == #list) and CFG.C_RED or CFG.C_JADE
+        dong("HeroCardDesc" .. i, "- " .. list[i],
+             y + 0.040 + (i - 1) * CFG.CARD_LINE, mau)
       end
     end
   end
@@ -140,6 +153,7 @@ local function buildPanel(pid, list)
     if title ~= nil then
       BlzFrameSetPoint(title, FRAMEPOINT_TOP, st.panel, FRAMEPOINT_TOP, 0.0, -0.008)
       BlzFrameSetText(title, API.t("pick_title"))
+      API.frameDead(title)
     end
   end
 

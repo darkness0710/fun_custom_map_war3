@@ -59,6 +59,18 @@ S.abilReported= {}     -- [unit] = true, da bao ket qua go ability chua
 
 API = {}
 
+-- Frame chi de NHIN thi phai tat tuong tac.
+--
+-- Frame con nam de len nut se NUOT cu bam: bam dung vao chu tren nut thi
+-- khong an, lech ra vai pixel moi an. Chu cang dai thi vung chet cang
+-- rong -- nen loi nay luc co luc khong, rat de tuong la may.
+--
+-- Ap cho MOI frame khong phai nut: chu, icon, vach ke, nen.
+function API.frameDead(f)
+  if f ~= nil and BlzFrameSetEnable ~= nil then BlzFrameSetEnable(f, false) end
+  return f
+end
+
 -- ---------- Tien ich ----------
 
 local function msg(pid, text)

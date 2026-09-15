@@ -169,9 +169,13 @@ local function registerEvents()
   end
   TriggerAddAction(tLC, onLinhCanCmd)
 
-  -- "-next" keo dot quai ke tiep ve ngay. Lenh dev: no doi nhip choi,
-  -- va nhip choi la thu ca bang can bang dua vao.
-  if CFG.DEV_COMMANDS then
+  -- "-next" goi dot ke tiep. LUON dang ky, khong theo DEV_COMMANDS:
+  -- voi CFG.WAVE_WAIT_FIRST thi day la thu duy nhat khoi dong duoc van,
+  -- tat no di la ngoi nhin man hinh trong mai mai.
+  --
+  -- Khong phai lenh cheat: no doi da don sach quai moi goi duoc, nen
+  -- khong bo qua duoc phan nao ca.
+  do
     local tNext = CreateTrigger()
     for i = 1, #S.pids do
       TriggerRegisterPlayerChatEvent(tNext, Player(S.pids[i]), "-next", true)
@@ -186,8 +190,8 @@ local function registerEvents()
         return
       end
       if API.waveNow() then
-        API.msg(nil, CFG.C_GREY .. "[dev] " .. GetPlayerName(Player(pid)) ..
-          " goi dot ke tiep." .. CFG.C_END)
+        API.msg(nil, CFG.C_GREY .. GetPlayerName(Player(pid)) ..
+          " -> " .. API.t("wave_next") .. CFG.C_END)
       end
     end)
   end

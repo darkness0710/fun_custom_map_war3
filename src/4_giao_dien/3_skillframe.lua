@@ -136,6 +136,7 @@ local function buildPanel(pid, slotIndex)
       BlzFrameSetPoint(title, FRAMEPOINT_CENTER, st.panel, FRAMEPOINT_CENTER,
                        0.0, CFG.FRAME_H * 0.36)
       BlzFrameSetText(title, slot.name or ("Slot " .. slotIndex))
+      API.frameDead(title)
     end
   end
 
@@ -160,6 +161,7 @@ local function buildPanel(pid, slotIndex)
         if ic ~= nil then
           BlzFrameSetAllPoints(ic, btn)
           BlzFrameSetTexture(ic, path, 0, true)
+          API.frameDead(ic)
         end
       end
 
@@ -169,6 +171,7 @@ local function buildPanel(pid, slotIndex)
           BlzFrameSetPoint(lbl, FRAMEPOINT_CENTER, btn, FRAMEPOINT_CENTER,
                            0.0, -CFG.FRAME_ICON * 0.75)
           BlzFrameSetText(lbl, choice.name)
+          API.frameDead(lbl)
         end
       end
 

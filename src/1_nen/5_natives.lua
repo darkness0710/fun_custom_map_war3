@@ -53,6 +53,8 @@ local function groups()
       { "GetUnitAbilityLevel",   GetUnitAbilityLevel,
         "khong doc duoc level -- khong tra bang so lieu duoc" },
       { "BlzGetAbilityIcon",     BlzGetAbilityIcon, "" },
+      { "BlzFrameSetEnable",     BlzFrameSetEnable,
+        "chu tren nut se nuot cu bam -- bam dung chu thi khong an" },
     }},
 
     { ten = "Chi so hero", muc = {

@@ -232,12 +232,33 @@ CFG.HERO_XP_SWEEP = 5.0
 -- Doi cho khop icon that cua hero trong Object Editor.
 -- 'role' la dong chu nho duoi ten.
 CFG.HEROES = {
+  -- mota: BA gach dau dong, hien tren the chon hero. Gach thu ba luon la
+  -- DIEM YEU -- the nao cung co cai manh, chi diem yeu moi lam nguoi choi
+  -- phai nghi xem nen chon con nao.
   { id = id('H001'), name = "Hart", role = "Warrior", abilities = {}, skills = nil,
-    icon = [[ReplaceableTextures\CommandButtons\BTNHeroPaladin.blp]] },
+    icon = [[ReplaceableTextures\CommandButtons\BTNHeroPaladin.blp]],
+    mota = { "Don quai dong tot nhat tu dot dau",
+             "Chiu don khoe: giap cao, giam sat thuong",
+             "Yeu truoc boss -- gan nhu khong co sat thuong don muc tieu" },
+    mota_en = { "Best at clearing crowds from wave one",
+                "Tanky: high armor, damage reduction",
+                "Weak against bosses -- almost no single-target damage" } },
   { id = id('H002'), name = "Hvwd", role = "Shooter", abilities = {}, skills = nil,
-    icon = [[ReplaceableTextures\CommandButtons\BTNHeroMoonPriestess.blp]] },
+    icon = [[ReplaceableTextures\CommandButtons\BTNHeroMoonPriestess.blp]],
+    mota = { "Sat thuong don muc tieu cao nhat -- nguon ha boss chinh",
+             "Danh xa, khong can lai gan",
+             "Mong: trung vai don la chet, phai co nguoi dung truoc" },
+    mota_en = { "Highest single-target damage -- your main boss killer",
+                "Attacks from range, never has to close in",
+                "Fragile: a few hits and you drop. Needs someone in front" } },
   { id = id('H003'), name = "Hkal", role = "Mage",    abilities = {}, skills = nil,
-    icon = [[ReplaceableTextures\CommandButtons\BTNHeroBloodElfPrince.blp]] },
+    icon = [[ReplaceableTextures\CommandButtons\BTNHeroBloodElfPrince.blp]],
+    mota = { "Hoi mau va tiep suc cho ca doi",
+             "Khong che dam dong, lam cham quai",
+             "Mot minh thi yeu nhat -- gia tri nam o nguoi ben canh" },
+    mota_en = { "Heals and buffs the whole team",
+                "Crowd control, slows the wave down",
+                "Weakest alone -- its value is in whoever stands next to it" } },
 }
 
 -- Ky nang gan cho MOI hero, khong rieng con nao.
@@ -309,10 +330,12 @@ CFG.HERO_PICK_MODE = "frame"
 -- CFG.PICK_TITLE da chuyen sang 6_lang.lua, khoa "pick_title".
 
 -- Kich thuoc the chon hero. Toa do man hinh: X 0.0..0.8, Y 0.0..0.6.
-CFG.CARD_W    = 0.115   -- be ngang mot the
-CFG.CARD_H    = 0.150
+CFG.CARD_W    = 0.170   -- be ngang mot the; du cho ba gach dau dong
+CFG.CARD_H    = 0.200
 CFG.CARD_GAP  = 0.014   -- khoang cach giua hai the
 CFG.CARD_ICON = 0.064   -- canh o icon trong the
+CFG.CARD_TOP  = 0.014   -- tu dinh the toi icon
+CFG.CARD_LINE = 0.016   -- khoang cach hai gach dau dong
 CFG.CARD_X    = 0.40    -- tam ngang cua ca hang the
 CFG.CARD_Y    = 0.38    -- tam doc
 
@@ -382,6 +405,11 @@ CFG.WAVE_FIRST_DELAY = 15.0
 --   don sach som  -> vao som, khong co thoi gian chet
 --   don khong kip -> quai don lai, dung nhu truoc
 -- Nen ap luc giu nguyen, chi mat phan ngoi nhin dong ho.
+-- Dot DAU TIEN doi goi bang "-next" thay vi tu ra sau WAVE_FIRST_DELAY.
+-- De co thoi gian nhin map, xem bang, nang ky nang truoc khi vao tran.
+-- Cac dot sau van chay binh thuong.
+CFG.WAVE_WAIT_FIRST  = true
+
 CFG.WAVE_AUTO_NEXT   = true
 CFG.WAVE_CLEAR_DELAY = 1.5   -- giay, de kip doc chu truoc khi wave sau ra
 

@@ -175,6 +175,7 @@ local function build(pid)
     local t = BlzCreateFrameByType("TEXT", name, st.panel, "", pid)
     if t ~= nil then
       BlzFrameSetPoint(t, FRAMEPOINT_TOPLEFT, st.panel, FRAMEPOINT_TOPLEFT, dx, dy)
+      API.frameDead(t)   -- dong chu dai se trum len nut [+] ben phai
     end
     return t
   end
@@ -189,6 +190,7 @@ local function build(pid)
     if t ~= nil then
       BlzFrameSetPoint(t, FRAMEPOINT_CENTER, b, FRAMEPOINT_CENTER, 0, 0)
       BlzFrameSetText(t, label)
+      API.frameDead(t)   -- neu khong, bam dung chu tren nut se khong an
     end
     BlzTriggerRegisterFrameEvent(S.panel.trig, b, FRAMEEVENT_CONTROL_CLICK)
     return { btn = b, txt = t }
@@ -217,6 +219,7 @@ local function build(pid)
                        PAD, y + 0.004)
       BlzFrameSetTexture(bg, CFG.PANEL_GRID_TEX, 0, true)
       BlzFrameSetVisible(bg, false)
+      API.frameDead(bg)   -- vach ke trai het be ngang, trum ca nut [+]
       st.rowBg[i] = bg
     end
 
@@ -226,6 +229,7 @@ local function build(pid)
       BlzFrameSetPoint(ic, FRAMEPOINT_TOPLEFT, st.panel, FRAMEPOINT_TOPLEFT,
                        PAD, y)
       BlzFrameSetVisible(ic, false)
+      API.frameDead(ic)
       st.rowIcon[i] = ic
     end
 

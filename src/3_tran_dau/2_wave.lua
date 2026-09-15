@@ -305,6 +305,7 @@ end
 -- luc nua lai no them mot dot nua. Phai dung no truoc.
 local function waveNow()
   if not S.running or S.waveTimer == nil then return false end
+  if S.waveDlg ~= nil then TimerDialogDisplay(S.waveDlg, true) end
   PauseTimer(S.waveTimer)
   TimerStart(S.waveTimer, 0.02, false, onWaveTimer)
   return true
@@ -372,6 +373,7 @@ end
 -- neu moi nguoi da san sang -- 15 giay do la de CHO CHON HERO, khong
 -- phai mot phan cua nhip choi.
 local function readyCheck()
+  if CFG.WAVE_WAIT_FIRST then return end   -- dot 1 doi goi tay
   if not S.running or S.stage > 0 then return end
   local n = 0
   for i = 1, #S.pids do
@@ -396,8 +398,16 @@ local function startWaves()
   S.waveTimer = CreateTimer()
   S.waveDlg = CreateTimerDialog(S.waveTimer)
   TimerDialogSetTitle(S.waveDlg, API.t("wave_next"))
-  TimerDialogDisplay(S.waveDlg, true)
-  TimerStart(S.waveTimer, CFG.WAVE_FIRST_DELAY, false, onWaveTimer)
+
+  if CFG.WAVE_WAIT_FIRST then
+    -- Khong khoi dong bo dem. Dong ho an luon: hien mot cai dem 0:00
+    -- dung yen chi lam nguoi choi tuong game treo.
+    TimerDialogDisplay(S.waveDlg, false)
+    API.msg(nil, CFG.C_GOLD .. API.t("wave_waiting") .. CFG.C_END)
+  else
+    TimerDialogDisplay(S.waveDlg, true)
+    TimerStart(S.waveTimer, CFG.WAVE_FIRST_DELAY, false, onWaveTimer)
+  end
 
   S.tickTimer = CreateTimer()
   TimerStart(S.tickTimer, CFG.WAVE_TICK, true, tick)
