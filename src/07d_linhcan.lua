@@ -47,13 +47,32 @@ end
 
 -- Cong PHAN CHENH giua hai bac, khong dat lai tu dau -- SetHeroStr cong
 -- don, dat lai tu dau se de len bonus cua trang bi sau nay.
+--
+-- Xem CFG.LINHCAN_STAT_MODE ve danh doi giua "all" va "primary".
 local function applyRank(hero, fromR, toR)
   if hero == nil then return end
   local d = math.floor(statAt(toR) - statAt(fromR) + 0.5)
   if d == 0 then return end
-  SetHeroStr(hero, GetHeroStr(hero, false) + d, true)
-  SetHeroAgi(hero, GetHeroAgi(hero, false) + d, true)
-  SetHeroInt(hero, GetHeroInt(hero, false) + d, true)
+
+  local str = GetHeroStr(hero, false)
+  local agi = GetHeroAgi(hero, false)
+  local int = GetHeroInt(hero, false)
+
+  if CFG.LINHCAN_STAT_MODE == "primary" then
+    -- Cong vao chi so dang cao nhat. Cung quy uoc voi cach skill an
+    -- chi so, nen hero khong bao gio doi chi so chinh giua van.
+    if str >= agi and str >= int then
+      SetHeroStr(hero, str + d, true)
+    elseif agi >= int then
+      SetHeroAgi(hero, agi + d, true)
+    else
+      SetHeroInt(hero, int + d, true)
+    end
+  else
+    SetHeroStr(hero, str + d, true)
+    SetHeroAgi(hero, agi + d, true)
+    SetHeroInt(hero, int + d, true)
+  end
 end
 
 -- ---------- Noi dung the ----------

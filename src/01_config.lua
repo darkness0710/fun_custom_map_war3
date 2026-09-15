@@ -451,6 +451,24 @@ CFG.LINHCAN_COST_STEP = 1.412
 CFG.LINHCAN_DMG_BASE  = 20.0   -- sat thuong hero khi chi so = 0
 CFG.LINHCAN_STAT_BASE = 20.0   -- chi so hero luc bac 1
 
+-- Cong vao chi so nao:
+--
+-- "all"     ca ba Str/Agi/Int deu cong bang nhau.
+--           Duoc : Str cho mau (phuc vu hop dong EHP x279), Int cho
+--                  mana (Support can), Agi cho giap.
+--           Mat  : Agi con cho TOC DANH -- do la DPS NGOAI ngan sach
+--                  x967. O bac 20 la +749 Agi, khong phai it.
+--
+-- "primary" chi cong vao chi so dang cao nhat.
+--           Duoc : sat thuong dung x19.7, khong thua khong thieu.
+--           Mat  : hero khong tang mau/mana -- phai lay tu Trang Bi.
+--
+-- Chua do duoc cai nao dung hon: ti le Agi -> toc danh nam trong
+-- Gameplay Constants cua map, va chua choi thu wave nao. Bat dau bang
+-- "all" vi no phuc vu nhieu hop dong cung luc; doi sang "primary" neu
+-- do thay hero manh vuot duong cong.
+CFG.LINHCAN_STAT_MODE = "all"
+
 -- ---------- Chu bay (floating combat text) ----------
 -- Warcraft III chi cho ~100 text tag ton tai cung luc. Mot wave 50 con,
 -- ve moi don danh mot chu la vai giay sau dat tran va TU DO khong con
