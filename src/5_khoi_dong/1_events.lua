@@ -43,6 +43,12 @@ local function onChat()
   local pid = GetPlayerId(GetTriggerPlayer())
   local d = S.p[pid]
 
+  -- Lenh dang ky khop TIEN TO, nen "-spawn" cung roi vao day. Kiem lai
+  -- chuoi day du roi hay lam gi -- neu khong thi moi lenh moi bat dau
+  -- bang "-sp" deu bi lenh nay nuot.
+  local raw = GetEventPlayerChatString()
+  if raw ~= nil and raw:match("^%s*%-sp%s*$") == nil then return end
+
   if d == nil then
     API.msg(pid, CFG.C_RED .. "-sp: ban khong nam trong danh sach nguoi choi." .. CFG.C_END)
     return
@@ -197,6 +203,32 @@ local function registerEvents()
         API.msg(nil, CFG.C_GREY .. GetPlayerName(Player(pid)) ..
           " -> " .. API.t("wave_next") .. CFG.C_END)
       end
+    end)
+  end
+
+  -- "-spawn": tao thang mot con H001 bang CreateUnit, canh hero.
+  --
+  -- De so sanh voi con dat san trong World Editor: cung loai unit, cung
+  -- man hinh, mot con do WE dat, mot con do code tao. Neu chi con do code
+  -- tao bi den thi loi nam o cach tao, khong phai o file model.
+  if CFG.DEV_COMMANDS then
+    local tSpawn = CreateTrigger()
+    for i = 1, #S.pids do
+      TriggerRegisterPlayerChatEvent(tSpawn, Player(S.pids[i]), "-spawn", false)
+    end
+    TriggerAddAction(tSpawn, function()
+      local pid = GetPlayerId(GetTriggerPlayer())
+      local d = S.p[pid]
+      local x, y = S.houseX or 0.0, S.houseY or 0.0
+      if d ~= nil and d.hero ~= nil then
+        x, y = GetUnitX(d.hero) + 200.0, GetUnitY(d.hero)
+      end
+      local uid = CFG.HEROES[1] and CFG.HEROES[1].id
+      local u = CreateUnit(Player(pid), uid, x, y, 270.0)
+      API.msg(pid, CFG.C_GREY .. "[dev] CreateUnit " .. API.idToStr(uid) ..
+        (u ~= nil and " -> ok" or " -> NIL") .. CFG.C_END)
+      API.trace("-spawn: " .. API.idToStr(uid) ..
+                (u ~= nil and " tao duoc" or " TAO THAT BAI"))
     end)
   end
 

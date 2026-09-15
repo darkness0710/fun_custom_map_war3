@@ -65,6 +65,7 @@ Cần `CFG.DEV_COMMANDS = true`.
 | `-lc <số>` | Nhảy tới bậc Linh Căn 1–20 | `-lc 15` → Đại La |
 | `-sp` | Phát 1 điểm kỹ năng, hoặc mở bảng chọn kỹ năng tuỳ `CFG.SKILL_MODE` | |
 | `-next` | Gọi đợt kế tiếp — **chỉ khi đã dọn sạch** quái trên map | |
+| `-spawn` | Tạo thẳng một `H001` bằng `CreateUnit`, cạnh hero | để so với unit đặt sẵn |
 | `-nat` | Bản Warcraft này có native nào | |
 
 **`-wave` là lệnh quan trọng nhất.** Không có nó thì muốn xem stage 180 phải chơi
@@ -142,6 +143,20 @@ chạy: đổi `CFG.SYNC_MODE` trong [1_config.lua](../../src/1_nen/1_config.lua
 > nhưng **thiếu tiền tố `Blz`**. Trước đây code chỉ dò tên thiếu tiền tố, nên
 > kết luận nhầm là bản 1.31.1 không có đồng bộ và cả ba bảng âm thầm lùi về chế
 > độ một người chơi. Giờ dò cả hai.
+
+### Lệnh khớp **tiền tố**, nên chúng ăn lẫn nhau
+
+`TriggerRegisterPlayerChatEvent(..., "-sp", false)` — tham số cuối `false`
+nghĩa là khớp tiền tố. Nên gõ **`-spawn`** cũng kích hoạt **`-sp`**.
+
+Đã cắn: gõ `-spawn` thì hiện bảng chọn kỹ năng, không hiểu tại sao.
+
+> Lệnh nào không nhận tham số thì **kiểm lại chuỗi đầy đủ** trong hàm xử lý:
+> ```lua
+> if raw:match("^%s*%-sp%s*$") == nil then return end
+> ```
+> Đặt `true` (khớp chính xác) thì không va nhau, nhưng lệch một dấu cách là
+> **im lặng hoàn toàn** — cũng đã cắn hai lần với `-nat` và `-next`.
 
 ## Khi game sập hoặc im lặng
 
