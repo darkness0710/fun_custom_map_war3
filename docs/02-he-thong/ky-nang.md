@@ -119,3 +119,82 @@ rỗng. Thấy nút nhưng ability bị mờ thì là `Required Level` hoặc
   chính còn lại: thưởng theo đợt quái, theo thời gian, hay mua bằng tài nguyên.
 - Chưa có cách hoàn điểm hoặc đổi kỹ năng.
 - `SKILL_POINTS_START` áp cho mọi hero như nhau, không phân biệt vai.
+
+---
+
+## Sát thương skill ăn theo chỉ số cao nhất
+
+> **Trạng thái:** Đã chốt hướng, chưa cài. Ghi lại vì nó đổi cách dựng cả 21 kỹ năng.
+
+### Vì sao bắt buộc, không phải tuỳ chọn
+
+Lý do hiển nhiên: skill số cứng thì tới cảnh giới 10 thành vô dụng, vì quái dày
+lên ×2 176 còn skill đứng yên.
+
+Lý do ít hiển nhiên hơn, và nặng hơn: **ngân sách ×967 chỉ đúng khi bốn nguồn cùng
+chạm vào tổng sát thương.**
+
+| Cách | Tổng |
+|---|---|
+| Bốn nguồn đều tác động lên toàn bộ sát thương | **×960** ✔ |
+| Trang Bị chỉ buff đòn đánh, Kỹ Năng chỉ buff skill | **×260** — thiếu 73% |
+
+Chia kênh thì bốn nguồn thành **trung bình cộng**, không phải **tích**. Đòn đánh
+riêng lẻ ×400, skill riêng lẻ ×120 — cả hai đều xa ×967.
+
+Cho skill ăn theo chỉ số là cách kéo Linh Căn (×20) vào kênh skill. Trang Bị cũng
+phải cộng chỉ số hoặc cộng % sát thương toàn cục chứ đừng chỉ cộng sát thương đòn
+đánh.
+
+### Warcraft III không tự làm việc này
+
+Ability gốc có sát thương **cố định theo cấp**, đặt trong Object Editor. Chúng
+**không đọc chỉ số hero**. Không có ô nào để điền "×1.5 chỉ số chính".
+
+Nên ability trong Object Editor chỉ còn là **cái cò**: nó lo hiệu ứng hình ảnh,
+tầm, hồi chiêu, mana. Sát thương thật do code tính:
+
+```lua
+-- Bat EVENT_PLAYER_UNIT_SPELL_EFFECT, roi:
+local dmg = API.skillDamage(caster, HE_SO, capKyNang)
+UnitDamageTarget(caster, target, dmg, true, false,
+                 ATTACK_TYPE_NORMAL, DAMAGE_TYPE_MAGIC, nil)
+```
+
+Đặt sát thương ability trong Object Editor về **0** — nếu không thì cộng hai lần.
+
+### Một hàm cho cả 21 kỹ năng
+
+Đừng viết 21 công thức. Một hàm, mỗi kỹ năng một hệ số:
+
+```lua
+-- Chi so cao nhat: dung native cu, khong can Blz.
+local function topStat(u)
+  local s, a, i = GetHeroStr(u, true), GetHeroAgi(u, true), GetHeroInt(u, true)
+  return math.max(s, a, i)
+end
+
+-- heSo : do manh rieng cua tung ky nang (vi du 1.5 = 150% chi so)
+-- cap  : 1..10, moi cap +10%
+function API.skillDamage(u, heSo, cap)
+  return topStat(u) * heSo * (1.10 ^ (cap - 1))
+end
+```
+
+`GetHeroStr(u, true)` lấy **cả bonus**, nên nó tự bao gồm Linh Căn và Trang Bị —
+đó chính là chỗ tích số được khôi phục.
+
+**Dùng "cao nhất" chứ không dùng chỉ số chính** là lựa chọn đúng cho map này:
+Linh Căn cộng đều cả ba chỉ số, nên "cao nhất" luôn là chỉ số hero khởi đầu mạnh
+nhất. Nó ổn định, và nếu sau này Trang Bị cộng lệch một chỉ số thì người chơi có
+thêm một quyết định xây dựng.
+
+### Hệ quả phải nhớ
+
+| | |
+|---|---|
+| Sát thương trong Object Editor | Đặt **0**, nếu không là cộng hai lần |
+| Mỗi kỹ năng cần một trigger | 21 trigger, nhưng dùng chung một hàm |
+| Kỹ năng buff/heal | Cũng nên ăn chỉ số, cùng lý do |
+| Kỹ năng bị động (aura, chí mạng) | Không qua đường này — chúng là dữ liệu Object Editor thuần |
+| `CFG.LINHCAN_DMG_BASE` | Chỉ ảnh hưởng đòn đánh, không ảnh hưởng skill nữa |
