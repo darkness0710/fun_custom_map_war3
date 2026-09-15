@@ -66,10 +66,11 @@ API = {}
 -- rong -- nen loi nay luc co luc khong, rat de tuong la may.
 --
 -- Ap cho MOI frame khong phai nut: chu, icon, vach ke, nen.
-function API.frameDead(f)
+local function frameDead(f)
   if f ~= nil and BlzFrameSetEnable ~= nil then BlzFrameSetEnable(f, false) end
   return f
 end
+API.frameDead = frameDead
 
 -- ---------- Tien ich ----------
 
