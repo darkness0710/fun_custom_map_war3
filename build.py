@@ -130,13 +130,29 @@ def build_block(sources):
         "-- nguon: src/  |  build luc: %s  |  %d file" % (stamp, len(sources)),
         "-- Sua code o src/*.lua roi chay lai build.py. Sua truc tiep o day se mat.",
         "do",
+        "",
+        "-- Ba ten dung chung cua ca du an. Khai bao o day chu khong trong",
+        "-- file nao, de moi file duoc boc trong khoi do...end rieng.",
+        "local CFG, S, API",
     ]
     for path in sources:
         name = os.path.basename(path)
         body = read_text(path).replace("\r\n", "\n").rstrip()
         parts.append("")
         parts.append("--#region %s" % name)
+        # Moi file mot khoi rieng.
+        #
+        # Lua chi cho 200 bien local SONG CUNG LUC trong mot ham, va ca
+        # ban build la mot ham. Gop 14 file vao mot khoi la 494 local --
+        # map khong bien dich duoc, game bao "too many local variables".
+        # Khoi rieng cho moi file thi local cua no duoc giai phong khi
+        # het khoi, nen moi file co han muc 200 cua rieng no.
+        #
+        # Chay duoc la nho ADR 0002: moi loi goi cheo file da di qua bang
+        # API tu dau, khong file nao goi thang local cua file khac.
+        parts.append("do")
         parts.append(body)
+        parts.append("end")
         parts.append("--#endregion %s" % name)
     parts.append("")
     parts.append("end")
@@ -314,6 +330,36 @@ def brace_balance_check(text):
     return True, ""
 
 
+def check_cross_file_locals(sources):
+    """Bat file nay goi thang local function cua file khac.
+
+    Tu khi moi file duoc boc trong khoi do...end rieng (de tranh gioi han
+    200 local cua Lua), local cua file A KHONG con nhin thay duoc tu file
+    B. Truoc day cung khong nen lam, nhung no tinh co chay duoc; gio thi
+    thanh nil luc chay -- va nil chi no khi ai do di trung dong do.
+
+    Moi loi goi cheo file phai di qua bang API. Xem ADR 0002.
+    """
+    owner, body = {}, {}
+    for path in sources:
+        t = strip_lua_noise(read_text(path))
+        body[path] = t
+        for m in re.finditer(r"^\s*local\s+function\s+(\w+)", t, flags=re.M):
+            owner.setdefault(m.group(1), set()).add(path)
+
+    out = []
+    for name, homes in owner.items():
+        pat = re.compile(r"(?<![%.\w])" + re.escape(name) + r"\s*\(")
+        for path in sources:
+            if path in homes:
+                continue
+            if pat.search(body[path]):
+                out.append("%s goi %s() -- dinh nghia o %s"
+                           % (os.path.basename(path), name,
+                              ", ".join(os.path.basename(h) for h in homes)))
+    return out
+
+
 def fallback_check(text):
     """Khong co luac thi chay hai phep kiem re tien nhung bat duoc
     hai loi hay gap nhat khi noi file: escape hong va lech end."""
@@ -384,6 +430,14 @@ def main():
     if not ok:
         print("[loi cu phap Lua] " + note)
         die("khong ghi file. Sua src/ roi chay lai.")
+
+    if sources:
+        cross = check_cross_file_locals(sources)
+        if cross:
+            for hit in cross:
+                print("[loi] " + hit)
+            die("khong ghi file. Moi file nam trong khoi do...end rieng, nen "
+                "goi cheo phai di qua API (ADR 0002).")
 
     banned = check_banned(final)
     if banned:

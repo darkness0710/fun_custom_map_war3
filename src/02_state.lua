@@ -8,7 +8,7 @@
 --        file truoc. Xem docs/05-quyet-dinh/0002.
 -- ============================================================
 
-local S = {}
+S = {}
 
 S.running = false
 S.grid    = nil     -- so do luoi, do 03_geometry dung
@@ -55,7 +55,7 @@ S.dumped      = {}     -- [unit] = true, da do danh sach ability chua
 S.spReported  = {}     -- [unit] = true, da bao so diem ky nang chua
 S.abilReported= {}     -- [unit] = true, da bao ket qua go ability chua
 
-local API = {}
+API = {}
 
 -- ---------- Tien ich ----------
 

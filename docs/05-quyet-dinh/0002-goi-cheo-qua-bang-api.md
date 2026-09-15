@@ -49,3 +49,29 @@ với Blizzard.
 Ba cái tên `S`, `CFG`, `API` là giao ước chung của cả chín file. `build.py` chỉ
 bảo đảm **thứ tự nối**, không bảo đảm gì về tên — nên có một phép kiểm chéo riêng
 (quét mọi `API.x` được gọi mà không chỗ nào gán) chạy được bất cứ lúc nào.
+
+---
+
+## Cập nhật 2026-09-15 — quy ước này cứu dự án một lần nữa
+
+Map sập không mở được, `War3Log.txt` báo:
+
+```
+error: too many local variables (limit is 200) in main function
+```
+
+**Lua chỉ cho 200 biến local sống cùng lúc trong một hàm**, và cả bản build là một
+hàm. 14 file gộp trong một khối `do...end` là **494 local** — gấp 2,5 lần giới hạn.
+
+Cách sửa: `build.py` bọc **mỗi file trong một khối `do...end` riêng**, và khai báo
+`CFG`, `S`, `API` ở phần đầu. Local của mỗi file được giải phóng khi hết khối, nên
+mỗi file có hạn mức 200 của riêng nó. Sau khi sửa: **1 local** ở khối ngoài cùng.
+
+**Sửa được trong một lượt là nhờ quyết định này.** Vì mọi lời gọi chéo file đã đi
+qua `API` từ đầu, không file nào gọi thẳng local của file khác — kiểm lại xác nhận
+**0 vi phạm**. Nếu trước đây cứ để các file gọi thẳng nhau (chúng *sẽ* chạy, vì
+cùng một khối), thì bây giờ phải sửa hàng trăm chỗ.
+
+Từ giờ quy ước này không còn là lựa chọn phong cách mà là **bắt buộc kỹ thuật**:
+local của file A không còn nhìn thấy được từ file B. `build.py` kiểm và **chặn ghi
+file** nếu phát hiện gọi chéo.

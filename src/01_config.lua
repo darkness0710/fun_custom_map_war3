@@ -21,7 +21,7 @@ local function id(fourcc)
   return (FourCC(fourcc))
 end
 
-local CFG = {}
+CFG = {}
 
 CFG.VERSION = "0.2.0"
 CFG.DEBUG   = false     -- bat: in so do luoi, ping minimap, bao cao chi tiet

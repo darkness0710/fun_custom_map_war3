@@ -1,0 +1,163 @@
+# Lệnh debug & chế độ phát triển
+
+> **Cập nhật:** 2026-09-15
+> **Code:** [01_config.lua](../../src/01_config.lua) · [08_events.lua](../../src/08_events.lua)
+
+Sổ tra cho lúc chạy thử. Mọi lệnh gõ thẳng vào ô chat trong game.
+
+## Bốn công tắc, độc lập với nhau
+
+Tất cả nằm ở đầu [01_config.lua](../../src/01_config.lua). Đổi xong phải chạy
+`python build.py` rồi mới Ctrl+F9.
+
+| Khoá | Mặc định | Bật thì được gì |
+|---|---|---|
+| `CFG.DEV_COMMANDS` | `true` | Mở nhóm lệnh dev bên dưới |
+| `CFG.TRACE` | `true` | Ghi vết khởi động ra file |
+| `CFG.DEBUG` | `false` | In sơ đồ lưới, ping 25 block, báo cáo chi tiết lúc vào map |
+| `CFG.REVEAL_MAP` | `true` | Mở toàn bộ sương mù |
+
+**Bốn cái này không kéo theo nhau.** Tắt `DEBUG` vẫn gõ lệnh dev được, vẫn có file
+vết. Đây là bài học từ một lần hỏng thật: trước đây lệnh `-sp` gắn vào `CFG.DEBUG`,
+nên tắt báo cáo chi tiết là lệnh biến mất luôn mà không báo gì.
+
+### Trước khi phát hành
+
+```lua
+CFG.DEV_COMMANDS = false
+CFG.TRACE        = false
+CFG.DEBUG        = false
+CFG.REVEAL_MAP   = false
+```
+
+Quên `REVEAL_MAP` là cả bản đồ sáng trưng, mất hết sương mù — dễ sót nhất vì nó
+không gây lỗi gì.
+
+## Lệnh luôn dùng được
+
+Không phụ thuộc công tắc nào. Đây là lối chơi, không phải debug.
+
+| Lệnh | Làm gì |
+|---|---|
+| `E` | Mở bảng nhân vật (4 thẻ) |
+| `-c` | Như phím E — đường lui nếu phím không gán được |
+| `-lc` | Mở thẳng thẻ Linh Căn |
+| `-lc up` | Đột phá một bậc, không cần mở bảng |
+
+> Phím **E** cần `BlzTriggerRegisterPlayerKeyEvent` và `OSKEY_E`. Hai cái này
+> **chưa xác minh trên 1.31.1**. Kiểm bằng file vết: thấy `panel: da gan phim E`
+> là chạy, thấy `panel: KHONG co Blz...` thì dùng `-c`.
+
+## Lệnh dev
+
+Cần `CFG.DEV_COMMANDS = true`.
+
+| Lệnh | Làm gì | Ví dụ |
+|---|---|---|
+| `-wave <số>` | Nhảy thẳng tới stage 1–220 | `-wave 110` → boss Độ Kiếp |
+| `-lk <số>` | Thêm Linh Khí (vàng) | `-lk 200000` |
+| `-tt <số>` | Thêm Tinh Thạch (gỗ) | `-tt 500` |
+| `-lc <số>` | Nhảy tới bậc Linh Căn 1–20 | `-lc 15` → Đại La |
+| `-sp` | Phát 1 điểm kỹ năng, hoặc mở bảng chọn kỹ năng tuỳ `CFG.SKILL_MODE` | |
+
+**`-wave` là lệnh quan trọng nhất.** Không có nó thì muốn xem stage 180 phải chơi
+hai tiếng. Mọi thứ về cân bằng đều kiểm bằng lệnh này.
+
+### Ba bài kiểm hay dùng
+
+```
+-wave 1     rồi   -wave 110   rồi   -wave 220
+```
+Xem đường cong chỉ số có đúng không. Đối chiếu với bảng tra trong
+[duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md).
+
+```
+-lk 2000000  rồi  -lc 20
+```
+Hero ở đỉnh tu vi. Xem chỉ số có lên +749 mỗi loại không, và sát thương có ×19.7
+không.
+
+```
+-wave 11    (boss Phàm Nhân)
+```
+Stage boss đầu tiên. Kiểm boss ra một mình, không có lính đi kèm.
+
+## File vết
+
+`CFG.TRACE = true` ghi ra:
+
+```
+Documents\Warcraft III\CustomMapData\DarknessTrace.txt
+```
+
+File **bị ghi đè mỗi lần chạy**, và ghi lại toàn bộ danh sách ở mỗi bước — nên sau
+khi game sập, **dòng cuối cùng là bước cuối đã chạy xong**.
+
+> **Xoá file này trước khi test** nếu muốn chắc chắn dữ liệu là của lần chạy vừa
+> rồi. Đã có một lần đọc nhầm vết của hôm trước rồi kết luận sai.
+
+Những dòng đáng để mắt:
+
+| Dòng | Nghĩa |
+|---|---|
+| `chunk: da nap` | Code đã vào map. Không có dòng nào cả = map không chứa code |
+| `BOOTSTRAP HOAN TAT` | Khởi động sạch |
+| `panel: da gan phim E` | Phím E dùng được |
+| `fct: san sang` | Chữ bay chạy |
+| `fct: THIEU su kien sat thuong` | 1.31.1 không có event đó, chữ bay tự tắt |
+| `linhcan: the so N, dong bo=true` | Linh Căn đồng bộ nhiều người được |
+| `stage N (...) P=k song=m` | Mỗi wave: stage, số người, số quái đang sống |
+
+## Khi game sập hoặc im lặng
+
+Theo thứ tự này, đừng đoán:
+
+1. **`Documents\Warcraft III\Logs\War3Log.txt`** — lỗi biên dịch Lua nằm ở đây.
+   Hộp thoại trống trong game *không phải* là "không có thông tin".
+2. **`CustomMapData\DarknessTrace.txt`** — chết ở bước nào.
+3. **`Documents\Warcraft III\Errors\<thời gian>\Crash.txt`** — dump khi sập.
+
+`FramedefErrors.log` thì **bỏ qua** — mấy dòng `ConsoleUI.fdf` và
+`PlayerSlotPopupMenu` là tiếng ồn nền của Warcraft III, có ở mọi lần khởi động kể
+cả khi map chưa có dòng frame nào.
+
+## Hai giới hạn của engine đã cắn một lần
+
+**200 biến local mỗi hàm.** Cả bản build là một hàm. `build.py` bọc mỗi file trong
+khối `do...end` riêng để lách, và **chặn ghi file** nếu phát hiện file này gọi
+thẳng local của file kia. Triệu chứng nếu tái phát:
+`too many local variables (limit is 200)` trong `War3Log.txt`.
+
+**~100 text tag cùng lúc.** Xem phần chữ bay ở cuối.
+
+## Bẫy quy trình
+
+**World Editor ghi đè `war3map.lua` mỗi lần Save.** Thứ tự bắt buộc:
+
+```
+sửa địa hình trong WE  →  Save
+sửa code trong src/
+python build.py                  ←  LUÔN là bước cuối
+Ctrl+F9
+```
+
+Vào map mà im lìm, không thấy dòng vàng `[build x.y.z] code da chay.` — gần như
+chắc chắn là quên build. Đã dính nhiều lần.
+
+**World Editor cũng giữ bản map trong bộ nhớ nó.** Nếu WE mở map suốt buổi mà
+`build.py` sửa file trên đĩa, có lúc Ctrl+F9 đóng gói bản cũ. Nghi ngờ thì đóng
+map trong WE rồi mở lại.
+
+## Tắt riêng chữ bay
+
+Chữ bay có công tắc riêng, không theo `CFG.DEBUG`:
+
+```lua
+CFG.FCT_ENABLED   = true    -- tắt hết chữ bay
+CFG.FCT_SHOW_GOLD = true    -- chỉ tắt chữ Linh Khí
+CFG.FCT_MAX_TAGS  = 12      -- giảm nếu thấy rối mắt
+```
+
+> Đừng nâng `FCT_MAX_TAGS` quá cao. Warcraft III chỉ cho ~100 text tag cùng lúc;
+> tràn trần thì **không còn chữ nào hiện nữa**, kể cả chữ quan trọng. Với 12 chữ
+> mỗi 0.4 giây thì đỉnh điểm khoảng 52 — còn cách trần.
