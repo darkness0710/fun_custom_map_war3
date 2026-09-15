@@ -73,7 +73,7 @@ docs/
      0009-so-luong-linh-co-dinh.md
      0010-giap-khong-nam-trong-duong-cong.md
      0011-nha-chinh-dem-mang.md        <- CHUA CHOT
-     0012-mot-kenh-dong-bo-duy-nhat.md <- CHO MOT PHEP DO TRONG GAME
+     0012-mot-kenh-dong-bo-duy-nhat.md
   mau/                   Mẫu để copy khi viết tài liệu mới
      he-thong.md
      quyet-dinh.md

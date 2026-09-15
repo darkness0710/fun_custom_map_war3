@@ -1,8 +1,29 @@
 # 0012 — Một kênh đồng bộ duy nhất cho cả dự án
 
-> **Trạng thái:** Đã chốt, chờ một phép đo trong game
+> **Trạng thái:** Đã chốt — đo trong game 2026-09-15, chạy đường `blz`
 > **Ngày:** 2026-09-15
 > **Code:** [02b_sync.lua](../../src/02b_sync.lua)
+
+## Kết quả đo (một người, 1.31.1)
+
+```
+Duong dang chay: blz   (CFG.SYNC_MODE = auto)
+BlzSendSyncData ................... true
+BlzGetTriggerSyncData ............. true
+BlzTriggerRegisterPlayerSyncEvent   true      <- CÓ
+TriggerRegisterPlayerSyncEvent .... false     <- tên code cũ dò
+Game cache (Store/Sync/Flush) ..... true
+Ping player 0: da ve
+```
+
+**1.31.1 có đủ native đồng bộ.** Thiếu ba chữ cái `Blz` trong một cái tên là
+toàn bộ nguyên nhân. Ping về được, tức là gửi → sự kiện → nhận chạy thật.
+
+Còn một phép đo nữa **chưa làm**: vòng này qua mạng thật với hai người trở lên.
+Ở một người, gói tin không rời máy.
+
+Đường `cache` và cái bẫy của nó bên dưới **không dùng tới**, nhưng giữ nguyên
+làm đường lui — bật bằng `CFG.SYNC_MODE = "cache"`.
 
 ## Bối cảnh
 
