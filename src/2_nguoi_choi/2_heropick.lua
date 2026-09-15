@@ -1,5 +1,5 @@
 -- ============================================================
---  07_heropick.lua  --  Chon hero bang popup
+--  2_heropick.lua  --  Chon hero bang popup
 --
 --  Thay cho Tavern. Ly do: CreateUnit bo qua toan bo techtree --
 --  khong requirement Altar, khong gia vang/go, khong luong thuc,
@@ -30,7 +30,7 @@ end
 
 -- So thu tu trong CFG.HEROES. Kenh dong bo chi cho gui so duoi 100000,
 -- ma id kieu FourCC thi hon mot ti -- nen gui so thu tu roi tra nguoc
--- ra id o dau ben kia. Xem src/02b_sync.lua.
+-- ra id o dau ben kia. Xem src/1_nen/3_sync.lua.
 local function heroIndex(uid)
   for i = 1, #CFG.HEROES do
     if CFG.HEROES[i].id == uid then return i end

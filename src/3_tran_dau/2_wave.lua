@@ -1,5 +1,5 @@
 -- ============================================================
---  05_wave.lua  --  220 stage
+--  2_wave.lua  --  220 stage
 --
 --  Luat: docs/02-he-thong/dot-quai.md
 --  Duong cong: docs/03-du-lieu/duong-cong-suc-manh.md

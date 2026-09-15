@@ -1,5 +1,5 @@
 -- ============================================================
---  07e_panel.lua  --  Bang nhan vat (phim E)
+--  1_panel.lua  --  Bang nhan vat (phim E)
 --
 --  MOT khung duy nhat voi 4 the. Moi he tu dang ky noi dung cua minh
 --  qua API.panelAddTab -- khung nay khong biet gi ve Linh Can hay Ky

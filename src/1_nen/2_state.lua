@@ -1,5 +1,5 @@
 -- ============================================================
---  02_state.lua  --  Trang thai chay & tien ich dung chung
+--  2_state.lua  --  Trang thai chay & tien ich dung chung
 --
 --  S   : moi thu thay doi trong luc choi.
 --  API : ban dang ky ham dung chung giua cac module.
@@ -37,7 +37,7 @@ S.sframe      = {}     -- giao dien ky nang, do 07b_skillframe dung
 S.hframe      = {}     -- the chon hero,   do 07c_heroframe dung
 S.panel       = { tabs = {}, byPid = {}, trig = nil }  -- bang phim E, 07e
 S.lcTabIndex  = nil    -- so thu tu the Linh Can trong bang
--- S.sync do 02b_sync.lua dung, khai bao ngay trong file do.
+-- S.sync do 3_sync.lua dung, khai bao ngay trong file do.
 S.fct         = { pending = {}, count = 0 }   -- chu bay, 08b
 S.fctTimer    = nil
 S.keyBound    = false  -- gan duoc phim E khong

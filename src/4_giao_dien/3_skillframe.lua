@@ -1,5 +1,5 @@
 -- ============================================================
---  07b_skillframe.lua  --  Giao dien chon ky nang tu ve
+--  3_skillframe.lua  --  Giao dien chon ky nang tu ve
 --
 --  Dung khi CFG.SKILL_MODE = "frame". Ve bang icon bang
 --  BlzCreateFrameByType -- khong can file .fdf/.toc, khong phai import
@@ -14,7 +14,7 @@
 --
 --     Nen: bam -> chi gui mot mau tin qua API.syncSend. Moi may, ke ca
 --     may nguoi bam, nhan duoc roi MOI doi trang thai. Cung mot thay
---     doi, cung mot thu tu, khong lech. Kenh do 02b_sync.lua lo.
+--     doi, cung mot thu tu, khong lech. Kenh do 3_sync.lua lo.
 --
 --     (Popup dialog o 07_heropick khong dinh loi nay: dialog la UI cap
 --     game, cu bam di qua duong lenh dong bo san.)
@@ -174,7 +174,7 @@ local function buildPanel(pid, slotIndex)
 
       BlzTriggerRegisterFrameEvent(S.sframe.trig, btn, FRAMEEVENT_CONTROL_CLICK)
       -- Ghi SO THU TU cua lua chon, khong phai id ability: kenh dong bo
-      -- chi tai duoc so nho. Xem src/02b_sync.lua.
+      -- chi tai duoc so nho. Xem src/1_nen/3_sync.lua.
       st.map[btn] = { pid = pid, slot = slotIndex, ci = i }
       made = made + 1
     end

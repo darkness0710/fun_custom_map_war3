@@ -2,12 +2,12 @@
 
 > **Trạng thái:** Đã cài
 > **Cập nhật:** 2026-09-14
-> **Nguồn sự thật:** [01_config.lua](../../src/01_config.lua)
+> **Nguồn sự thật:** [1_config.lua](../../src/1_nen/1_config.lua)
 
 Trang này **không chứa giá trị**. Giá trị sống trong `CFG`. Ở đây là ý nghĩa của
 từng khoá và ràng buộc nó phải tuân — thứ đọc code không suy ra được.
 
-Muốn xem số hiện tại: mở [01_config.lua](../../src/01_config.lua).
+Muốn xem số hiện tại: mở [1_config.lua](../../src/1_nen/1_config.lua).
 
 ## Người chơi
 

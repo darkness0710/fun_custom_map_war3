@@ -19,7 +19,7 @@ lập bằng texture và vật cản.
 
 | Tầng | Là gì | Ai giữ |
 |---|---|---|
-| **Logic** | Block nằm đâu, điểm này thuộc block nào | `S.grid` trong [03_geometry.lua](../../src/03_geometry.lua) |
+| **Logic** | Block nằm đâu, điểm này thuộc block nào | `S.grid` trong [4_geometry.lua](../../src/1_nen/4_geometry.lua) |
 | **Hình ảnh** | Nước, bờ, cầu, cây cối | Địa hình vẽ tay trong World Editor |
 
 Hai tầng **không buộc phải trùng nhau từng ô**. Lòng sông rộng 1 024 đơn vị là

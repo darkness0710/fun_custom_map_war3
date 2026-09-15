@@ -1,5 +1,5 @@
 -- ============================================================
---  08_events.lua  --  Trigger
+--  1_events.lua  --  Trigger
 --
 --  Hai viec: nha chinh chet, va chan nguoi choi chon nha chinh.
 --  Su kien popup chon hero do 07_heropick tu dang ky lay.

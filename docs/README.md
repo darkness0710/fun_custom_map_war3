@@ -9,7 +9,7 @@ Bắt đầu đọc từ [00-tong-quan.md](00-tong-quan.md), rồi
 ## Ba quy ước, chỉ ba thôi
 
 **1. Con số sống trong code, không sống ở đây.**
-Toàn bộ số cấu hình nằm trong `CFG` tại [01_config.lua](../src/01_config.lua).
+Toàn bộ số cấu hình nằm trong `CFG` tại [1_config.lua](../src/1_nen/1_config.lua).
 Tài liệu nhắc tới chúng bằng **tên khoá** (`CFG.RIVER_TILES`), không bao giờ chép
 giá trị. Lý do: giá trị đổi mỗi lần cân bằng lại; nếu chép vào đây thì sau ba lần
 sửa tài liệu sẽ nói dối, mà tài liệu nói dối còn tệ hơn không có tài liệu.
@@ -36,6 +36,39 @@ Mỗi lần chọn một hướng và bỏ một hướng khác, viết một fi
 kia".
 
 ## Bố cục
+
+### `src/` — code, nối theo đúng thứ tự này
+
+```
+src/
+  1_nen/               nền tảng — phải nạp trước
+     1_config.lua      mọi con số chỉnh được, tạo bảng CFG
+     2_state.lua       tạo S và API, tiện ích chung
+     3_sync.lua        kênh đồng bộ nhiều người chơi
+     4_geometry.lua    lưới 25 ô, toạ độ, vùng
+  2_nguoi_choi/
+     1_player.lua      đăng ký người chơi, tiền tệ, khoá hero
+     2_heropick.lua    chọn hero, cây kỹ năng
+     3_linhcan.lua     tu vi — nguồn sức mạnh lớn nhất
+  3_tran_dau/
+     1_house.lua       nhà chính, chết là thua
+     2_wave.lua        220 stage, sinh quái, tiền thưởng
+  4_giao_dien/
+     1_panel.lua       bảng phím E, bốn thẻ
+     2_heroframe.lua   thẻ chọn hero
+     3_skillframe.lua  bảng chọn kỹ năng
+     4_fct.lua         chữ bay
+  5_khoi_dong/         phải nạp cuối cùng
+     1_events.lua      trigger, lệnh chat
+     2_init.lua        bootstrap, móc vào main()
+```
+
+**Thứ tự thư mục là thứ tự nạp.** Chỉ ba ràng buộc thật: `1_config` trước
+(nó tạo `CFG`), `2_state` ngay sau (tạo `S` và `API`), `5_khoi_dong` cuối cùng.
+Phần giữa sắp kiểu gì cũng được vì mọi lời gọi chéo file đi qua `API` lúc chạy
+— [ADR 0002](05-quyet-dinh/0002-goi-cheo-qua-bang-api.md).
+
+### `docs/` — tài liệu
 
 ```
 docs/
@@ -84,7 +117,7 @@ Mỗi hệ thống lối chơi một file trong `02-he-thong/`, theo [mẫu](mau
 ## Hai cái bẫy đã cắn, đừng để cắn lại
 
 **Không gọi `FourCC` trần** — nó trả về *hai* giá trị và nở ra ở vị trí cuối của
-bảng. Dùng `id()` trong [01_config.lua](../src/01_config.lua).
+bảng. Dùng `id()` trong [1_config.lua](../src/1_nen/1_config.lua).
 [ADR 0006](05-quyet-dinh/0006-fourcc-tra-hai-gia-tri.md)
 
 **Không gọi `GetUnitGoldCost` / `GetUnitWoodCost`** — sập ngay cả với id hợp lệ.

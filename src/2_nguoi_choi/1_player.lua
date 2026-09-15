@@ -1,5 +1,5 @@
 -- ============================================================
---  04_player.lua  --  Dang ky nguoi choi va quan he dong minh
+--  1_player.lua  --  Dang ky nguoi choi va quan he dong minh
 --
 --  Buoc 1 chi lam dung hai viec: biet ai dang choi, va dat quan he
 --  ba nguoi choi <-> phe dich. Chua co hero, chua co chi so.

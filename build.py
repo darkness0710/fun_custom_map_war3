@@ -78,24 +78,51 @@ def find_map(explicit):
     return found[0]
 
 
+def part_key(name):
+    """Mot doan duong dan -> khoa sap xep. Co so dau ten thi sap theo so."""
+    m = re.match(r"^(\d+)", name)
+    return (0, int(m.group(1)), name.lower()) if m else (1, 0, name.lower())
+
+
+def rel_name(path):
+    """Ten hien thi: duong dan tuong doi trong src, dung dau / cho gon."""
+    return os.path.relpath(path, SRC_DIR).replace(os.sep, "/")
+
+
 def collect_sources():
-    """src/*.lua sap theo so dau ten file, roi theo ten."""
+    """src/**/*.lua, sap theo so dau ten THU MUC roi den so dau ten FILE.
+
+    Thu tu noi file la thu tu nap. Chi ba rang buoc that su:
+    1_config phai truoc (no tao bang CFG), 2_state ngay sau (tao S va
+    API), va file khoi dong phai cuoi cung. Moi loi goi cheo file khac
+    deu qua API luc CHAY, nen phan giua sap kieu gi cung duoc -- xem
+    ADR 0002.
+    """
     if not os.path.isdir(SRC_DIR):
         die("khong thay thu muc src: " + SRC_DIR)
 
-    files = [n for n in os.listdir(SRC_DIR) if n.lower().endswith(".lua")]
-    if not files:
+    found = []
+    for dirpath, dirnames, filenames in os.walk(SRC_DIR):
+        dirnames.sort()
+        for n in filenames:
+            if n.lower().endswith(".lua"):
+                found.append(os.path.join(dirpath, n))
+    if not found:
         die("src rong -- khong co file .lua nao de noi.")
 
-    def key(name):
-        m = re.match(r"^(\d+)", name)
-        return (0, int(m.group(1)), name.lower()) if m else (1, 0, name.lower())
+    ordered = sorted(found, key=lambda p: [part_key(s) for s in
+                                           rel_name(p).split("/")])
 
-    ordered = sorted(files, key=key)
-    unnumbered = [n for n in ordered if not re.match(r"^\d+", n)]
+    loose = [rel_name(p) for p in ordered if "/" not in rel_name(p)]
+    if loose:
+        print("[canh bao] file nam thang trong src, khong trong thu muc con: "
+              + ", ".join(loose))
+    unnumbered = [rel_name(p) for p in ordered
+                  if any(not re.match(r"^\d+", s)
+                         for s in rel_name(p).split("/"))]
     if unnumbered:
-        print("[canh bao] file khong co so dau ten, xep cuoi: " + ", ".join(unnumbered))
-    return [os.path.join(SRC_DIR, n) for n in ordered]
+        print("[canh bao] thieu so dau ten, xep cuoi: " + ", ".join(unnumbered))
+    return ordered
 
 
 def read_text(path):
@@ -122,7 +149,7 @@ def build_block(sources):
 
     Ca chuoi file nam chung mot khoi nen local o file truoc van nhin thay
     duoc o file sau. Chieu nguoc lai thi khong -- do la ly do cac module
-    goi cheo nhau qua bang API trong 02_state.lua.
+    goi cheo nhau qua bang API trong 1_nen/2_state.lua.
     """
     stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     parts = [
@@ -136,7 +163,7 @@ def build_block(sources):
         "local CFG, S, API",
     ]
     for path in sources:
-        name = os.path.basename(path)
+        name = rel_name(path)
         body = read_text(path).replace("\r\n", "\n").rstrip()
         parts.append("")
         parts.append("--#region %s" % name)
@@ -290,7 +317,7 @@ def check_fourcc(text):
     ve -- nen { FourCC(a), FourCC(b) } cho ra bang 3 phan tu, phan tu
     cuoi la so rac. Truyen so rac cho GetUnitGoldCost lam game sap.
 
-    Quy uoc cua du an: dung id() trong 01_config.lua, no boc ngoac don
+    Quy uoc cua du an: dung id() trong 1_config.lua, no boc ngoac don
     de cat ve dung mot gia tri. Day la canh bao chu khong chan build --
     FourCC tran trong phep gan don van an toan.
     """
@@ -355,12 +382,12 @@ def check_cross_file_locals(sources):
                 continue
             if pat.search(body[path]):
                 out.append("%s goi %s() -- dinh nghia o %s"
-                           % (os.path.basename(path), name,
-                              ", ".join(os.path.basename(h) for h in homes)))
+                           % (rel_name(path), name,
+                              ", ".join(rel_name(h) for h in homes)))
     return out
 
 
-SYNC_OWNER   = "02b_sync.lua"
+SYNC_OWNER   = "1_nen/3_sync.lua"
 SYNC_NATIVES = [
     "BlzSendSyncData",
     "BlzGetTriggerSyncData",
@@ -375,7 +402,7 @@ SYNC_NATIVES = [
 
 
 def check_sync_owner(sources):
-    """Chi 02b_sync.lua duoc dung native dong bo.
+    """Chi 3_sync.lua duoc dung native dong bo.
 
     Ba file giao dien truoc day moi file tu do mot bo native, tu quyet
     dinh co dong bo hay khong, va tu lui ve che do chay thang khi thieu.
@@ -388,7 +415,7 @@ def check_sync_owner(sources):
     """
     out = []
     for path in sources:
-        if os.path.basename(path) == SYNC_OWNER:
+        if rel_name(path) == SYNC_OWNER:
             continue
         t = strip_lua_noise(read_text(path))
         for name in SYNC_NATIVES:
@@ -396,7 +423,7 @@ def check_sync_owner(sources):
             if m:
                 line = t.count(NEWLN, 0, m.start()) + 1
                 out.append("%s dong %d goi %s() -- phai qua API.syncSend/"
-                           "API.syncOn" % (os.path.basename(path), line, name))
+                           "API.syncOn" % (rel_name(path), line, name))
     return out
 
 
@@ -500,7 +527,7 @@ def main():
         print("[check] map     : %s" % os.path.basename(map_dir))
         print("[check] khoi cu : %s" % ("co, se thay the" if stripped else "chua co"))
         for p in sources:
-            print("[check]   + %s" % os.path.basename(p))
+            print("[check]   + %s" % rel_name(p))
         print("[check] cu phap : %s" % note)
         print("[check] ket qua : %s, %d dong (chua ghi)" % (label, final.count("\n")))
         return
@@ -516,7 +543,7 @@ def main():
     print("[ok] goc     : %d dong%s"
           % (base.count("\n"), "  (da go khoi cu)" if stripped else ""))
     for p in sources:
-        print("[ok]   + %s" % os.path.basename(p))
+        print("[ok]   + %s" % rel_name(p))
     print("[ok] cu phap : %s" % note)
     print("[ok] ghi     : %s -- %s, tong %d dong"
           % (os.path.relpath(target, ROOT), label, final.count("\n")))

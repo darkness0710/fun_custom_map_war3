@@ -1,12 +1,12 @@
 -- ============================================================
---  07d_linhcan.lua  --  Linh Can (tu vi cua nguoi choi)
+--  3_linhcan.lua  --  Linh Can (tu vi cua nguoi choi)
 --
 --  Nguon suc manh LON NHAT: x20 trong hop dong x967
 --  (docs/03-du-lieu/duong-cong-suc-manh.md). 20 bac, dung chung thang
 --  ten voi 20 canh gioi cua phe dich.
 --
 --  File nay KHONG ve bang. No dang ky mot the vao bang nhan vat
---  (07e_panel.lua) va chi lo phan noi dung. Nho vay bon he dung chung
+--  (1_panel.lua) va chi lo phan noi dung. Nho vay bon he dung chung
 --  mot khung, khong the lech nhau ve giao dien.
 --
 --  Nho: goi ham cua file khac phai qua API.

@@ -1,5 +1,5 @@
 -- ============================================================
---  07c_heroframe.lua  --  Chon hero bang the (card)
+--  2_heroframe.lua  --  Chon hero bang the (card)
 --
 --  Dung khi CFG.HERO_PICK_MODE = "frame". Ve mot hang the, moi the mot
 --  hero: icon lon, ten, vai.
@@ -7,7 +7,7 @@
 --  Cung hai rang buoc nhu 07b_skillframe, va vi cung mot ly do:
 --
 --  1. Su kien bam frame CHI no tren may nguoi bam. Nen bam khong doi
---     trang thai -- no gui mot mau tin qua API.syncSend (02b_sync.lua),
+--     trang thai -- no gui mot mau tin qua API.syncSend (3_sync.lua),
 --     va moi may goi API.applyHeroPick khi nhan duoc. Lech may la bi da
 --     ra khoi tran, khong phai loi hien thi.
 --
@@ -153,7 +153,7 @@ local function buildPanel(pid, list)
     if card ~= nil then
       BlzTriggerRegisterFrameEvent(S.hframe.trig, card, FRAMEEVENT_CONTROL_CLICK)
       -- Ghi SO THU TU trong CFG.HEROES, khong phai id: kenh dong bo chi
-      -- tai duoc so nho. Xem src/02b_sync.lua.
+      -- tai duoc so nho. Xem src/1_nen/3_sync.lua.
       st.map[card] = { pid = pid, idx = API.heroIndex(list[i].id) }
       made = made + 1
     end

@@ -1,5 +1,5 @@
 -- ============================================================
---  01_config.lua  --  Cau hinh map
+--  1_config.lua  --  Cau hinh map
 --
 --  Buoc 1: kich thuoc, nguoi choi, luoi 25 o ngan cach boi song.
 --  Moi con so chinh sua deu nam o day.
@@ -39,7 +39,7 @@ CFG.TRACE_FILE = "DarknessTrace.txt"
 -- ---------- Dong bo nhieu nguoi choi ----------
 --
 -- Bam nut frame chi no tren may nguoi bam. Doi trang thai game ngay o do
--- la lech tran. Xem docs/05-quyet-dinh/0012 va src/02b_sync.lua.
+-- la lech tran. Xem docs/05-quyet-dinh/0012 va src/1_nen/3_sync.lua.
 --
 --   "auto"  -- uu tien blz, roi cache, roi local  (nen dung)
 --   "blz"   -- BlzSendSyncData, can 1.31 tro len
@@ -157,7 +157,7 @@ CFG.LOCK_HERO_XP = true
 --
 -- "frame" THU NGHIEM. Giao dien tu ve bang BlzCreateFrame: co icon, tu
 --         nhom theo slot, khong dung Object Editor. Xem file rieng
---         src/07b_skillframe.lua -- hong thi xoa file do la xong.
+--         src/4_giao_dien/3_skillframe.lua -- hong thi xoa file do la xong.
 --
 -- Ca "learn" va "pick" deu giu hero o cap 1: LOCK_HERO_XP khong doi,
 -- diem ky nang do code phat chu khong do len cap.

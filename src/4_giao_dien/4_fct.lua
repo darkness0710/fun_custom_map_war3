@@ -1,5 +1,5 @@
 -- ============================================================
---  08b_fct.lua  --  Chu bay: sat thuong gay ra / nhan vao / linh khi
+--  4_fct.lua  --  Chu bay: sat thuong gay ra / nhan vao / linh khi
 --
 --  CAI BAY LON NHAT: Warcraft III chi cho khoang 100 text tag ton tai
 --  cung luc. Mot wave co 50 con; ve mot chu moi don danh la trong vai

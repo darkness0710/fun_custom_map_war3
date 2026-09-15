@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Cơ chế đã cài — **chờ ability trong Object Editor**
 > **Cập nhật:** 2026-09-15
-> **Code:** [07_heropick.lua](../../src/07_heropick.lua), [04_player.lua](../../src/04_player.lua)
+> **Code:** [2_heropick.lua](../../src/2_nguoi_choi/2_heropick.lua), [1_player.lua](../../src/2_nguoi_choi/1_player.lua)
 > **Khoá CFG:** `SKILL_MODE` `SKILL_POINTS_START` `HEROES[i].abilities` `HERO_COMMON_ABILITIES`
 
 ## Ba chế độ

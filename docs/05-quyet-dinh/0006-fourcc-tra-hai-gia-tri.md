@@ -40,7 +40,7 @@ lỗi** với id không hợp lệ — nó đọc bậy bộ nhớ và làm sậ
 ## Quyết định
 
 **Không gọi `FourCC` trần trong `src/`.** Dùng `id()` ở
-[01_config.lua](../../src/01_config.lua):
+[1_config.lua](../../src/1_nen/1_config.lua):
 
 ```lua
 local function id(fourcc)

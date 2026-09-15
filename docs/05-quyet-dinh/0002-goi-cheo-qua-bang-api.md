@@ -10,7 +10,7 @@
 ở file đầu sẽ nhìn thấy được từ mọi file sau.
 
 Điều đó đúng, nhưng chỉ đúng một chiều. Lua bắt upvalue **lúc định nghĩa hàm**,
-không phải lúc gọi. Nên một hàm trong `05_wave.lua` viết:
+không phải lúc gọi. Nên một hàm trong `2_wave.lua` viết:
 
 ```lua
 refreshBoard()   -- khai báo là local ở 07_ui.lua, tức là SAU
@@ -21,7 +21,7 @@ là biến toàn cục — và nó bằng `nil`. Lỗi chỉ nổ lúc chạy, k
 
 ## Quyết định
 
-`02_state.lua` khai báo `local API = {}`. Mỗi module gắn hàm dùng chung của mình
+`2_state.lua` khai báo `local API = {}`. Mỗi module gắn hàm dùng chung của mình
 vào bảng đó ở cuối file:
 
 ```lua

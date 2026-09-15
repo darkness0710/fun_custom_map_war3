@@ -2,9 +2,9 @@
 
 > **Trạng thái:** Đã cài — **chờ bạn tạo vùng trong World Editor**
 > **Cập nhật:** 2026-09-14
-> **Code:** [06_core.lua](../../src/06_core.lua), [03_geometry.lua](../../src/03_geometry.lua)
+> **Code:** [1_house.lua](../../src/3_tran_dau/1_house.lua), [4_geometry.lua](../../src/1_nen/4_geometry.lua)
 > **Khoá CFG:** `RGN_HOUSE` `RGN_ENEMY` `HOUSE_*`
-> **Code thêm:** [08_events.lua](../../src/08_events.lua), [04_player.lua](../../src/04_player.lua)
+> **Code thêm:** [1_events.lua](../../src/5_khoi_dong/1_events.lua), [1_player.lua](../../src/2_nguoi_choi/1_player.lua)
 
 ## Nó là gì
 
@@ -60,7 +60,7 @@ Chung tầm nhìn là **bắt buộc**, không phải trang trí — không có 
 
 **L4. Nhà chết là cả ba người chơi thua ngay.**
 `CFG.HOUSE_DEATH_ENDS_GAME`. Bắt bằng `EVENT_PLAYER_UNIT_DEATH` trong
-[08_events.lua](../../src/08_events.lua). Chờ 3 giây cho đọc được lý do rồi mới
+[1_events.lua](../../src/5_khoi_dong/1_events.lua). Chờ 3 giây cho đọc được lý do rồi mới
 hiện màn hình kết quả.
 
 **L5. Người chơi không chọn được nhà chính.**

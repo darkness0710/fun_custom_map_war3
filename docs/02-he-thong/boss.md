@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Đã chốt — chưa cài
 > **Cập nhật:** 2026-09-15
-> **Code:** [05_wave.lua](../../src/05_wave.lua) (đang rỗng)
+> **Code:** [2_wave.lua](../../src/3_tran_dau/2_wave.lua) (đang rỗng)
 > **Khoá CFG:** `BOSS_*`
 > **Xem kèm:** [dot-quai.md](dot-quai.md) ·
 > [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md)
@@ -106,7 +106,7 @@ dần chứ không bị ném vào một trận boss ba cơ chế ngay từ Phàm
 ## Ràng buộc kỹ thuật
 
 **Thanh máu boss phải tự vẽ.** Warcraft III không có thanh máu boss sẵn. Hoặc
-`BlzCreateFrame` như [07b_skillframe.lua](../../src/07b_skillframe.lua) đã làm,
+`BlzCreateFrame` như [3_skillframe.lua](../../src/4_giao_dien/3_skillframe.lua) đã làm,
 hoặc dùng multiboard, hoặc chấp nhận chỉ có thanh máu nhỏ trên đầu unit. Cái thứ
 ba là chấp nhận được ở bản đầu — đừng chặn hệ boss vì cái thanh máu.
 

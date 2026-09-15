@@ -1,5 +1,5 @@
 -- ============================================================
---  02b_sync.lua  --  Kenh dong bo: mot may bam, moi may cung lam
+--  3_sync.lua  --  Kenh dong bo: mot may bam, moi may cung lam
 --
 --  VAN DE. Su kien bam frame chi no tren may nguoi bam. Warcraft III
 --  chay lockstep: moi may mo phong cung mot van co, cung mot nhip. Doi
@@ -261,7 +261,7 @@ local function selfTest()
       API.msg(nil, CFG.C_RED .. "Dong bo [" .. S.sync.mode ..
         "] khong nhan duoc tin cua player " .. table.concat(mat, ",") ..
         " -- nut trong bang se khong an." .. CFG.C_END)
-      API.msg(nil, CFG.C_GOLD .. "Doi CFG.SYNC_MODE trong 01_config.lua sang " ..
+      API.msg(nil, CFG.C_GOLD .. "Doi CFG.SYNC_MODE trong 1_config.lua sang " ..
         (S.sync.mode == "cache" and "\"blz\"" or "\"cache\"") ..
         " roi build lai. Go -sync de xem chi tiet." .. CFG.C_END)
     end

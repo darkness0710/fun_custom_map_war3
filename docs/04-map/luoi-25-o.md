@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Toạ độ `Đã cài` — địa hình vẽ tay ([ADR 0004](../05-quyet-dinh/0004-song-ve-tay.md))
 > **Cập nhật:** 2026-09-14
-> **Code:** [03_geometry.lua](../../src/03_geometry.lua)
+> **Code:** [4_geometry.lua](../../src/1_nen/4_geometry.lua)
 > **Khoá CFG:** `GRID_COLS` `GRID_ROWS` `RIVER_TILES` `BLOCK_TILES_OVERRIDE` `TILE`
 
 ## Hình dạng

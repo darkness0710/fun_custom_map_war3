@@ -1,6 +1,6 @@
 # Hệ thống: Đợt quái
 
-> **Trạng thái:** Đã chốt — chưa cài (`05_wave.lua` còn rỗng)
+> **Trạng thái:** Đã chốt — chưa cài (`2_wave.lua` còn rỗng)
 > **Cập nhật:** 2026-09-15
 > **Khoá CFG:** `WAVE_*` `MOB_*` `ELITE_*` `SCALE_*`
 > **Xem kèm:** [canh-gioi.md](../03-du-lieu/canh-gioi.md) ·

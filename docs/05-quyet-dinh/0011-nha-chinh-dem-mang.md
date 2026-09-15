@@ -15,7 +15,7 @@
 
 Đây là ADR duy nhất trong thư mục này chưa chốt. Nó mâu thuẫn với
 [nha-chinh.md](../02-he-thong/nha-chinh.md) đang ở trạng thái `Đã cài`, nên phải
-quyết trước khi viết [05_wave.lua](../../src/05_wave.lua) — quyết sau thì phải gỡ
+quyết trước khi viết [2_wave.lua](../../src/3_tran_dau/2_wave.lua) — quyết sau thì phải gỡ
 code đã chạy được.
 
 ## Bối cảnh
@@ -65,7 +65,7 @@ con.
 **Máu nhà tăng theo đường cong sát thương địch.**
 `HOUSE_HP(s) = HOUSE_HP_BASE × (đường cong dmg)`. Giữ nguyên "số đòn nhà chịu
 được" suốt ván, và giữ nguyên mọi thứ đã cài trong
-[06_core.lua](../../src/06_core.lua).
+[1_house.lua](../../src/3_tran_dau/1_house.lua).
 
 Loại vì nó đúng nhưng vô hình. Người chơi thấy thanh máu nhà tụt 30 % ở wave 80
 và không suy ra được điều gì — 30 % của một con số vừa đổi mà họ không biết. Và

@@ -20,8 +20,8 @@ Bấm **E** mở một bảng frame che giữa màn hình, có bốn thẻ:
 └──────────────────────────────────────────────┘
 ```
 
-Hạ tầng đã có sẵn: [07b_skillframe.lua](../../src/07b_skillframe.lua) và
-[07c_heroframe.lua](../../src/07c_heroframe.lua) đã vẽ được panel, nút, icon, và đã
+Hạ tầng đã có sẵn: [3_skillframe.lua](../../src/4_giao_dien/3_skillframe.lua) và
+[2_heroframe.lua](../../src/4_giao_dien/2_heroframe.lua) đã vẽ được panel, nút, icon, và đã
 xử lý đồng bộ nhiều người. Bảng này dùng lại đúng khuôn đó.
 
 ## Bốn thẻ, bốn hệ nâng cấp
@@ -53,7 +53,7 @@ nó đã chạy được.
 
 ## Thẻ Linh Căn — **đã cài**
 
-> Code: [07d_linhcan.lua](../../src/07d_linhcan.lua). Mở bằng `-lc`.
+> Code: [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua). Mở bằng `-lc`.
 > Không vẽ được frame thì tự lùi về thông báo chữ, và `-lc up` đột phá
 > thẳng không cần bảng.
 

@@ -1,5 +1,5 @@
 -- ============================================================
---  09_init.lua  --  Khoi dong & moc vao main() cua map
+--  2_init.lua  --  Khoi dong & moc vao main() cua map
 --
 --  File nay phai la file cuoi cung: build.py dong khoi do...end ngay
 --  sau day.

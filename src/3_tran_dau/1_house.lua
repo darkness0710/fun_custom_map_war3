@@ -1,5 +1,5 @@
 -- ============================================================
---  06_core.lua  --  Nha chinh & phan giai vung
+--  1_house.lua  --  Nha chinh & phan giai vung
 --
 --  Dung nha chinh giua CFG.RGN_HOUSE, va phan giai san vung
 --  CFG.RGN_ENEMY de sau nay cho quai ra. Chua sinh quai nao ca.

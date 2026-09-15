@@ -33,7 +33,7 @@ gỡ bỏ theo yêu cầu. Bốn module `05`–`08` để rỗng, giữ chỗ tr
 | Nhà chính | Mountain King giữa `MyHouseRegion` — block #21 | [02-he-thong/nha-chinh.md](02-he-thong/nha-chinh.md) |
 | Vùng địch | `MyEmenyRegion` — block #16, **chưa cho quái ra** | như trên |
 | Chọn hero | Popup lúc vào map — 3 hero, mỗi người 1, không trùng | [02-he-thong/chon-hero.md](02-he-thong/chon-hero.md) |
-| Debug | **Tắt** (`CFG.DEBUG = false`) | `01_config.lua` |
+| Debug | **Tắt** (`CFG.DEBUG = false`) | `1_config.lua` |
 
 Ba người chơi là đồng minh, chung tầm nhìn. Slot trống hoặc do máy giữ bị bỏ
 qua, nên chơi một mình vẫn vào map được.

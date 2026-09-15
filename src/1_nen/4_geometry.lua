@@ -1,5 +1,5 @@
 -- ============================================================
---  03_geometry.lua  --  Luoi 25 o va cac dong song ngan cach
+--  4_geometry.lua  --  Luoi 25 o va cac dong song ngan cach
 --
 --  Mot truc (vd truc X, 5 cot) duoc chia nhu sau:
 --

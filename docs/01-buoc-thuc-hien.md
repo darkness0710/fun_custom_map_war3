@@ -14,8 +14,8 @@ sau — không dựng ba tầng rồi mới bật game lên xem.
 | Việc | Ở đâu |
 |---|---|
 | Đo map size thật từ `war3map.w3e` | [04-map/kich-thuoc.md](04-map/kich-thuoc.md) |
-| 3 người chơi + 1 phe địch, quan hệ đồng minh | [04_player.lua](../src/04_player.lua) |
-| Lưới 5×5 tự chia theo vùng chơi được | [03_geometry.lua](../src/03_geometry.lua) |
+| 3 người chơi + 1 phe địch, quan hệ đồng minh | [1_player.lua](../src/2_nguoi_choi/1_player.lua) |
+| Lưới 5×5 tự chia theo vùng chơi được | [4_geometry.lua](../src/1_nen/4_geometry.lua) |
 | Gỡ sạch nội dung game cũ, để rỗng `05`–`08` | — |
 
 **Cách kiểm:** chạy `python build.py`, vào map bằng Ctrl+F9. Với `CFG.DEBUG = true`

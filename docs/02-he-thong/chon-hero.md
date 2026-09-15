@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Đã cài
 > **Cập nhật:** 2026-09-14
-> **Code:** [07_heropick.lua](../../src/07_heropick.lua), [07c_heroframe.lua](../../src/07c_heroframe.lua)
+> **Code:** [2_heropick.lua](../../src/2_nguoi_choi/2_heropick.lua), [2_heroframe.lua](../../src/4_giao_dien/2_heroframe.lua)
 > **Khoá CFG:** `HEROES` `PICK_*` `HERO_*`
 
 ## Nó là gì
