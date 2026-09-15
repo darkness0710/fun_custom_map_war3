@@ -124,7 +124,7 @@ kiểm `BlzSetUnitArmor` có trên bản này không — gõ `-nat` trong game.
 
 | ID | Gốc | Là gì | Loại số | Nút chính mỗi bậc |
 |---|---|---|---|---|
-| `A001` | `AOsh` Shockwave | chủ động, sát thương | hệ số | ×1,03 · hồi chiêu ×0,956 |
+| `A001` | `AOsh` Shockwave | **Chưởng** — chủ động, sát thương | hệ số | ×1,03 · hồi chiêu ×0,956 |
 | `A002` | `AHhb` Holy Light | chủ động, hồi máu | hệ số | ×1,03 · hồi chiêu ×0,956 |
 | `A003` | `AHad` Devotion Aura | bị động, aura giáp | **cộng thẳng** | ⚠ teo dần — xem dưới |
 | `A004` | `Aamk` Attribute Bonus | bị động, cộng cả ba chỉ số | **cộng thẳng** | ⚠ teo dần — xem dưới |
@@ -195,14 +195,14 @@ Hai lý do, lý do thứ hai mới là cái nặng:
 
 1. Cả bảy ngay từ stage 1 thì không còn gì để mong. Bảy ô trong command card
    đầy ngay giây đầu là hết chuyện.
-2. **Phép tính hệ số 1,32 cho Dẫm Đất chỉ đếm ba nguồn**: đánh thường, Chém
-   Lan, Dẫm Đất. Cho cả bảy ngay từ đầu là hero mạnh hơn hợp đồng stage 1
+2. **Phép tính hệ số 1,32 cho Chưởng chỉ đếm ba nguồn**: đánh thường, Chém
+   Lan, Chưởng. Cho cả bảy ngay từ đầu là hero mạnh hơn hợp đồng stage 1
    rất nhiều — đầu ván thành dễ không.
 
 Giá suy từ đường cong thu nhập: mở được kỹ năng thứ *k* vào khoảng stage này
 nếu dành 22% thu nhập cộng dồn cho việc mở khóa:
 
-| Kỹ năng | Mở được khoảng stage | Giá |
+| Lần mở thứ | Mở được khoảng stage | Giá |
 |---|---|---|
 | 3 | 15 | 250 |
 | 4 | 40 | 790 |
@@ -212,6 +212,13 @@ nếu dành 22% thu nhập cộng dồn cho việc mở khóa:
 
 Tổng mở khóa **85 720**. Cộng với nâng cấp (307 356) và Linh Căn (747 839) là
 **61% thu nhập cả ván** — trước là 56%, vẫn còn chỗ cho các nguồn tiêu sau này.
+
+**Giá theo số cái đã mở, không theo cái nào.** Mở cái thứ ba là 250 dù đó là kỹ
+năng nào — người chơi thích mở cái nào trước thì mở. Ép thứ tự là lấy mất một
+lựa chọn mà chẳng được gì.
+
+Hai kỹ năng phát sẵn là **Chém Lan** và **Chưởng**: một nguồn dọn quái đông, một
+nguồn đánh theo đường — đủ hai việc để sống qua những cảnh giới đầu.
 
 `CFG.SKILL_START_COUNT = 7` là quay về kiểu cũ, có sẵn cả bảy.
 
@@ -225,7 +232,7 @@ Bị động tính theo **phần trăm**. Cả hai đều tự bám theo Linh C�
 
 | Kỹ năng | Loại | Bậc 1 | Bậc 10 |
 |---|---|---|---|
-| Dẫm Đất | chủ động | ×1,32 · hồi 8,0s | ×1,76 · hồi 5,3s |
+| Chưởng | chủ động | ×1,32 · hồi 8,0s | ×1,76 · hồi 5,3s |
 | Hộ Thể | chủ động | ×2,20 · hồi 10,0s | ×2,93 · hồi 6,7s |
 | Hiệu Lệnh | aura | 15% giáp | 30% giáp |
 | Luyện Thể | bị động | 12% chỉ số | 24% chỉ số |
@@ -233,7 +240,7 @@ Bị động tính theo **phần trăm**. Cả hai đều tự bám theo Linh C�
 | Da Sắt | bị động | 5% giảm | 10% giảm |
 | Bất Hoại | chủ động | hồi 60s | hồi 40s |
 
-### Hệ số 1,32 của Dẫm Đất đến từ đâu
+### Hệ số 1,32 của Chưởng đến từ đâu
 
 Stage 1 cần **60 EHP/giây** (50 lính × 20 EHP + 1 tinh anh × 200, chia cho 20
 giây). Hart cấp 1: sát thương 12–22 (tb 17), Str 10.
@@ -246,7 +253,7 @@ he so = 35,7 x 8,0 / (8 con x 27) = 1,32
 
 Kiểm ngược ở cuối game (Linh Căn bậc 20, kỹ năng bậc 10, ×12 trang bị):
 **51 595** so với **58 019 cần** — đạt 89%. Nằm trong sai số của ba giả định chưa
-đo: tốc độ đánh 2,0s, Dẫm Đất trúng 8 con, Chém Lan có 4 con đứng gần.
+đo: tốc độ đánh 2,0s, Chưởng trúng 8 con, Chém Lan có 4 con đứng gần.
 
 ## Lỗ hổng đã vá: Linh Căn thiếu một nửa
 
