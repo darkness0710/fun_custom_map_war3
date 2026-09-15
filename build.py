@@ -162,6 +162,41 @@ def write_wct(map_dir, block):
     return True, "war3map.wct -- %d byte" % len(out)
 
 
+WCT_MAX = 64 * 1024     # war3map.wct that thi chi vai tram byte
+
+
+def check_wct_size(map_dir):
+    """Bao neu war3map.wct phinh to bat thuong.
+
+    World Editor giu doan Custom Script trong bo nho, va mot lan thu chen
+    code vao do da lam no ghi ra file 1.4 GB moi lan Save. Mot lan lot
+    vao commit la GitHub chan push (gioi han 100 MB).
+
+    Phep kiem nay re, va no bat truoc khi file kip vao git.
+    """
+    p = os.path.join(map_dir, "war3map.wct")
+    if not os.path.isfile(p):
+        return
+    n = os.path.getsize(p)
+    if n <= WCT_MAX:
+        return
+
+    print("")
+    print("[!] war3map.wct dang %s byte -- binh thuong chi vai tram." % format(n, ","))
+
+    # Tu khoi phuc luon. De file nay nam do la lan commit sau bi GitHub
+    # chan (gioi han 100 MB), va da bi chan hai lan roi.
+    goc = os.path.join(BAK_DIR, "war3map.wct.goc")
+    if os.path.isfile(goc) and os.path.getsize(goc) <= WCT_MAX:
+        shutil.copyfile(goc, p)
+        print("    Da khoi phuc tu build/war3map.wct.goc (%d byte)."
+              % os.path.getsize(p))
+    print("    World Editor VAN dang giu doan Custom Script trong bo nho:")
+    print("    dong World Editor va KHONG Save, hoac xoa sach o Custom Script")
+    print("    trong Trigger Editor (bam vao ten map o dau cay).")
+    print("")
+
+
 def world_editor_running():
     """World Editor co dang mo khong.
 
@@ -704,6 +739,8 @@ def main():
     if args.wct:
         ok, note = write_wct(map_dir, build_block(sources, args.lang))
         print("[%s] wct     : %s" % ("ok" if ok else "canh bao", note))
+
+    check_wct_size(map_dir)
 
     if args.run:
         return run_map(map_dir, args.wc3)
