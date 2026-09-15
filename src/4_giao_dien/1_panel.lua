@@ -26,14 +26,27 @@ local ROWS = 10
 -- ROW_H phai LON HON BTN_H. Truoc day ROW_H 0.021 < BTN_H 0.024 nen nut
 -- cua hai dong ke nhau chong len nhau 0.003 -- bam dong nay an vao dong
 -- kia. Do la loi "click bi truot".
-local ROW_H  = 0.030
-local BTN_H  = 0.024
-local ICON   = 0.020
+local ROW_H  = 0.024
+local BTN_H  = 0.020
+local ICON   = 0.018
 local PAD    = 0.012
-local TOP    = 0.086    -- tu dinh bang toi dong dau
-local FOOT   = 0.038
+local TOP    = 0.096    -- tu dinh bang toi dong TIEU DE COT
+local FOOT   = 0.034
+local MAXCOL = 6        -- so cot toi da mot the duoc khai bao
 
-local function panelH() return TOP + ROWS * ROW_H + FOOT end
+local function panelH() return TOP + (ROWS + 1) * ROW_H + FOOT end
+
+-- So La Ma cho nhan the: I. Spirit Root, II. Skills, ...
+local ROMAN = { "I", "II", "III", "IV", "V", "VI", "VII", "VIII" }
+
+-- The khong khai bao cot thi coi nhu MOT cot trai het be ngang.
+local function colsOf(tab)
+  if tab.cols ~= nil and #tab.cols > 0 then return tab.cols end
+  return { { w = 1.0 } }
+end
+
+-- Be ngang danh cho vung noi dung, sau icon va truoc nut [+].
+local function bodyW() return CFG.PANEL_W - 2 * PAD - ICON - 0.006 - 0.034 end
 
 local FRAME_OK = nil
 
@@ -78,7 +91,8 @@ end
 
 local function stateOf(pid)
   if S.panel.byPid[pid] == nil then
-    S.panel.byPid[pid] = { panel = nil, head = nil, rows = {}, rowBtn = {},
+    S.panel.byPid[pid] = { panel = nil, head = nil, head2 = {},
+                           cell = {}, rowBtn = {},
                            rowIcon = {}, rowBg = {},
                            tabBtn = {}, btnAction = nil, btnActionTxt = nil,
                            btnClose = nil, tab = 1, shown = false }
@@ -97,7 +111,7 @@ local function refresh(pid)
   for i = 1, #S.panel.tabs do
     local t = st.tabBtn[i]
     if t ~= nil and t.txt ~= nil then
-      local nm = S.panel.tabs[i].ten
+      local nm = (ROMAN[i] or i) .. ". " .. S.panel.tabs[i].ten
       if i == st.tab then
         BlzFrameSetText(t.txt, CFG.C_GOLD .. nm .. CFG.C_END)
       else
@@ -114,9 +128,48 @@ local function refresh(pid)
       API.num(API.getTinhThach(pid)) .. CFG.C_END)
   end
 
+  -- Dat lai vi tri va chu cho tieu de cot. Moi the mot bo cot khac
+  -- nhau nen phai tinh lai moi lan doi the, khong the co dinh luc dung.
+  local cols = colsOf(tab)
+  local x, xs = 0.0, {}
+  for c = 1, MAXCOL do
+    local cell = st.head2[c]
+    if cell ~= nil then
+      local col = cols[c]
+      if col == nil then
+        BlzFrameSetVisible(cell, false)
+      else
+        xs[c] = x
+        BlzFrameSetVisible(cell, col.ten ~= nil)
+        BlzFrameSetPoint(cell, FRAMEPOINT_TOPLEFT, st.panel, FRAMEPOINT_TOPLEFT,
+                         PAD + ICON + 0.006 + x, -TOP)
+        if col.ten ~= nil then
+          BlzFrameSetText(cell, CFG.C_GREY .. col.ten .. CFG.C_END)
+        end
+        x = x + col.w * bodyW()
+      end
+    end
+  end
+
   local lines = tab.rows(pid) or {}
   for i = 1, ROWS do
-    BlzFrameSetText(st.rows[i], lines[i] or "")
+    local row = lines[i]
+    for c = 1, MAXCOL do
+      local cell = st.cell[i][c]
+      if cell ~= nil then
+        local chu = nil
+        if type(row) == "table" then chu = row[c]
+        elseif c == 1 then chu = row end          -- dong mot cot, trai het
+
+        BlzFrameSetVisible(cell, chu ~= nil)
+        if chu ~= nil then
+          BlzFrameSetPoint(cell, FRAMEPOINT_TOPLEFT, st.panel, FRAMEPOINT_TOPLEFT,
+                           PAD + ICON + 0.006 + (xs[c] or 0.0),
+                           -TOP - ROW_H - (i - 1) * ROW_H)
+          BlzFrameSetText(cell, chu)
+        end
+      end
+    end
 
     -- Nut rieng cho tung dong. Mot nut chung o chan bang khong du: the
     -- Ky Nang co bay dong, moi dong mot ky nang nang rieng.
@@ -138,8 +191,7 @@ local function refresh(pid)
     -- trong nhu mot cai bang tinh rong, roi mat hon la khong ke.
     local bg = st.rowBg[i]
     if bg ~= nil then
-      BlzFrameSetVisible(bg, CFG.PANEL_GRID and (lines[i] ~= nil)
-                             and (i % 2 == 0))
+      BlzFrameSetVisible(bg, CFG.PANEL_GRID and (row ~= nil) and (i % 2 == 0))
     end
   end
 
@@ -207,9 +259,16 @@ local function build(pid)
 
   st.head = text("CharHead", PAD, -0.050)
 
-  st.rows, st.rowBtn, st.rowIcon, st.rowBg = {}, {}, {}, {}
+  -- Tieu de cot
+  st.head2 = {}
+  for c = 1, MAXCOL do
+    st.head2[c] = text("CharCol" .. c, PAD, -TOP)
+    if st.head2[c] ~= nil then BlzFrameSetVisible(st.head2[c], false) end
+  end
+
+  st.cell, st.rowBtn, st.rowIcon, st.rowBg = {}, {}, {}, {}
   for i = 1, ROWS do
-    local y = -TOP - (i - 1) * ROW_H
+    local y = -TOP - ROW_H - (i - 1) * ROW_H
 
     -- Vach ke nam DUOI CUNG trong thu tu tao, nen chu va nut ve de len.
     local bg = BlzCreateFrameByType("BACKDROP", "CharRowBg" .. i, st.panel, "", pid)
@@ -233,7 +292,15 @@ local function build(pid)
       st.rowIcon[i] = ic
     end
 
-    st.rows[i] = text("CharRow" .. i, PAD + ICON + 0.006, y - 0.002)
+    -- Moi dong MAXCOL o rieng. Mot frame chu moi dong thi khong the can
+    -- cot duoc: font Warcraft khong deu be ngang nen dem khoang trang la
+    -- vo ich, va cang khong the can phai.
+    st.cell[i] = {}
+    for c = 1, MAXCOL do
+      st.cell[i][c] = text("CharCell" .. i .. "_" .. c,
+                           PAD + ICON + 0.006, y - 0.002)
+      if st.cell[i][c] ~= nil then BlzFrameSetVisible(st.cell[i][c], false) end
+    end
 
     local rb = button("CharRowBtn" .. i, "+",
                       CFG.PANEL_W - PAD - 0.028, y, 0.028)
@@ -243,7 +310,7 @@ local function build(pid)
     end
   end
 
-  local footY = -TOP - ROWS * ROW_H - 0.006
+  local footY = -TOP - (ROWS + 1) * ROW_H - 0.006
   local a = button("CharAction", "", PAD, footY, 0.14)
   if a ~= nil then st.btnAction, st.btnActionTxt = a.btn, a.txt end
   local c = button("CharClose", API.t("panel_close"),

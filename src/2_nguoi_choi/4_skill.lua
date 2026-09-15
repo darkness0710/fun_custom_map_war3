@@ -241,40 +241,36 @@ local function tabRows(pid)
     -- unit chi len duoc bac 3 la bang noi doi.
     -- Dong bi khoa: chi hien ten, chu "khoa" va gia mo. Hien luon ca so
     -- lieu cua no la lo het, chang con gi de mong.
+    local co = (gia ~= nil and API.getLinhKhi(pid) >= gia) and CFG.C_JADE or CFG.C_GREY
+    local oGia = (gia == nil) and (CFG.C_GREY .. API.t("panel_max") .. CFG.C_END)
+                              or (co .. API.num(gia) .. CFG.C_END)
+
     if lv <= 0 then
-      local co = (gia ~= nil and API.getLinhKhi(pid) >= gia) and CFG.C_JADE or CFG.C_GREY
-      out[i] = CFG.C_GREY .. API.pick(sk) .. "   " .. API.t("skill_locked") ..
-               CFG.C_END .. "   " ..
-               (gia and (co .. API.num(gia) .. CFG.C_END) or "")
+      -- Dong bi khoa: chi ten va gia. Hien luon so lieu la lo het.
+      out[i] = { CFG.C_GREY .. API.pick(sk) .. CFG.C_END,
+                 CFG.C_GREY .. API.t("skill_locked") .. CFG.C_END, "", "", oGia }
     else
+      local oBac = lv .. "/" .. tran
+      if tran < CFG.SKILL_MAX_LEVEL then
+        oBac = CFG.C_RED .. oBac .. "!" .. CFG.C_END
+      end
 
-    local bac = "  " .. API.t("panel_level") .. " " .. lv .. "/" .. tran
-    if tran < CFG.SKILL_MAX_LEVEL then
-      bac = CFG.C_RED .. bac .. " (" .. API.t("skill_oeshort") .. ")" .. CFG.C_END
-    end
+      local oHl = CFG.C_JADE .. fmt(sk, lv) .. CFG.C_END
+      if sk.heSo ~= nil and sk.heSo > 0 then
+        -- Ghi ro dang an theo chi so nao. Cong thuc lay chi so CAO NHAT,
+        -- ma nguoi choi khong co cach nao biet do la cai nao neu khong noi.
+        local _, ten = topStat(S.p[pid] and S.p[pid].hero)
+        oHl = oHl .. CFG.C_GREY .. " " .. API.t("stat_" .. ten) .. CFG.C_END
+      end
 
-    local dong = CFG.C_GOLD .. API.pick(sk) .. CFG.C_END .. bac ..
-                 "   " .. CFG.C_JADE .. fmt(sk, lv) .. CFG.C_END
-    if sk.heSo ~= nil and sk.heSo > 0 then
-      -- Ghi ro dang an theo chi so nao. Cong thuc lay chi so CAO NHAT,
-      -- ma nguoi choi khong co cach nao biet do la cai nao neu khong noi.
-      local _, ten = topStat(S.p[pid] and S.p[pid].hero)
-      dong = dong .. CFG.C_GREY .. " (" .. API.t("stat_" .. ten) .. ")" .. CFG.C_END
-    end
-    if sk.cd ~= nil and sk.cd > 0 then
-      dong = dong .. CFG.C_GREY .. string.format("  %s %.1fs", API.t("panel_cd"), cdAt(sk, lv)) .. CFG.C_END
-    end
-    if manaAt(sk, lv) > 0 then
-      dong = dong .. CFG.C_GREY .. "  " .. API.t("panel_mana") .. " " ..
-             manaAt(sk, lv) .. CFG.C_END
-    end
-    if gia == nil then
-      dong = dong .. CFG.C_GREY .. "   " .. API.t("panel_max") .. CFG.C_END
-    else
-      local co = (API.getLinhKhi(pid) >= gia) and CFG.C_JADE or CFG.C_GREY
-      dong = dong .. "   " .. co .. API.num(gia) .. CFG.C_END
-    end
-    out[i] = dong
+      local oDung = ""
+      if sk.cd ~= nil and sk.cd > 0 then
+        oDung = string.format("%.1fs", cdAt(sk, lv))
+        if manaAt(sk, lv) > 0 then oDung = oDung .. " / " .. manaAt(sk, lv) end
+        oDung = CFG.C_GREY .. oDung .. CFG.C_END
+      end
+
+      out[i] = { CFG.C_GOLD .. API.pick(sk) .. CFG.C_END, oBac, oHl, oDung, oGia }
     end
   end
 
@@ -319,6 +315,11 @@ end
 local function startSkills()
   API.panelAddTab({
     ten         = API.t("panel_skill"),
+    cols        = { { ten = API.t("col_skill"),  w = 0.28 },
+                    { ten = API.t("col_level"),  w = 0.12 },
+                    { ten = API.t("col_effect"), w = 0.22 },
+                    { ten = API.t("col_use"),    w = 0.18 },
+                    { ten = API.t("col_cost"),   w = 0.20 } },
     rows        = tabRows,
     rowLabel    = tabRowLabel,
     rowAction   = tabRowAction,

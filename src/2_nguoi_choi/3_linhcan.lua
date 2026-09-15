@@ -69,24 +69,27 @@ end
 
 -- ---------- Noi dung the ----------
 
+-- Mot dong = mot bang cac o, moi o mot cot. Xem 4_giao_dien/1_panel.lua
 local function rowText(pid, r, cur)
   local name = rankName(r)
   local pw   = string.format("x%.2f", powerAt(r))
 
   if r < cur then
-    return CFG.C_GREY .. "   " .. r .. "  " .. name .. "   " .. pw ..
-           "   " .. API.t("lc_passed") .. CFG.C_END
+    local g = CFG.C_GREY
+    return { g .. r .. CFG.C_END, g .. name .. CFG.C_END, g .. pw .. CFG.C_END,
+             g .. API.t("lc_passed") .. CFG.C_END }
   elseif r == cur then
-    return CFG.C_GOLD .. " > " .. r .. "  " .. name .. "   " .. pw ..
-           "   " .. API.t("lc_here") .. CFG.C_END
+    local g = CFG.C_GOLD
+    return { g .. "> " .. r .. CFG.C_END, g .. name .. CFG.C_END,
+             g .. pw .. CFG.C_END, g .. API.t("lc_here") .. CFG.C_END }
   end
 
   -- Bac tuong lai: hien gia CONG DON tu bac hien tai toi bac do.
   local sum = 0
   for k = cur, r - 1 do sum = sum + costOf(k) end
   local co = (API.getLinhKhi(pid) >= sum) and CFG.C_JADE or CFG.C_GREY
-  return "   " .. r .. "  " .. name .. "   " .. pw ..
-         "   " .. co .. API.num(sum) .. CFG.C_END
+  return { tostring(r), name, CFG.C_JADE .. pw .. CFG.C_END,
+           co .. API.num(sum) .. CFG.C_END }
 end
 
 local function tabRows(pid)
@@ -95,9 +98,10 @@ local function tabRows(pid)
 
   local cur = d.linhCan
   local out = {}
-  out[1] = API.t("lc_power") .. " " .. CFG.C_JADE ..
-           string.format("x%.2f", powerAt(cur)) .. CFG.C_END .. "   " ..
-           API.t("lc_stat") .. " +" .. API.num(statAt(cur) - CFG.LINHCAN_STAT_BASE)
+  out[1] = { "", CFG.C_GOLD .. API.t("lc_power") .. CFG.C_END,
+             CFG.C_JADE .. string.format("x%.2f", powerAt(cur)) .. CFG.C_END,
+             API.t("lc_stat") .. " +" ..
+             API.num(statAt(cur) - CFG.LINHCAN_STAT_BASE) }
 
   local first = cur - ROWS_BACK
   if first < 1 then first = 1 end
@@ -203,6 +207,10 @@ end
 local function startLinhCan()
   S.lcTabIndex = API.panelAddTab({
     ten         = API.t("panel_root"),
+    cols        = { { ten = API.t("col_rank"),  w = 0.10 },
+                    { ten = API.t("col_realm"), w = 0.38 },
+                    { ten = API.t("col_power"), w = 0.22 },
+                    { ten = API.t("col_cost"),  w = 0.30 } },
     rows        = tabRows,
     actionLabel = tabActionLabel,
     action      = tabAction,

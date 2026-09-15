@@ -210,7 +210,9 @@ local function registerEvents()
   -- khong chay, day la cho thu hai phai nhin sau file vet.
   local tNat = CreateTrigger()
   for i = 1, #S.pids do
-    TriggerRegisterPlayerChatEvent(tNat, Player(S.pids[i]), "-nat", true)
+    -- false = khop TIEN TO. Voi true thi "-nat dam" khong khop gi ca va
+    -- trigger khong no -- go lenh xong im lang, tuong la khong co ket qua.
+    TriggerRegisterPlayerChatEvent(tNat, Player(S.pids[i]), "-nat", false)
   end
   TriggerAddAction(tNat, function()
     API.nativeChat(GetPlayerId(GetTriggerPlayer()), GetEventPlayerChatString())
