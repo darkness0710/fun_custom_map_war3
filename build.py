@@ -95,22 +95,35 @@ def find_wc3(explicit):
     return None
 
 
+def pack_map(map_dir):
+    """Dong goi thu muc map thanh .w3x. Tra ve duong dan file."""
+    import w3mpq
+    out = os.path.join(BAK_DIR, os.path.basename(map_dir))
+    os.makedirs(BAK_DIR, exist_ok=True)
+    n, size = w3mpq.pack(map_dir, out)
+    print("[ok] dong goi: %s -- %d file, %s byte"
+          % (os.path.relpath(out, ROOT), n, format(size, ",")))
+    return out
+
+
 def run_map(map_dir, explicit):
-    """Chay thang map bang Warcraft III, khong qua World Editor.
+    """Dong goi roi chay thang, khong qua World Editor.
 
-    Ctrl+F9 dong goi ban map trong BO NHO cua World Editor, khong phai
-    ban tren dia. Sua file bang script xong ma khong dong-mo lai map thi
-    no dong goi ban cu -- do la ly do mat ba luot test lien.
+    Hai cai bay cua World Editor mat han o day:
+      - Ctrl+F9 dong goi ban trong BO NHO no, khong phai ban tren dia
+      - moi lan Save no sinh lai war3map.lua, xoa sach code vua chen
 
-    Chay thang thi khong co khau do: Warcraft doc thu muc map tren dia.
+    -loadfile chi nhan FILE .w3x, khong nhan thu muc -- da thu va game
+    len den menu roi dung do.
     """
     exe = find_wc3(explicit)
     if exe is None:
         print("[loi] khong thay Warcraft III.exe. Dung --wc3 <duong dan> de chi dinh.")
         return 1
+    w3x = pack_map(map_dir)
     print("[run] " + exe)
-    print("[run] " + map_dir)
-    subprocess.Popen([exe, "-launch", "-loadfile", map_dir])
+    print("[run] " + w3x)
+    subprocess.Popen([exe, "-launch", "-loadfile", w3x])
     return 0
 
 
@@ -655,6 +668,8 @@ def main():
     ap.add_argument("--run", action="store_true",
                     help="build xong chay thang map, khong qua World Editor")
     ap.add_argument("--wc3", help="duong dan Warcraft III.exe neu tu tim khong ra")
+    ap.add_argument("--pack", action="store_true",
+                    help="dong goi thu muc map thanh .w3x choi duoc")
     ap.add_argument("--wct", action="store_true",
                     help="NGUY HIEM: chen vao o Custom Script. Xem write_wct.")
     args = ap.parse_args()
@@ -741,6 +756,9 @@ def main():
         print("[%s] wct     : %s" % ("ok" if ok else "canh bao", note))
 
     check_wct_size(map_dir)
+
+    if args.pack and not args.run:
+        pack_map(map_dir)
 
     if args.run:
         return run_map(map_dir, args.wc3)

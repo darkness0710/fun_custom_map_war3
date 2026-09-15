@@ -99,6 +99,99 @@ class Mpq(object):
                 return None
 
 
+def _encrypt(data, key):
+    _init_crypt()
+    out = bytearray()
+    seed2 = 0xEEEEEEEE
+    for i in range(len(data) // 4):
+        seed2 = (seed2 + _CRYPT[0x400 + (key & 0xFF)]) & 0xFFFFFFFF
+        v = struct.unpack_from("<I", data, i * 4)[0]
+        enc = v ^ ((key + seed2) & 0xFFFFFFFF)
+        key = (((~key << 0x15) + 0x11111111) | (key >> 0x0B)) & 0xFFFFFFFF
+        # seed2 cap nhat theo BAN RO, nen giai ma la phep nguoc dung.
+        seed2 = (v + seed2 + (seed2 << 5) + 3) & 0xFFFFFFFF
+        out += struct.pack("<I", enc)
+    return bytes(out)
+
+
+def pack(folder, out_path):
+    """Dong goi mot thu muc map thanh file .w3x choi duoc.
+
+    De thoat khoi World Editor. Ctrl+F9 dong goi ban trong BO NHO cua
+    World Editor, va moi lan Save no sinh lai war3map.lua -- xoa sach
+    code vua chen. Tu dong goi thi khong dinh ca hai.
+
+    KHONG NEN file nao. Map to hon, nhung bo di toan bo phan nen/giai nen
+    -- va kich thuoc khong phai van de o day.
+    """
+    files = []
+    for root, dirs, names in os.walk(folder):
+        dirs.sort()
+        for n in sorted(names):
+            full = os.path.join(root, n)
+            rel = os.path.relpath(full, folder).replace(os.sep, chr(92))
+            files.append((rel, open(full, "rb").read()))
+    if not files:
+        raise SystemExit("[loi] thu muc rong: " + folder)
+
+    # Bang bam phai la luy thua cua 2, va nen rong gap doi so file de it va cham.
+    hcnt = 4
+    while hcnt < len(files) * 2:
+        hcnt *= 2
+
+    HEADER = 32
+    data, blocks, pos = bytearray(), [], HEADER
+    for rel, raw in files:
+        data += raw
+        # 0x80000000 = EXISTS. Khong nen, khong ma hoa.
+        blocks.append((pos, len(raw), len(raw), 0x80000000))
+        pos += len(raw)
+
+    hash_tbl = [[0xFFFFFFFF, 0xFFFFFFFF, 0xFFFF, 0xFFFF, 0xFFFFFFFF]
+                for _ in range(hcnt)]
+    for idx, (rel, raw) in enumerate(files):
+        i = _hash(rel, 0) % hcnt
+        while hash_tbl[i][4] != 0xFFFFFFFF:      # do cho -- tim o trong
+            i = (i + 1) % hcnt
+        hash_tbl[i] = [_hash(rel, 1), _hash(rel, 2), 0, 0, idx]
+
+    hbuf = b"".join(struct.pack("<IIHHI", *h) for h in hash_tbl)
+    bbuf = b"".join(struct.pack("<IIII", *b) for b in blocks)
+    hpos = HEADER + len(data)
+    bpos = hpos + len(hbuf)
+    asize = bpos + len(bbuf)
+
+    head = struct.pack("<4sIIHHIIII", b"MPQ" + bytes([0x1A]), HEADER, asize,
+                       0, 3, hpos, bpos, hcnt, len(blocks))
+    with open(out_path, "wb") as f:
+        f.write(head)
+        f.write(bytes(data))
+        f.write(_encrypt(hbuf, _hash("(hash table)", 3)))
+        f.write(_encrypt(bbuf, _hash("(block table)", 3)))
+
+    return len(files), asize
+
+
+def cmd_pack(folder, out_path):
+    n, size = pack(folder, out_path)
+    print("[ok] %s -> %s" % (folder, out_path))
+    print("     %d file, %s byte" % (n, format(size, ",")))
+
+    # Doc lai bang chinh bo doc cua minh: moi file phai tim thay duoc.
+    m = Mpq(out_path)
+    thieu = []
+    for root, dirs, names in os.walk(folder):
+        for nm in names:
+            rel = os.path.relpath(os.path.join(root, nm), folder).replace(os.sep, chr(92))
+            if m.find(rel) is None:
+                thieu.append(rel)
+    if thieu:
+        print("[loi] doc lai khong thay: " + ", ".join(thieu))
+        return 1
+    print("     doc lai: tim thay du %d/%d file" % (n, n))
+    return 0
+
+
 def cmd_info(path):
     m = Mpq(path)
     print("%s -- %s byte tren dia" % (os.path.basename(path),
@@ -131,6 +224,8 @@ def main():
     if cmd == "has" and len(sys.argv) >= 4:
         cmd_has(path, *sys.argv[3:])
         return 0
+    if cmd == "pack" and len(sys.argv) >= 4:
+        return cmd_pack(path, sys.argv[3])
     print(__doc__)
     return 2
 
