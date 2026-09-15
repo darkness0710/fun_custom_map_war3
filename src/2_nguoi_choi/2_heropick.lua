@@ -52,12 +52,14 @@ local function giveAbilities(u, uid)
     for i = 1, #def.abilities do list[#list + 1] = def.abilities[i] end
   end
 
-  -- Bay ky nang cua hero. Chung luon co san chu khong hoc bang diem --
-  -- nguoi choi nang bac bang Linh Khi trong bang phim E. Xem
+  -- Ky nang hero: CHI nhung cai da mo khoa. Khong hoc bang diem, mua
+  -- bang Linh Khi trong bang phim E. Xem
   -- docs/03-du-lieu/nang-cap-ky-nang.md
   local sk = CFG.SKILLS[uid]
   if sk ~= nil then
-    for i = 1, #sk do list[#list + 1] = sk[i].id end
+    local n = CFG.SKILL_START_COUNT
+    if n > #sk then n = #sk end
+    for i = 1, n do list[#list + 1] = sk[i].id end
   end
 
   local bad = {}

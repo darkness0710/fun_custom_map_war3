@@ -187,6 +187,37 @@ nằm trong bảng Lua — chỉnh cân bằng không cần build lại file nh�
 > hàm. Các hàm đều có. Phải dò xem bản này dùng tên hằng nào — và còn **chưa
 > đo** liệu sửa xong có ăn ngay hay phải `IncUnitAbilityLevel` để làm mới.
 
+## Mở khóa: hero **không** có sẵn cả bảy
+
+Bắt đầu với **2** kỹ năng đầu tiên; năm cái còn lại mua bằng Linh Khí.
+
+Hai lý do, lý do thứ hai mới là cái nặng:
+
+1. Cả bảy ngay từ stage 1 thì không còn gì để mong. Bảy ô trong command card
+   đầy ngay giây đầu là hết chuyện.
+2. **Phép tính hệ số 1,32 cho Dẫm Đất chỉ đếm ba nguồn**: đánh thường, Chém
+   Lan, Dẫm Đất. Cho cả bảy ngay từ đầu là hero mạnh hơn hợp đồng stage 1
+   rất nhiều — đầu ván thành dễ không.
+
+Giá suy từ đường cong thu nhập: mở được kỹ năng thứ *k* vào khoảng stage này
+nếu dành 22% thu nhập cộng dồn cho việc mở khóa:
+
+| Kỹ năng | Mở được khoảng stage | Giá |
+|---|---|---|
+| 3 | 15 | 250 |
+| 4 | 40 | 790 |
+| 5 | 75 | 2 910 |
+| 6 | 120 | 13 560 |
+| 7 | 170 | 68 210 |
+
+Tổng mở khóa **85 720**. Cộng với nâng cấp (307 356) và Linh Căn (747 839) là
+**61% thu nhập cả ván** — trước là 56%, vẫn còn chỗ cho các nguồn tiêu sau này.
+
+`CFG.SKILL_START_COUNT = 7` là quay về kiểu cũ, có sẵn cả bảy.
+
+> Dòng bị khóa trong bảng **không hiện số liệu** — chỉ tên, chữ "chưa mở" và
+> giá. Hiện luôn cả số thì lộ hết, chẳng còn gì để mong.
+
 ## Số gốc cho 7 kỹ năng của Hart
 
 Sát thương và hồi máu tính theo **hệ số × (17 + chỉ số cao nhất của hero)**.

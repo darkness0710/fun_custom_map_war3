@@ -50,13 +50,25 @@ local function maxOf(aid)
   return CFG.SKILL_MAX_LEVEL
 end
 
-local function levelOf(pid, aid)
+-- Bac 0 = CHUA MO KHOA. Bac 1..10 = da co.
+local function levelOf(pid, aid, index)
   local d = S.p[pid]
-  if d == nil or d.skill == nil then return 1 end
-  return d.skill[aid] or 1
+  if d ~= nil and d.skill ~= nil and d.skill[aid] ~= nil then
+    return d.skill[aid]
+  end
+  -- Chua mua gi: nhung cai dau tien co san, con lai khoa.
+  if index ~= nil and index <= CFG.SKILL_START_COUNT then return 1 end
+  return 0
 end
 
-local function costOf(level, aid)
+local function unlockCost(index)
+  local c = CFG.SKILL_UNLOCK[index]
+  if c == nil or c <= 0 then return nil end
+  return c
+end
+
+local function costOf(level, aid, index)
+  if level <= 0 then return unlockCost(index) end
   if level >= (aid and maxOf(aid) or CFG.SKILL_MAX_LEVEL) then return nil end
   return math.floor(CFG.SKILL_COST_BASE * CFG.SKILL_COST_STEP ^ (level - 1) + 0.5)
 end
@@ -113,9 +125,9 @@ local function upgrade(pid, index)
   local d = S.p[pid]
   if d.skill == nil then d.skill = {} end
 
-  local cur = levelOf(pid, sk.id)
+  local cur = levelOf(pid, sk.id, index)
   local tran = maxOf(sk.id)
-  local gia = costOf(cur, sk.id)
+  local gia = costOf(cur, sk.id, index)
   if gia == nil then
     if tran < CFG.SKILL_MAX_LEVEL then
       -- Khong tru tien. Bao dung cho phai sua, dung de nguoi choi doan.
@@ -136,6 +148,24 @@ local function upgrade(pid, index)
   end
 
   d.skill[sk.id] = cur + 1
+
+  -- Tu bac 0 len 1 la MO KHOA: phai gan ability vao unit truoc da.
+  if cur == 0 then
+    if UnitAddAbility(d.hero, sk.id) then
+      SetUnitAbilityLevel(d.hero, sk.id, 1)
+      S.skillMax[sk.id] = probeMax(d.hero, sk.id)
+      SetUnitAbilityLevel(d.hero, sk.id, 1)
+    else
+      API.msg(pid, CFG.C_RED .. "Khong gan duoc " .. API.idToStr(sk.id) ..
+        CFG.C_END)
+    end
+    API.msg(nil, API.t("skill_unlocked",
+      CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END,
+      CFG.C_JADE .. API.pick(sk) .. CFG.C_END))
+    API.panelRefresh(pid)
+    return
+  end
+
   applyLevel(pid, sk, cur + 1)
 
   -- Doc lai bac THAT tren unit. Neu no khong bang bac vua mua thi bang
@@ -169,12 +199,21 @@ local function tabRows(pid)
   local out = {}
   for i = 1, #list do
     local sk = list[i]
-    local lv = levelOf(pid, sk.id)
+    local lv = levelOf(pid, sk.id, i)
     local tran = maxOf(sk.id)
-    local gia = costOf(lv, sk.id)
+    local gia = costOf(lv, sk.id, i)
 
     -- Hien TRAN THAT, khong hien tran thiet ke. Bang bao 10/10 trong khi
     -- unit chi len duoc bac 3 la bang noi doi.
+    -- Dong bi khoa: chi hien ten, chu "khoa" va gia mo. Hien luon ca so
+    -- lieu cua no la lo het, chang con gi de mong.
+    if lv <= 0 then
+      local co = (gia ~= nil and API.getLinhKhi(pid) >= gia) and CFG.C_JADE or CFG.C_GREY
+      out[i] = CFG.C_GREY .. API.pick(sk) .. "   " .. API.t("skill_locked") ..
+               CFG.C_END .. "   " ..
+               (gia and (co .. API.num(gia) .. CFG.C_END) or "")
+    else
+
     local bac = "  " .. API.t("panel_level") .. " " .. lv .. "/" .. tran
     if tran < CFG.SKILL_MAX_LEVEL then
       bac = CFG.C_RED .. bac .. " (" .. API.t("skill_oeshort") .. ")" .. CFG.C_END
@@ -192,6 +231,7 @@ local function tabRows(pid)
       dong = dong .. "   " .. co .. API.num(gia) .. CFG.C_END
     end
     out[i] = dong
+    end
   end
 
   -- Mot dong su that o cuoi: con so mau ngoc o tren la THIET KE, chua
@@ -209,7 +249,9 @@ end
 local function tabRowLabel(pid, i)
   local sk = listOf(pid)[i]
   if sk == nil then return nil end
-  if costOf(levelOf(pid, sk.id), sk.id) == nil then return nil end
+  local lv = levelOf(pid, sk.id, i)
+  if costOf(lv, sk.id, i) == nil then return nil end
+  if lv <= 0 then return API.t("skill_buy") end
   return "+"
 end
 
@@ -250,21 +292,27 @@ local function applyToHero(pid)
   local list = listOf(pid)
   local thieu = {}
 
+  local co = 0
   for i = 1, #list do
     local sk = list[i]
-    if d ~= nil and d.hero ~= nil then
+    local lv = levelOf(pid, sk.id, i)
+
+    -- Chi do va dat bac cho ky nang DA MO KHOA. Ky nang con khoa chua
+    -- nam tren unit, do no chi tra ve 0 va lam ban bao cao.
+    if lv > 0 and d ~= nil and d.hero ~= nil then
+      co = co + 1
       local m = probeMax(d.hero, sk.id)
       S.skillMax[sk.id] = m
       if m > 0 and m < CFG.SKILL_MAX_LEVEL then
         thieu[#thieu + 1] = API.idToStr(sk.id) .. "=" .. m
       end
+      applyLevel(pid, sk, lv)
     end
-    applyLevel(pid, sk, levelOf(pid, sk.id))
   end
 
   if #thieu > 0 then
     API.trace("skill: OE thieu bac -- " .. table.concat(thieu, " "))
-    API.msg(pid, CFG.C_RED .. #thieu .. "/" .. #list ..
+    API.msg(pid, CFG.C_RED .. #thieu .. "/" .. co ..
       " ky nang chua du " .. CFG.SKILL_MAX_LEVEL .. " bac trong Object Editor" ..
       CFG.C_END .. CFG.C_GREY .. " (" .. table.concat(thieu, " ") ..
       "). Dat Stats - Levels = " .. CFG.SKILL_MAX_LEVEL .. "." .. CFG.C_END)

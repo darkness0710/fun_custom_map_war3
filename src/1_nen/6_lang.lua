@@ -46,6 +46,9 @@ T.en = {
   skill_up        = "%s reached level %d/%d.",
   skill_warn      = "Warning: %s is only at level %d on the unit, not %d",
   skill_oeshort   = "OE short",
+  skill_locked    = "locked",
+  skill_buy       = "buy",
+  skill_unlocked  = "%s unlocked %s.",
 
   -- Linh Can
   lc_power        = "Power",
@@ -92,6 +95,9 @@ T.vi = {
   skill_up        = "%s len bac %d/%d.",
   skill_warn      = "Canh bao: %s tren unit moi o bac %d, khong phai %d",
   skill_oeshort   = "OE thieu bac",
+  skill_locked    = "chua mo",
+  skill_buy       = "mua",
+  skill_unlocked  = "%s da mo khoa %s.",
 
   lc_power        = "Suc manh",
   lc_stat         = "chi so",

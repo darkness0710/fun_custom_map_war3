@@ -466,6 +466,24 @@ CFG.SKILL_COST_BASE = 89.0     -- bac 1 -> 2
 CFG.SKILL_COST_STEP = 1.99
 CFG.SKILL_MAX_LEVEL = 10
 
+-- ---------- Mo khoa ky nang ----------
+--
+-- Hero KHONG co san ca bay ky nang. Bat dau voi SKILL_START_COUNT cai
+-- dau tien, nam cai con lai mua bang Linh Khi.
+--
+-- Hai ly do:
+--  1. Ca bay ngay tu stage 1 thi khong con gi de mong. Bay o trong
+--     command card day ngay giay dau la het chuyen.
+--  2. Phep tinh he so 1.32 cho Dam Dat chi dem BA nguon: danh thuong,
+--     chem lan, Dam Dat. Cho ca bay ngay tu dau la hero manh hon hop
+--     dong stage 1 rat nhieu, dau van thanh de khong.
+--
+-- Gia suy tu duong cong thu nhap: mo duoc skill thu k vao khoang stage
+-- MOC[k] = {3:15, 4:40, 5:75, 6:120, 7:170}, neu danh 22% thu nhap cong
+-- don cho viec mo khoa. Xem docs/03-du-lieu/nang-cap-ky-nang.md
+CFG.SKILL_START_COUNT = 2
+CFG.SKILL_UNLOCK = { 0, 0, 250, 790, 2910, 13560, 68210 }
+
 -- ---------- Bay ky nang cua tung hero ----------
 --
 -- heSo : sat thuong/hoi mau = heSo x (LINHCAN_DMG_BASE + chi so CAO NHAT
