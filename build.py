@@ -117,13 +117,21 @@ def run_map(map_dir, explicit):
 def write_wct(map_dir, block):
     """Chen khoi code vao o "Custom Script" cua World Editor.
 
-    DAY MOI LA CHO DUNG. World Editor SINH LAI war3map.lua moi lan Save
-    -- chen vao do thi lan Save nao cung mat, va vong lap "build -> Save
-    -> mat -> build lai" khong bao gio het.
+    !!! MAC DINH TAT. World Editor KHONG CHIU NOI doan script lon.
 
-    war3map.wct la noi World Editor luu doan script tu viet cua map, va
-    no CHEP doan do vao war3map.lua moi lan sinh. Dat code o day thi Save
-    khong xoa nua -- no tai tao.
+    Da thu: chen khoi 183,873 byte vao war3map.wct. Doc lai thay dung
+    dinh dang, luaparser xac nhan doan do la Lua hop le. Nhung lan Save
+    ke tiep, World Editor ghi ra mot war3map.wct **1.86 GB** -- trong do
+    van chi co DUNG MOT khoi code. Tuc chinh World Editor phinh file ra,
+    khong phai script nay ghi lap.
+
+    Chua do duoc nguong an toan. Toi khi nao do duoc thi dung --wct.
+
+    Y TUONG thi van dung: World Editor SINH LAI war3map.lua moi lan Save,
+    nen chen vao do thi Save nao cung mat. war3map.wct la noi no luu doan
+    script tu viet va CHEP vao war3map.lua moi lan sinh -- dat code o day
+    thi Save khong xoa ma tai tao. Chi la World Editor khong chiu noi
+    kich thuoc.
 
     Dinh dang (do tu file World Editor tu ghi):
 
@@ -612,8 +620,8 @@ def main():
     ap.add_argument("--run", action="store_true",
                     help="build xong chay thang map, khong qua World Editor")
     ap.add_argument("--wc3", help="duong dan Warcraft III.exe neu tu tim khong ra")
-    ap.add_argument("--no-wct", action="store_true",
-                    help="khong chen vao o Custom Script cua World Editor")
+    ap.add_argument("--wct", action="store_true",
+                    help="NGUY HIEM: chen vao o Custom Script. Xem write_wct.")
     args = ap.parse_args()
 
     map_dir = find_map(args.map)
@@ -691,9 +699,9 @@ def main():
     print("[ok] cu phap : %s" % note)
     print("[ok] ghi     : %s -- %s, tong %d dong"
           % (os.path.relpath(target, ROOT), label, final.count("\n")))
-    # Chen them vao o Custom Script cua World Editor. Day moi la cho
-    # song sot qua moi lan Save -- xem write_wct.
-    if not args.no_wct:
+    # Chen vao o Custom Script cua World Editor. MAC DINH TAT -- xem
+    # write_wct de biet vi sao.
+    if args.wct:
         ok, note = write_wct(map_dir, build_block(sources, args.lang))
         print("[%s] wct     : %s" % ("ok" if ok else "canh bao", note))
 
