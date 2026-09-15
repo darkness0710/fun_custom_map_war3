@@ -184,7 +184,19 @@ thẳng local của file kia. Triệu chứng nếu tái phát:
 đồng bộ.** Cả `BlzSendSyncData` lẫn `StoreInteger`/`SyncStoredInteger`. Mọi chỗ
 khác đi qua `API.syncSend` / `API.syncOn`.
 
-## Bẫy quy trình
+## Quy trình mới: không dùng Ctrl+F9 nữa
+
+```
+python build.py --run     # build, đóng gói .w3x, chạy luôn
+```
+
+Bỏ được **cả hai** cái bẫy dưới đây cùng lúc. Xem
+[đóng gói map](dong-goi-map.md).
+
+World Editor chỉ còn dùng để **sửa dữ liệu** (địa hình, Object Editor, import),
+không còn dùng để **test**.
+
+## Bẫy quy trình (chỉ còn đúng khi dùng Ctrl+F9)
 
 **World Editor ghi đè `war3map.lua` mỗi lần Save.** Thứ tự bắt buộc:
 

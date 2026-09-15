@@ -96,6 +96,7 @@ docs/
      luoi-25-o.md        Lưới 5x5 và các dòng sông
      toa-do-ve-song.md   Bảng tra khi cầm cọ trong World Editor
      lenh-debug.md       Lệnh debug và bốn công tắc chế độ phát triển
+     dong-goi-map.md     Tự đóng gói .w3x, không qua World Editor
   05-quyet-dinh/         Nhật ký quyết định, đánh số tăng dần
      0001-src-nam-ngoai-map.md
      0002-goi-cheo-qua-bang-api.md
