@@ -298,6 +298,18 @@ local function tick()
   end
 end
 
+-- Dua dong quai ke tiep ve NGAY. Goi tu lenh -next, tu luc moi nguoi
+-- chon xong hero, va tu luc don sach wave.
+--
+-- Khong goi thang onWaveTimer(): lam vay thi bo dem cu van chay va mot
+-- luc nua lai no them mot dot nua. Phai dung no truoc.
+local function waveNow()
+  if not S.running or S.waveTimer == nil then return false end
+  PauseTimer(S.waveTimer)
+  TimerStart(S.waveTimer, 0.02, false, onWaveTimer)
+  return true
+end
+
 -- ---------- Phat thuong ----------
 --
 -- MOI phan thuong di qua day. Quai thuong, tinh anh, boss -- ca hai loai
@@ -341,21 +353,20 @@ local function onMobDeath(u, killer)
   S.mobStage[u] = nil
 
   rewardAll(stage, kind)
+
+  -- Con cuoi cung cua wave vua chet: vao wave sau ngay.
+  -- Chi o day chu khong dat trong timer -- toi duoc day nghia la chac
+  -- chan da tung co quai, nen S.alive = 0 la "don sach" that, khong
+  -- phai "wave sinh hong khong con nao".
+  if CFG.WAVE_AUTO_NEXT and S.alive == 0 and S.stage > 0 and S.running then
+    API.msg(nil, CFG.C_JADE .. API.t("wave_cleared") .. CFG.C_END)
+    API.after(CFG.WAVE_CLEAR_DELAY, function()
+      if S.alive == 0 then waveNow() end
+    end)
+  end
 end
 
 -- ---------- Khoi dong ----------
-
--- Dua dong quai ke tiep ve NGAY. Goi tu lenh -next, va tu luc moi
--- nguoi da chon xong hero.
---
--- Khong goi thang onWaveTimer(): lam vay thi bo dem cu van chay va mot
--- luc nua lai no them mot dot nua. Phai dung no truoc.
-local function waveNow()
-  if not S.running or S.waveTimer == nil then return false end
-  PauseTimer(S.waveTimer)
-  TimerStart(S.waveTimer, 0.02, false, onWaveTimer)
-  return true
-end
 
 -- Goi khi mot nguoi vua chon hero xong. Dot dau khong cho het 15 giay
 -- neu moi nguoi da san sang -- 15 giay do la de CHO CHON HERO, khong

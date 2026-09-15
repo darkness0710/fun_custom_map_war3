@@ -64,7 +64,7 @@ Cần `CFG.DEV_COMMANDS = true`.
 | `-tt <số>` | Thêm Tinh Thạch (gỗ) | `-tt 500` |
 | `-lc <số>` | Nhảy tới bậc Linh Căn 1–20 | `-lc 15` → Đại La |
 | `-sp` | Phát 1 điểm kỹ năng, hoặc mở bảng chọn kỹ năng tuỳ `CFG.SKILL_MODE` | |
-| `-next` | Kéo đợt quái kế tiếp về ngay, không chờ hết đếm ngược | |
+| `-next` | Gọi đợt kế tiếp — **chỉ khi đã dọn sạch** quái trên map | |
 | `-nat` | Bản Warcraft này có native nào | |
 
 **`-wave` là lệnh quan trọng nhất.** Không có nó thì muốn xem stage 180 phải chơi

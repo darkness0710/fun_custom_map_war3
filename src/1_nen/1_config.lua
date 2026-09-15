@@ -371,6 +371,16 @@ CFG.WAVE_ELITE_COUNT = 1
 CFG.WAVE_TIME = { 20.0, 28.0, 36.0, 45.0 }
 CFG.WAVE_FIRST_DELAY = 15.0
 
+-- Don sach wave thi vao wave sau NGAY, khong ngoi cho het dong ho.
+--
+-- Dong ho van chay song song: het gio la wave sau ra du con song hay
+-- khong. Hai co che khong thay the nhau --
+--   don sach som  -> vao som, khong co thoi gian chet
+--   don khong kip -> quai don lai, dung nhu truoc
+-- Nen ap luc giu nguyen, chi mat phan ngoi nhin dong ho.
+CFG.WAVE_AUTO_NEXT   = true
+CFG.WAVE_CLEAR_DELAY = 1.5   -- giay, de kip doc chu truoc khi wave sau ra
+
 -- Tran unit song. Qua nguong thi HOAN wave moi thay vi chong them.
 CFG.WAVE_MAX_ALIVE = 300
 

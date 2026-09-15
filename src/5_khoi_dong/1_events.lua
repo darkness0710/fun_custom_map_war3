@@ -178,6 +178,13 @@ local function registerEvents()
     end
     TriggerAddAction(tNext, function()
       local pid = GetPlayerId(GetTriggerPlayer())
+      -- Chi goi som duoc khi da don sach. Cho phep goi som luc con quai
+      -- la cho nguoi choi bo qua phan kho cua wave nay va nhan tien cua
+      -- wave sau -- pha dung cai duong cong dang giu ca van.
+      if S.alive > 0 then
+        API.msg(pid, CFG.C_RED .. API.t("wave_notclear", S.alive) .. CFG.C_END)
+        return
+      end
       if API.waveNow() then
         API.msg(nil, CFG.C_GREY .. "[dev] " .. GetPlayerName(Player(pid)) ..
           " goi dot ke tiep." .. CFG.C_END)

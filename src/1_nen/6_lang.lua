@@ -63,6 +63,8 @@ T.en = {
 
   -- Quai
   wave_next       = "Next wave",
+  wave_cleared    = "Wave cleared.",
+  wave_notclear   = "Still %d enemies alive. Clear the wave first.",
   mob_suffix      = "Cultivator",
   elite_suffix    = "Elite",
   boss_suffix     = "Lord",
@@ -104,6 +106,8 @@ T.vi = {
   boss_down       = "Ha duoc boss %s. Moi nguoi nhan %d Tinh Thach.",
 
   wave_next       = "Dot ke tiep",
+  wave_cleared    = "Da don sach dot nay.",
+  wave_notclear   = "Con %d con tren map. Don sach roi hay goi dot sau.",
   mob_suffix      = "Tan Tu",
   elite_suffix    = "Tinh Anh",
   boss_suffix     = "Ma Ton",
