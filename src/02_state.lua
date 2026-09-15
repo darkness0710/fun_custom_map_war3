@@ -33,7 +33,8 @@ S.pick        = {}     -- [pid] = { dlg = dialog, map = { [button] = uid } }
 S.pickTrigger = nil
 S.skillPick   = {}     -- [pid] = { dlg, map, slot }
 S.skillTrigger= nil
-S.sframe      = {}     -- giao dien tu ve, do 07b_skillframe dung
+S.sframe      = {}     -- giao dien ky nang, do 07b_skillframe dung
+S.hframe      = {}     -- the chon hero,   do 07c_heroframe dung
 S.xpTimer     = nil    -- bo quet khoa hero
 S.dumped      = {}     -- [unit] = true, da do danh sach ability chua
 S.spReported  = {}     -- [unit] = true, da bao so diem ky nang chua

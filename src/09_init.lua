@@ -85,9 +85,10 @@ local function bootstrap()
   API.startHeroLock()
   API.trace("startHeroLock: xong")
 
-  API.startPicking()
-  API.startSkillPicking()
+  API.startHeroFrame()
   API.startSkillFrame()
+  API.startSkillPicking()
+  API.startPicking()
   API.trace("startPicking: tra ve")
 
   API.registerEvents()

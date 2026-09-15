@@ -139,58 +139,86 @@ local function showPicker(pid)
   DialogDisplay(Player(pid), slot.dlg, true)
 end
 
--- Hien lai popup cho nhung nguoi chua chon, sau khi danh sach thay doi.
+-- ---------- Dieu huong: popup chu hay giao dien card ----------
+-- Hai duong cung dung mot logic chon hero ben duoi; chi khac cach ve.
+
+local function pickerShow(pid)
+  if CFG.HERO_PICK_MODE == "frame" and API.showHeroFrame ~= nil then
+    return API.showHeroFrame(pid)
+  end
+  return showPicker(pid)
+end
+
+local function pickerHide(pid)
+  if API.hideHeroFrame ~= nil then API.hideHeroFrame(pid) end
+  hidePicker(pid)
+end
+
+-- Hien lai cho nhung nguoi chua chon, sau khi danh sach thay doi -- ai
+-- do vua lay mat mot con thi con do phai bien khoi man hinh nguoi khac.
 local function refreshOthers(exceptPid)
   for i = 1, #S.pids do
     local pid = S.pids[i]
     local d = S.p[pid]
     if pid ~= exceptPid and d ~= nil and d.hero == nil then
-      showPicker(pid)
+      pickerShow(pid)
     end
   end
 end
 
+-- Ap dung mot lua chon hero.
+--
+-- Day la NOI DUY NHAT doi trang thai khi chon hero. Ca popup dialog lan
+-- giao dien card deu goi vao day, nen luat "moi nguoi mot con, khong ai
+-- lay trung" chi ton tai o mot cho.
+--
+-- Voi giao dien card, ham nay duoc goi tu su kien DONG BO nen no chay
+-- tren moi may. Voi dialog thi su kien von da dong bo san.
+local function applyHeroPick(pid, uid)
+  local d = S.p[pid]
+  if d == nil then return false end
+
+  if CFG.HERO_MAX_PER_PLAYER > 0 and d.heroCount >= CFG.HERO_MAX_PER_PLAYER then
+    pickerHide(pid)
+    return false
+  end
+
+  -- Hai nguoi bam cung mot con: nguoi den sau roi vao day.
+  if CFG.HERO_UNIQUE and S.heroTaken[uid] then
+    API.msg(pid, CFG.C_RED .. heroNameOf(uid) .. " vua co nguoi lay mat." .. CFG.C_END)
+    pickerShow(pid)
+    return false
+  end
+
+  local u = spawnHero(pid, uid)
+  if u == nil then
+    API.msg(pid, CFG.C_RED .. "Khong tao duoc hero -- kiem tra id trong CFG.HEROES."
+      .. CFG.C_END)
+    pickerShow(pid)
+    return false
+  end
+
+  d.hero = u
+  d.heroCount = d.heroCount + 1
+  if CFG.HERO_UNIQUE then S.heroTaken[uid] = true end
+  pickerHide(pid)
+
+  API.msg(nil, CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END ..
+    " da chon " .. CFG.C_JADE .. heroNameOf(uid) .. CFG.C_END .. ".")
+
+  refreshOthers(pid)
+  return true
+end
+
 local function onPick()
-  local p   = GetTriggerPlayer()
-  local pid = GetPlayerId(p)
+  local pid  = GetPlayerId(GetTriggerPlayer())
   local slot = S.pick[pid]
   if slot == nil then return end
 
   local uid = slot.map[GetClickedButton()]
   if uid == nil then return end
 
-  local d = S.p[pid]
-  if d == nil then return end
-
-  if CFG.HERO_MAX_PER_PLAYER > 0 and d.heroCount >= CFG.HERO_MAX_PER_PLAYER then
-    hidePicker(pid)
-    return
-  end
-
-  -- Hai nguoi bam cung mot con: su kien popup duoc xu ly tuan tu nen
-  -- nguoi bam truoc thang, nguoi sau roi vao day.
-  if CFG.HERO_UNIQUE and S.heroTaken[uid] then
-    API.msg(pid, CFG.C_RED .. heroNameOf(uid) .. " vua co nguoi lay mat." .. CFG.C_END)
-    showPicker(pid)
-    return
-  end
-
-  local u = spawnHero(pid, uid)
-  if u == nil then
-    API.msg(pid, CFG.C_RED .. "Khong tao duoc hero -- kiem tra id trong CFG.HEROES." .. CFG.C_END)
-    showPicker(pid)
-    return
-  end
-
-  d.hero = u
-  d.heroCount = d.heroCount + 1
-  if CFG.HERO_UNIQUE then S.heroTaken[uid] = true end
-  hidePicker(pid)
-
-  API.msg(nil, CFG.C_GOLD .. GetPlayerName(p) .. CFG.C_END ..
-    " da chon " .. CFG.C_JADE .. heroNameOf(uid) .. CFG.C_END .. ".")
-
-  refreshOthers(pid)
+  applyHeroPick(pid, uid)
 end
 
 local function startPicking()
@@ -198,8 +226,9 @@ local function startPicking()
   TriggerAddAction(S.pickTrigger, onPick)
 
   API.after(CFG.PICK_DELAY, function()
-    for i = 1, #S.pids do showPicker(S.pids[i]) end
-    API.trace("heropick: da hien popup cho " .. #S.pids .. " nguoi")
+    for i = 1, #S.pids do pickerShow(S.pids[i]) end
+    API.trace("heropick: da hien bang chon cho " .. #S.pids .. " nguoi (che do " ..
+              tostring(CFG.HERO_PICK_MODE) .. ")")
   end)
 end
 
@@ -329,6 +358,11 @@ local function startSkillPicking()
   TriggerAddAction(S.skillTrigger, onSkillPick)
 end
 
+API.heroesAvailable   = available
+API.heroNameOf        = heroNameOf
+API.heroDef           = heroDef
+API.applyHeroPick     = applyHeroPick
+API.pickerShow        = pickerShow
 API.slotsFor          = slotsFor
 API.showSkillPicker   = showSkillPicker
 API.startSkillPicking = startSkillPicking

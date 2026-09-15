@@ -55,7 +55,10 @@ Chi tiết: [02-he-thong/chon-hero.md](../02-he-thong/chon-hero.md).
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
 | `HEROES` | Danh sách `{ id, name }` | Không được rỗng. `name` là chữ hiện trên nút popup |
-| `PICK_TITLE` | Tiêu đề popup | |
+| `PICK_TITLE` | Tiêu đề bảng chọn | |
+| `HERO_PICK_MODE` | `"frame"` (thẻ có icon) hoặc `"dialog"` (popup chữ) | |
+| `HEROES[i].icon` `role` | Icon và vai hiện trên thẻ | Chỉ dùng ở `"frame"` |
+| `CARD_*` | Kích thước và vị trí thẻ | Toạ độ màn hình: X 0.0–0.8, Y 0.0–0.6 |
 | `PICK_DELAY` | Giây trước khi hiện popup | Quá nhỏ thì bị màn hình chuyển cảnh nuốt |
 | `HERO_MAX_PER_PLAYER` | Mỗi người tối đa | `0` = không giới hạn |
 | `HERO_UNIQUE` | Không ai lấy trùng | |

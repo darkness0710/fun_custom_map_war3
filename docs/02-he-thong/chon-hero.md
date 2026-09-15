@@ -2,13 +2,38 @@
 
 > **Trạng thái:** Đã cài
 > **Cập nhật:** 2026-09-14
-> **Code:** [07_heropick.lua](../../src/07_heropick.lua)
+> **Code:** [07_heropick.lua](../../src/07_heropick.lua), [07c_heroframe.lua](../../src/07c_heroframe.lua)
 > **Khoá CFG:** `HEROES` `PICK_*` `HERO_*`
 
 ## Nó là gì
 
-Vào map vài giây thì mỗi người chơi nhận một popup liệt kê hero còn trống. Bấm
-một nút là hero hiện ra cạnh nhà chính. Mỗi người một con, không ai lấy trùng.
+Vào map vài giây thì mỗi người chơi thấy một hàng **thẻ hero** — mỗi thẻ có icon,
+tên, vai. Bấm một thẻ là hero hiện ra cạnh nhà chính. Mỗi người một con, không ai
+lấy trùng.
+
+## Hai cách vẽ, một logic
+
+| `HERO_PICK_MODE` | Giao diện |
+|---|---|
+| `"frame"` | Thẻ có icon, tự vẽ bằng `BlzCreateFrame` |
+| `"dialog"` | Popup chữ của Warcraft III — xấu hơn nhưng chắc chắn chạy |
+
+Cả hai đều gọi vào **cùng một hàm** `applyHeroPick(pid, uid)`. Đó là nơi duy nhất
+đổi trạng thái khi chọn hero, nên luật "mỗi người một con, không ai lấy trùng"
+chỉ tồn tại ở một chỗ — hai đường vẽ không thể lệch nhau.
+
+Thiếu native frame thì tự lui về popup chữ, không sập.
+
+## Thẻ chạy trên nhiều máy thế nào
+
+Sự kiện bấm frame **chỉ nổ trên máy người bấm**. Nên bấm thẻ không đổi gì cả — nó
+gửi một mẩu tin qua `BlzSendSyncData`, và mọi máy gọi `applyHeroPick` khi nhận
+được. Lệch máy trong Warcraft III là bị đá khỏi trận, không phải lỗi hiển thị.
+
+Mỗi người cũng có **bảng riêng** (`S.hframe.byPid`): timer hiện bảng chạy trên mọi
+máy, nên một bảng dùng chung sẽ bị người thứ hai huỷ mất.
+
+Cùng kiến trúc với [ky-nang.md](ky-nang.md) và vì cùng lý do.
 
 | Nhãn trên nút | ID | Vai |
 |---|---|---|

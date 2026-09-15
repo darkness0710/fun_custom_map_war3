@@ -193,10 +193,16 @@ CFG.HERO_XP_SWEEP = 5.0
 --   (1,1) (2,1) (3,1)   (0,2) (1,2) (2,2) (3,2)
 -- 'skills' la CAY SKILL RIENG cua hero do, cung dang voi
 -- CFG.SKILL_SLOTS. Hero nao khong khai bao thi dung SKILL_SLOTS chung.
+-- 'icon' hien tren the chon hero (CFG.HERO_PICK_MODE = "frame").
+-- Doi cho khop icon that cua hero trong Object Editor.
+-- 'role' la dong chu nho duoi ten.
 CFG.HEROES = {
-  { id = id('H001'), name = "Hart - Warrior", abilities = {}, skills = nil },
-  { id = id('H002'), name = "Hvwd - Shooter", abilities = {}, skills = nil },
-  { id = id('H003'), name = "Hkal - Mage",    abilities = {}, skills = nil },
+  { id = id('H001'), name = "Hart", role = "Warrior", abilities = {}, skills = nil,
+    icon = [[ReplaceableTextures\CommandButtons\BTNHeroPaladin.blp]] },
+  { id = id('H002'), name = "Hvwd", role = "Shooter", abilities = {}, skills = nil,
+    icon = [[ReplaceableTextures\CommandButtons\BTNHeroMoonPriestess.blp]] },
+  { id = id('H003'), name = "Hkal", role = "Mage",    abilities = {}, skills = nil,
+    icon = [[ReplaceableTextures\CommandButtons\BTNHeroBloodElfPrince.blp]] },
 }
 
 -- Ky nang gan cho MOI hero, khong rieng con nao.
@@ -262,7 +268,19 @@ CFG.FRAME_BUTTON_TEMPLATE = "ScoreScreenTabButtonTemplate"
 -- Mo toan bo suong mu. CHI DE PHAT TRIEN -- tat truoc khi phat hanh.
 CFG.REVEAL_MAP = false
 
+-- "frame"  the chon co icon, tu ve bang BlzCreateFrame
+-- "dialog" popup chu cua Warcraft III -- xau hon nhung chac chan chay
+CFG.HERO_PICK_MODE = "frame"
+
 CFG.PICK_TITLE = "Chon hero cua ban"
+
+-- Kich thuoc the chon hero. Toa do man hinh: X 0.0..0.8, Y 0.0..0.6.
+CFG.CARD_W    = 0.115   -- be ngang mot the
+CFG.CARD_H    = 0.150
+CFG.CARD_GAP  = 0.014   -- khoang cach giua hai the
+CFG.CARD_ICON = 0.064   -- canh o icon trong the
+CFG.CARD_X    = 0.40    -- tam ngang cua ca hang the
+CFG.CARD_Y    = 0.38    -- tam doc
 
 -- Cho vai giay roi moi hien popup: hien ngay luc map vua nap thi no bi
 -- man hinh chuyen canh nuot mat.
