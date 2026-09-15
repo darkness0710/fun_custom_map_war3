@@ -61,6 +61,7 @@ local function bootstrap()
   if S.running then return end
 
   API.trace("bootstrap: bat dau")
+  API.msg(nil, CFG.C_GOLD .. "[build " .. CFG.VERSION .. "] code da chay." .. CFG.C_END)
 
   -- Chi de phat trien: mo toan bo suong mu.
   if CFG.REVEAL_MAP then
@@ -115,6 +116,12 @@ API.bootstrap  = bootstrap
 -- Khoi code nay chay luc nap chunk, truoc khi main() duoc goi. Ta boc
 -- InitGlobals (main() goi no ngay sau InitBlizzard), roi hen timer 0 giay
 -- de bootstrap chay khi map thuc su san sang.
+-- Vet nay chay luc NAP CHUNK, truoc ca main(). No phan biet duoc hai
+-- truong hop rat khac nhau:
+--   co dong nay, khong co "bootstrap" -> chunk nap duoc nhung moc hong
+--   khong co dong nao ca              -> map khong he chua code nay
+API.trace("chunk: da nap, dang moc InitGlobals")
+
 do
   local prevInitGlobals = InitGlobals
   InitGlobals = function()

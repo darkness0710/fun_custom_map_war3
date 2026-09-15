@@ -44,6 +44,7 @@ docs/
   02-he-thong/
      nha-chinh.md        Nhà chính + vùng địch
      chon-hero.md        Popup chọn hero
+     thiet-ke-hero.md    Ba vai và 21 kỹ năng
      khoa-hero.md        Không lên cấp, không nâng kỹ năng
      ky-nang.md          Kỹ năng cố định & hệ nâng cấp bằng nút +
   03-du-lieu/

@@ -221,8 +221,7 @@ CFG.HERO_COMMON_ABILITIES = {}
 -- Bay o trong: (1,1) (2,1) (3,1) (0,2) (1,2) (2,2) (3,2)
 --
 -- Vi du khi ban da co ability:
---   -- Cay skill CHUNG, dung cho hero nao khong khai bao 'skills' rieng.
-CFG.SKILL_SLOTS = {
+--   CFG.SKILL_SLOTS = {
 --     { name = "O 1 - Tan cong", pos = "(1,1)", choices = {
 --         { id = id('A000'), name = "Chem manh" },
 --         { id = id('A001'), name = "Lao khien" },
@@ -266,7 +265,7 @@ CFG.FRAME_BG      = [[ReplaceableTextures\TeamColor\TeamColor27]]
 CFG.FRAME_BUTTON_TEMPLATE = "ScoreScreenTabButtonTemplate"
 
 -- Mo toan bo suong mu. CHI DE PHAT TRIEN -- tat truoc khi phat hanh.
-CFG.REVEAL_MAP = false
+CFG.REVEAL_MAP = true
 
 -- "frame"  the chon co icon, tu ve bang BlzCreateFrame
 -- "dialog" popup chu cua Warcraft III -- xau hon nhung chac chan chay

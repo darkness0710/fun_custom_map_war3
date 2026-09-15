@@ -286,16 +286,47 @@ def check_fourcc(text):
     return out
 
 
+def brace_balance_check(text):
+    """Kiem tra can bang ngoac nhon.
+
+    Mot bang mo ra ma khong dong lai thi bo dem do/if/function/end van
+    bao "can bang" -- da de lot mot lan that: mot dong
+    CFG.X = { bi chen nham vao giua khoi comment, va game bao
+    "'}' expected (to close '{' at line N)".
+    """
+    body = strip_lua_noise(text)
+    depth = 0
+    opened_at = []
+    for i, ch in enumerate(body):
+        if ch == "{":
+            depth += 1
+            opened_at.append(body.count(NEWLN, 0, i) + 1)
+        elif ch == "}":
+            depth -= 1
+            if opened_at:
+                opened_at.pop()
+            if depth < 0:
+                line = body.count(NEWLN, 0, i) + 1
+                return False, "thua mot } o dong %d cua ket qua" % line
+    if depth != 0:
+        return False, ("thieu %d } -- bang mo o dong %s cua ket qua chua dong"
+                       % (depth, opened_at[0] if opened_at else "?"))
+    return True, ""
+
+
 def fallback_check(text):
     """Khong co luac thi chay hai phep kiem re tien nhung bat duoc
     hai loi hay gap nhat khi noi file: escape hong va lech end."""
     ok, note = check_escapes(text)
     if not ok:
         return False, note
+    ok, note = brace_balance_check(text)
+    if not ok:
+        return False, note
     ok, note = block_balance_check(text)
     if not ok:
         return False, note
-    return True, "escape + can bang khoi ok (khong co luac de kiem sau hon)"
+    return True, "escape + ngoac + can bang khoi ok (khong co luac de kiem sau hon)"
 
 
 def lua_syntax_check(text):
