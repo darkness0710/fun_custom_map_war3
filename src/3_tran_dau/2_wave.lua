@@ -345,6 +345,36 @@ end
 
 -- ---------- Khoi dong ----------
 
+-- Dua dong quai ke tiep ve NGAY. Goi tu lenh -next, va tu luc moi
+-- nguoi da chon xong hero.
+--
+-- Khong goi thang onWaveTimer(): lam vay thi bo dem cu van chay va mot
+-- luc nua lai no them mot dot nua. Phai dung no truoc.
+local function waveNow()
+  if not S.running or S.waveTimer == nil then return false end
+  PauseTimer(S.waveTimer)
+  TimerStart(S.waveTimer, 0.02, false, onWaveTimer)
+  return true
+end
+
+-- Goi khi mot nguoi vua chon hero xong. Dot dau khong cho het 15 giay
+-- neu moi nguoi da san sang -- 15 giay do la de CHO CHON HERO, khong
+-- phai mot phan cua nhip choi.
+local function readyCheck()
+  if not S.running or S.stage > 0 then return end
+  local n = 0
+  for i = 1, #S.pids do
+    local d = S.p[S.pids[i]]
+    if d ~= nil and d.active then
+      if d.hero == nil then return end   -- con nguoi chua chon
+      n = n + 1
+    end
+  end
+  if n == 0 then return end
+  API.trace("wave: ca " .. n .. " nguoi da co hero -- vao dot 1 ngay")
+  waveNow()
+end
+
 local function startWaves()
   S.stage = 0
   S.mobs  = {}
@@ -354,7 +384,7 @@ local function startWaves()
 
   S.waveTimer = CreateTimer()
   S.waveDlg = CreateTimerDialog(S.waveTimer)
-  TimerDialogSetTitle(S.waveDlg, "Dot ke tiep")
+  TimerDialogSetTitle(S.waveDlg, API.t("wave_next"))
   TimerDialogDisplay(S.waveDlg, true)
   TimerStart(S.waveTimer, CFG.WAVE_FIRST_DELAY, false, onWaveTimer)
 
@@ -389,6 +419,8 @@ API.dmgOf          = dmgOf
 API.armorOf        = armorOf
 API.waveIncome     = waveIncome
 API.mobName        = mobName
+API.waveNow        = waveNow
+API.waveReadyCheck = readyCheck
 API.onMobDeath     = onMobDeath
 API.startWaves     = startWaves
 API.stopWaves      = stopWaves

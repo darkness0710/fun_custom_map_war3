@@ -62,6 +62,7 @@ T.en = {
   boss_down       = "Boss %s defeated. Everyone gains %d Spirit Stone.",
 
   -- Quai
+  wave_next       = "Next wave",
   mob_suffix      = "Cultivator",
   elite_suffix    = "Elite",
   boss_suffix     = "Lord",
@@ -102,6 +103,7 @@ T.vi = {
   need_have       = " Can %s, dang co %s.",
   boss_down       = "Ha duoc boss %s. Moi nguoi nhan %d Tinh Thach.",
 
+  wave_next       = "Dot ke tiep",
   mob_suffix      = "Tan Tu",
   elite_suffix    = "Tinh Anh",
   boss_suffix     = "Ma Ton",

@@ -169,6 +169,22 @@ local function registerEvents()
   end
   TriggerAddAction(tLC, onLinhCanCmd)
 
+  -- "-next" keo dot quai ke tiep ve ngay. Lenh dev: no doi nhip choi,
+  -- va nhip choi la thu ca bang can bang dua vao.
+  if CFG.DEV_COMMANDS then
+    local tNext = CreateTrigger()
+    for i = 1, #S.pids do
+      TriggerRegisterPlayerChatEvent(tNext, Player(S.pids[i]), "-next", true)
+    end
+    TriggerAddAction(tNext, function()
+      local pid = GetPlayerId(GetTriggerPlayer())
+      if API.waveNow() then
+        API.msg(nil, CFG.C_GREY .. "[dev] " .. GetPlayerName(Player(pid)) ..
+          " goi dot ke tiep." .. CFG.C_END)
+      end
+    end)
+  end
+
   -- "-sync" bao duong dong bo nao dang chay va ping co ve khong. Luon
   -- dang ky: khi bang khong an thi day la cho dau tien phai nhin.
   local tSync = CreateTrigger()

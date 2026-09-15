@@ -44,7 +44,6 @@ Không phụ thuộc công tắc nào. Đây là lối chơi, không phải debu
 | `-lc` | Mở thẳng thẻ Linh Căn |
 | `-lc up` | Đột phá một bậc, không cần mở bảng |
 | `-sync` | Đường đồng bộ nào đang chạy, native nào có, ping có về không |
-| `-nat` | Bản Warcraft này có những native nào — xem [5_natives.lua](../../src/1_nen/5_natives.lua) |
 
 > **Lệnh chat luôn đúng trong nhiều người chơi.** `EVENT_PLAYER_CHAT_STRING` nổ
 > trên mọi máy cùng lúc, nên `-lc up` đổi trạng thái game thẳng, không qua kênh
@@ -65,6 +64,8 @@ Cần `CFG.DEV_COMMANDS = true`.
 | `-tt <số>` | Thêm Tinh Thạch (gỗ) | `-tt 500` |
 | `-lc <số>` | Nhảy tới bậc Linh Căn 1–20 | `-lc 15` → Đại La |
 | `-sp` | Phát 1 điểm kỹ năng, hoặc mở bảng chọn kỹ năng tuỳ `CFG.SKILL_MODE` | |
+| `-next` | Kéo đợt quái kế tiếp về ngay, không chờ hết đếm ngược | |
+| `-nat` | Bản Warcraft này có native nào | |
 
 **`-wave` là lệnh quan trọng nhất.** Không có nó thì muốn xem stage 180 phải chơi
 hai tiếng. Mọi thứ về cân bằng đều kiểm bằng lệnh này.
