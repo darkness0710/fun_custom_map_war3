@@ -90,12 +90,50 @@ Gán region cho 25 block để bắt sự kiện vào/ra. Mở đường cho m�
 
 ---
 
-## ⬜ Bước 5 — Lối chơi
+## ⬜ Bước 5 — Đợt quái
 
-Chưa quyết gì cả. 25 block hiện là cấu trúc trống, chưa có mục đích.
+**Đã thiết kế xong, chưa viết một dòng code nào.**
 
-Đừng bắt đầu bước này trước khi bước 2 xong — hình dạng địa hình quyết định lối
-chơi nào khả thi.
+| Tài liệu | Nội dung |
+|---|---|
+| [02-he-thong/dot-quai.md](02-he-thong/dot-quai.md) | Luật: 220 stage, thành phần wave, nhịp, tu chính |
+| [02-he-thong/boss.md](02-he-thong/boss.md) | 20 boss cuối cảnh giới |
+| [03-du-lieu/canh-gioi.md](03-du-lieu/canh-gioi.md) | Bảng 20 cảnh giới, cách chỉ số hoá stage |
+| [03-du-lieu/duong-cong-suc-manh.md](03-du-lieu/duong-cong-suc-manh.md) | Công thức chỉ số + bảng tra |
+
+**Hai thứ phải chốt trước khi gõ code:**
+
+1. **Nhà chính đếm máu hay đếm mạng** —
+   [ADR 0011](05-quyet-dinh/0011-nha-chinh-dem-mang.md). Quyết sau là phải gỡ code
+   đã chạy được.
+2. **Sức mạnh người chơi tăng bằng gì.** Hero không lên cấp mà địch mạnh lên ×967
+   trong 220 wave. Không có câu trả lời thì đường cong địch thành bức tường ở
+   khoảng cảnh giới 4, và mọi con số trong bảng tra vô nghĩa.
+
+Thứ tự cài, mỗi bước chạy được và kiểm được:
+
+1. Bộ đếm `stage` + đồng hồ wave. Chưa sinh con nào — chỉ in ra "Pham Nhan tang 3"
+   đúng nhịp. Kèm lệnh dev `-wave <stage>` ngay từ đầu; không có nó thì không ai
+   kiểm được wave 180.
+2. Sinh `WAVE_MOB_COUNT` lính một mẫu duy nhất, chỉ số cố định, đi tới nhà.
+   Kiểm pathing và `WAVE_REORDER_TICK` trước khi thêm bất cứ gì.
+3. Áp đường cong chỉ số. In `EHP / máu thật / giáp / dmg` và đối chiếu bảng tra.
+   Lệch là **công thức sai**, đừng chỉnh số để che.
+4. Tinh anh, rồi 6 mẫu lính, rồi tu chính.
+5. Boss cảnh giới 1. Đánh thử. **Rồi mới** làm 19 con còn lại.
+
+**Cách kiểm:** đo thời gian hạ wave thật ở stage 1, 55, 110, 165, 220 rồi so với
+`WAVE_TIME`. Đây mới là cân bằng — ba bước trên chỉ là kiểm công thức.
+
+> **Bước này chặn bởi Bước 3.** Chưa biết sông có chặn đường không thì chưa biết
+> quái đi bộ tới nhà mất bao lâu, mà `WAVE_TIME` phải lớn hơn con số đó.
+
+---
+
+## ⬜ Bước 6 — 25 block dùng để làm gì
+
+Vẫn chưa quyết. Đợt quái **không** trả lời câu này: quái đi từ block #16 tới nhà,
+23 block còn lại không có vai trò nào.
 
 ---
 

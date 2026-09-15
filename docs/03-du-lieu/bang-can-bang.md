@@ -80,6 +80,44 @@ Chi tiết: [02-he-thong/khoa-hero.md](../02-he-thong/khoa-hero.md).
 | `HERO_REMOVE_ABILITIES` | Gỡ hẳn ability khỏi danh sách học | Rỗng — thường không cần |
 | `HERO_XP_SWEEP` | Giây giữa hai lần quét toàn map | `0` = chỉ khoá lúc tạo |
 
+## Đợt quái
+
+Chi tiết: [02-he-thong/dot-quai.md](../02-he-thong/dot-quai.md) ·
+[canh-gioi.md](canh-gioi.md).
+
+| Khoá | Ý nghĩa | Ràng buộc |
+|---|---|---|
+| `REALMS` | Bảng 20 cảnh giới `{ ten, tenGame, coi }` | Đúng 20 dòng, đúng thứ tự. `tenGame` **không dấu** — font WC3 thiếu glyph tiếng Việt |
+| `TIERS_PER_REALM` | Tầng mỗi cảnh giới | `10`. Tổng stage = `20 × (TIERS_PER_REALM + 1)` = 220. Không hard-code số 11 ở đâu cả |
+| `WAVE_MOB_COUNT` `WAVE_ELITE_COUNT` `WAVE_ELITE_COUNT_FULL` | Lính / tinh anh mỗi wave | **Không** nhân theo số người chơi — [ADR 0009](../05-quyet-dinh/0009-so-luong-linh-co-dinh.md) |
+| `WAVE_TIME` | Giây mỗi wave, tra theo cảnh giới | Quyết định thời lượng cả ván (~129 phút) *và* DPS mà người chơi cần. Hai thứ dính nhau |
+| `WAVE_BOSS_TIME_MULT` | Stage boss dài gấp mấy lần | Boss cần ~1.33 × `WAVE_TIME` |
+| `WAVE_SPAWN_BATCH` `WAVE_SPAWN_TICK` | Sinh rải thế nào | `COUNT / BATCH × TICK` phải nhỏ hơn hẳn `WAVE_TIME` |
+| `WAVE_MAX_ALIVE` | Trần quái sống | Hoãn việc **sinh**, không hoãn đồng hồ. Chạm thường xuyên = đường cong sai |
+| `WAVE_REORDER_TICK` | Giây giữa hai lần phát lại lệnh đi | Quái kẹt pathing đứng mãi nếu không có |
+| `WAVE_CALL_EARLY` `WAVE_CALL_EARLY_BONUS` | Gọi wave sớm, và thưởng | Thứ duy nhất cắt 129 phút xuống dưới 100 |
+| `MOB_ARCHETYPES` | 6 mẫu lính | `Σ(tỉ lệ)` = 1.0 và `Σ(tỉ lệ × EHP mult)` ∈ [0.95, 1.05] |
+| `MODIFIERS` `TIER_MODIFIERS` | Tu chính, và tầng nào bật mấy cái | Cố định theo stage, **không random** |
+| `ELITE_*` | Tinh anh | `ELITE_DMG_MULT` phải thấp hơn nhiều `ELITE_EHP_MULT` — nhân 10 cả hai là giết hero một đòn |
+| `BOSS_*` | Boss | `BOSS_CC_RESIST` < 1.0 — miễn nhiễm hoàn toàn giết cả nhánh kỹ năng khống chế |
+| `LEAK_COST_MOB` `LEAK_COST_ELITE` `HOUSE_LIVES` | Lọt một con thì mất mấy mạng | **Chưa chốt** — [ADR 0011](../05-quyet-dinh/0011-nha-chinh-dem-mang.md) |
+
+## Đường cong chỉ số
+
+Chi tiết và bảng tra: [duong-cong-suc-manh.md](duong-cong-suc-manh.md).
+
+| Khoá | Ý nghĩa | Ràng buộc |
+|---|---|---|
+| `MOB_EHP_BASE` | EHP lính chuẩn ở stage 1 | Nút chỉnh độ khó tổng thể — dời cả đường cong, giữ nguyên hình dạng |
+| `MOB_EHP_GROWTH` | Nhân mỗi stage | Mũ 219, **rất nhạy**: 1.018 → 1.020 là tổng nhảy từ ×2 176 lên ×3 351 |
+| `MOB_EHP_REALM_STEP` | Nhân thêm mỗi cảnh giới | Mũ 19. Giữ `GROWTH^11 × REALM_STEP` cố định thì đổi **nhịp** mà không đổi tổng |
+| `MOB_DMG_BASE` `MOB_DMG_GROWTH` `MOB_DMG_REALM_STEP` | Như trên, cho sát thương | Phải dốc **thoải hơn** EHP. Bằng nhau là cuối game thành xúc xắc |
+| `MOB_ARMOR_BASE` `MOB_ARMOR_PER_REALM` | Giáp theo cảnh giới | Đổi nó **không** đổi độ khó: máu thật tự chia lại. [ADR 0010](../05-quyet-dinh/0010-giap-khong-nam-trong-duong-cong.md) |
+| `SCALE_EHP_PER_PLAYER` | Nhân EHP mỗi người thêm | Phải < 1.0 — bằng 1.0 là phạt người chơi vì rủ bạn |
+| `SCALE_DMG_PER_PLAYER` | Nhân sát thương mỗi người thêm | Giữ nhỏ: sát thương đã tự loãng theo số mục tiêu |
+| `SCALE_BOSS_EHP_PER_PLAYER` | Riêng boss | Cao hơn lính — boss một thân, đông người tập trung hạ hiệu quả hơn |
+| `SCALE_RECOUNT_EACH_WAVE` | Tính lại số người mỗi wave | `true`. Đọc `#S.pids`, **không** đọc `CFG.PLAYER_SLOTS` |
+
 ## Trình bày
 
 | Khoá | Ý nghĩa |
@@ -94,5 +132,12 @@ Chi tiết: [02-he-thong/khoa-hero.md](../02-he-thong/khoa-hero.md).
 
 ## Chưa có khoá nào cho
 
-Object data (unit, ability, doodad) — map chưa có gì. Khi thêm, tạo
-`docs/03-du-lieu/object-data.md` và ghi rõ ID nào là placeholder.
+**Kinh tế.** Quái chết rơi cái gì, mua bằng cái gì. Không có nó thì
+[hợp đồng sức mạnh](duong-cong-suc-manh.md) không ai thực hiện được.
+
+**Tu vi người chơi.** Hero không lên cấp (`LOCK_HERO_XP`) mà địch mạnh lên ×967 —
+khoảng trống đó chưa có hệ nào lấp.
+
+**Object data** (unit, ability, doodad). Hệ đợt quái cần 24 unit type lính +
+20 boss. Khi thêm, tạo `docs/03-du-lieu/object-data.md` và ghi rõ ID nào là
+placeholder.

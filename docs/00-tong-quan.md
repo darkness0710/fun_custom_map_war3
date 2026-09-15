@@ -46,11 +46,20 @@ Những câu hỏi lớn còn treo. Quyết xong thì chuyển thành file trong
 1. **25 block dùng để làm gì?** Chưa có lối chơi nào gắn vào chúng. Lưới hiện
    là một cấu trúc trống — chiếm đất, phòng thủ, khu vực tài nguyên, hay gì khác.
    Đây là câu hỏi lớn nhất còn lại.
+
+   Hệ đợt quái ([02-he-thong/dot-quai.md](02-he-thong/dot-quai.md)) **không** trả
+   lời câu này: quái đi từ block #16 tới nhà, 23 block còn lại vẫn không có vai
+   trò nào.
 2. **Sông chặn hay lội qua được?** Nước sâu chặn đường bộ, nước nông thì không.
    Quyết định này đổi hẳn nhịp di chuyển của map.
 3. **Qua sông bằng gì?** Cầu, cổng, hay phải phá. Chưa có gì.
 4. **Ba người chơi quan hệ thế nào?** Hiện là đồng minh. Nếu sau này muốn tranh
    chấp block thì phải đổi.
+5. **Nhà chính đếm máu hay đếm mạng?** Chặn hệ đợt quái —
+   [ADR 0011](05-quyet-dinh/0011-nha-chinh-dem-mang.md).
+6. **Sức mạnh người chơi tăng bằng gì?** Hero không lên cấp, mà địch mạnh lên
+   ×967 trong 220 wave. Chưa có hệ nào lấp khoảng đó —
+   [duong-cong-suc-manh.md](03-du-lieu/duong-cong-suc-manh.md).
 
 ## Bước kế tiếp
 

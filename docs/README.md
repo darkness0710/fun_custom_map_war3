@@ -45,10 +45,18 @@ docs/
      nha-chinh.md        Nhà chính + vùng địch
      chon-hero.md        Popup chọn hero
      thiet-ke-hero.md    Ba vai và 21 kỹ năng
+     dot-quai.md         Cảnh giới, tầng, tinh anh, boss, công thức scale
+     kinh-te.md          Linh Khí, ngân sách, bảng giá nâng kỹ năng
+     bang-nhan-vat.md    Bảng phím E: Kỹ Năng / Trang Bị / Linh Căn / Pháp Khí
      khoa-hero.md        Không lên cấp, không nâng kỹ năng
      ky-nang.md          Kỹ năng cố định & hệ nâng cấp bằng nút +
+     dot-quai.md         220 đợt quái: cấu trúc, thành phần, nhịp
+     boss.md             20 boss cuối cảnh giới
   03-du-lieu/
      bang-can-bang.md    Khoá CFG -> ý nghĩa -> ràng buộc
+     canh-gioi.md        Bảng 20 cảnh giới, chỉ số hoá stage 1..220
+     duong-cong-suc-manh.md  Công thức chỉ số địch + hợp đồng người chơi
+     curve.py            Sinh lại bảng tra trong file trên
   04-map/
      kich-thuoc.md       Số đo thật, đọc từ war3map.w3e
      luoi-25-o.md        Lưới 5x5 và các dòng sông
@@ -62,6 +70,9 @@ docs/
      0006-fourcc-tra-hai-gia-tri.md
      0007-khong-dung-getunitgoldcost.md
      0008-ky-nang-hero-phai-sua-o-object-editor.md
+     0009-so-luong-linh-co-dinh.md
+     0010-giap-khong-nam-trong-duong-cong.md
+     0011-nha-chinh-dem-mang.md        <- CHUA CHOT
   mau/                   Mẫu để copy khi viết tài liệu mới
      he-thong.md
      quyet-dinh.md
