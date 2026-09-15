@@ -213,6 +213,18 @@ def build_block(sources, lang=None):
         "-- Ba ten dung chung cua ca du an. Khai bao o day chu khong trong",
         "-- file nao, de moi file duoc boc trong khoi do...end rieng.",
         "local CFG, S, API",
+        "",
+        "-- DAU HIEU SONG. Ghi mot file NGAY khi chunk bat dau nap, bang",
+        "-- native tho, khong phu thuoc dong code nao cua du an.",
+        "--",
+        "-- Tach duoc hai kha nang ma tu ngoai khong phan biet noi:",
+        "--   khong co file nay          -> code KHONG nam trong map",
+        "--   co file nay, khong co vet  -> chunk nap duoc nhung no giua chung",
+        "if PreloadGenClear ~= nil then",
+        "  PreloadGenClear(); PreloadGenStart()",
+        '  Preload("chunk BAT DAU nap -- build %s")' % stamp,
+        '  PreloadGenEnd("DarknessBoot.txt")',
+        "end",
     ]
     for path in sources:
         name = rel_name(path)
@@ -487,6 +499,24 @@ def check_sync_owner(sources):
     return out
 
 
+def luaparser_check(text):
+    """Kiem cu phap bang luaparser neu may co cai.
+
+    build.py chi dem ngoac va dem do/end -- bat duoc hai loi hay gap
+    nhat khi noi file, nhung khong phai mot bo phan tich Lua. luaparser
+    thi la that: "pip install luaparser".
+    """
+    try:
+        from luaparser import ast as lua_ast
+    except ImportError:
+        return None, ""
+    try:
+        lua_ast.parse(text)
+        return True, "luaparser: cu phap hop le"
+    except Exception as e:
+        return False, "luaparser: %s" % e
+
+
 def fallback_check(text):
     """Khong co luac thi chay hai phep kiem re tien nhung bat duoc
     hai loi hay gap nhat khi noi file: escape hong va lech end."""
@@ -499,7 +529,13 @@ def fallback_check(text):
     ok, note = block_balance_check(text)
     if not ok:
         return False, note
-    return True, "escape + ngoac + can bang khoi ok (khong co luac de kiem sau hon)"
+
+    ok, note = luaparser_check(text)
+    if ok is False:
+        return False, note
+    if ok is True:
+        return True, "escape + ngoac + can bang khoi ok, " + note
+    return True, "escape + ngoac + can bang khoi ok (chua co luaparser)"
 
 
 def lua_syntax_check(text):
