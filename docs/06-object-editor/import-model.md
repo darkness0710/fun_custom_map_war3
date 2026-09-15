@@ -49,6 +49,35 @@ Nếu định gắn model này cho quái thường thì thiếu `Decay` là xác
 
 Có sẵn `Portrait - 1` bên trong nên không cần file `UtherV2_Portrait.mdx` riêng.
 
+## ⚠ Import bằng script LÀM HỬe MAP — đã đo
+
+**Đừng dùng `w3import.py` cho tới khi sửa xong.** Sau khi nó ghi ba thứ vào
+thư mục map, World Editor **bỏ qua luôn `war3map.lua`** khi đóng gói — vào game
+không có dòng code nào chạy, không lỗi nào báo.
+
+### Cách đo ra
+
+Dấu hiệu: `CustomMapData\` **trống trơn**, kể cả `DarknessBoot.txt` — file
+được ghi bằng native thô ngay dòng đầu khi chunk bắt đầu nạp. Tức chunk Lua
+không nạp một dòng.
+
+Cú pháp đã loại trừ trước đó bằng `luaparser`. Phép thử A/B: gỡ cả ba thứ ra,
+build lại, Ctrl+F9 — code chạy lại ngay.
+
+### Ba nghi can, chưa tách được
+
+| | Nghi ngờ |
+|---|---|
+| `war3map.imp` tự viết | byte "cờ" đặt **13** mà chưa đo được — khả năng cao nhất |
+| thư mục `units/` mới trong thư mục map | World Editor có thể chỉ mong `war3mapImported/` |
+| `umdl` ghi bằng `w3obj.py` | ít khả năng — `w3obj.py` dựng lại file khớp từng byte |
+
+### Đường đi đúng cho tới khi biết rõ
+
+Import bằng **Import Manager của World Editor**, rồi đọc `war3map.imp` do nó
+tạo ra để học đúng định dạng — giống cách đã làm với `war3map.w3a`. Có mẫu
+thật rồi mới sửa `w3import.py`.
+
 ## Byte "cờ" trong `war3map.imp` — chưa đo được
 
 ```

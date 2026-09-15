@@ -3,6 +3,12 @@
 """
 w3import.py -- import file vao map ma khong phai mo Import Manager.
 
+CANH BAO: CHUA DUNG DUOC. Da do: sau khi script nay ghi file vao thu muc
+map, World Editor bo qua luon war3map.lua khi dong goi -- vao game khong
+co dong code nao chay. Chua tach duoc la do byte "co" trong war3map.imp,
+hay do thu muc moi (units/) trong thu muc map. Xem
+docs/06-object-editor/import-model.md
+
     python w3import.py list
     python w3import.py add models/heroes/UtherV2.mdx war3mapImported/UtherV2.mdx
     python w3import.py add models/heroes/Uther.blp  "units/HotS/Uther/Uther.blp"
