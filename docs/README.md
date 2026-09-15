@@ -45,12 +45,11 @@ docs/
      nha-chinh.md        Nhà chính + vùng địch
      chon-hero.md        Popup chọn hero
      thiet-ke-hero.md    Ba vai và 21 kỹ năng
-     dot-quai.md         Cảnh giới, tầng, tinh anh, boss, công thức scale
-     kinh-te.md          Linh Khí, ngân sách, bảng giá nâng kỹ năng
-     bang-nhan-vat.md    Bảng phím E: Kỹ Năng / Trang Bị / Linh Căn / Pháp Khí
      khoa-hero.md        Không lên cấp, không nâng kỹ năng
      ky-nang.md          Kỹ năng cố định & hệ nâng cấp bằng nút +
-     dot-quai.md         220 đợt quái: cấu trúc, thành phần, nhịp
+     kinh-te.md          Hai đồng tiền, ngân sách ×967, bảng giá bốn hệ
+     bang-nhan-vat.md    Bảng phím E: Kỹ Năng / Trang Bị / Linh Căn / Pháp Khí
+     dot-quai.md         220 đợt quái: cấu trúc, thành phần, nhịp, tu chính
      boss.md             20 boss cuối cảnh giới
   03-du-lieu/
      bang-can-bang.md    Khoá CFG -> ý nghĩa -> ràng buộc

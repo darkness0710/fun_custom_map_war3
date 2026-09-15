@@ -1,141 +1,179 @@
-# Kinh tế: Linh Khí, vàng, gỗ
+# Kinh tế & bốn hệ nâng cấp
 
-> **Trạng thái:** Nháp — chưa cài
+> **Trạng thái:** Nháp — công thức đã chốt, chưa cài
 > **Cập nhật:** 2026-09-15
-> **Liên quan:** [dot-quai.md](dot-quai.md), [ky-nang.md](ky-nang.md)
+> **Xem kèm:** [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) ·
+> [bang-nhan-vat.md](bang-nhan-vat.md) · [dot-quai.md](dot-quai.md)
 
-## Có nên dùng vàng và gỗ không
+Trang này trả lời câu hỏi mà
+[duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) để ngỏ: **×967 sức
+mạnh người chơi đến từ đâu, và mua bằng gì.**
 
-**Không, ít nhất là chưa.** Dùng **một** đồng tiền: Linh Khí.
+## Hai đồng tiền, và chỉ hai
 
-Hai đồng tiền chỉ tạo ra chiều sâu khi chúng **đến từ nguồn khác nhau** và **mua thứ
-khác nhau**. Nếu cả hai cùng rơi ra từ quái và cùng dùng để nâng cấp, người chơi không
-phải *lựa chọn* gì — chỉ phải làm phép cộng ở hai chỗ. Đó là thêm việc, không thêm
-quyết định.
-
-Thử hỏi: "khi nào người chơi có nhiều vàng nhưng thiếu gỗ?" Nếu không trả lời được
-bằng một tình huống cụ thể thì đồng tiền thứ hai chưa có lý do tồn tại.
-
-### Nhưng nên để Linh Khí **là** vàng
-
-Đây là mẹo thực dụng, không phải thoả hiệp.
-
-Thanh tài nguyên của Warcraft III luôn hiện sẵn trên đầu màn hình. Dùng nó làm Linh
-Khí thì được miễn phí:
-
-- Chỗ hiển thị, không phải vẽ frame
-- Cập nhật tức thì, không phải code làm mới
-- `GetPlayerState` / `SetPlayerState` để cộng trừ
-- Người chơi đã quen nhìn chỗ đó
-
-Đổi lại: biểu tượng là đồng tiền vàng chứ không phải chữ "Linh Khí". Trong mọi thông
-báo và giao diện ta vẫn gọi nó là Linh Khí, và sau vài phút không ai để ý nữa.
-
-> Không giấu được thanh **gỗ** và **lương thực**. Đặt chúng về 0 và không bao giờ dùng
-> tới — người chơi sẽ bỏ qua. Đừng cho chúng một công dụng nửa vời chỉ vì chúng có mặt.
-
-### Khi nào thì thêm đồng tiền thứ hai
-
-Khi có một nguồn thật sự khác biệt. Ví dụ đáng cân nhắc:
-
-| Đồng tiền | Nguồn | Mua gì | Vì sao tách ra |
+| | Nguồn | Mua gì | Nhịp |
 |---|---|---|---|
-| **Linh Khí** (vàng) | Mọi quái | Nâng kỹ năng | Dòng chảy đều, tiêu liên tục |
-| **Tinh Thạch** (gỗ) | **Chỉ boss** | Pháp Khí | Hiếm, theo mốc — mỗi lần nhận là một quyết định lớn |
+| **Linh Khí** *(vàng)* | Mọi quái | Linh Căn, Trang Bị, Kỹ Năng | Chảy đều, tiêu liên tục |
+| **Tinh Thạch** *(gỗ)* | **Chỉ boss** — 20 lần cả ván | Pháp Khí | Hiếm, theo mốc |
 
-Cấu trúc đó có lý do rõ ràng: Linh Khí là thu nhập đều để nâng dần, Tinh Thạch là phần
-thưởng theo cột mốc để mua thứ đổi cách chơi. Hai nhịp khác nhau.
+Hai đồng tiền chỉ tạo chiều sâu khi **khác nguồn** và **khác chỗ tiêu**. Ở đây
+khác cả hai: Linh Khí là thu nhập đều để nâng dần, Tinh Thạch là phần thưởng cột
+mốc để mua thứ đổi cách chơi. Nếu cả hai cùng rơi từ quái và cùng dùng nâng cấp
+thì đó không phải lựa chọn, chỉ là làm phép cộng ở hai chỗ.
 
-**Nhưng đừng làm ngay.** Làm Linh Khí chạy đã, chơi thử, rồi mới biết Pháp Khí có cần
-đồng tiền riêng không.
+### Dùng luôn thanh tài nguyên của Warcraft III
 
-## Linh Khí rơi ra bao nhiêu
+Linh Khí **là** vàng, Tinh Thạch **là** gỗ. Không vẽ lại.
 
-Gọi `r` = cảnh giới (1…20).
+Thanh tài nguyên luôn hiện sẵn trên đầu màn hình. Dùng nó thì được miễn phí: chỗ
+hiển thị, cập nhật tức thì, `GetPlayerState`/`SetPlayerState` để cộng trừ, và
+người chơi đã quen nhìn chỗ đó.
 
-| Nguồn | Linh Khí |
+Đổi lại: biểu tượng là đồng vàng và khúc gỗ chứ không phải chữ Linh Khí. Trong mọi
+thông báo ta vẫn gọi đúng tên, vài phút sau không ai để ý nữa.
+
+> **Lương thực** thì không dùng. Đặt về 0 và bỏ qua. Đừng cho nó công dụng nửa vời
+> chỉ vì nó có mặt trên màn hình.
+
+## Ngân sách sức mạnh: bốn nguồn, tích phải bằng ×967
+
+| Hệ | Nhân | Cấu trúc |
+|---|---|---|
+| **Linh Căn** — tu vi của người chơi | **×20** | 20 bậc, mỗi bậc ×1.17 |
+| **Trang Bị** | **×8** | 6 ô, mỗi ô 10 cấp, mỗi cấp +4% |
+| **Kỹ Năng** | **×2.4** | 7 kỹ năng × 10 cấp, mỗi cấp +10% |
+| **Pháp Khí** | **×2.5** | 5 món, mỗi món ×1.2 |
+| | **×960** | ≈ ×967 ✔ |
+
+**Đây là ràng buộc cứng.** Bốn con số này **nhân** với nhau, không cộng. Chỉnh một
+cái là phải kiểm lại tích. Lệch 20% ở một nguồn nghe nhỏ, nhưng lệch 20% ở cả bốn
+là tích lệch hơn gấp đôi.
+
+> Bản trước của [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) chia
+> ba nguồn (tu vi ×40, trang bị ×12, kỹ năng ×2 = ×960). Bảng trên là **cùng ngân
+> sách đó tách làm bốn** để khớp bốn thẻ của [bảng nhân vật](bang-nhan-vat.md).
+> Linh Căn nhận phần lớn nhất vì nó chính là hệ tu vi — nó giữ đúng vai trò cũ,
+> chỉ đổi tên và tách bớt một phần sang Pháp Khí.
+
+## Thu nhập
+
+Linh Khí rơi ra phải bám **×967** (hợp đồng sức mạnh), **không** bám ×2 176 (đường
+cong EHP địch). Bám nhầm đường là người chơi giàu dần tương đối và nửa sau game quá dễ.
+
+```
+LinhKhi(stage) = LINHKHI_BASE × LINHKHI_GROWTH^(stage-1)
+LINHKHI_GROWTH = 967^(1/219) ≈ 1.0319
+```
+
+| Stage | Linh Khí / wave |
 |---|---|
-| Lính thường | `5 × r` |
-| Tinh anh | `50 × r` |
-| Boss | `500 × r` |
+| 1 | 60 |
+| 55 | 326 |
+| 110 | 1 836 |
+| 165 | 10 323 |
+| 220 | 58 019 |
 
-Thu nhập một wave ở cảnh giới `r`: `50×5r + 50r = 300r`.
+**Tổng cả ván: ~1 875 000 Linh Khí.** Đây là ngân sách. Mọi giá trong map chia
+nhau con số này.
 
-**Vì sao nhân với cảnh giới:** sức mạnh quái tăng ~1,45× mỗi cảnh giới. Nếu Linh Khí
-rơi ra cố định thì tới cảnh giới 10 người chơi giết cả wave chỉ được vài đồng, trong
-khi giá nâng cấp đã lên trời. Cho thu nhập tăng theo cảnh giới thì hai bên tự đi cùng
-nhau, không cần bảng riêng cho từng wave.
+Chia trong wave: 50 lính chia 60%, tinh anh 40%. Tinh anh đáng giá gấp ~13 lần một
+con lính — đủ để đáng đi giết riêng, không đủ để bỏ mặc đám đông.
 
-### Tổng thu nhập cả ván (phương án A: 20 cảnh giới × 3 tầng)
+### Chia ngân sách
 
-```
-Wave thường : 3 wave × 300r, với r = 1..20  =  900 × 210    = 189 000
-Boss        : 500r,          với r = 1..20  =  500 × 210    = 105 000
-                                                     TỔNG   ≈ 294 000
-```
-
-Đây là **ngân sách**. Mọi giá trong map phải chia nhau con số này.
-
-## Chia ngân sách
-
-| Hệ thống | Tỉ lệ | Linh Khí |
+| Hệ | Tỉ lệ | Linh Khí |
 |---|---|---|
-| Nâng kỹ năng | 55% | ~162 000 |
-| Trang bị | 20% | ~59 000 |
-| Linh Căn | 15% | ~44 000 |
-| Dự phòng / không tiêu hết | 10% | ~29 000 |
+| Linh Căn | 40% | ~750 000 |
+| Trang Bị | 30% | ~563 000 |
+| Kỹ Năng | 22% | ~413 000 |
+| Không tiêu hết | 8% | ~150 000 |
 
-Phần dự phòng cố ý có: người chơi **không nên** mua được hết mọi thứ trong một ván.
-Nếu tiêu hết sạch mà vẫn thắng thì lần chơi sau không còn gì để làm khác đi.
+Phần không tiêu hết **cố ý có**. Người chơi không nên mua được sạch mọi thứ trong
+một ván — nếu tiêu hết mà vẫn thắng thì lần chơi sau không còn gì để làm khác đi.
 
-## Bảng nâng kỹ năng
+## Bảng giá
 
-7 kỹ năng × 10 cấp = 70 lần nâng, ngân sách ~162 000.
+Cả ba hệ dùng một nguyên tắc: **giá bám theo thu nhập**. Giá tăng cùng nhịp với
+Linh Khí rơi ra, nên "một lần nâng cấp đáng mấy wave" là **hằng số suốt 220 stage**.
 
-Công thức đề xuất:
+Đây là tính chất quan trọng nhất của bảng giá. Không có nó thì hoặc đầu game nghèo
+kiết xác, hoặc cuối game tiền thừa mứa không biết tiêu.
+
+### Linh Căn — 19 lần đột phá
 
 ```
-gia(cap) = 45 × cap²
+gia(bac r) = 439 × 1.412^(r-1)
 ```
 
-| Cấp | Giá | Cộng dồn |
+| Bậc | Giá | Bằng mấy wave thu nhập |
 |---|---|---|
-| 2 | 180 | 180 |
-| 3 | 405 | 585 |
-| 4 | 720 | 1 305 |
-| 5 | 1 125 | 2 430 |
-| 6 | 1 620 | 4 050 |
-| 7 | 2 205 | 6 255 |
-| 8 | 2 880 | 9 135 |
-| 9 | 3 645 | 12 780 |
-| 10 | 4 500 | **17 280** |
+| 1 → 2 | 438 | 7,1 |
+| 5 → 6 | 1 745 | 7,1 |
+| 10 → 11 | 9 808 | 7,1 |
+| 15 → 16 | 55 128 | 7,1 |
+| 19 → 20 | 219 374 | 7,1 |
 
-Max một kỹ năng: 17 280. Max cả 7: **120 960** — nằm gọn trong 162 000, còn dư cho
-người chơi rải đều thay vì dồn hết vào một cái.
+Hằng số 7,1 không phải trùng hợp — `1.412 = 1.0319^11`, tức giá tăng đúng bằng
+thu nhập của 11 stage (một cảnh giới). Đột phá mỗi cảnh giới một lần, và lúc nào
+cũng phải để dành ~7 wave.
 
-**Vì sao bậc hai chứ không nhân đôi mỗi cấp.** Nhân đôi (100, 200, 400…) thì cấp 10
-đắt gấp 512 lần cấp 2 — người chơi chỉ nâng được một kỹ năng lên cao và bỏ mặc sáu
-cái kia. Bậc hai giữ cấp cuối đắt gấp 25 lần, đủ để phải cân nhắc mà không khoá cứng
-lựa chọn.
+### Trang Bị — 6 ô × 9 lần nâng
 
-### Mỗi cấp cho thêm bao nhiêu
+```
+gia(lan thu k) = 86 × 1.134^(k-1)
+```
 
-Sát thương/hiệu lực **+12% mỗi cấp, cộng dồn nhân**. Cấp 10 = `1,12⁹ ≈ 2,77×`.
+| Lần nâng | Giá |
+|---|---|
+| 1 | 85 |
+| 18 | 723 |
+| 36 | 6 936 |
+| 54 | 66 471 |
 
-Đây là chỗ then chốt: quái mạnh lên **1 164×** qua 20 cảnh giới, mà kỹ năng chỉ cho
-2,77×. Phần còn lại phải đến từ **trang bị và Linh Căn**. Nếu không, tới cảnh giới 8
-là người chơi không giết nổi gì nữa.
+Mỗi cấp +4% sát thương. Sáu ô đầy cấp 10 = `(1.04⁹)⁶ ≈ ×8.3`.
 
-> **Đây là ràng buộc lớn nhất của toàn bộ thiết kế.** Ba nguồn sức mạnh nhân với nhau
-> phải đạt ~1 000×:
-> `kỹ năng 2,8× × trang bị ~20× × linh căn ~20× ≈ 1 100×`
-> Số cụ thể sẽ đổi, nhưng **tích của ba nguồn** phải bám theo đường cong quái. Mỗi lần
-> chỉnh một nguồn phải kiểm lại tích.
+### Kỹ Năng — 7 kỹ năng × 9 lần nâng
+
+```
+gia(lan thu k) = 56 × 1.113^(k-1)
+```
+
+| Lần nâng | Giá |
+|---|---|
+| 1 | 55 |
+| 21 | 472 |
+| 42 | 4 446 |
+| 63 | 41 821 |
+
+Mỗi cấp +10% hiệu lực. Một kỹ năng cấp 10 = `1.10⁹ ≈ ×2.36`.
+
+> Giá tính theo **tổng số lần đã nâng**, không theo cấp của riêng kỹ năng đó. Nên
+> dồn hết vào một kỹ năng không rẻ hơn rải đều — người chơi chọn theo lối chơi chứ
+> không theo phép tính.
+
+### Pháp Khí — Tinh Thạch
+
+| | |
+|---|---|
+| Boss cảnh giới `r` rơi | `10 + 5×(r-1)` Tinh Thạch |
+| Tổng cả ván (20 boss) | 1 150 |
+| 5 Pháp Khí giá | 60 · 110 · 180 · 280 · 420 = **1 050** |
+
+Mua được đủ 5 món nếu hạ hết 20 boss. Thua một boss là mất một món — đó là trọng
+lượng thật của việc thua boss.
+
+**Pháp Khí không nên là +% chỉ số.** Năm món, mỗi món **đổi cách chơi**: ví dụ
+"kỹ năng vùng chạm thêm 50% bán kính", "hồi chiêu giảm một nửa khi dưới 30% máu".
+Chỉ số thì đã có ba hệ kia lo rồi.
 
 ## Chưa quyết
 
-- Nâng kỹ năng có cần hero còn sống không, hay nâng được cả lúc đang chết.
-- Có cho hoàn Linh Khí để đổi build không.
-- Linh Khí là của riêng từng người hay quỹ chung của cả đội. Riêng thì mỗi người tự
-  quyết build; chung thì buộc phải bàn nhau — hai cảm giác chơi rất khác.
+- **Linh Khí riêng từng người hay quỹ chung.** Riêng thì mỗi người tự quyết build;
+  chung thì buộc phải bàn nhau. Hai cảm giác chơi rất khác — và nó đổi cả cách
+  thiết kế [bảng nhân vật](bang-nhan-vat.md).
+- Linh Căn lên bằng gì: tự động theo cảnh giới địch, hay phải gom Linh Khí đột
+  phá. Bảng giá ở trên giả định **phải gom** — chọn tự động thì bỏ 40% ngân sách
+  và ba hệ kia phải gánh lại.
 - Chết có mất Linh Khí không.
+- Có cho hoàn điểm đổi build không.
+- Nội dung 5 Pháp Khí — chưa nghĩ món nào.

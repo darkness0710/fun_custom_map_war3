@@ -1,151 +1,164 @@
-# Thiết kế đợt quái
+# Hệ thống: Đợt quái
 
-> **Trạng thái:** Nháp — chưa có dòng code nào (`05_wave.lua` còn rỗng)
+> **Trạng thái:** Đã chốt — chưa cài (`05_wave.lua` còn rỗng)
 > **Cập nhật:** 2026-09-15
+> **Khoá CFG:** `WAVE_*` `MOB_*` `ELITE_*` `SCALE_*`
+> **Xem kèm:** [canh-gioi.md](../03-du-lieu/canh-gioi.md) ·
+> [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) · [boss.md](boss.md)
 
-## Ba con số cần sửa trước
+> **Ghi chú khôi phục.** Bản trước của file này bị ghi đè nhầm và không lấy lại
+> được. Bản này dựng lại từ những gì các tài liệu khác trích dẫn về nó —
+> `canh-gioi.md`, `boss.md`, `duong-cong-suc-manh.md`, ADR 0009–0011 — nên **nhất
+> quán với chúng**, nhưng có thể thiếu chi tiết so với bản gốc.
 
-Bạn nói 230 wave và 23 boss. Đếm lại danh sách cảnh giới bạn đưa:
+## Nó là gì
 
-```
-20 cảnh giới  →  200 wave thường  +  20 boss  =  220 trận
-```
+220 stage. Phe địch tu từ Phàm Nhân lên Sáng Thế Thần, mỗi cảnh giới 10 tầng rồi
+một lần độ kiếp. Người chơi chặn ở từng tầng, và chặn hẳn ở mỗi lần độ kiếp.
 
-Không phải 23. Nhưng con số đó chưa phải vấn đề. Hai con số dưới đây mới là.
+## Luật
 
-### Một ván dài 2–4 tiếng
+**L1. Một biến `stage` duy nhất, 1…220.**
+Cảnh giới và tầng đều **suy ra** từ nó. Giữ hai biến song song là chúng sẽ lệch
+nhau. Công thức ở [canh-gioi.md](../03-du-lieu/canh-gioi.md).
 
-| Thời lượng mỗi wave | Cả ván |
-|---|---|
-| 30 giây | **2,2 giờ** |
-| 45 giây | **3,0 giờ** |
-| 60 giây | **3,8 giờ** |
+**L2. Một cảnh giới là 11 stage: 10 tầng + 1 boss.**
+Số 11 là `TIERS_PER_REALM + 1`, không hard-code ở đâu cả.
 
-Một map Warcraft III chơi chung thoải mái trong **30–60 phút**. Quá 90 phút là người
-chơi rời trận giữa chừng, và map co-op mất một người là hỏng cả ván.
+**L3. Thành phần wave cố định: 50 lính + 1 tinh anh.**
+Không đổi theo số người chơi, không đổi theo cảnh giới. Số lượng cố định thì mọi
+thứ khác đoán được: hiệu năng, thời gian dọn, thu nhập.
+[ADR 0009](../05-quyet-dinh/0009-so-luong-linh-co-dinh.md)
 
-30 giây/wave đã là rất nhanh cho 51 con quái — mà vẫn 2,2 giờ.
+**L4. Boss chiếm trọn stage, một mình.**
+Không lính đi kèm. Xem [boss.md](boss.md).
 
-### Sức mạnh phải tăng hàng nghìn lần
+**L5. Có trần số unit sống.**
+Đồng hồ wave chạy bất kể wave trước đã dọn chưa — đó là áp lực chính. Nhưng nếu
+trên map đã quá `WAVE_MAX_ALIVE` con thì **hoãn** wave mới thay vì chồng thêm.
 
-Qua 20 cảnh giới, nếu mỗi cảnh giới quái mạnh lên một hệ số cố định:
+Đỉnh điểm dự kiến ~300 unit. Warcraft III chịu được, nhưng không có trần thì một
+lần vỡ trận sẽ kéo theo dây chuyền và không bao giờ gỡ lại được.
 
-| Mỗi cảnh giới | Cuối game quái mạnh gấp |
-|---|---|
-| ×1,30 | 146 lần |
-| ×1,45 | **1 164 lần** |
-| ×1,60 | 7 555 lần |
-| ×2,00 | 524 288 lần |
+**L6. Tầng đổi *tu chính*, không đổi chỉ số.**
+Trong một cảnh giới, chỉ số chỉ nhích ×1.174 suốt 10 tầng — gần như không cảm
+thấy. Thứ làm tầng 7 khác tầng 2 là **tu chính**, xem phần dưới.
 
-Sát thương người chơi **cũng phải tăng đúng chừng đó**, nếu không thì hoặc cảnh giới
-sau vô nghĩa (quái quá yếu), hoặc bất khả thi (quái quá mạnh).
+## Nhịp
 
-Tăng 1 000 lần sát thương qua 7 kỹ năng + trang bị + linh căn là làm được, nhưng phải
-thiết kế ngay từ đầu chứ không vá sau. Đây là ràng buộc lớn nhất của cả map.
+`WAVE_TIME` theo cõi, không theo stage:
 
-## Đề xuất: giữ 20 cảnh giới, cắt số tầng
-
-Thang cảnh giới là thứ hay nhất trong ý tưởng của bạn — nó cho người chơi một cái
-đích rõ ràng và một câu chuyện. **Giữ nguyên cả 20 cái.** Cắt phần khác.
-
-| | Bạn đề xuất | Phương án A | Phương án B |
+| Cõi | Cảnh giới | Giây/wave | Vì sao |
 |---|---|---|---|
-| Cảnh giới | 20 | 20 | 20 |
-| Tầng mỗi cảnh giới | 10 | **3** | 5 |
-| Wave thường | 200 | 60 | 100 |
-| Boss | 20 | 20 | 20 |
-| Tổng trận | 220 | **80** | 120 |
-| Thời lượng @40s | 3 giờ | **~65 phút** | ~95 phút |
-| Quái mạnh lên mỗi cảnh giới | ×1,45 | ×1,45 | ×1,45 |
+| Phàm | 1–5 | 20 | Wave ngắn, học cách chơi |
+| Yêu | 6–10 | 28 | |
+| Tiên | 11–15 | 36 | |
+| Thần | 16–20 | 45 | Wave nặng, cần thời gian hồi chiêu |
 
-**Khuyên chọn A.** 65 phút là độ dài một ván co-op tốt. Vẫn đi hết 20 cảnh giới, vẫn
-đủ 20 lần đánh boss, chỉ là mỗi cảnh giới gọn hơn.
+Tổng: **129 phút**. Gọi wave sớm cắt được 25% → **97 phút**.
 
-Chữ "viên mãn" vẫn dùng được: tầng 3 là viên mãn thay vì tầng 10.
+> **Đây là con số đáng lo nhất của cả thiết kế.** Map co-op quá 90 phút là người
+> chơi rời trận, mà mất một người là hỏng cả ván. Hai cách gỡ, chưa chọn:
+>
+> - **Gọi wave sớm** (đã tính trong 97 phút): dọn sạch thì bấm gọi wave kế, nhận
+>   thêm Linh Khí. Biến thời lượng thành thứ người chơi tự điều khiển.
+> - **Lưu tiến độ**: chơi nhiều phiên. Hệ thống riêng, khá lớn, làm sau.
+>
+> Nếu không làm gì thì phải cắt `TIERS_PER_REALM` xuống 5 — nhưng đó là đổi một
+> quyết định đã chốt, và mọi bảng tra phải sinh lại.
 
-> Nếu bạn vẫn muốn 10 tầng, cách duy nhất khả thi là **lưu tiến độ** — chơi nhiều
-> phiên, mỗi phiên vài cảnh giới. Warcraft III làm được qua game cache hoặc mã `-save`.
-> Nhưng đó là một hệ thống riêng, khá lớn, và nên làm **sau** khi map chơi được đã.
+## Tu chính
 
-## Cấu trúc một wave
+Mỗi tầng trong cảnh giới gắn một **tu chính** — một sửa đổi nhỏ lên cả wave. Đây
+là thứ làm 10 tầng khác nhau, vì chỉ số thì gần như đứng yên (L6).
 
-| | Số lượng | Sức mạnh |
+| Tầng | Tu chính | Ảnh hưởng lối chơi |
 |---|---|---|
-| Lính thường | 50 | 1× |
-| Tinh anh | 1 | 10× |
-| **Tổng "đơn vị sức mạnh"** | | **60×** |
+| 1 | *(không)* | Mốc chuẩn của cảnh giới |
+| 2 | Nhanh chân | Tốc chạy +25% — ít thời gian phản ứng hơn |
+| 3 | Dày da | Giáp +50% — ép dùng sát thương phép |
+| 4 | Chia đàn | Ra từ 2 cửa thay vì 1 — không đứng một chỗ chặn được |
+| 5 | Hồi phục | Tự hồi máu — ép dồn sát thương, không rỉ rả |
+| 6 | Nổ tan | Chết thì gây sát thương vùng — phạt việc đứng chụm |
+| 7 | Chắn phép | Kháng phép cao — ép đánh tay |
+| 8 | Bầy đàn | Tinh anh thành 3 con, mỗi con 1/3 sức | 
+| 9 | Vội vã | `WAVE_TIME` giảm 30% riêng tầng này |
+| 10 | **Viên mãn** | Gộp tu chính của tầng 3 và 5 |
 
-Boss ở wave riêng sau khi viên mãn, không có lính đi kèm — để trận boss là một khoảnh
-khắc riêng chứ không lẫn vào đám đông.
+Tu chính **chọn từ một bảng chung**, không phải mỗi cảnh giới viết riêng 10 cái.
+Nên thêm một tu chính mới là cả 20 cảnh giới cùng có.
 
-**Boss nên mạnh bao nhiêu?** Đề xuất 60–80× lính thường cùng cảnh giới — tức bằng cả
-một wave gộp lại. Đánh boss lâu bằng dọn một wave, nhưng chỉ một mục tiêu nên cảm
-giác hoàn toàn khác.
+> Vì sao tu chính quan trọng hơn chỉ số: một con quái dày gấp rưỡi thì người chơi
+> vẫn bấm đúng ngần ấy nút. Một con quái *tự hồi máu* thì buộc phải đổi thứ tự
+> bấm. Chỉ cái sau mới là lối chơi.
 
-### 50 con một wave có nặng máy không
+## Chỉ số
 
-51 con **cùng sống một lúc** thì Warcraft III chịu được thoải mái. Vấn đề chỉ đến khi
-wave chồng nhau: wave sau ra khi wave trước chưa dọn xong.
+Đường cong ở [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md). Tóm
+tắt phần đợt quái cần biết:
 
-Hai cách xử lý, chọn một:
-
-| | Cách làm | Được | Mất |
-|---|---|---|---|
-| **Chờ dọn sạch** | Wave sau chỉ ra khi wave trước hết | Không bao giờ chồng, không lo máy | Người chơi rùa được, ván dài không kiểm soát |
-| **Đồng hồ cứng** | Cứ N giây một wave | Áp lực thật, thời lượng đoán được | Chồng wave, có thể vỡ trận dây chuyền |
-
-**Khuyên: đồng hồ cứng, kèm trần số quái.** Nếu trên map đã có quá `MAX_ALIVE` con thì
-hoãn wave mới. Vừa giữ được áp lực vừa chặn được cảnh 300 con cùng lúc.
-
-## Công thức sức mạnh quái
-
-Gọi `r` = số cảnh giới (1…20), `t` = tầng (1…3), `p` = số người chơi.
-
-```
-mau  = MAU_GOC  × 1.45^(r-1) × (1 + 0.25×(t-1)) × (1 + 0.6×(p-1))
-dame = DAME_GOC × 1.45^(r-1) × (1 + 0.25×(t-1)) × (1 + 0.15×(p-1))
-giap = GIAP_GOC + 0.5×(r-1)
-```
-
-Ba điểm đáng giải thích:
-
-**Máu tăng theo số người, sát thương thì gần như không.** Ba người có gấp ba sát
-thương nên quái phải dày hơn. Nhưng mỗi người vẫn chỉ có **một** thân — quái đánh đau
-gấp ba thì ba người chết nhanh như một người. Đây là sai lầm kinh điển của map co-op.
-
-**Giáp tăng tuyến tính, không nhân.** Giáp trong Warcraft III đã là giảm % rồi; nhân
-nó lên nữa thì tới cảnh giới 10 là miễn nhiễm sát thương.
-
-**Tầng chỉ tăng 25%, cảnh giới tăng 45%.** Trong một cảnh giới người chơi thấy khó dần
-nhưng vẫn xoay xở được; lên cảnh giới mới là một bậc thang thật sự.
-
-## Nút thắt: đánh boss trước khi lên cảnh giới
-
-Boss là **cửa kiểm tra**, không phải phần thưởng. Nó trả lời câu "người chơi đã đủ
-mạnh để đi tiếp chưa".
-
-Nên boss phải kiểm tra thứ mà lính thường không kiểm tra được:
-
-| Boss ở cảnh giới | Kiểm tra điều gì |
+| | Nhân so với lính thường cùng stage |
 |---|---|
-| Đầu (1–5) | Có biết dùng kỹ năng không |
-| Giữa (6–13) | Ba vai có phối hợp không — ví dụ boss đánh mạnh một mục tiêu, buộc Tanker phải kéo và Support phải cứu |
-| Cuối (14–20) | Có tiêu Linh Khí đúng chỗ không |
+| Lính | ×1 |
+| Tinh anh | EHP ×10, sát thương ×2.5 |
+| Boss | EHP ×80, sát thương ×3 |
 
-**Thua boss thì sao?** Chưa quyết. Ba lựa chọn: đánh lại, đánh lại với quái yếu hơn,
-hoặc thua luôn cả ván. Ván 65 phút mà thua ở boss 18 rồi mất trắng là rất cay — đề
-xuất cho đánh lại, nhưng mất một phần Linh Khí.
+Một wave = `50 + 10 = 60` đơn vị EHP. Boss = 80 — nhỉnh hơn cả wave gộp lại, nên
+trận boss dài hơn một wave một chút, nhưng cảm giác hoàn toàn khác vì chỉ có một
+mục tiêu.
 
-## Phần thưởng mỗi wave
+**Giáp không nằm trong đường cong.** Đường cong sinh ra EHP; máu thật suy ngược ra
+từ giáp. Đổi giáp **không** đổi độ khó.
+[ADR 0010](../05-quyet-dinh/0010-giap-khong-nam-trong-duong-cong.md)
 
-Xem [kinh-te.md](kinh-te.md). Tóm tắt: Linh Khí rơi ra tỉ lệ với cảnh giới, nên thu
-nhập tự động theo kịp lạm phát sức mạnh mà không cần bảng riêng cho từng wave.
+## Theo số người chơi
 
-## Chưa quyết
+**Số lượng cố định, chỉ chỉ số nhân.**
+[ADR 0009](../05-quyet-dinh/0009-so-luong-linh-co-dinh.md)
 
-- **Chọn phương án A hay B** — quyết định này chặn mọi con số khác.
-- Quái đi đường nào tới nhà chính? Hiện lưới 25 block và sông chưa gắn vào đợt quái.
-- Thua boss thì mất gì.
-- Có loại quái đặc biệt không (bay, tàng hình, hồi máu) hay chỉ khác nhau về chỉ số.
-- 20 cảnh giới cần bao nhiêu **loại** quái khác nhau về hình dáng. Dùng lại một mẫu
-  suốt 20 cảnh giới thì đến cảnh giới 10 người chơi hết thấy tiến triển.
+| Khoá | Tác dụng | Ràng buộc |
+|---|---|---|
+| `SCALE_EHP_PER_PLAYER` | EHP lính nhân thêm mỗi người | Phải **< 1.0**. Bằng 1.0 là phạt người chơi vì rủ bạn |
+| `SCALE_DMG_PER_PLAYER` | Sát thương nhân thêm | Giữ **nhỏ**. Ba người có gấp ba sát thương, nhưng mỗi người vẫn chỉ có **một** thân — quái đánh đau gấp ba thì ba người chết nhanh như một |
+| `SCALE_BOSS_EHP_PER_PLAYER` | Riêng boss | Cao hơn lính: boss một thân, đông người dồn hạ hiệu quả hơn hẳn |
+| `SCALE_RECOUNT_EACH_WAVE` | Tính lại `P` mỗi wave | `true` — người thoát giữa chừng không khoá cứng ván của người ở lại |
+
+## Đường đi
+
+**Chưa quyết.** Lưới 25 block và 8 dòng sông
+([luoi-25-o.md](../04-map/luoi-25-o.md)) hiện chưa gắn gì vào đợt quái. Ba hướng:
+
+| | Cách | Được | Mất |
+|---|---|---|---|
+| A | Quái ra ở `MyEmenyRegion`, đi thẳng tới nhà | Đơn giản nhất, làm được ngay | Lưới 25 block thành trang trí |
+| B | Quái đi theo hành lang giữa các block, sông chặn hai bên | Lưới có ý nghĩa, vị trí đứng quan trọng | Phải vẽ địa hình xong trước |
+| C | Nhiều cửa, mỗi cảnh giới đổi cửa | Người chơi phải đọc bản đồ | Chia nhỏ lực lượng 3 người, dễ hỏng |
+
+Đề xuất **A trước** để hệ wave chạy được, rồi nâng lên B khi địa hình xong. Đổi
+từ A sang B chỉ là đổi điểm sinh và điểm đến, không đụng đường cong chỉ số.
+
+## Thua
+
+Nhà chính **đếm mạng, không đếm máu**.
+[ADR 0011](../05-quyet-dinh/0011-nha-chinh-dem-mang.md)
+
+Mỗi con quái chạm được vào nhà thì trừ một mạng và biến mất. Hết mạng là thua.
+
+## Số liệu
+
+| Khoá | Ý nghĩa | Ràng buộc |
+|---|---|---|
+| `WAVE_MOB_COUNT` | Lính mỗi wave | `50`, cố định |
+| `WAVE_ELITE_COUNT` | Tinh anh mỗi wave | `1` |
+| `WAVE_TIME` | Giây/wave theo cõi | Nút chỉnh **thời lượng ván**, và nó cũng chỉnh DPS cần — hai thứ dính nhau |
+| `WAVE_MAX_ALIVE` | Trần unit sống, quá thì hoãn wave | ~300 |
+| `WAVE_REORDER_TICK` | Giây giữa hai lần ra lệnh lại cho quái | Quái bị đánh lạc hướng phải quay về nhà |
+| `TIERS_PER_REALM` | `10` | Đổi là đổi tổng stage; mọi thứ suy ra từ nó |
+
+## Chưa làm
+
+- **Chốt cách gỡ thời lượng** — gọi wave sớm hay lưu tiến độ. Chặn việc cài.
+- Đường đi của quái (A/B/C ở trên).
+- Bảng tu chính mới ở mức phác thảo, chưa có số.
+- Chưa chơi thử một giây nào. Ba chỗ dễ sai nhất: DPS thật của hero ở stage 1,
+  thời gian quái đi bộ tới nhà, và `MOB_EHP_BASE`.

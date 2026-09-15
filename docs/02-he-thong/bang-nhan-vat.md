@@ -24,66 +24,75 @@ Hạ tầng đã có sẵn: [07b_skillframe.lua](../../src/07b_skillframe.lua) v
 [07c_heroframe.lua](../../src/07c_heroframe.lua) đã vẽ được panel, nút, icon, và đã
 xử lý đồng bộ nhiều người. Bảng này dùng lại đúng khuôn đó.
 
-## Lời khuyên quan trọng nhất: đừng làm cả bốn thẻ
+## Bốn thẻ, bốn hệ nâng cấp
 
-Bốn thẻ nghe thì đầy đủ, nhưng ba trong bốn cái **chưa có nội dung nào**:
+Mỗi thẻ là một nguồn sức mạnh trong ngân sách ×967 —
+[kinh-te.md](kinh-te.md). Không thẻ nào là trang trí.
 
-| Thẻ | Nội dung đã thiết kế? | Nếu làm bây giờ |
-|---|---|---|
-| **Kỹ Năng** | Có — 21 kỹ năng, bảng giá xong | Dùng được ngay |
-| Trang Bị | Không có món nào | Thẻ trống |
-| Linh Căn | Chưa có khái niệm gì | Thẻ trống |
-| Pháp Khí | Chưa có món nào | Thẻ trống |
+| Thẻ | Nhân | Mua bằng | Cấu trúc |
+|---|---|---|---|
+| **Kỹ Năng** | ×2.4 | Linh Khí | 7 kỹ năng × 10 cấp, +10%/cấp |
+| **Trang Bị** | ×8 | Linh Khí | 6 ô × 10 cấp, +4%/cấp |
+| **Linh Căn** | ×20 | Linh Khí | 20 bậc tu vi, ×1.17/bậc |
+| **Pháp Khí** | ×2.5 | **Tinh Thạch** | 5 món, mỗi món ×1.2 |
 
-**Một thẻ mở ra trống rỗng tệ hơn là không có thẻ đó.** Người chơi bấm vào, thấy
-trống, và mất niềm tin vào phần còn lại của giao diện.
+## Nhưng đừng làm cả bốn cùng lúc
 
-Đề xuất: **làm thẻ Kỹ Năng trước, một mình nó.** Không có thanh tab, chỉ một bảng.
-Khi nào Trang Bị có 5–6 món thật thì mới thêm tab thứ hai — lúc đó thanh tab mới có
-lý do tồn tại.
+Thiết kế xong không có nghĩa là cài cùng lúc. Thứ tự đề xuất:
+
+1. **Linh Căn** — một danh sách 20 bậc, một nút đột phá, một con số nhân. Đơn giản
+   nhất về giao diện mà lại là ×20, tức **nguồn sức mạnh lớn nhất**. Làm trước thì
+   đường cong địch có đối trọng ngay.
+2. **Kỹ Năng** — đã có 21 kỹ năng thiết kế sẵn
+   ([thiet-ke-hero.md](thiet-ke-hero.md)), chỉ cần nối vào `SetUnitAbilityLevel`.
+3. **Trang Bị** — cần có món đồ thật trong Object Editor trước.
+4. **Pháp Khí** — cần Tinh Thạch, cần boss, cần 5 hiệu ứng riêng. Làm cuối.
+
+Một thẻ mở ra trống rỗng tệ hơn là chưa có thẻ đó. Chỉ thêm tab khi nội dung của
+nó đã chạy được.
+
+## Thẻ Linh Căn
+
+```
+Tu vi hiện tại:  Trúc Cơ  (bậc 3/20)
+Sức mạnh:        ×1.37
+                                        [ Đột phá · 2 464 ]
+Bậc kế:          Kim Đan   ×1.60
+```
+
+Một nút. Mờ đi khi không đủ Linh Khí. Giá lấy từ bảng
+[kinh-te.md](kinh-te.md): `439 × 1.412^(bậc-1)`.
+
+**Nhân vào đâu?** Tăng chỉ số hero trực tiếp — `SetHeroStr/Agi/Int` cộng dồn theo
+bậc. Không đụng tới cấp độ hero, nên `LOCK_HERO_XP` và mốc máu nhà chính không
+phải sửa gì.
 
 ## Thẻ Kỹ Năng
 
-Bảy dòng, mỗi dòng một kỹ năng:
-
 ```
-[icon]  Dậm Đất            Cấp 4/10        [ Nâng · 720 ]
+[icon]  Dậm Đất            Cấp 4/10        [ Nâng · 472 ]
         Sát thương vùng quanh Hart
 ```
 
-| Thành phần | Ghi chú |
-|---|---|
-| Icon | Lấy từ `CFG.HEROES[i].abilities`, cùng icon với command card |
-| Tên + mô tả ngắn | Một dòng, không phải cả tooltip |
-| Cấp hiện tại / tối đa | |
-| Nút nâng + giá | Mờ đi khi không đủ Linh Khí hoặc đã max |
+Bảy dòng. Nâng cấp gọi `SetUnitAbilityLevel(hero, abilId, capMoi)`.
 
-Giá lấy từ bảng trong [kinh-te.md](kinh-te.md): `45 × cấp²`.
+> Điều này đổi một quyết định cũ: ability phải đặt `Stats - Levels = 10` trong
+> Object Editor, không phải 1. **21 ability × 10 cấp = 210 dòng số liệu** — lý do
+> rất mạnh để làm 3 kỹ năng trước rồi mới nhân rộng.
 
-**Nâng cấp làm gì về mặt code:** `SetUnitAbilityLevel(hero, abilId, capMoi)`. Ability
-phải đặt `Stats - Levels = 10` trong Object Editor và điền số cho từng cấp — đây là
-chỗ khác với thiết kế cũ (`Levels = 1`).
+## Thẻ Trang Bị
 
-> Điểm này đổi một quyết định cũ. Trước đây đặt `Levels = 1` vì không có hệ nâng cấp.
-> Giờ có rồi, nên **mọi ability phải làm 10 cấp**. Làm 21 ability × 10 cấp số liệu là
-> một khối việc đáng kể — lý do nữa để chỉ làm 3 kỹ năng trước rồi hãy nhân rộng.
+Warcraft III **đã có sẵn 6 ô đồ** trên hero. Đừng vẽ lại cái đó — vẽ lại là tự
+nhận phần nhặt, rơi, xếp chồng mà engine đã làm xong.
 
-## Ba thẻ còn lại — phác thảo
+Thẻ này chỉ là **nơi mua và nâng cấp**; đồ đã mua nằm trong túi gốc.
 
-Chưa làm, nhưng ghi lại để khỏi thiết kế chồng chéo sau này.
+## Thẻ Pháp Khí
 
-**Trang Bị.** Warcraft III **đã có sẵn 6 ô đồ** trên hero. Đừng vẽ lại cái đó. Thẻ này
-chỉ nên là **nơi mua**, còn đồ đã mua thì nằm trong túi gốc. Vẽ lại túi đồ là tự làm
-khổ mình: phải tự xử lý nhặt, rơi, xếp chồng, tất cả những thứ engine đã làm xong.
+Năm món, mỗi món **đổi cách chơi** chứ không cộng chỉ số — ba hệ kia đã lo chỉ số
+rồi. Mua bằng Tinh Thạch, chỉ rơi từ boss.
 
-**Linh Căn.** Phù hợp nhất với dạng cây tài năng thụ động: chọn một nhánh lúc đầu ván,
-mở dần các điểm bằng Linh Khí. Khác với Kỹ Năng ở chỗ nó là **vĩnh viễn và định hướng
-cả build**, còn kỹ năng thì nâng dần đều. Đây là nguồn sức mạnh ~20× mà
-[kinh-te.md](kinh-te.md) cần.
-
-**Pháp Khí.** Ít món, mỗi món **đổi cách chơi** chứ không chỉ cộng chỉ số. Hợp với
-đồng tiền riêng lấy từ boss (xem phần Tinh Thạch trong kinh-te.md) — mỗi cái là một
-quyết định lớn, không phải mua dần.
+Thua một boss là mất một Pháp Khí. Đó là trọng lượng thật của việc thua.
 
 ## Ba điều kỹ thuật phải xử lý
 
