@@ -79,3 +79,15 @@ STRING 15
 Shooter
 }
 
+STRING 16
+// Abilities: A001 (Avatar Pro), Name (Name)
+{
+Avatar Pro
+}
+
+STRING 17
+// Abilities: A001 (Avatar Pro), Researchubertip (Tooltip - Learn - Extended)
+{
+When Avatar is activated, it gives the Mountain King <AHav,DataA1> bonus armor, <AHav,DataB1> bonus hit points, <AHav,DataC1> bonus damage and spell immunity. |nLasts <AHav,Dur1> seconds xD
+}
+

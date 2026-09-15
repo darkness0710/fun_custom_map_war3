@@ -103,8 +103,10 @@ class Reader(object):
         return v.decode("latin-1")
 
     def cstr(self):
+        # surrogateescape: chu tieng Viet doc ra dung, ma byte la nao khong
+        # phai UTF-8 cung khong mat -- ghi lai van ra dung tung byte.
         end = self.raw.index(b"\0", self.off)
-        v = self.raw[self.off:end].decode("latin-1")
+        v = self.raw[self.off:end].decode("utf-8", "surrogateescape")
         self.off = end + 1
         return v
 
@@ -155,7 +157,7 @@ def build(version, orig, custom, leveled):
                 if leveled:
                     out.append(struct.pack("<ii", m.level, m.dptr))
                 if m.vtype == TYPE_STRING:
-                    out.append(m.value.encode("latin-1") + b"\0")
+                    out.append(m.value.encode("utf-8", "surrogateescape") + b"\0")
                 elif m.vtype in (TYPE_REAL, TYPE_UNREAL):
                     out.append(struct.pack("<f", m.value))
                 else:
