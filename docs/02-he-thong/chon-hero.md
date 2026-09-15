@@ -131,3 +131,24 @@ Vào map, đợi 2 giây. Cần thấy:
 - Không có hình minh hoạ hero trên nút; Warcraft III chỉ cho chữ.
 - Không có hạn giờ chọn. Ai không bấm thì không có hero, ván vẫn chạy.
 - Nhiều người hơn số hero: chỉ báo một dòng, chưa xử lý gì thêm.
+
+## Thẻ chọn hero: ba gạch đầu dòng
+
+| Hero | Vai | Ba gạch |
+|---|---|---|
+| Hart | Warrior — **Tanker** | Dọn quái đông · Chịu đòn khỏe · *Yếu trước boss* |
+| Hvwd | Shooter — **Carry** | Sát thương cao nhất · Đánh từ xa · *Rất mỏng* |
+| Hkal | Mage — **Support** | Hồi máu, tiếp sức · Làm chậm quái · *Một mình thì yếu* |
+
+**Gạch thứ ba luôn là điểm yếu**, tô đỏ. Thế nào cũng có cái mạnh — chỉ điểm yếu
+mới làm người chơi phải nghĩ xem nên chọn con nào.
+
+### Phải viết ngắn, và đây là lý do
+
+Frame chữ của Warcraft **không tự xuống dòng** và căn giữa thẻ. Một dòng dài sẽ
+tràn sang thẻ bên cạnh và đè lên chữ của nó — đã dính một lần, ba thẻ chồng chữ
+lên nhau không đọc được gì.
+
+Không có cách nào bắt frame chữ xuống dòng, nên ràng buộc nằm ở nội dung:
+**tối đa khoảng 3-4 từ mỗi gạch**, ~15 ký tự. Viết dài hơn là hỏng hiển thị chứ
+không phải xấu đi một chút.
