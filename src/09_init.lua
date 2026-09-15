@@ -74,6 +74,10 @@ local function bootstrap()
   local n = API.initPlayers()
   API.trace("initPlayers: " .. n .. " nguoi choi")
 
+  -- Kenh dong bo phai san sang TRUOC moi he khac: cac he dang ky tin
+  -- nhan cua minh trong ham start cua chung.
+  API.startSync()
+
   API.buildGrid()
   API.trace("buildGrid: xong")
 

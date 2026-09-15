@@ -43,6 +43,11 @@ Không phụ thuộc công tắc nào. Đây là lối chơi, không phải debu
 | `-c` | Như phím E — đường lui nếu phím không gán được |
 | `-lc` | Mở thẳng thẻ Linh Căn |
 | `-lc up` | Đột phá một bậc, không cần mở bảng |
+| `-sync` | Đường đồng bộ nào đang chạy, native nào có, ping có về không |
+
+> **Lệnh chat luôn đúng trong nhiều người chơi.** `EVENT_PLAYER_CHAT_STRING` nổ
+> trên mọi máy cùng lúc, nên `-lc up` đổi trạng thái game thẳng, không qua kênh
+> đồng bộ. Đó là đường lui thật sự nếu các nút bấm không ăn.
 
 > Phím **E** cần `BlzTriggerRegisterPlayerKeyEvent` và `OSKEY_E`. Hai cái này
 > **chưa xác minh trên 1.31.1**. Kiểm bằng file vết: thấy `panel: da gan phim E`
@@ -105,8 +110,35 @@ Những dòng đáng để mắt:
 | `panel: da gan phim E` | Phím E dùng được |
 | `fct: san sang` | Chữ bay chạy |
 | `fct: THIEU su kien sat thuong` | 1.31.1 không có event đó, chữ bay tự tắt |
-| `linhcan: the so N, dong bo=true` | Linh Căn đồng bộ nhiều người được |
+| `sync: mode=...` | Đường đồng bộ nào đang chạy — xem phần dưới |
+| `sync: tu kiem [...] ve=... mat=...` | Ping ai về, ai mất |
 | `stage N (...) P=k song=m` | Mỗi wave: stage, số người, số quái đang sống |
+
+## Đồng bộ nhiều người chơi — phép đo phải làm một lần
+
+Nút bấm trong bảng chỉ nổ trên máy người bấm. Cả dự án đi qua một kênh duy nhất
+([02b_sync.lua](../../src/02b_sync.lua), [ADR 0012](../05-quyet-dinh/0012-mot-kenh-dong-bo-duy-nhat.md)).
+Vào map xong, mở file vết tìm hai dòng này:
+
+```
+sync: mode=blz blzSend=true blzReg=true regCu=false cache=true
+sync: tu kiem [blz] ve=0 mat=khong ai
+```
+
+| `mode=` | Nghĩa |
+|---|---|
+| `blz` | Dùng `BlzSendSyncData`. Tốt nhất — là sự kiện, không phải quét |
+| `cache` | Bản này không có blz, lùi về game cache + timer |
+| `local` | **Không có kênh nào. Chỉ chơi một mình được.** |
+
+`ve=` phải liệt kê **mọi** player đang chơi. Thiếu ai là kênh đó không thật sự
+chạy: đổi `CFG.SYNC_MODE` trong [01_config.lua](../../src/01_config.lua) sang
+đường còn lại (`"blz"` ↔ `"cache"`), build lại, đo lại.
+
+> Dòng `blzReg=` là `BlzTriggerRegisterPlayerSyncEvent`, `regCu=` là cùng tên
+> nhưng **thiếu tiền tố `Blz`**. Trước đây code chỉ dò tên thiếu tiền tố, nên
+> kết luận nhầm là bản 1.31.1 không có đồng bộ và cả ba bảng âm thầm lùi về chế
+> độ một người chơi. Giờ dò cả hai.
 
 ## Khi game sập hoặc im lặng
 
@@ -129,6 +161,10 @@ thẳng local của file kia. Triệu chứng nếu tái phát:
 `too many local variables (limit is 200)` trong `War3Log.txt`.
 
 **~100 text tag cùng lúc.** Xem phần chữ bay ở cuối.
+
+**`build.py` chặn ghi file nếu file nào ngoài `02b_sync.lua` gọi thẳng native
+đồng bộ.** Cả `BlzSendSyncData` lẫn `StoreInteger`/`SyncStoredInteger`. Mọi chỗ
+khác đi qua `API.syncSend` / `API.syncOn`.
 
 ## Bẫy quy trình
 

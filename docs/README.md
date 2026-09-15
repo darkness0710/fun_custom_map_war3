@@ -60,6 +60,7 @@ docs/
      kich-thuoc.md       Số đo thật, đọc từ war3map.w3e
      luoi-25-o.md        Lưới 5x5 và các dòng sông
      toa-do-ve-song.md   Bảng tra khi cầm cọ trong World Editor
+     lenh-debug.md       Lệnh debug và bốn công tắc chế độ phát triển
   05-quyet-dinh/         Nhật ký quyết định, đánh số tăng dần
      0001-src-nam-ngoai-map.md
      0002-goi-cheo-qua-bang-api.md
@@ -72,6 +73,7 @@ docs/
      0009-so-luong-linh-co-dinh.md
      0010-giap-khong-nam-trong-duong-cong.md
      0011-nha-chinh-dem-mang.md        <- CHUA CHOT
+     0012-mot-kenh-dong-bo-duy-nhat.md <- CHO MOT PHEP DO TRONG GAME
   mau/                   Mẫu để copy khi viết tài liệu mới
      he-thong.md
      quyet-dinh.md

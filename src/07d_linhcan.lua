@@ -12,14 +12,8 @@
 --  Nho: goi ham cua file khac phai qua API.
 -- ============================================================
 
-local SYNC_PREFIX = "DLC"
-local ROWS_AHEAD  = 5    -- so bac ke tiep hien trong thang
-local ROWS_BACK   = 1    -- so bac da qua hien trong thang
-
-local function syncAvailable()
-  return BlzSendSyncData ~= nil and TriggerRegisterPlayerSyncEvent ~= nil
-     and BlzGetTriggerSyncData ~= nil
-end
+local ROWS_AHEAD = 5    -- so bac ke tiep hien trong thang
+local ROWS_BACK  = 1    -- so bac da qua hien trong thang
 
 -- ---------- Toan ----------
 
@@ -173,33 +167,21 @@ local function breakthrough(pid)
   end
 end
 
--- Nut "Dot pha" tren bang: KHONG doi trang thai o day. Su kien bam
--- frame chi no tren may nguoi bam.
+-- Nut "Dot pha" tren bang: KHONG doi trang thai o day. Su kien bam frame
+-- chi no tren may nguoi bam, nen chi gui mot tin -- 02b_sync lo phan con
+-- lai. breakthrough() ben duoi chay tren MOI may, cung mot nhip.
 local function tabAction(pid)
-  if syncAvailable() then
-    if GetLocalPlayer() == Player(pid) then BlzSendSyncData(SYNC_PREFIX, "up") end
-  else
-    breakthrough(pid)   -- chi dung duoc khi choi mot minh
-  end
-end
-
-local function onSync()
-  local pid  = GetPlayerId(GetTriggerPlayer())
-  local data = BlzGetTriggerSyncData()
-  if data == nil then return end
-
-  if data == "up" then
-    breakthrough(pid)
-  else
-    local n = tonumber(data:match("^set:(%d+)$"))
-    if n ~= nil then setRank(pid, n, true) end
-  end
+  API.syncSend(pid, CFG.OP_LC_UP, 0)
 end
 
 -- "-lc" mo the Linh Can · "-lc up" dot pha · "-lc <so>" nhay bac (dev)
+--
+-- Lenh chat KHONG can di qua 02b_sync: su kien chat von da no tren moi
+-- may cung luc. Goi thang la dung, va do la ly do lenh chat luon chay
+-- duoc ke ca khi khong con duong dong bo nao.
 local function onChat(pid, raw)
   if raw ~= nil and raw:match("^%s*%-lc%s+up") then
-    tabAction(pid)
+    breakthrough(pid)
     return
   end
 
@@ -210,13 +192,7 @@ local function onChat(pid, raw)
         API.msg(pid, CFG.C_RED .. "Lenh dev dang tat (CFG.DEV_COMMANDS)." .. CFG.C_END)
         return
       end
-      if syncAvailable() then
-        if GetLocalPlayer() == Player(pid) then
-          BlzSendSyncData(SYNC_PREFIX, "set:" .. n)
-        end
-      else
-        setRank(pid, n, true)
-      end
+      setRank(pid, n, true)
       return
     end
   end
@@ -232,16 +208,10 @@ local function startLinhCan()
     action      = tabAction,
   })
 
-  if syncAvailable() then
-    S.lcSyncTrig = CreateTrigger()
-    for i = 1, #S.pids do
-      TriggerRegisterPlayerSyncEvent(S.lcSyncTrig, Player(S.pids[i]),
-                                     SYNC_PREFIX, false)
-    end
-    TriggerAddAction(S.lcSyncTrig, onSync)
-  end
-  API.trace("linhcan: the so " .. S.lcTabIndex .. ", dong bo=" ..
-            tostring(syncAvailable()))
+  API.syncOn(CFG.OP_LC_UP,  function(pid) breakthrough(pid) end)
+  API.syncOn(CFG.OP_LC_SET, function(pid, arg) setRank(pid, arg, true) end)
+
+  API.trace("linhcan: the so " .. S.lcTabIndex .. ", dong bo=" .. API.syncMode())
 end
 
 -- Goi khi hero vua duoc tao: ap lai bac hien tai, de doi hero khong mat tu vi.

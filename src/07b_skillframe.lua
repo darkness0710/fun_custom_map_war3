@@ -12,9 +12,9 @@
 --     may do re nhanh khoi hai may kia -- Warcraft III chay lockstep,
 --     lech la da nguoi choi ra.
 --
---     Nen: bam -> chi gui mot mau tin bang BlzSendSyncData. Moi may,
---     ke ca may nguoi bam, nhan qua EVENT_PLAYER_SYNC_DATA roi MOI doi
---     trang thai. Cung mot thay doi, cung mot thu tu, khong lech.
+--     Nen: bam -> chi gui mot mau tin qua API.syncSend. Moi may, ke ca
+--     may nguoi bam, nhan duoc roi MOI doi trang thai. Cung mot thay
+--     doi, cung mot thu tu, khong lech. Kenh do 02b_sync.lua lo.
 --
 --     (Popup dialog o 07_heropick khong dinh loi nay: dialog la UI cap
 --     game, cu bam di qua duong lenh dong bo san.)
@@ -26,10 +26,7 @@
 --  Nho: goi ham cua file khac phai qua API.
 -- ============================================================
 
-local SYNC_PREFIX = "DSK"
-
 local FRAME_OK = nil   -- nil = chua kiem tra
-local SYNC_OK  = nil
 
 local function checkNatives(list)
   local missing = {}
@@ -66,21 +63,6 @@ local function framesAvailable()
       table.concat(missing, ", ") .. CFG.C_END)
   end
   return FRAME_OK
-end
-
--- Thieu dong bo thi VAN chay duoc, nhung chi dung cho mot nguoi choi.
-local function syncAvailable()
-  if SYNC_OK ~= nil then return SYNC_OK end
-  local missing = checkNatives({
-    { "BlzSendSyncData",              BlzSendSyncData },
-    { "TriggerRegisterPlayerSyncEvent", TriggerRegisterPlayerSyncEvent },
-    { "BlzGetTriggerSyncData",        BlzGetTriggerSyncData },
-  })
-  SYNC_OK = (#missing == 0)
-  if not SYNC_OK then
-    API.trace("frame: THIEU dong bo " .. table.concat(missing, " "))
-  end
-  return SYNC_OK
 end
 
 local function iconOf(choice)
@@ -191,7 +173,9 @@ local function buildPanel(pid, slotIndex)
       end
 
       BlzTriggerRegisterFrameEvent(S.sframe.trig, btn, FRAMEEVENT_CONTROL_CLICK)
-      st.map[btn] = { pid = pid, slot = slotIndex, abil = choice.id }
+      -- Ghi SO THU TU cua lua chon, khong phai id ability: kenh dong bo
+      -- chi tai duoc so nho. Xem src/02b_sync.lua.
+      st.map[btn] = { pid = pid, slot = slotIndex, ci = i }
       made = made + 1
     end
   end
@@ -281,25 +265,20 @@ local function onFrameClick()
   if hit == nil then return end
   if GetLocalPlayer() ~= Player(hit.pid) then return end
 
-  if syncAvailable() then
-    -- Khong doi gi o day. Chi bao cho moi may biet.
-    BlzSendSyncData(SYNC_PREFIX, hit.slot .. ":" .. hit.abil)
-  else
-    -- Khong co dong bo: chay thang. DUNG DUOC CHO MOT NGUOI CHOI THOI.
-    applyChoice(hit.pid, hit.slot, hit.abil)
-  end
+  -- Khong doi gi o day. Chi bao cho moi may biet.
+  API.syncSend(hit.pid, CFG.OP_SKILL, hit.slot * 100 + hit.ci)
 end
 
--- Chay tren moi may khi co ai gui tin.
-local function onSync()
-  local pid = GetPlayerId(GetTriggerPlayer())
-  local data = BlzGetTriggerSyncData()
-  if data == nil then return end
+-- Chay tren MOI may khi co ai gui tin.
+local function onPicked(pid, arg)
+  local slotIndex = math.floor(arg / 100)
+  local ci        = arg - slotIndex * 100
 
-  local slotStr, abilStr = data:match("^(%d+):(%-?%d+)$")
-  if slotStr == nil then return end
+  -- Cay skill lay tu hero dang cam, giong nhau tren moi may.
+  local slot = API.slotsFor(pid)[slotIndex]
+  if slot == nil or slot.choices[ci] == nil then return end
 
-  applyChoice(pid, tonumber(slotStr), tonumber(abilStr))
+  applyChoice(pid, slotIndex, slot.choices[ci].id)
 end
 
 local function startSkillFrame()
@@ -310,19 +289,8 @@ local function startSkillFrame()
   S.sframe.trig = CreateTrigger()
   TriggerAddAction(S.sframe.trig, onFrameClick)
 
-  if syncAvailable() then
-    S.sframe.syncTrig = CreateTrigger()
-    for i = 1, #S.pids do
-      TriggerRegisterPlayerSyncEvent(S.sframe.syncTrig, Player(S.pids[i]),
-                                     SYNC_PREFIX, false)
-    end
-    TriggerAddAction(S.sframe.syncTrig, onSync)
-    API.trace("frame: trigger + dong bo san sang")
-  else
-    API.msg(nil, CFG.C_RED .. "Khong co BlzSendSyncData -- giao dien ky nang " ..
-      "chi dung duoc khi choi MOT MINH." .. CFG.C_END)
-    API.trace("frame: trigger san sang, KHONG co dong bo")
-  end
+  API.syncOn(CFG.OP_SKILL, onPicked)
+  API.trace("frame: trigger san sang, dong bo=" .. API.syncMode())
 end
 
 API.showSkillFrame  = showFrame

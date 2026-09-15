@@ -360,6 +360,46 @@ def check_cross_file_locals(sources):
     return out
 
 
+SYNC_OWNER   = "02b_sync.lua"
+SYNC_NATIVES = [
+    "BlzSendSyncData",
+    "BlzGetTriggerSyncData",
+    "BlzTriggerRegisterPlayerSyncEvent",
+    "TriggerRegisterPlayerSyncEvent",
+    "SyncStoredInteger",
+    "StoreInteger",
+    "GetStoredInteger",
+    "HaveStoredInteger",
+    "FlushStoredInteger",
+]
+
+
+def check_sync_owner(sources):
+    """Chi 02b_sync.lua duoc dung native dong bo.
+
+    Ba file giao dien truoc day moi file tu do mot bo native, tu quyet
+    dinh co dong bo hay khong, va tu lui ve che do chay thang khi thieu.
+    Ket qua: ba cau tra loi khac nhau cho cung mot cau hoi, va mot cai
+    ten native viet sai (thieu tien to Blz) da lam ca ba im lang lui ve
+    che do mot nguoi choi ma khong ai biet.
+
+    Gio mot file tra loi cho ca du an. File khac goi thang lai la co ba
+    cau tra loi. Xem ADR 0012.
+    """
+    out = []
+    for path in sources:
+        if os.path.basename(path) == SYNC_OWNER:
+            continue
+        t = strip_lua_noise(read_text(path))
+        for name in SYNC_NATIVES:
+            m = re.search(r"(?<![%.\w])" + re.escape(name) + r"\s*\(", t)
+            if m:
+                line = t.count(NEWLN, 0, m.start()) + 1
+                out.append("%s dong %d goi %s() -- phai qua API.syncSend/"
+                           "API.syncOn" % (os.path.basename(path), line, name))
+    return out
+
+
 def fallback_check(text):
     """Khong co luac thi chay hai phep kiem re tien nhung bat duoc
     hai loi hay gap nhat khi noi file: escape hong va lech end."""
@@ -438,6 +478,13 @@ def main():
                 print("[loi] " + hit)
             die("khong ghi file. Moi file nam trong khoi do...end rieng, nen "
                 "goi cheo phai di qua API (ADR 0002).")
+
+        sync = check_sync_owner(sources)
+        if sync:
+            for hit in sync:
+                print("[loi] " + hit)
+            die("khong ghi file. Native dong bo chi duoc dung trong %s "
+                "(ADR 0012)." % SYNC_OWNER)
 
     banned = check_banned(final)
     if banned:

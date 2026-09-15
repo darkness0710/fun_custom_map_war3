@@ -28,6 +28,16 @@ local function heroDef(uid)
   return nil
 end
 
+-- So thu tu trong CFG.HEROES. Kenh dong bo chi cho gui so duoi 100000,
+-- ma id kieu FourCC thi hon mot ti -- nen gui so thu tu roi tra nguoc
+-- ra id o dau ben kia. Xem src/02b_sync.lua.
+local function heroIndex(uid)
+  for i = 1, #CFG.HEROES do
+    if CFG.HEROES[i].id == uid then return i end
+  end
+  return nil
+end
+
 -- Gan ky nang luc tao. Ghi lai id nao gan that bai -- UnitAddAbility
 -- tra ve false khi id khong ton tai, va that bai im lang kieu do la
 -- thu kho phat hien nhat.
@@ -366,6 +376,7 @@ end
 API.heroesAvailable   = available
 API.heroNameOf        = heroNameOf
 API.heroDef           = heroDef
+API.heroIndex         = heroIndex
 API.applyHeroPick     = applyHeroPick
 API.pickerShow        = pickerShow
 API.slotsFor          = slotsFor

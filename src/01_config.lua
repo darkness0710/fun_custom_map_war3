@@ -36,6 +36,27 @@ CFG.DEV_COMMANDS = true
 CFG.TRACE      = true
 CFG.TRACE_FILE = "DarknessTrace.txt"
 
+-- ---------- Dong bo nhieu nguoi choi ----------
+--
+-- Bam nut frame chi no tren may nguoi bam. Doi trang thai game ngay o do
+-- la lech tran. Xem docs/05-quyet-dinh/0012 va src/02b_sync.lua.
+--
+--   "auto"  -- uu tien blz, roi cache, roi local  (nen dung)
+--   "blz"   -- BlzSendSyncData, can 1.31 tro len
+--   "cache" -- game cache, co tu ban 1.00, chac chan chay
+--   "local" -- khong dong bo, CHI CHOI MOT MINH
+CFG.SYNC_MODE  = "auto"
+CFG.SYNC_POLL  = 0.10    -- giay giua hai lan quet (chi duong cache)
+CFG.SYNC_CACHE = "darknesssync.w3v"
+CFG.SYNC_TEST_WAIT = 3.0 -- doi bao lau roi ket luan ping co ve khong
+
+-- Ma lenh cua tung loai tin. 1..200, moi ma mot viec, khong trung nhau.
+CFG.OP_PING   = 1   -- tu kiem duong dong bo
+CFG.OP_HERO   = 2   -- arg = so thu tu trong CFG.HEROES
+CFG.OP_SKILL  = 3   -- arg = slot * 100 + so thu tu trong choices
+CFG.OP_LC_UP  = 4   -- arg = 0
+CFG.OP_LC_SET = 5   -- arg = bac Linh Can muon nhay toi (dev)
+
 -- ---------- Mau chu ----------
 CFG.C_GOLD = "|cffffcc00"
 CFG.C_JADE = "|cff66ffcc"

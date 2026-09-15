@@ -169,6 +169,16 @@ local function registerEvents()
   end
   TriggerAddAction(tLC, onLinhCanCmd)
 
+  -- "-sync" bao duong dong bo nao dang chay va ping co ve khong. Luon
+  -- dang ky: khi bang khong an thi day la cho dau tien phai nhin.
+  local tSync = CreateTrigger()
+  for i = 1, #S.pids do
+    TriggerRegisterPlayerChatEvent(tSync, Player(S.pids[i]), "-sync", true)
+  end
+  TriggerAddAction(tSync, function()
+    API.syncChat(GetPlayerId(GetTriggerPlayer()))
+  end)
+
   -- "-c" mo bang nhan vat, duong lui neu phim E khong gan duoc.
   local tPanel = CreateTrigger()
   for i = 1, #S.pids do

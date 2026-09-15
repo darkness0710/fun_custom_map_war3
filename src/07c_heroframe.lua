@@ -7,9 +7,9 @@
 --  Cung hai rang buoc nhu 07b_skillframe, va vi cung mot ly do:
 --
 --  1. Su kien bam frame CHI no tren may nguoi bam. Nen bam khong doi
---     trang thai -- no gui mot mau tin bang BlzSendSyncData, va moi may
---     goi API.applyHeroPick khi nhan duoc. Lech may la bi da ra khoi
---     tran, khong phai loi hien thi.
+--     trang thai -- no gui mot mau tin qua API.syncSend (02b_sync.lua),
+--     va moi may goi API.applyHeroPick khi nhan duoc. Lech may la bi da
+--     ra khoi tran, khong phai loi hien thi.
 --
 --  2. Moi nguoi mot bang rieng. Lenh/timer chay tren moi may, nen mot
 --     bang dung chung se bi nguoi thu hai huy mat.
@@ -19,10 +19,7 @@
 --  Nho: goi ham cua file khac phai qua API.
 -- ============================================================
 
-local SYNC_PREFIX = "DHP"
-
 local FRAME_OK = nil
-local SYNC_OK  = nil
 
 local function checkNatives(list)
   local missing = {}
@@ -54,15 +51,6 @@ local function framesAvailable()
     API.trace("herocard: THIEU " .. table.concat(missing, " "))
   end
   return FRAME_OK
-end
-
-local function syncAvailable()
-  if SYNC_OK ~= nil then return SYNC_OK end
-  SYNC_OK = (BlzSendSyncData ~= nil
-         and TriggerRegisterPlayerSyncEvent ~= nil
-         and BlzGetTriggerSyncData ~= nil)
-  if not SYNC_OK then API.trace("herocard: THIEU dong bo") end
-  return SYNC_OK
 end
 
 local function stateOf(pid)
@@ -164,7 +152,9 @@ local function buildPanel(pid, list)
     local card = buildCard(pid, st.panel, list[i], firstX + (i - 1) * step)
     if card ~= nil then
       BlzTriggerRegisterFrameEvent(S.hframe.trig, card, FRAMEEVENT_CONTROL_CLICK)
-      st.map[card] = { pid = pid, uid = list[i].id }
+      -- Ghi SO THU TU trong CFG.HEROES, khong phai id: kenh dong bo chi
+      -- tai duoc so nho. Xem src/02b_sync.lua.
+      st.map[card] = { pid = pid, idx = API.heroIndex(list[i].id) }
       made = made + 1
     end
   end
@@ -218,26 +208,19 @@ local function onCardClick()
     if st.map[f] ~= nil then hit = st.map[f]; break end
   end
   if hit == nil then return end
+  if hit.idx == nil then return end
   if GetLocalPlayer() ~= Player(hit.pid) then return end
 
-  if syncAvailable() then
-    BlzSendSyncData(SYNC_PREFIX, tostring(hit.uid))
-  else
-    -- Khong co dong bo: chay thang. CHI DUNG CHO MOT NGUOI CHOI.
-    API.applyHeroPick(hit.pid, hit.uid)
-  end
+  -- Khong doi gi o day. Chi bao cho moi may biet.
+  API.syncSend(hit.pid, CFG.OP_HERO, hit.idx)
 end
 
--- Chay tren moi may.
-local function onSync()
-  local pid = GetPlayerId(GetTriggerPlayer())
-  local data = BlzGetTriggerSyncData()
-  if data == nil then return end
-
-  local uid = tonumber(data:match("^(%-?%d+)$"))
-  if uid == nil then return end
-
-  API.applyHeroPick(pid, uid)
+-- Chay tren MOI may, tu kenh dong bo. Day la cho duy nhat duoc phep doi
+-- trang thai game.
+local function onPicked(pid, idx)
+  local h = CFG.HEROES[idx]
+  if h == nil then return end
+  API.applyHeroPick(pid, h.id)
 end
 
 local function startHeroFrame()
@@ -252,19 +235,8 @@ local function startHeroFrame()
   S.hframe.trig = CreateTrigger()
   TriggerAddAction(S.hframe.trig, onCardClick)
 
-  if syncAvailable() then
-    S.hframe.syncTrig = CreateTrigger()
-    for i = 1, #S.pids do
-      TriggerRegisterPlayerSyncEvent(S.hframe.syncTrig, Player(S.pids[i]),
-                                     SYNC_PREFIX, false)
-    end
-    TriggerAddAction(S.hframe.syncTrig, onSync)
-    API.trace("herocard: trigger + dong bo san sang")
-  else
-    API.msg(nil, CFG.C_RED .. "Khong co BlzSendSyncData -- chon hero bang the " ..
-      "chi dung duoc khi choi MOT MINH." .. CFG.C_END)
-    API.trace("herocard: trigger san sang, KHONG co dong bo")
-  end
+  API.syncOn(CFG.OP_HERO, onPicked)
+  API.trace("herocard: trigger san sang, dong bo=" .. API.syncMode())
 end
 
 API.showHeroFrame  = showFrame
