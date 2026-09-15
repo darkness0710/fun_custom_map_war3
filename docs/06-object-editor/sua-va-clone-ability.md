@@ -1,0 +1,243 @@
+# Sửa & clone ability bằng script
+
+> **Trạng thái:** Bộ đọc/ghi đã chạy, bộ sinh chưa viết
+> **Cập nhật:** 2026-09-15
+> **Công cụ:** [w3obj.py](../../w3obj.py)
+
+Mọi con số trong tài liệu này **đọc ra từ file thật**, không chép từ đâu. Chỗ nào
+chưa đo được thì ghi rõ là chưa đo.
+
+## Tại sao không gõ tay
+
+21 skill × 10 level. Riêng tooltip đã là 210 đoạn chữ, và **mỗi lần chỉnh cân
+bằng phải viết lại cả 210** — vì skill có hiệu ứng viết bằng Lua không dùng được
+cú pháp tự thay số của Warcraft (xem [Bẫy `<AHav,DataA1>`](#bẫy-ahavdataa1)).
+
+Sinh bằng script thì số liệu và tooltip ra từ **cùng một bảng**, nên không bao
+giờ lệch nhau. Đó là cái được lớn hơn chuyện đỡ mỏi tay.
+
+## Các file
+
+| File | Chứa gì | Có trường `level` |
+|---|---|---|
+| `war3map.w3a` | ability | **có** |
+| `war3map.w3u` | unit | không |
+| `war3map.w3t` | item | không |
+| `war3map.w3b` | doodad | không |
+| `war3map.w3d` | destructable | **có** |
+| `war3map.w3q` | upgrade | **có** |
+
+Đó là khác biệt **duy nhất** giữa hai họ. `w3obj.py` tự nhận theo đuôi file.
+
+## Định dạng (phiên bản 2 — bản 1.31.1 dùng)
+
+```
+int   phiên bản                       = 2
+int   số object GỐC bị sửa            -- bảng 1
+  mỗi object:
+    char[4]  id gốc
+    char[4]  id mới                   -- 0 ở bảng 1
+    int      số trường sửa
+      mỗi trường:
+        char[4]  mã trường
+        int      kiểu   0=int 1=real 2=unreal 3=string
+        int      level          \  CHỈ w3a, w3d, w3q
+        int      con trỏ dữ liệu /
+        <giá trị theo kiểu>           -- string kết thúc bằng byte 0
+        char[4]  dấu hết trường       -- World Editor luôn ghi 00 00 00 00
+int   số object TỰ TẠO                -- bảng 2
+  ... giống hệt
+```
+
+### Hai bảng, hai việc khác nhau
+
+**Bảng 1 — sửa ability gốc.** Đè lên ability có sẵn của Warcraft, **cả map**.
+Mọi unit dùng nó đều đổi, kể cả quái và unit trung lập, và mọi bản sao *dựa
+trên* nó cũng thừa hưởng.
+
+Không hợp cho skill hero. Rất hợp cho quái: sửa một lần là 50 con đổi theo, khỏi
+tạo 24 unit type.
+
+**Bảng 2 — bản sao.** `id gốc` + `id mới`. Đây là chỗ 21 skill sẽ nằm.
+
+### Con trỏ dữ liệu = cột Data
+
+Đo trên Avatar:
+
+| Mã | Con trỏ |
+|---|---|
+| `Hav1` | 1 |
+| `Hav2` | 2 |
+| `Hav3` | 3 |
+| `Hav4` | 4 |
+| mọi trường khác | 0 |
+
+Tức nó là số thứ tự cột Data A/B/C/D. Đặt sai là World Editor đọc nhầm cột.
+
+### Thứ tự level KHÔNG được sắp
+
+Đọc từ `A004` trong map:
+
+```
+thu tu level cua Iagi: [1, 2, 5, 3, 4, 6, 7, 8, 9, 10]
+```
+
+World Editor ghi ra theo thứ tự nội bộ của nó, không theo level. **Bộ đọc không
+được giả định thứ tự**, và bộ ghi phải giữ nguyên thứ tự đọc vào nếu muốn dựng
+lại đúng từng byte.
+
+## Mã trường đã đo được
+
+Tất cả lấy từ `test2.w3x/war3map.w3a` do World Editor ghi ra.
+
+### Dùng chung mọi ability
+
+| Mã | Ô trong World Editor | Kiểu | Theo level |
+|---|---|---|---|
+| `alev` | Stats - Levels | int | không |
+| `arac` | Stats - Race | string | không |
+| `aher` | Stats - Hero Ability | int (0/1) | không |
+| `acdn` | Stats - Cooldown | unreal | **có** |
+| `adur` | Stats - Duration - Normal | unreal | **có** |
+| `ahdu` | Stats - Duration - Hero | unreal | **có** |
+| `aart` | Art - Icon - Normal | string | không |
+| `arar` | Art - Icon - Research | string | không |
+| `abpx` `abpy` | Art - Button Position - Normal | int | không |
+| `arpx` `arpy` | Art - Button Position - Research | int | không |
+| `aubx` `auby` | Art - Button Position - Turn Off | int | không |
+| `anam` | Text - Name | string | không |
+| `aret` | Text - Tooltip - Learn | string | không |
+| `arut` | Text - Tooltip - Learn - Extended | string | không |
+| `aub1` | Text - Tooltip - Normal - Extended | string | **có** |
+
+**`aub1` theo level** — đó là ô tooltip mà người chơi đọc khi rê chuột, và là ô
+duy nhất trong nhóm Text cần viết riêng cho từng level.
+
+> **Chưa đo được:** `Text - Tooltip - Normal` (dòng ngắn). Gõ vào ô đó rồi save
+> thì nó sẽ hiện ra, đọc một lần là biết.
+>
+> Chưa đo: mana, tầm thi triển, bán kính, loại mục tiêu hợp lệ. Cùng cách lấy.
+
+### Theo từng ability gốc
+
+| Gốc | Là gì | Mã Data |
+|---|---|---|
+| `AHav` | Avatar | `Hav1` `Hav2` `Hav3` `Hav4` |
+| `Aamk` | Attribute Bonus | `Istr` `Iagi` `Iint` |
+
+Mã Data **mỗi ability gốc một khác**, và đoán sai thì World Editor nuốt lặng,
+không báo gì. Chỉ có một cách biết: đọc từ file do nó ghi ra.
+
+## Cách moi mã trường ra
+
+World Editor **chỉ ghi vào file những trường khác với ability gốc**. Bản sao vừa
+tạo xong thì giống hệt gốc, nên file chỉ có đúng một dòng `arac`.
+
+Hai cách ép nó ghi ra:
+
+**1. Đặt `Stats - Levels` = 10.** Ép ghi ra mọi trường **theo level**, kèm mã.
+Đây là cách lấy mã Data. Đo được: `A001` (Avatar) sau khi đặt Levels=10 có 79
+trường, giá trị giống hệt nhau cả 10 mức — tức World Editor tự điền, không ai gõ.
+
+**2. Gõ đại một chữ vào ô muốn biết mã.** Dùng cho trường không theo level
+(tên, tooltip, icon). Gõ `x` cũng được.
+
+## Bẫy `<AHav,DataA1>`
+
+Đọc từ `war3map.wts` của chính map này, tooltip của một bản sao Avatar:
+
+```
+...gives the Mountain King <AHav,DataA1> bonus armor,
+   <AHav,DataB1> bonus hit points...
+```
+
+`<AHav,DataA1>` là cú pháp Warcraft tự thay bằng số thật lúc chạy. Nhưng nó trỏ
+**`AHav` — ability gốc**, không phải bản sao. Bản sao thừa hưởng nguyên chuỗi đó,
+nên sửa DataA của bản sao thì tooltip vẫn hiện số của Avatar.
+
+Cắn mọi map clone ability bằng tay, và im lặng.
+
+**Với skill có hiệu ứng viết bằng Lua thì cú pháp này chết hẳn** — số nằm trong
+bảng Lua, ô Data bằng 0, tooltip sẽ hiện "gây 0 sát thương". Phải viết thẳng số
+vào từng dòng `aub1`, mỗi level một dòng.
+
+## Chữ nằm ở đâu
+
+World Editor không ghi chữ vào `.w3a`. Nó ghi một con trỏ:
+
+```
+anam = 'TRIGSTR_016'
+```
+
+rồi để chữ thật trong `war3map.wts`:
+
+```
+STRING 16
+// Abilities: A006 (Defend Percent), Name (Name)
+{
+Defend Percent
+}
+```
+
+**Nhưng ghi chữ thẳng vào `.w3a` cũng chạy** — đã thử: sinh `A003` với `anam` =
+`Hộ Thể` viết thẳng, UTF-8, World Editor mở lên hiện đúng. Gọn hơn vì khỏi phải
+sinh thêm `war3map.wts`.
+
+`w3obj.py` đọc/ghi chuỗi bằng UTF-8 với `surrogateescape`, nên chữ tiếng Việt
+vào ra đúng mà byte lạ cũng không mất.
+
+## Quy trình an toàn
+
+```
+python w3obj.py checkall test2.w3x        # đọc rồi dựng lại, so từng byte
+cp test2.w3x/war3map.w3a build/objbak/    # sao lưu TRƯỚC khi ghi
+<chạy bộ sinh>
+python w3obj.py check test2.w3x/war3map.w3a
+```
+
+**Lệnh `check` là cái quan trọng nhất.** Nó đọc file do World Editor ghi ra rồi
+dựng lại từ đầu và so từng byte. Lệch một byte là hiểu sai định dạng — dừng lại,
+đừng sinh gì cả.
+
+File sai định dạng thì World Editor có thể không mở được map, hoặc **lặng lẽ
+nuốt mất object** — kiểu hỏng tệ nhất vì không báo gì.
+
+> Hỏng thì chép `build/objbak/war3map.w3a.goc` đè lại là xong.
+
+### Ai sở hữu cái gì
+
+Cùng một bài học với `src/` và `war3map.lua`, chỉ khác file:
+
+| | Ai sở hữu |
+|---|---|
+| Tạo ability, chọn gốc, đặt `Levels` | **World Editor** |
+| Số liệu từng level, tooltip, tên, ô nút | **bộ sinh** |
+
+Sửa số trong World Editor là lần sinh sau đè mất. Thứ tự bắt buộc: sửa trong WE
+→ Save → chạy bộ sinh → **không Save trong WE nữa**.
+
+> World Editor có giữ nguyên thứ script ghi ra sau một lần Save hay không —
+> **chưa đo được**. Đã hai lần định đo thì file bị thay trước đó. Cứ sao lưu.
+
+## Tình trạng trong map
+
+```
+A001  AOsh  Shockwave          1 trường   <- chưa đặt Levels
+A002  AHhb  ?                  1 trường   <- chưa đặt Levels
+A003  AHad  Devotion Aura      1 trường   <- chưa đặt Levels
+A004  Aamk  Attribute Bonus   32 trường   Levels=10, mọi chỉ số = 0
+A005  ACce  ?                  2 trường   Hero Ability = có
+A006  Aamk  Attribute Bonus   16 trường   đủ tên + tooltip + icon
+A007  AHav  Avatar             1 trường   <- chưa đặt Levels
+```
+
+`A004` là **vỏ rỗng chuẩn**: Attribute Bonus với cả ba chỉ số bằng 0 thì không
+làm gì cả, nhưng vẫn có icon và ô trong command card. Hợp hơn Critical Strike
+đặt 0% vì nó không có tỉ lệ nào để lỡ kích hoạt.
+
+## Còn thiếu
+
+- `Text - Tooltip - Normal` chưa biết mã.
+- Mã Data của 19 ability gốc còn lại — lấy bằng cách đặt `Levels = 10`.
+- Bộ sinh chưa viết. Cần bảng số liệu 21 skill trước.
+- Chưa đo World Editor có giữ nguyên file script ghi ra sau khi Save không.

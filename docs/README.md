@@ -107,6 +107,8 @@ docs/
      0010-giap-khong-nam-trong-duong-cong.md
      0011-nha-chinh-dem-mang.md        <- CHUA CHOT
      0012-mot-kenh-dong-bo-duy-nhat.md
+  06-object-editor/
+     sua-va-clone-ability.md  Đọc/ghi war3map.w3a bằng script, mã trường đã đo
   mau/                   Mẫu để copy khi viết tài liệu mới
      he-thong.md
      quyet-dinh.md

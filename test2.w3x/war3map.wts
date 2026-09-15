@@ -79,3 +79,45 @@ STRING 15
 Shooter
 }
 
+STRING 16
+// Abilities: A006 (Defend Percent), Name (Name)
+{
+Defend Percent
+}
+
+STRING 17
+// Abilities: A006 (Defend Percent), Researchtip (Tooltip - Learn)
+{
+Text Tooltip Learn
+}
+
+STRING 18
+// Abilities: A006 (Defend Percent), Researchubertip (Tooltip - Learn - Extended)
+{
+Gives a % reduce dame
+}
+
+STRING 19
+// Abilities: A006 (Defend Percent), Ubertip (Tooltip - Normal - Extended)
+{
+Text Tooltip Normal Extend
+}
+
+STRING 20
+// Abilities: A006 (Defend Percent), Ubertip (Tooltip - Normal - Extended)
+{
+Text Tooltip Normal Extend
+}
+
+STRING 21
+// Abilities: A006 (Defend Percent), Ubertip (Tooltip - Normal - Extended)
+{
+Text Tooltip Normal Extend
+}
+
+STRING 22
+// Abilities: A006 (Defend Percent), Ubertip (Tooltip - Normal - Extended)
+{
+Text Tooltip Normal Extend
+}
+
