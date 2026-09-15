@@ -483,6 +483,12 @@ CFG.SKILLS[id('H001')] = {
 
 CFG.OP_SKILL_UP = 6   -- arg = so thu tu ky nang trong CFG.SKILLS cua hero
 
+-- Bat khi bo sinh da ghi so lieu vao war3map.w3a VA cac skill bi dong da
+-- duoc viet bang Lua. Con false thi bang phim E noi ro con so dang hien
+-- la thiet ke chu chua co hieu luc -- trong game van la so goc cua
+-- Warcraft. Bang ma hien so dep nhung sai thi te hon la khong hien.
+CFG.SKILL_DATA_LIVE = false
+
 -- Suc manh moi bac. Ngan sach cho ca he nang cap la x2 (xem
 -- docs/03-du-lieu/duong-cong-suc-manh.md). x2 la TICH cua moi nut chinh,
 -- khong phai rieng sat thuong.

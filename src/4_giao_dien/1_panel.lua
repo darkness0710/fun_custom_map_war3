@@ -15,7 +15,9 @@
 --  Nho: goi ham cua file khac phai qua API.
 -- ============================================================
 
-local ROWS = 8
+-- 10 chu khong phai 8: the Ky Nang can 7 dong ky nang cong may dong
+-- ghi chu. Dong thua thi de trong, khong ton gi.
+local ROWS = 10
 
 local FRAME_OK = nil
 

@@ -234,6 +234,35 @@ Cùng lúc sửa hai số trước đây là phỏng đoán, giờ đọc đư�
 `LINHCAN_DMG_BASE` 20 → **17** (sát thương trung bình của Hart),
 `LINHCAN_STAT_BASE` 20 → **10** (Str của Hart cấp 1).
 
+## Hai lỗi đã gặp khi chơi thử
+
+**Nâng lên bậc 10, trả đủ tiền, mà trong game chỉ lên bậc 3.**
+Object Editor mới là người quyết định một ability có bao nhiêu bậc — ability
+hero mặc định **3 bậc**, ability unit thường **1 bậc**. Gọi
+`SetUnitAbilityLevel(u, aid, 10)` lên một ability 3 bậc thì nó **kẹp xuống 3 và
+không báo lỗi gì**.
+
+**Aura giáp max chỉ được 3 giáp.** Cùng gốc: ở bậc 3, và con số vẫn là mặc
+định của Devotion Aura chứ không phải 15%/30% trong bảng này — chưa có gì
+ghi số thiết kế vào ability, và "% giáp của chính hero" cần Lua viết riêng.
+
+### Đã sửa — và phần lỗi là của code
+
+Lỗi thật không phải "Object Editor thiếu bậc" — đó là công việc còn dở. Lỗi
+là **code lấy tiền rồi báo bậc sai** mà không ai biết.
+
+| | Trước | Sau |
+|---|---|---|
+| Trần bậc | đoán là 10 | **đo thật** bằng `SetUnitAbilityLevel` rồi đọc lại |
+| Nâng quá trần | trừ tiền, báo 10/10 | **không trừ tiền**, báo đúng ability nào thiếu |
+| Bảng hiển thị | `bậc 3/10` | `bậc 3/3 (OE thiếu bậc)` đỏ |
+| Lúc chọn hero | im lặng | liệt kê ngay ability nào thiếu bậc |
+| Số liệu | hiện như thật | ghi rõ **"THIẾT KẾ, chưa có hiệu lực"** |
+
+Dòng cuối là `CFG.SKILL_DATA_LIVE`, bật khi bộ sinh đã ghi số vào `war3map.w3a`
+và các skill bị động đã viết bằng Lua. **Bảng hiện số đẹp nhưng sai thì tệ hơn
+là không hiện.**
+
 ## Chưa làm
 
 - Chưa có con số gốc cho từng skill ở bậc 1 (sát thương bao nhiêu, hồi bao nhiêu).
