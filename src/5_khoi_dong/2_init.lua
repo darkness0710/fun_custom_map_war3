@@ -77,6 +77,7 @@ local function bootstrap()
   -- Kenh dong bo phai san sang TRUOC moi he khac: cac he dang ky tin
   -- nhan cua minh trong ham start cua chung.
   API.startSync()
+  API.langCheck()
 
   -- Do xem ban nay co nhung native nao. Khong doi gi, chi ghi vet --
   -- nhung moi lan doan thay vi do, du an nay deu doan sai (ADR 0012).
@@ -99,9 +100,9 @@ local function bootstrap()
   -- bao nhieu the de chia be ngang.
   API.startLinhCan()
   API.startSkills()
-  API.panelAddTab(API.panelPlaceholder("Trang Bi",
+  API.panelAddTab(API.panelPlaceholder(API.t("panel_gear"),
     "Can mon do trong Object Editor truoc."))
-  API.panelAddTab(API.panelPlaceholder("Phap Bao",
+  API.panelAddTab(API.panelPlaceholder(API.t("panel_treasure"),
     "Mua bang Tinh Thach tu boss. Chua co mon nao."))
   API.startPanel()
 

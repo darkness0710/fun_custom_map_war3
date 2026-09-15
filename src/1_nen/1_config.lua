@@ -24,6 +24,11 @@ end
 CFG = {}
 
 CFG.VERSION = "0.2.0"
+
+-- Tieng hien cho nguoi choi: "en" hoac "vi".
+-- build.py --lang en|vi ghi de len dong nay, nen mot bo nguon xuat ra
+-- duoc hai ban map. Xem src/1_nen/6_lang.lua
+CFG.LANG = "en"
 CFG.DEBUG   = false     -- bat: in so do luoi, ping minimap, bao cao chi tiet
 
 -- Lenh chat thu nghiem ("-sp"). Co RIENG mot co, khong di theo DEBUG --
@@ -330,26 +335,26 @@ CFG.HERO_SPAWN_OFFSET = 500.0
 -- Latin Extended nen chu co dau hien ra o vuong.
 -- 'coi' 1..4 = Pham / Yeu / Tien / Than -- quyet dinh model va nhip wave.
 CFG.REALMS = {
-  { ten = "Pham Nhan",     coi = 1 },
-  { ten = "Luyen Khi",     coi = 1 },
-  { ten = "Truc Co",       coi = 1 },
-  { ten = "Kim Dan",       coi = 1 },
-  { ten = "Nguyen Anh",    coi = 1 },
-  { ten = "Hoa Than",      coi = 2 },
-  { ten = "Luyen Hu",      coi = 2 },
-  { ten = "Hop The",       coi = 2 },
-  { ten = "Dai Thua",      coi = 2 },
-  { ten = "Do Kiep",       coi = 2 },
-  { ten = "Chan Tien",     coi = 3 },
-  { ten = "Thien Tien",    coi = 3 },
-  { ten = "Kim Tien",      coi = 3 },
-  { ten = "Thai At",       coi = 3 },
-  { ten = "Dai La",        coi = 3 },
-  { ten = "Tien De",       coi = 4 },
-  { ten = "Thanh Nhan",    coi = 4 },
-  { ten = "Dao To",        coi = 4 },
-  { ten = "Hon Don Than",  coi = 4 },
-  { ten = "Sang The Than", coi = 4 },
+  { ten = "Pham Nhan", en = "Mortal", coi = 1 },
+  { ten = "Luyen Khi", en = "Qi Refining", coi = 1 },
+  { ten = "Truc Co", en = "Foundation", coi = 1 },
+  { ten = "Kim Dan", en = "Golden Core", coi = 1 },
+  { ten = "Nguyen Anh", en = "Nascent Soul", coi = 1 },
+  { ten = "Hoa Than", en = "Spirit Severing", coi = 2 },
+  { ten = "Luyen Hu", en = "Void Refining", coi = 2 },
+  { ten = "Hop The", en = "Body Integration", coi = 2 },
+  { ten = "Dai Thua", en = "Great Ascension", coi = 2 },
+  { ten = "Do Kiep", en = "Tribulation", coi = 2 },
+  { ten = "Chan Tien", en = "True Immortal", coi = 3 },
+  { ten = "Thien Tien", en = "Heavenly Immortal", coi = 3 },
+  { ten = "Kim Tien", en = "Golden Immortal", coi = 3 },
+  { ten = "Thai At", en = "Taiyi", coi = 3 },
+  { ten = "Dai La", en = "Great Luo", coi = 3 },
+  { ten = "Tien De", en = "Immortal Emperor", coi = 4 },
+  { ten = "Thanh Nhan", en = "Saint", coi = 4 },
+  { ten = "Dao To", en = "Dao Ancestor", coi = 4 },
+  { ten = "Hon Don Than", en = "Primordial God", coi = 4 },
+  { ten = "Sang The Than", en = "World Creator", coi = 4 },
 }
 
 -- Doi so nay la doi tong so stage. Moi cong thuc suy ra tu no, khong
@@ -465,20 +470,20 @@ CFG.SKILL_MAX_LEVEL = 10
 CFG.SKILLS = {}
 
 CFG.SKILLS[id('H001')] = {
-  { id = id('A001'), ten = "Dam Dat",   loai = "chudong", heSo = 1.32, cd = 8.0,
-    mota = "Gay %s sat thuong len mot duong thang." },
-  { id = id('A002'), ten = "Ho The",    loai = "chudong", heSo = 2.20, cd = 10.0,
-    mota = "Hoi %s mau cho ban than hoac dong doi." },
-  { id = id('A003'), ten = "Hieu Lenh", loai = "aura",    pct = 0.15,
-    mota = "Dong doi quanh ban duoc +%s giap ban than." },
-  { id = id('A004'), ten = "Luyen The", loai = "bidong",  pct = 0.12,
-    mota = "+%s ca ba chi so." },
-  { id = id('A005'), ten = "Chem Lan",  loai = "bidong",  pct = 0.20,
-    mota = "Don danh van %s sat thuong sang muc tieu ben canh." },
-  { id = id('A006'), ten = "Da Sat",    loai = "bidong",  pct = 0.05,
-    mota = "Giam %s sat thuong nhan vao. Tran cung 10%%." },
-  { id = id('A007'), ten = "Bat Hoai",  loai = "chudong", heSo = 0.0, cd = 60.0,
-    mota = "Tang manh giap va mau trong thoi gian ngan." },
+  { id = id('A001'), ten = "Dam Dat", en = "Earthshatter",   loai = "chudong", heSo = 1.32, cd = 8.0,
+    mota = "Gay %s sat thuong len mot duong thang.", mota_en = "Deals %s damage in a line." },
+  { id = id('A002'), ten = "Ho The", en = "Guarding Light",    loai = "chudong", heSo = 2.20, cd = 10.0,
+    mota = "Hoi %s mau cho ban than hoac dong doi.", mota_en = "Heals %s to yourself or an ally." },
+  { id = id('A003'), ten = "Hieu Lenh", en = "Rallying Order", loai = "aura",    pct = 0.15,
+    mota = "Dong doi quanh ban duoc +%s giap ban than.", mota_en = "Allies near you gain +%s of their armor." },
+  { id = id('A004'), ten = "Luyen The", en = "Body Forging", loai = "bidong",  pct = 0.12,
+    mota = "+%s ca ba chi so.", mota_en = "+%s to all three attributes." },
+  { id = id('A005'), ten = "Chem Lan", en = "Cleaving Blow",  loai = "bidong",  pct = 0.20,
+    mota = "Don danh van %s sat thuong sang muc tieu ben canh.", mota_en = "Attacks splash %s damage to nearby targets." },
+  { id = id('A006'), ten = "Da Sat", en = "Ironhide",    loai = "bidong",  pct = 0.05,
+    mota = "Giam %s sat thuong nhan vao. Tran cung 10%%.", mota_en = "Reduces incoming damage by %s. Hard cap 10%%." },
+  { id = id('A007'), ten = "Bat Hoai", en = "Indestructible",  loai = "chudong", heSo = 0.0, cd = 60.0,
+    mota = "Tang manh giap va mau trong thoi gian ngan.", mota_en = "Greatly raises armor and health for a short time." },
 }
 
 CFG.OP_SKILL_UP = 6   -- arg = so thu tu ky nang trong CFG.SKILLS cua hero
@@ -568,6 +573,11 @@ CFG.FCT_LIFE      = 1.4
 
 -- Giao dien bang nhan vat (phim E). Bon he dung chung khung nay.
 CFG.PANEL_X = 0.40
-CFG.PANEL_Y = 0.40
-CFG.PANEL_W = 0.34
-CFG.PANEL_H = 0.30
+CFG.PANEL_Y = 0.36
+CFG.PANEL_W = 0.46    -- rong ra: dong ky nang co ten + bac + so lieu + gia
+-- Cao cua bang SUY RA tu so dong trong 4_giao_dien/1_panel.lua, khong
+-- go tay o day -- de o day thi them mot dong la tran ra ngoai khung.
+
+-- Ke vach xen ke cho de doc. Tat neu thay roi mat.
+CFG.PANEL_GRID     = true
+CFG.PANEL_GRID_TEX = [[ReplaceableTextures\TeamColor\TeamColor27]]

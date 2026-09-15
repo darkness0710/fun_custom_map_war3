@@ -144,7 +144,7 @@ def strip_block(text):
     return out, n
 
 
-def build_block(sources):
+def build_block(sources, lang=None):
     """Noi cac file nguon thanh mot khoi do...end duy nhat.
 
     Ca chuoi file nam chung mot khoi nen local o file truoc van nhin thay
@@ -181,6 +181,14 @@ def build_block(sources):
         parts.append(body)
         parts.append("end")
         parts.append("--#endregion %s" % name)
+    # Ghi de CFG.LANG SAU moi file nguon. Dat o day chu khong sua
+    # 1_config.lua tren dia: build hai ban khac tieng thi cay lam viec
+    # khong bi ban, va "git diff" khong nhay len sau moi lan build.
+    if lang:
+        parts.append("")
+        parts.append("-- build.py --lang " + lang)
+        parts.append('CFG.LANG = "' + lang + '"')
+
     parts.append("")
     parts.append("end")
     parts.append(END)
@@ -470,6 +478,8 @@ def main():
     ap.add_argument("--check", action="store_true", help="chi kiem tra, khong ghi file")
     ap.add_argument("--strip", action="store_true", help="go code da chen, khong chen lai")
     ap.add_argument("--no-backup", action="store_true", help="khong luu ban truoc do")
+    ap.add_argument("--lang", choices=["en", "vi"],
+                    help="tieng hien cho nguoi choi; ghi de CFG.LANG")
     args = ap.parse_args()
 
     map_dir = find_map(args.map)
@@ -490,7 +500,7 @@ def main():
         label = "da go khoi code"
     else:
         sources = collect_sources()
-        final = base.rstrip() + "\n\n" + build_block(sources)
+        final = base.rstrip() + "\n\n" + build_block(sources, args.lang)
         label = "da chen %d file" % len(sources)
 
     ok, note = lua_syntax_check(final)

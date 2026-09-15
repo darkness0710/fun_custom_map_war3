@@ -137,3 +137,26 @@ lệch máy và đá người chơi ra khỏi trận.
 - Bảng mở ra có tạm dừng gì không (tạm dừng hero? làm chậm quái?).
 - Mỗi người mở bảng riêng của mình, hay xem được build của người khác.
 - Có nút hoàn điểm không.
+
+## Hình học: hai số ràng buộc nhau
+
+**`ROW_H` phải lớn hơn `BTN_H`.** Trước đây `ROW_H = 0,021` còn nút cao `0,024`,
+nên nút của hai dòng kề nhau **chồng lên nhau 0,003** — bấm dòng này ăn vào dòng
+kia. Đó chính là lỗi "click bị trượt". Giờ `ROW_H = 0,030`, nút `0,024`.
+
+**Chiều cao bảng suy ra từ số dòng**, không gõ tay:
+
+```lua
+local function panelH() return TOP + ROWS * ROW_H + FOOT end
+```
+
+Trước đây `ROWS` tăng từ 8 lên 10 mà `CFG.PANEL_H` đứng yên, hai dòng cuối tràn
+ra ngoài khung. Suy ra thì không thể lệch nữa.
+
+## Mỗi dòng: icon, chữ, nút riêng
+
+| | |
+|---|---|
+| Icon | Lấy thẳng từ ability bằng `BlzGetAbilityIcon`, **không gõ đường dẫn** — gõ sai một chữ là hiện ô xanh lá mà không biết sai ở đâu |
+| Nút `[+]` | Của riêng từng dòng (`rowLabel`/`rowAction`). Một nút chung ở chân bảng không đủ cho bảy kỹ năng |
+| Vạch kẻ | Kẻ xen kẽ, và **chỉ kẻ dòng có chữ** — kẻ cả dòng trống thì bảng trông như bảng tính rỗng. Tắt bằng `CFG.PANEL_GRID` |

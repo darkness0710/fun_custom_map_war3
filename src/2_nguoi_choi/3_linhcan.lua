@@ -20,9 +20,7 @@ local ROWS_BACK  = 1    -- so bac da qua hien trong thang
 local function maxRank() return #CFG.REALMS end
 
 local function rankName(r)
-  local e = CFG.REALMS[r]
-  if e == nil then return "?" end
-  return e.ten
+  return API.pick(CFG.REALMS[r])
 end
 
 local function powerAt(r) return CFG.LINHCAN_STEP ^ (r - 1) end
@@ -77,10 +75,10 @@ local function rowText(pid, r, cur)
 
   if r < cur then
     return CFG.C_GREY .. "   " .. r .. "  " .. name .. "   " .. pw ..
-           "   da qua" .. CFG.C_END
+           "   " .. API.t("lc_passed") .. CFG.C_END
   elseif r == cur then
     return CFG.C_GOLD .. " > " .. r .. "  " .. name .. "   " .. pw ..
-           "   dang o day" .. CFG.C_END
+           "   " .. API.t("lc_here") .. CFG.C_END
   end
 
   -- Bac tuong lai: hien gia CONG DON tu bac hien tai toi bac do.
@@ -97,8 +95,9 @@ local function tabRows(pid)
 
   local cur = d.linhCan
   local out = {}
-  out[1] = "Suc manh " .. CFG.C_JADE .. string.format("x%.2f", powerAt(cur)) ..
-           CFG.C_END .. "   chi so +" .. API.num(statAt(cur) - CFG.LINHCAN_STAT_BASE)
+  out[1] = API.t("lc_power") .. " " .. CFG.C_JADE ..
+           string.format("x%.2f", powerAt(cur)) .. CFG.C_END .. "   " ..
+           API.t("lc_stat") .. " +" .. API.num(statAt(cur) - CFG.LINHCAN_STAT_BASE)
 
   local first = cur - ROWS_BACK
   if first < 1 then first = 1 end
@@ -113,7 +112,7 @@ end
 local function tabActionLabel(pid)
   local d = S.p[pid]
   if d == nil or d.linhCan >= maxRank() then return nil end
-  return "Dot pha " .. API.num(costOf(d.linhCan))
+  return API.t("lc_break") .. " " .. API.num(costOf(d.linhCan))
 end
 
 -- ---------- Dot pha ----------
@@ -144,21 +143,22 @@ local function breakthrough(pid)
 
   local r = d.linhCan
   if r >= maxRank() then
-    API.msg(pid, CFG.C_GREY .. "Da toi dinh cua thang tu vi." .. CFG.C_END)
+    API.msg(pid, CFG.C_GREY .. API.t("lc_peak") .. CFG.C_END)
     return
   end
 
   local c = costOf(r)
   if not API.spendLinhKhi(pid, c) then
-    API.msg(pid, CFG.C_RED .. "Khong du linh khi." .. CFG.C_END ..
-      " Can " .. API.num(c) .. ", dang co " .. API.num(API.getLinhKhi(pid)) .. ".")
+    API.msg(pid, CFG.C_RED .. API.t("no_qi") .. CFG.C_END ..
+      API.t("need_have", API.num(c), API.num(API.getLinhKhi(pid))))
     API.panelRefresh(pid)
     return
   end
 
   setRank(pid, r + 1, false)
-  API.msg(nil, CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END ..
-    " dot pha len " .. CFG.C_JADE .. rankName(r + 1) .. CFG.C_END ..
+  API.msg(nil, API.t("lc_broke",
+    CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END,
+    CFG.C_JADE .. rankName(r + 1) .. CFG.C_END) ..
     " (x" .. string.format("%.2f", powerAt(r + 1)) .. ")")
 
   if d.hero ~= nil then
@@ -202,7 +202,7 @@ end
 
 local function startLinhCan()
   S.lcTabIndex = API.panelAddTab({
-    ten         = "Linh Can",
+    ten         = API.t("panel_root"),
     rows        = tabRows,
     actionLabel = tabActionLabel,
     action      = tabAction,

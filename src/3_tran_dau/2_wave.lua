@@ -31,9 +31,19 @@ local function decode(stage)
 end
 
 local function realmName(realm)
-  local r = CFG.REALMS[realm]
-  if r == nil then return "?" end
-  return r.ten
+  return API.pick(CFG.REALMS[realm])
+end
+
+-- Ten quai = ten canh gioi + hau to theo loai. 20 canh gioi x 3 loai =
+-- 60 ten, sinh ra tu 20 + 3 chuoi -- khong phai tao 60 unit type.
+--
+-- BlzSetUnitName doi ten TUNG con luc chay, nen doi tieng khong phai
+-- dung toi Object Editor. Thieu native thi bo qua, quai giu ten goc.
+local function mobName(realm, kind)
+  local hau = "mob_suffix"
+  if kind == "elite" then hau = "elite_suffix"
+  elseif kind == "boss" then hau = "boss_suffix" end
+  return realmName(realm) .. " " .. API.t(hau)
 end
 
 local function realmCoi(realm)
@@ -150,6 +160,7 @@ local function spawnOne(stage, realm, kind)
   end
 
   applyStats(u, ehp, dmg, armor)
+  if BlzSetUnitName ~= nil then BlzSetUnitName(u, mobName(realm, kind)) end
   S.mobs[u] = kind
   -- Ghi lai stage luc SINH, khong dung stage hien tai luc chet.
   -- Quai don lai qua nhieu wave (do duoc: stage 6 con 174 con song),
@@ -312,8 +323,7 @@ local function rewardAll(stage, kind)
   end
 
   if kind == "boss" then
-    API.msg(nil, CFG.C_JADE .. "Ha duoc boss " .. realmName(realm) ..
-      ". Moi nguoi nhan " .. tt .. " Tinh Thach." .. CFG.C_END)
+    API.msg(nil, CFG.C_JADE .. API.t("boss_down", realmName(realm), tt) .. CFG.C_END)
   end
 end
 
@@ -378,6 +388,7 @@ API.ehpOf          = ehpOf
 API.dmgOf          = dmgOf
 API.armorOf        = armorOf
 API.waveIncome     = waveIncome
+API.mobName        = mobName
 API.onMobDeath     = onMobDeath
 API.startWaves     = startWaves
 API.stopWaves      = stopWaves

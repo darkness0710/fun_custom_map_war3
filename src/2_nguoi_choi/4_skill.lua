@@ -119,19 +119,18 @@ local function upgrade(pid, index)
   if gia == nil then
     if tran < CFG.SKILL_MAX_LEVEL then
       -- Khong tru tien. Bao dung cho phai sua, dung de nguoi choi doan.
-      API.msg(pid, CFG.C_RED .. sk.ten .. " chi co " .. tran ..
-        " bac trong Object Editor" .. CFG.C_END .. " (thiet ke can " ..
-        CFG.SKILL_MAX_LEVEL .. "). Mo Object Editor, dat " ..
-        CFG.C_GOLD .. "Stats - Levels = " .. CFG.SKILL_MAX_LEVEL .. CFG.C_END ..
-        " cho " .. API.idToStr(sk.id) .. ".")
+      API.msg(pid, CFG.C_RED ..
+        API.t("skill_oemissing", API.pick(sk), tran) .. CFG.C_END ..
+        API.t("skill_oefix", CFG.SKILL_MAX_LEVEL, CFG.SKILL_MAX_LEVEL,
+              API.idToStr(sk.id)))
     else
-      API.msg(pid, CFG.C_GREY .. sk.ten .. " da o bac cao nhat." .. CFG.C_END)
+      API.msg(pid, CFG.C_GREY .. API.t("skill_atmax", API.pick(sk)) .. CFG.C_END)
     end
     return
   end
   if not API.spendLinhKhi(pid, gia) then
-    API.msg(pid, CFG.C_RED .. "Khong du linh khi." .. CFG.C_END .. " Can " ..
-      API.num(gia) .. ", dang co " .. API.num(API.getLinhKhi(pid)) .. ".")
+    API.msg(pid, CFG.C_RED .. API.t("no_qi") .. CFG.C_END ..
+      API.t("need_have", API.num(gia), API.num(API.getLinhKhi(pid))))
     API.panelRefresh(pid)
     return
   end
@@ -144,12 +143,11 @@ local function upgrade(pid, index)
   -- muoi lan nang nua.
   local that = (d.hero ~= nil) and GetUnitAbilityLevel(d.hero, sk.id) or (cur + 1)
   if that ~= cur + 1 then
-    API.msg(pid, CFG.C_RED .. "Canh bao: " .. sk.ten .. " tren unit moi o bac " ..
-      that .. ", khong phai " .. (cur + 1) .. CFG.C_END ..
-      " -- Object Editor chua du bac.")
+    API.msg(pid, CFG.C_RED ..
+      API.t("skill_warn", API.pick(sk), that, cur + 1) .. CFG.C_END)
   end
-  API.msg(pid, CFG.C_JADE .. sk.ten .. CFG.C_END .. " len bac " .. (cur + 1) ..
-    "/" .. tran .. ".")
+  API.msg(pid, API.t("skill_up", CFG.C_JADE .. API.pick(sk) .. CFG.C_END,
+                     cur + 1, tran))
   API.panelRefresh(pid)
 end
 
@@ -165,8 +163,7 @@ end
 local function tabRows(pid)
   local list = listOf(pid)
   if #list == 0 then
-    return { CFG.C_GREY .. "Chua co hero, hoac hero nay chua khai bao ky nang."
-             .. CFG.C_END }
+    return { CFG.C_GREY .. API.t("skill_none") .. CFG.C_END }
   end
 
   local out = {}
@@ -178,18 +175,18 @@ local function tabRows(pid)
 
     -- Hien TRAN THAT, khong hien tran thiet ke. Bang bao 10/10 trong khi
     -- unit chi len duoc bac 3 la bang noi doi.
-    local bac = "  bac " .. lv .. "/" .. tran
+    local bac = "  " .. API.t("panel_level") .. " " .. lv .. "/" .. tran
     if tran < CFG.SKILL_MAX_LEVEL then
-      bac = CFG.C_RED .. bac .. " (OE thieu bac)" .. CFG.C_END
+      bac = CFG.C_RED .. bac .. " (" .. API.t("skill_oeshort") .. ")" .. CFG.C_END
     end
 
-    local dong = CFG.C_GOLD .. sk.ten .. CFG.C_END .. bac ..
+    local dong = CFG.C_GOLD .. API.pick(sk) .. CFG.C_END .. bac ..
                  "   " .. CFG.C_JADE .. fmt(sk, lv) .. CFG.C_END
     if sk.cd ~= nil and sk.cd > 0 then
-      dong = dong .. CFG.C_GREY .. string.format("  hoi %.1fs", cdAt(sk, lv)) .. CFG.C_END
+      dong = dong .. CFG.C_GREY .. string.format("  %s %.1fs", API.t("panel_cd"), cdAt(sk, lv)) .. CFG.C_END
     end
     if gia == nil then
-      dong = dong .. CFG.C_GREY .. "   toi da" .. CFG.C_END
+      dong = dong .. CFG.C_GREY .. "   " .. API.t("panel_max") .. CFG.C_END
     else
       local co = (API.getLinhKhi(pid) >= gia) and CFG.C_JADE or CFG.C_GREY
       dong = dong .. "   " .. co .. API.num(gia) .. CFG.C_END
@@ -202,9 +199,8 @@ local function tabRows(pid)
   -- war3map.w3a va cac skill bi dong duoc viet bang Lua.
   if not CFG.SKILL_DATA_LIVE then
     out[#out + 1] = ""
-    out[#out + 1] = CFG.C_RED .. "So lieu tren la THIET KE, chua co hieu luc." ..
-      CFG.C_END .. CFG.C_GREY ..
-      " Trong game van la so goc cua Warcraft." .. CFG.C_END
+    out[#out + 1] = CFG.C_RED .. API.t("skill_notlive") .. CFG.C_END ..
+                    CFG.C_GREY .. API.t("skill_notlive2") .. CFG.C_END
   end
   return out
 end
@@ -217,6 +213,18 @@ local function tabRowLabel(pid, i)
   return "+"
 end
 
+-- Icon lay THANG tu ability, khong go duong dan trong bang. Go tay thi
+-- sai mot chu la hien o xanh la, ma khong ai biet sai o dau.
+local function tabRowIcon(pid, i)
+  local sk = listOf(pid)[i]
+  if sk == nil then return nil end
+  if sk.icon ~= nil then return sk.icon end
+  if BlzGetAbilityIcon == nil then return nil end
+  local p = BlzGetAbilityIcon(sk.id)
+  if p == nil or p == "" then return nil end
+  return p
+end
+
 local function tabRowAction(pid, i)
   if listOf(pid)[i] == nil then return end
   API.syncSend(pid, CFG.OP_SKILL_UP, i)
@@ -224,10 +232,11 @@ end
 
 local function startSkills()
   API.panelAddTab({
-    ten         = "Ky Nang",
+    ten         = API.t("panel_skill"),
     rows        = tabRows,
     rowLabel    = tabRowLabel,
     rowAction   = tabRowAction,
+    rowIcon     = tabRowIcon,
     actionLabel = function() return nil end,
     action      = function() end,
   })
