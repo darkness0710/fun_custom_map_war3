@@ -114,6 +114,10 @@ Trong game cần thấy:
 2. Nút dấu **+** — chỉ mất sau khi xoá `Techtree - Hero Abilities` trong Object
    Editor. Code không làm được, xem phần trên.
 
+> **Đã xong 2026-09-15.** Cả ba hero có `uhab = ""` trong `war3map.w3u` — đọc
+> thẳng từ file, không phải nhìn màn hình. Nút **+** đã hết. Đừng liệt việc này
+> vào danh sách phải làm nữa.
+
 ## Chưa làm
 
 - Không có cách mở khoá cho riêng một hero lúc chạy. Muốn thì gọi
