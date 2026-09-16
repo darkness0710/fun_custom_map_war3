@@ -18,39 +18,15 @@
 --  Nho: goi ham cua file khac phai qua API.
 -- ============================================================
 
--- Ghi vet MOT SO LAN DAU roi thoi.
---
--- trace() ghi lai TOAN BO file moi lan goi, nen ghi theo moi cu bam la
--- cham dan theo binh phuong. Tam lan la du de biet duong nao dut.
-local demVet = 0
-local function vet(s)
-  if demVet >= 12 then return end
-  demVet = demVet + 1
-  API.trace(s)
-end
-
 -- Chay tren MOI may, tu kenh dong bo. o = 0..5.
 local function dung(pid, o)
   local d = S.p[pid]
-  if d == nil or d.hero == nil then
-    vet("dungdo: dung() pid " .. pid .. " o " .. o .. " -- CHUA CO HERO")
-    return
-  end
-  if UnitItemInSlot == nil or UnitUseItem == nil then
-    vet("dungdo: THIEU UnitItemInSlot/UnitUseItem")
-    return
-  end
+  if d == nil or d.hero == nil then return end
+  if UnitItemInSlot == nil or UnitUseItem == nil then return end
 
   local it = UnitItemInSlot(d.hero, o)
-  if it == nil then
-    -- In luon SO O TUI: "o trong" va "khong co tui" nhin tu ngoai giong
-    -- het nhau, ma hai cai do sua o hai cho khac han.
-    local n = (UnitInventorySize ~= nil) and UnitInventorySize(d.hero) or -1
-    vet("dungdo: dung() o " .. o .. " -- O TRONG (tui co " .. n .. " o)")
-    return
-  end
+  if it == nil then return end
   UnitUseItem(d.hero, it)
-  vet("dungdo: dung() o " .. o .. " -- da goi UnitUseItem")
 end
 
 local function startDungDo()
@@ -78,9 +54,7 @@ local function startDungDo()
       -- Bien k cua vong for so hoc la RIENG cho tung vong trong Lua,
       -- nen moi closure bat dung o cua no.
       TriggerAddAction(t, function()
-        local pid = GetPlayerId(GetTriggerPlayer())
-        vet("dungdo: PHIM " .. ten .. " no, pid " .. pid)
-        API.syncSend(pid, CFG.OP_ITEM, k - 1)
+        API.syncSend(GetPlayerId(GetTriggerPlayer()), CFG.OP_ITEM, k - 1)
       end)
       xong = xong + 1
     end
@@ -94,5 +68,4 @@ local function startDungDo()
 end
 
 API.dungDo      = dung
-API.dungDoVet   = vet
 API.startDungDo = startDungDo

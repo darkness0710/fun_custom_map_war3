@@ -67,14 +67,16 @@ Cần `CFG.DEV_COMMANDS = true`.
 | Lệnh | Làm gì | Ví dụ |
 |---|---|---|
 | `-wave <số>` | Nhảy thẳng tới stage 1–220 | `-wave 110` → boss Độ Kiếp |
-| `-lk <số>` | Thêm Linh Khí (vàng) | `-lk 200000` |
-| `-tt <số>` | Thêm Tinh Thạch (gỗ) | `-tt 500` |
+| `-lk <số>` | Thêm **Linh Khí** *(biến riêng, hiện ở bảng)* | `-lk 5000` |
+| `-vang <số>` | Thêm **Vàng** *(thanh tài nguyên)* | `-vang 5000` |
+| `-go <số>` | Thêm **Gỗ** *(thanh tài nguyên)* | `-go 100` |
 | `-lc <số>` | Nhảy tới bậc Linh Căn 1–20 | `-lc 15` → Đại La |
 | `-sp` | Phát 1 điểm kỹ năng, hoặc mở bảng chọn kỹ năng tuỳ `CFG.SKILL_MODE` | |
 | `-next` | Gọi đợt kế tiếp — **chỉ khi đã dọn sạch** quái trên map | |
 | `-spawn` | Tạo thẳng một `H001` bằng `CreateUnit`, cạnh hero | để so với unit đặt sẵn |
 | `-nat` | Bản Warcraft này có native nào | |
-| `-nat <chữ>` | Liệt kê hằng số `ABILITY_*` có tên chứa `<chữ>` | |
+| `-nat <chữ>` | Liệt kê **mọi** hằng số toàn cục có tên chứa `<chữ>` — `UNIT_RF_*`, `ABILITY_ILF_*`… Màn hình cắt ở `NAT_FIELD_MAX`, **file vết ghi đủ**, chia 6 tên mỗi dòng vì `Preload()` tự cắt chuỗi dài | |
+| `-nat spell` | Tra hằng số theo **ability gốc** của từng kỹ năng — dùng để tắt hiệu ứng gốc của ability bản sao | |
 | `-reg` / `-reg mana` | **Đo** hồi máu / hồi mana thật. Thêm số để đổi giây (`-reg mana 3`). Tự báo đỏ nếu bể đầy giữa chừng — xem [hoi-mau-hoi-mana.md](../03-du-lieu/hoi-mau-hoi-mana.md) | dev |
 | `-nat card` | **Đo** ô command card thật của hero đang cầm — cả lệnh cơ bản lẫn bảy kỹ năng — rồi báo đỏ ô nào bị hai ability cùng nhận | |
 
@@ -90,7 +92,7 @@ Xem đường cong chỉ số có đúng không. Đối chiếu với bảng tra
 [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md).
 
 ```
--lk 2000000  rồi  -lc 20
+-lk 9200  rồi  -lc 20
 ```
 Hero ở đỉnh tu vi. Xem chỉ số có lên +749 mỗi loại không, và sát thương có ×19.7
 không.

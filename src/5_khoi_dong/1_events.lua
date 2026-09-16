@@ -285,24 +285,6 @@ local function registerEvents()
     end)
   end
 
-  -- "-do <n>" dung do o o n (1..6) qua DUNG duong ma phim so di.
-  -- Tach duoc hai kha nang ma tu ngoai khong phan biet noi:
-  --   "-do 1" chay ma phim khong  -> su kien phim khong no
-  --   ca hai deu khong chay       -> dut o doan dong bo hoac UnitUseItem
-  if CFG.DEV_COMMANDS then
-    local tDo = CreateTrigger()
-    for i = 1, #S.pids do
-      TriggerRegisterPlayerChatEvent(tDo, Player(S.pids[i]), "-do", false)
-    end
-    TriggerAddAction(tDo, function()
-      local pid = GetPlayerId(GetTriggerPlayer())
-      local n = tonumber((GetEventPlayerChatString() or ""):match("(%d+)")) or 1
-      if n < 1 then n = 1 elseif n > 6 then n = 6 end
-      API.dungDoVet("dungdo: -do " .. n .. " (khong qua phim)")
-      API.syncSend(pid, CFG.OP_ITEM, n - 1)
-    end)
-  end
-
   -- "-vung" in ban do phan vung 25 block va ping minimap theo mau.
   --
   -- Luon dang ky, khong theo DEV_COMMANDS: chua he nao gan vao block,

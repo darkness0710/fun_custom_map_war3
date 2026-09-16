@@ -16,8 +16,8 @@ local function initPlayers()
     if GetPlayerSlotState(p) == PLAYER_SLOT_STATE_PLAYING
        and GetPlayerController(p) == MAP_CONTROL_USER then
       S.p[pid] = { active = true, hero = nil, heroCount = 0,
-                   purseGold = 0, purseWood = 0, slots = {},
-                   linhKhi = 0, linhKhiTotal = 0, lkFrac = 0.0,
+                   slots = {},
+                   linhKhi = 0, linhKhiTotal = 0,
                    linhCan = 1, fctGold = 0,
 
                    tb = {},       -- [so thu tu o trang bi] = cap

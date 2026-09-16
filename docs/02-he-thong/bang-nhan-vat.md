@@ -1,4 +1,17 @@
-# Bảng nhân vật — phím R
+# Bảng nhân vật — phím ESC
+
+> **Không còn phím chữ** *(`CFG.PANEL_KEY = nil`, 2026-09-17)*. E → R → bỏ hẳn:
+> E thành phím tắt của Bất Hoại, rồi R cũng bỏ vì ESC là đủ.
+>
+> Đổi lại **ESC bật/tắt** chứ không chỉ tắt — bỏ phím chữ mà giữ ESC chỉ-tắt thì
+> không còn đường nào *mở* bảng ngoài lệnh chat `-c`. Nghĩa là mỗi lần bấm ESC để
+> huỷ chọn quân cũng mở bảng lên; đặt lại một chữ cái vào `CFG.PANEL_KEY` là ESC
+> tự quay về chỉ-tắt.
+>
+> **Hai đường đăng ký ESC nằm chung một trigger nên một lần bấm nổ HAI lần.** Hồi
+> ESC còn là chỉ-tắt thì vô hại (lần hai đóng một bảng đã đóng); từ lúc thành
+> bật/tắt thì lần hai **huỷ** lần một — bảng mở rồi đóng ngay trong cùng khung
+> hình, nhìn y như ESC không làm gì. Chặn trùng `CFG.PANEL_ESC_KHOA = 0.25`.
 
 > **Viền nút tự vẽ, không mượn backdrop có sẵn** *(2026-09-16)*. Hai lần hỏng
 > trước khi ra cách này:

@@ -1091,15 +1091,7 @@ CFG.PHAPKHI = {}
 -- Do la lua chon that: bo 60 Tinh Thach vao "Tu Linh Tran" ngay canh
 -- gioi 1 nghia la chap nhan cham co mon thu nam.
 
--- Ngan sach suc manh cua Phap Khi (x2.5) la cho VAY.
---
--- Nam mon o tren khong mon nao nhan thang sat thuong; chung cong vao
--- kinh te va vao kha nang song sot cua nha. Tuc x2.5 dang duoc tra bang
--- duong vong -- nhieu Linh Khi hon thi nhieu Trang Bi hon.
---
--- Chua do duoc duong vong do co bang x2.5 that khong. Day la cho dau
--- tien phai kiem khi choi thu, chu khong phai cho de sua so.
-CFG.PHAPKHI_LIVE = true
+-- (CFG.PHAPKHI_LIVE da bo: khong file nao doc no.)
 
 
 -- ---------- Shop: the V ----------

@@ -72,6 +72,58 @@ Trang này trả lời câu hỏi mà
 [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) để ngỏ: **×967 sức
 mạnh người chơi đến từ đâu, và mua bằng gì.**
 
+
+## Thẻ V — Shop
+
+Hệ **duy nhất** tiêu Vàng, và hệ duy nhất bán đồ **tiêu hao**. Ba thẻ kia bán thứ
+vĩnh viễn; thẻ này bán một lần dùng.
+
+| Món | Giá | Item gốc |
+|---|---|---|
+| Lọ hồi máu | 10 vàng | `phea` |
+| Lọ hồi mana | 10 vàng | `pman` |
+| Ankh hồi sinh | 500 vàng | `ankh` |
+
+**Gộp lượt vào một ô**, tối đa `CFG.SHOP_STACK_MAX = 10`. Gộp **bằng tay** chứ
+không trông chờ Warcraft tự gộp: tự gộp hay không là thuộc tính của từng item
+trong Object Editor, mà đây là item có sẵn của game nên ta không nắm quyền đó.
+
+> ⚠ **Chưa đo xong:** một lần dùng có trừ **một lượt** hay mất **cả ô**. Dữ liệu
+> hiện có nghiêng về mất cả ô — nếu đúng thì mua 10 lượt chỉ dùng được 1, và
+> `SHOP_STACK_MAX` phải về `1` cho lọ thuốc, hoặc phải tự tạo item riêng thay vì
+> mượn `phea`/`pman`.
+
+Mã item và icon **đo lúc vào map**: `startShop()` tạo thử từng món rồi xoá.
+`CreateItem` trả `nil` là báo đỏ ngay, không đợi tới lúc ai đó bỏ 500 vàng ra mới
+biết. Icon đọc được thì ghi đè lên đường dẫn trong config.
+
+`UnitAddItemById` trên unit **không có túi** vẫn trả về handle — nó thả item
+xuống **đất**. Nên `conCho()` coi `UnitInventorySize() <= 0` là **không có chỗ**;
+bản trước cho qua, và hậu quả là "phát 10/10 thành công" trong khi cả 20 lọ nằm
+dưới sàn.
+
+## Quà khởi đầu
+
+Phát **sau khi pick xong hero**, không phải lúc vào map — quà là của hero, mà lúc
+vào map hero chưa tồn tại nên không có túi nào để bỏ vào. Chỉ phát cho lần pick
+**đầu tiên**; đổi hero mà phát lại là một đường nhận quà vô hạn.
+
+`CFG.GO_START = 1` + `CFG.START_ITEMS` (10 lọ mỗi loại). Danh sách quà dùng chung
+mã với `CFG.SHOP`, không gõ lại mã item — hai chỗ cùng tạo một thứ thì sớm muộn
+cũng lệch.
+
+## Dùng đồ bằng hàng số trên
+
+Warcraft chỉ gán sẵn túi đồ vào numpad. `CFG.ITEM_KEYS = { "1".."6" }` gán **thêm**
+hàng số cạnh Esc; numpad vẫn chạy như cũ.
+
+Phím **phải đi qua kênh đồng bộ**: sự kiện phím là đầu vào **cục bộ**, chỉ nổ trên
+máy người bấm. Bảng nhân vật gọi `hide/toggle` thẳng được vì đó chỉ là bật/tắt
+khung hình; `UnitUseItem` thì đổi trạng thái ván đấu, gọi thẳng là lệch bàn game.
+
+> Đánh đổi biết trước: hàng số trên cũng là phím gọi **nhóm quân**. Bấm `1` vừa
+> gọi nhóm 1 vừa dùng đồ ô 1. Đặt `nil` để tắt.
+
 ## Ba đồng tiền, ba loại quái, ba nhịp
 
 [ADR 0015](../05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md)
