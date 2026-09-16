@@ -39,6 +39,11 @@ local hp    = ehp / (1 + 0.06 * armor)     -- <= cái này mới đem đặt lê
 `BOSS_ARMOR_BONUS`, và tu chính `Kim Thân` (+8 giáp). Cộng giáp ở đâu thì chia
 máu ở đó.
 
+> Ba nguồn giáp phụ đó **chưa tồn tại trong `CFG`** — hiện chỉ có giáp nền
+> `MOB_ARMOR_BASE + MOB_ARMOR_PER_REALM × (r−1)`, và `hpFromEhp()` trong
+> [2_wave.lua](../../src/3_tran_dau/2_wave.lua) đã chia máu theo đúng luật này.
+> Luật viết sẵn cho lúc thêm chúng vào.
+
 Hệ quả trực tiếp: **đổi `MOB_ARMOR_PER_REALM` không đổi độ khó.** Nó chỉ đổi tỉ
 lệ giữa "máu" và "giáp" trong cùng một lượng EHP. Đó chính là điều mong muốn — nó
 biến giáp từ một nút cân bằng mập mờ thành một nút thiết kế rõ ràng.

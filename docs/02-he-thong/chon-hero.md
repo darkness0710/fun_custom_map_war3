@@ -1,15 +1,28 @@
 # Hệ thống: Chọn hero bằng popup
 
 > **Trạng thái:** Đã cài
-> **Cập nhật:** 2026-09-14
+> **Cập nhật:** 2026-09-16
 > **Code:** [2_heropick.lua](../../src/2_nguoi_choi/2_heropick.lua), [2_heroframe.lua](../../src/4_giao_dien/2_heroframe.lua)
-> **Khoá CFG:** `HEROES` `PICK_*` `HERO_*`
+> **Khoá CFG:** `HEROES` `PICK_*` `HERO_*` `CARD_*`
 
 ## Nó là gì
 
-Vào map vài giây thì mỗi người chơi thấy một hàng **thẻ hero** — mỗi thẻ có icon,
-tên, vai. Bấm một thẻ là hero hiện ra cạnh nhà chính. Mỗi người một con, không ai
-lấy trùng.
+Vào map vài giây thì mỗi người chơi thấy một **bảng chọn hero, một cột dọc** —
+mỗi hero một dòng: icon bên trái, tên và vai ở trên, mô tả ở dưới. Bấm một dòng
+là hero hiện ra cạnh nhà chính. Mỗi người một con, không ai lấy trùng.
+
+```
++------------------------------------------+
+|            Chon hero cua ban             |
+|  +------------------------------------+  |
+|  | [##]  Hart      Warrior - Tanker   |  |
+|  |       Don quai dong | Chiu don khoe|  |
+|  +------------------------------------+  |
+|  | [##]  Hvwd      Shooter - Carry    |  |
+|  |       Sat thuong cao nhat | Rat mong| |
+|  +------------------------------------+  |
++------------------------------------------+
+```
 
 ## Hai cách vẽ, một logic
 
@@ -143,12 +156,36 @@ Vào map, đợi 2 giây. Cần thấy:
 **Gạch thứ ba luôn là điểm yếu**, tô đỏ. Thế nào cũng có cái mạnh — chỉ điểm yếu
 mới làm người chơi phải nghĩ xem nên chọn con nào.
 
-### Phải viết ngắn, và đây là lý do
+### Vì sao bố cục là một cột dọc
 
-Frame chữ của Warcraft **không tự xuống dòng** và căn giữa thẻ. Một dòng dài sẽ
-tràn sang thẻ bên cạnh và đè lên chữ của nó — đã dính một lần, ba thẻ chồng chữ
-lên nhau không đọc được gì.
+Frame chữ của Warcraft **không tự xuống dòng**, và text frame không đặt kích
+thước thì bị căn giữa quanh điểm neo.
 
-Không có cách nào bắt frame chữ xuống dòng, nên ràng buộc nằm ở nội dung:
-**tối đa khoảng 3-4 từ mỗi gạch**, ~15 ký tự. Viết dài hơn là hỏng hiển thị chứ
-không phải xấu đi một chút.
+Bố cục cũ là ba thẻ ngang, mỗi thẻ rộng `0.17`. Hệ quả: mọi dòng mô tả dài hơn
+chừng ấy **tràn sang thẻ bên cạnh và đè lên chữ của nó** — đã dính một lần, ba
+thẻ chồng chữ lên nhau không đọc được gì. Chữ càng dài vùng đè càng rộng, nên lỗi
+lúc có lúc không.
+
+Cách chữa cũ là ép nội dung: "tối đa 3-4 từ mỗi gạch". Đó là một **ràng buộc
+thiết kế sinh ra từ hạn chế kỹ thuật** — kiểu ràng buộc tệ nhất, vì nó bắt nội
+dung trả giá cho một quyết định bố cục.
+
+Dòng rộng bằng cả bảng thì chữ luôn có chỗ, và ràng buộc đó biến mất. Ba gạch nối
+thành một dòng, ngăn bằng `|`. Muốn viết dài hơn thì nới `CFG.CARD_W`.
+
+### Ba thứ khác sửa cùng lúc
+
+| | Trước | Sau |
+|---|---|---|
+| Nền bảng | `TeamColor27` — bảng màu **đặc 1×1 pixel**, ra một hình chữ nhật xám phẳng không viền | Template FDF có viền thật (`CFG.CARD_BACKDROP`), lùi về ô màu phẳng nếu không có |
+| Nút một mục | Nút tab kéo thành thẻ vuông `0.17 × 0.20` — phần trang trí hai đầu giãn ra méo | Dòng rộng-và-thấp, đúng tỉ lệ vốn có của nút tab |
+| Cỡ chữ | Một cỡ mặc định cho mọi dòng — nhìn vào là một khối chữ đều đều | Ba cấp: `CARD_SCALE_TITLE` / `_NAME` / `_DESC` |
+
+Nhịp dọc **suy ra** từ cỡ icon và cỡ chữ (`rowH()` trong
+[2_heroframe.lua](../../src/4_giao_dien/2_heroframe.lua)), không gõ tay. Trước đây
+vị trí ba dòng chữ là ba hằng số rời rạc (`y`, `y+0.018`, `y+0.040`) — đổi cỡ chữ
+một cái là cả ba lệch, đúng lỗi mà bảng phím E đã dính một lần.
+
+> Dùng đường nào để vẽ nền thì đọc file vết, dòng `herocard: ... nen = `. Không
+> ghi lại thì không có cách nào biết — đúng kiểu lỗi im lặng của
+> [ADR 0012](../05-quyet-dinh/0012-mot-kenh-dong-bo-duy-nhat.md).

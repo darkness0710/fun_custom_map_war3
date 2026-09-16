@@ -34,16 +34,41 @@ local function realmName(realm)
   return API.pick(CFG.REALMS[realm])
 end
 
--- Ten quai = ten canh gioi + hau to theo loai. 20 canh gioi x 3 loai =
--- 60 ten, sinh ra tu 20 + 3 chuoi -- khong phai tao 60 unit type.
+-- Tang cua mot stage, thanh chu: "Tang 4", "Vien Man", hoac "BOSS".
+--
+-- Chu o day di qua API.t chu khong go thang: truoc day stageLabel noi
+-- " tang " bang tieng Viet ngay ca khi CFG.LANG = "en", nen ban tieng
+-- Anh hien ra "Mortal tang 4".
+local function tierLabel(stage)
+  local _, tier, isBoss = decode(stage)
+  if isBoss then return API.t("stage_boss") end
+  if tier >= CFG.TIERS_PER_REALM then return API.t("tier_full") end
+  return API.t("tier_word") .. " " .. tier
+end
+
+-- Ten quai = canh gioi + TANG + hau to theo loai.
+--
+-- Co TANG trong ten vi khong co no thi ca 11 stage cua mot canh gioi ra
+-- cung mot cai ten. Ma quai don lai qua nhieu wave (do duoc: stage 6
+-- con 174 con song), nen tren map luc nao cung co vai the he cung luc
+-- -- nhin vao mot con khong biet no thuoc dot nao, cung khong biet no
+-- dang o dung gia tri thuong cua stage nao.
+--
+-- Boss khong can tang: no la lan do kiep DUY NHAT cua canh gioi do.
+--
+-- 20 canh gioi x 11 stage x 2 loai + 20 boss = 460 ten, sinh ra tu
+-- 20 ten canh gioi + 5 chuoi -- khong phai 460 unit type.
 --
 -- BlzSetUnitName doi ten TUNG con luc chay, nen doi tieng khong phai
--- dung toi Object Editor. Thieu native thi bo qua, quai giu ten goc.
-local function mobName(realm, kind)
-  local hau = "mob_suffix"
-  if kind == "elite" then hau = "elite_suffix"
-  elseif kind == "boss" then hau = "boss_suffix" end
-  return realmName(realm) .. " " .. API.t(hau)
+-- dung toi Object Editor. Thieu native thi quai giu ten goc cua mau
+-- lam no ("Footman", "Ghoul"...) -- 5_natives.lua do va bao truoc.
+local function mobName(stage, kind)
+  local realm = decode(stage)
+  if kind == "boss" then
+    return realmName(realm) .. " - " .. API.t("boss_suffix")
+  end
+  local hau = (kind == "elite") and "elite_suffix" or "mob_suffix"
+  return realmName(realm) .. " " .. tierLabel(stage) .. " - " .. API.t(hau)
 end
 
 local function realmCoi(realm)
@@ -52,14 +77,12 @@ local function realmCoi(realm)
   return r.coi
 end
 
--- Chu hien cho nguoi choi: "Truc Co tang 4" hoac "Truc Co vien man"
+-- Chu hien cho nguoi choi: "Truc Co Tang 4" hoac "Truc Co Vien Man".
+-- Cung mot nguon voi ten quai, nen dong bao wave va con quai tren map
+-- khong the goi khac nhau.
 local function stageLabel(stage)
-  local realm, tier, isBoss = decode(stage)
-  if isBoss then return realmName(realm) .. " -- BOSS" end
-  if tier >= CFG.TIERS_PER_REALM then
-    return realmName(realm) .. " " .. CFG.TIER_VIEN_MAN
-  end
-  return realmName(realm) .. " tang " .. tier
+  local realm = decode(stage)
+  return realmName(realm) .. " " .. tierLabel(stage)
 end
 
 -- ---------- Duong cong ----------
@@ -160,7 +183,7 @@ local function spawnOne(stage, realm, kind)
   end
 
   applyStats(u, ehp, dmg, armor)
-  if BlzSetUnitName ~= nil then BlzSetUnitName(u, mobName(realm, kind)) end
+  if BlzSetUnitName ~= nil then BlzSetUnitName(u, mobName(stage, kind)) end
   S.mobs[u] = kind
   -- Ghi lai stage luc SINH, khong dung stage hien tai luc chet.
   -- Quai don lai qua nhieu wave (do duoc: stage 6 con 174 con song),
@@ -195,9 +218,16 @@ end
 
 -- Cong don phan le, tra ra khi du mot don vi. Tong tra ra bam dung
 -- duong cong thu nhap, khong mat mat do lam tron.
+--
+-- Phap Khi "Tu Linh Tran" cong o DAY chu khong o addLinhKhi: lenh dev
+-- "-lk 50000" khong duoc nhan len, va con so cong vao van di qua dung
+-- mot cho nen khong the quen mot duong.
 local function payBounty(pid, amount)
   local d = S.p[pid]
   if d == nil then return end
+  if API.phapKhiCo ~= nil and API.phapKhiCo(pid, "linhkhi") then
+    amount = amount * 1.25
+  end
   d.lkFrac = (d.lkFrac or 0) + amount
   local whole = math.floor(d.lkFrac)
   if whole > 0 then
@@ -225,11 +255,20 @@ local function rescaleHouse(stage, realm)
   local P = S.wave.players
   local newMax = CFG.HOUSE_HP_HITS * dmgOf(stage, realm)
                * (1 + CFG.SCALE_DMG_PER_PLAYER * (P - 1))
-  newMax = math.floor(newMax + 0.5)
+
+  -- Hai Phap Khi cong vao nha chinh. Nha la cua CHUNG, nen chi can MOT
+  -- nguoi mua la ca doi duoc -- do la ly do chung dat gia cao hon hai
+  -- mon ca nhan o tren.
+  local bonusMax, bonusRegen = 0.0, 0.0
+  if API.phapKhiAiCo ~= nil then
+    if API.phapKhiAiCo("nhahp")    then bonusMax   = 0.30 end
+    if API.phapKhiAiCo("nharegen") then bonusRegen = 0.15 end
+  end
+  newMax = math.floor(newMax * (1 + bonusMax) + 0.5)
   if newMax < 1 then newMax = 1 end
 
   BlzSetUnitMaxHP(S.house, newMax)
-  local heal = ratio + CFG.HOUSE_REGEN_PER_WAVE
+  local heal = ratio + CFG.HOUSE_REGEN_PER_WAVE + bonusRegen
   if heal > 1.0 then heal = 1.0 end
   SetUnitState(S.house, UNIT_STATE_LIFE, newMax * heal)
 end
@@ -244,13 +283,20 @@ local function spawnStage(stage)
 
   if isBoss then
     spawnOne(stage, realm, "boss")
-    API.msg(nil, CFG.C_RED .. "=== " .. realmName(realm) ..
-      " DO KIEP -- BOSS ===" .. CFG.C_END)
+    API.msg(nil, CFG.C_RED .. API.t("boss_coming", realmName(realm)) .. CFG.C_END)
+    API.msg(nil, "   " .. CFG.C_JADE .. mobName(stage, "boss") .. CFG.C_END)
   else
     for _ = 1, CFG.WAVE_MOB_COUNT do spawnOne(stage, realm, "mob") end
     for _ = 1, CFG.WAVE_ELITE_COUNT do spawnOne(stage, realm, "elite") end
     API.msg(nil, CFG.C_GOLD .. "[" .. stage .. "/" .. totalStages() .. "] " ..
       stageLabel(stage) .. CFG.C_END)
+
+    -- Ghi ro wave nay gom NHUNG GI, bang dung cai ten dang nam tren con
+    -- quai. Mot wave co hai loai ma dong bao chi noi mot cau chung thi
+    -- nguoi choi khong doi chieu duoc cai minh nhin thay voi cai vua doc.
+    API.msg(nil, "   " .. CFG.C_GREY .. API.t("wave_comp",
+      CFG.WAVE_MOB_COUNT,   mobName(stage, "mob"),
+      CFG.WAVE_ELITE_COUNT, mobName(stage, "elite")) .. CFG.C_END)
   end
 
   if S.wave.spawnFail > 0 then
@@ -274,12 +320,22 @@ local function onWaveTimer()
 
   local nextStage = S.stage + 1
   if nextStage > totalStages() then
-    API.endGame(true, "Da chan duoc Sang The Than.")
+    API.endGame(true, API.t("win_final", realmName(#CFG.REALMS)))
+    return
+  end
+
+  -- Boss chiem TRON stage, mot minh (L4 trong dot-quai.md). Neu dong ho
+  -- het gio ma tang 10 chua don xong thi HOAN, dung sinh boss de len
+  -- dam linh con song -- lam vay la pha dung cai luat khien tran boss
+  -- co cam giac khac han mot wave.
+  local _, _, nextIsBoss = decode(nextStage)
+  if nextIsBoss and S.alive > 0 then
+    TimerStart(S.waveTimer, CFG.WAVE_TICK, false, onWaveTimer)
     return
   end
 
   if S.alive >= CFG.WAVE_MAX_ALIVE then
-    API.msg(nil, CFG.C_GREY .. "Qua dong quai tren map -- hoan wave." .. CFG.C_END)
+    API.msg(nil, CFG.C_GREY .. API.t("wave_hold") .. CFG.C_END)
     TimerStart(S.waveTimer, CFG.WAVE_TICK, false, onWaveTimer)
     return
   end
@@ -309,7 +365,9 @@ local function waveNow()
               " timer=" .. tostring(S.waveTimer ~= nil))
     return false
   end
-  API.trace("waveNow: keo dot ke tiep (stage hien tai " .. S.stage .. ")")
+  API.trace("waveNow: keo dot ke tiep (stage hien tai " .. S.stage ..
+            ", cho=" .. tostring(S.waitNext) .. ")")
+  S.waitNext = nil
   if S.waveDlg ~= nil then TimerDialogDisplay(S.waveDlg, true) end
   PauseTimer(S.waveTimer)
   TimerStart(S.waveTimer, 0.02, false, onWaveTimer)
@@ -327,9 +385,22 @@ end
 local function rewardAll(stage, kind)
   local lk = bountyOf(stage, kind)
   local realm = decode(stage)
-  local tt = 0
+
+  -- Ba loai quai, ba dong tien -- day la cho DUY NHAT cot chung do lai.
+  --
+  --   linh thuong -> Linh Khi   (nhip giay)
+  --   tinh anh    -> Ngo Tinh   (nhip wave)
+  --   boss        -> Tinh Thach (nhip canh gioi)
+  --
+  -- Linh Khi thi moi loai deu tra; hai dong kia thi khong. Nho vay ba
+  -- he nang cap bi chan boi ba loai NOI DUNG khac nhau chu khong chi
+  -- boi mot cai vi. Xem docs/02-he-thong/kinh-te.md
+  local tt, ngo = 0, 0
   if kind == "boss" then
-    tt = CFG.TINHTHACH_BOSS_BASE + CFG.TINHTHACH_BOSS_STEP * (realm - 1)
+    tt  = CFG.TINHTHACH_BOSS_BASE + CFG.TINHTHACH_BOSS_STEP * (realm - 1)
+    ngo = CFG.NGOTINH_BOSS
+  elseif kind == "elite" then
+    ngo = CFG.NGOTINH_ELITE
   end
 
   for i = 1, #S.pids do
@@ -337,12 +408,31 @@ local function rewardAll(stage, kind)
     if S.p[pid] ~= nil and S.p[pid].active then
       payBounty(pid, lk)
       if tt > 0 then API.addTinhThach(pid, tt) end
+      if ngo > 0 then
+        local n = ngo
+        if kind == "elite" and API.phapKhiCo ~= nil
+           and API.phapKhiCo(pid, "ngotinh") then n = n + 1 end
+        API.addNgoTinh(pid, n)
+      end
     end
   end
+  if ngo > 0 then API.panelRefreshAll() end
 
   if kind == "boss" then
     API.msg(nil, CFG.C_JADE .. API.t("boss_down", realmName(realm), tt) .. CFG.C_END)
   end
+end
+
+-- ---------- Nghi giua hai canh gioi ----------
+--
+-- Dung HAN dong ho va an dong ho dem. An la co y: mot cai dong ho dung
+-- yen o 0:00 chi lam nguoi choi tuong game treo, dung loi ma
+-- WAVE_WAIT_FIRST da phai xu ly mot lan.
+local function pauseWaves(what)
+  S.waitNext = what
+  if S.waveTimer ~= nil then PauseTimer(S.waveTimer) end
+  if S.waveDlg ~= nil then TimerDialogDisplay(S.waveDlg, false) end
+  API.trace("wave: DUNG dong ho o stage " .. S.stage .. ", cho '" .. what .. "'")
 end
 
 -- ---------- Goi tu 08_events khi mot con chet ----------
@@ -360,14 +450,37 @@ local function onMobDeath(u, killer)
 
   rewardAll(stage, kind)
 
-  -- Con cuoi cung cua wave vua chet: vao wave sau ngay.
-  -- Chi o day chu khong dat trong timer -- toi duoc day nghia la chac
-  -- chan da tung co quai, nen S.alive = 0 la "don sach" that, khong
-  -- phai "wave sinh hong khong con nao".
-  if CFG.WAVE_AUTO_NEXT and S.alive == 0 and S.stage > 0 and S.running then
+  -- Con cuoi cung cua stage vua chet.
+  -- Chi xet o day chu khong dat trong timer -- toi duoc day nghia la
+  -- chac chan da tung co quai, nen S.alive = 0 la "don sach" that,
+  -- khong phai "wave sinh hong khong con nao".
+  if S.alive ~= 0 or S.stage <= 0 or not S.running then return end
+
+  if API.phapKhiOnClear ~= nil then API.phapKhiOnClear() end
+
+  local r, tier, wasBoss = decode(S.stage)
+
+  -- MOC 1: vua ha boss -> dung han, cho -next sang canh gioi sau.
+  if CFG.WAVE_REST and wasBoss and S.stage < totalStages() then
+    pauseWaves("realm")
+    API.msg(nil, CFG.C_GOLD ..
+      API.t("wave_realmdone", realmName(r + 1)) .. CFG.C_END)
+    return
+  end
+
+  -- MOC 2: vua don sach tang cuoi -> dung han, cho -next goi boss.
+  if CFG.WAVE_REST and (not wasBoss) and tier >= CFG.TIERS_PER_REALM then
+    pauseWaves("boss")
+    API.msg(nil, CFG.C_GOLD ..
+      API.t("wave_vienman", realmName(r)) .. CFG.C_END)
+    return
+  end
+
+  -- Binh thuong: bao da don sach roi keo dot sau vao som.
+  if CFG.WAVE_AUTO_NEXT then
     API.msg(nil, CFG.C_JADE .. API.t("wave_cleared") .. CFG.C_END)
     API.after(CFG.WAVE_CLEAR_DELAY, function()
-      if S.alive == 0 then waveNow() end
+      if S.alive == 0 and S.waitNext == nil then waveNow() end
     end)
   end
 end
@@ -440,12 +553,14 @@ API.totalStages    = totalStages
 API.decodeStage    = decode
 API.realmName      = realmName
 API.stageLabel     = stageLabel
+API.tierLabel      = tierLabel
 API.ehpOf          = ehpOf
 API.dmgOf          = dmgOf
 API.armorOf        = armorOf
 API.waveIncome     = waveIncome
 API.mobName        = mobName
 API.waveNow        = waveNow
+API.waveWaiting    = function() return S.waitNext end
 API.waveReadyCheck = readyCheck
 API.onMobDeath     = onMobDeath
 API.startWaves     = startWaves

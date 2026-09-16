@@ -1,7 +1,7 @@
 # Hệ thống: Nhà chính & vùng địch
 
-> **Trạng thái:** Đã cài — **chờ bạn tạo vùng trong World Editor**
-> **Cập nhật:** 2026-09-14
+> **Trạng thái:** Đã cài — vùng đã có trong map
+> **Cập nhật:** 2026-09-16
 > **Code:** [1_house.lua](../../src/3_tran_dau/1_house.lua), [4_geometry.lua](../../src/1_nen/4_geometry.lua)
 > **Khoá CFG:** `RGN_HOUSE` `RGN_ENEMY` `HOUSE_*`
 > **Code thêm:** [1_events.lua](../../src/5_khoi_dong/1_events.lua), [1_player.lua](../../src/2_nguoi_choi/1_player.lua)
@@ -12,8 +12,13 @@ Hai mốc cố định trên bản đồ:
 
 - **Nhà chính** — Mountain King dựng giữa vùng `MyHouseRegion`. Máu 1 000, tầm
   nhìn 1 500, không đánh được ai, **chết là thua**.
-- **Vùng địch** — `MyEnemyRegion`, nơi quái sẽ ra. **Chưa cho quái ra**; bước
-  này chỉ xác nhận vùng tồn tại và nhớ toạ độ.
+- **Vùng địch** — `MyEmenyRegion`, nơi quái ra. Đã nối vào hệ đợt quái:
+  [2_wave.lua](../../src/3_tran_dau/2_wave.lua) sinh quái quanh tâm vùng này.
+
+> **Máu 1 000 chỉ đúng lúc mới dựng.** Từ đợt quái đầu tiên trở đi, máu nhà
+> được **tính lại mỗi wave** theo `HOUSE_HP_HITS × sát thương một con lính ở
+> stage đó` — `CFG.HOUSE_HP` chỉ còn là giá trị khởi tạo trước wave 1. Lý do và
+> công thức: [dot-quai.md](dot-quai.md#thua).
 
 ## Bạn phải làm trước
 

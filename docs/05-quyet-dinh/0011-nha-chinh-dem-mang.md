@@ -13,10 +13,11 @@
 > con số chỉnh độ khoan dung.
 > **Ngày:** 2026-09-15
 
-Đây là ADR duy nhất trong thư mục này chưa chốt. Nó mâu thuẫn với
-[nha-chinh.md](../02-he-thong/nha-chinh.md) đang ở trạng thái `Đã cài`, nên phải
-quyết trước khi viết [2_wave.lua](../../src/3_tran_dau/2_wave.lua) — quyết sau thì phải gỡ
-code đã chạy được.
+Phần còn lại của file này là **bối cảnh lịch sử**, giữ nguyên như lúc viết. Kết
+luận nằm ở khung trên: đề xuất bị bác, và `HOUSE_HP_HITS` là thứ đã cài trong
+[2_wave.lua](../../src/3_tran_dau/2_wave.lua). Mọi khoá `HOUSE_LIVES`,
+`LEAK_COST_MOB`, `LEAK_COST_ELITE` nhắc dưới đây **chưa từng tồn tại trong
+`CFG`** — đừng đi tìm.
 
 ## Bối cảnh
 

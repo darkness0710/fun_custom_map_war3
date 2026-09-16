@@ -121,3 +121,654 @@ STRING 22
 Text Tooltip Normal Extend
 }
 
+STRING 1000
+// [w3skill.py]
+{
+Cleaving Blow
+}
+
+STRING 1001
+// [w3skill.py]
+{
+Attacks splash 20% damage to nearby targets.
+
+Level 1/10
+}
+
+STRING 1002
+// [w3skill.py]
+{
+Attacks splash 22% damage to nearby targets.
+
+Level 2/10
+}
+
+STRING 1003
+// [w3skill.py]
+{
+Attacks splash 23% damage to nearby targets.
+
+Level 3/10
+}
+
+STRING 1004
+// [w3skill.py]
+{
+Attacks splash 25% damage to nearby targets.
+
+Level 4/10
+}
+
+STRING 1005
+// [w3skill.py]
+{
+Attacks splash 27% damage to nearby targets.
+
+Level 5/10
+}
+
+STRING 1006
+// [w3skill.py]
+{
+Attacks splash 29% damage to nearby targets.
+
+Level 6/10
+}
+
+STRING 1007
+// [w3skill.py]
+{
+Attacks splash 32% damage to nearby targets.
+
+Level 7/10
+}
+
+STRING 1008
+// [w3skill.py]
+{
+Attacks splash 34% damage to nearby targets.
+
+Level 8/10
+}
+
+STRING 1009
+// [w3skill.py]
+{
+Attacks splash 37% damage to nearby targets.
+
+Level 9/10
+}
+
+STRING 1010
+// [w3skill.py]
+{
+Attacks splash 40% damage to nearby targets.
+
+Level 10/10
+}
+
+STRING 1011
+// [w3skill.py]
+{
+Palm Strike
+}
+
+STRING 1012
+// [w3skill.py]
+{
+Deals x1.32 damage in a line.
+
+Level 1/10
+Scales with your highest attribute.
+cd 8.0s   mana 25
+}
+
+STRING 1013
+// [w3skill.py]
+{
+Deals x1.36 damage in a line.
+
+Level 2/10
+Scales with your highest attribute.
+cd 7.6s   mana 26
+}
+
+STRING 1014
+// [w3skill.py]
+{
+Deals x1.41 damage in a line.
+
+Level 3/10
+Scales with your highest attribute.
+cd 7.3s   mana 28
+}
+
+STRING 1015
+// [w3skill.py]
+{
+Deals x1.45 damage in a line.
+
+Level 4/10
+Scales with your highest attribute.
+cd 7.0s   mana 29
+}
+
+STRING 1016
+// [w3skill.py]
+{
+Deals x1.50 damage in a line.
+
+Level 5/10
+Scales with your highest attribute.
+cd 6.7s   mana 30
+}
+
+STRING 1017
+// [w3skill.py]
+{
+Deals x1.55 damage in a line.
+
+Level 6/10
+Scales with your highest attribute.
+cd 6.4s   mana 32
+}
+
+STRING 1018
+// [w3skill.py]
+{
+Deals x1.60 damage in a line.
+
+Level 7/10
+Scales with your highest attribute.
+cd 6.1s   mana 34
+}
+
+STRING 1019
+// [w3skill.py]
+{
+Deals x1.65 damage in a line.
+
+Level 8/10
+Scales with your highest attribute.
+cd 5.8s   mana 35
+}
+
+STRING 1020
+// [w3skill.py]
+{
+Deals x1.70 damage in a line.
+
+Level 9/10
+Scales with your highest attribute.
+cd 5.6s   mana 37
+}
+
+STRING 1021
+// [w3skill.py]
+{
+Deals x1.76 damage in a line.
+
+Level 10/10
+Scales with your highest attribute.
+cd 5.3s   mana 39
+}
+
+STRING 1022
+// [w3skill.py]
+{
+Guarding Light
+}
+
+STRING 1023
+// [w3skill.py]
+{
+Heals x2.20 to yourself or an ally.
+
+Level 1/10
+Scales with your highest attribute.
+cd 10.0s   mana 30
+}
+
+STRING 1024
+// [w3skill.py]
+{
+Heals x2.27 to yourself or an ally.
+
+Level 2/10
+Scales with your highest attribute.
+cd 9.6s   mana 32
+}
+
+STRING 1025
+// [w3skill.py]
+{
+Heals x2.34 to yourself or an ally.
+
+Level 3/10
+Scales with your highest attribute.
+cd 9.1s   mana 33
+}
+
+STRING 1026
+// [w3skill.py]
+{
+Heals x2.42 to yourself or an ally.
+
+Level 4/10
+Scales with your highest attribute.
+cd 8.7s   mana 35
+}
+
+STRING 1027
+// [w3skill.py]
+{
+Heals x2.50 to yourself or an ally.
+
+Level 5/10
+Scales with your highest attribute.
+cd 8.4s   mana 36
+}
+
+STRING 1028
+// [w3skill.py]
+{
+Heals x2.58 to yourself or an ally.
+
+Level 6/10
+Scales with your highest attribute.
+cd 8.0s   mana 38
+}
+
+STRING 1029
+// [w3skill.py]
+{
+Heals x2.66 to yourself or an ally.
+
+Level 7/10
+Scales with your highest attribute.
+cd 7.6s   mana 40
+}
+
+STRING 1030
+// [w3skill.py]
+{
+Heals x2.75 to yourself or an ally.
+
+Level 8/10
+Scales with your highest attribute.
+cd 7.3s   mana 42
+}
+
+STRING 1031
+// [w3skill.py]
+{
+Heals x2.83 to yourself or an ally.
+
+Level 9/10
+Scales with your highest attribute.
+cd 7.0s   mana 44
+}
+
+STRING 1032
+// [w3skill.py]
+{
+Heals x2.93 to yourself or an ally.
+
+Level 10/10
+Scales with your highest attribute.
+cd 6.7s   mana 47
+}
+
+STRING 1033
+// [w3skill.py]
+{
+Rallying Order
+}
+
+STRING 1034
+// [w3skill.py]
+{
+The whole party gains +3 armor.
+
+Level 1/10
+}
+
+STRING 1035
+// [w3skill.py]
+{
+The whole party gains +3 armor.
+
+Level 2/10
+}
+
+STRING 1036
+// [w3skill.py]
+{
+The whole party gains +3 armor.
+
+Level 3/10
+}
+
+STRING 1037
+// [w3skill.py]
+{
+The whole party gains +4 armor.
+
+Level 4/10
+}
+
+STRING 1038
+// [w3skill.py]
+{
+The whole party gains +4 armor.
+
+Level 5/10
+}
+
+STRING 1039
+// [w3skill.py]
+{
+The whole party gains +4 armor.
+
+Level 6/10
+}
+
+STRING 1040
+// [w3skill.py]
+{
+The whole party gains +5 armor.
+
+Level 7/10
+}
+
+STRING 1041
+// [w3skill.py]
+{
+The whole party gains +5 armor.
+
+Level 8/10
+}
+
+STRING 1042
+// [w3skill.py]
+{
+The whole party gains +6 armor.
+
+Level 9/10
+}
+
+STRING 1043
+// [w3skill.py]
+{
+The whole party gains +6 armor.
+
+Level 10/10
+}
+
+STRING 1044
+// [w3skill.py]
+{
+Body Forging
+}
+
+STRING 1045
+// [w3skill.py]
+{
++12% to all three attributes.
+
+Level 1/10
+}
+
+STRING 1046
+// [w3skill.py]
+{
++13% to all three attributes.
+
+Level 2/10
+}
+
+STRING 1047
+// [w3skill.py]
+{
++14% to all three attributes.
+
+Level 3/10
+}
+
+STRING 1048
+// [w3skill.py]
+{
++15% to all three attributes.
+
+Level 4/10
+}
+
+STRING 1049
+// [w3skill.py]
+{
++16% to all three attributes.
+
+Level 5/10
+}
+
+STRING 1050
+// [w3skill.py]
+{
++18% to all three attributes.
+
+Level 6/10
+}
+
+STRING 1051
+// [w3skill.py]
+{
++19% to all three attributes.
+
+Level 7/10
+}
+
+STRING 1052
+// [w3skill.py]
+{
++21% to all three attributes.
+
+Level 8/10
+}
+
+STRING 1053
+// [w3skill.py]
+{
++22% to all three attributes.
+
+Level 9/10
+}
+
+STRING 1054
+// [w3skill.py]
+{
++24% to all three attributes.
+
+Level 10/10
+}
+
+STRING 1055
+// [w3skill.py]
+{
+Ironhide
+}
+
+STRING 1056
+// [w3skill.py]
+{
+Reduces incoming damage by 5%. Hard cap 10%.
+
+Level 1/10
+}
+
+STRING 1057
+// [w3skill.py]
+{
+Reduces incoming damage by 5%. Hard cap 10%.
+
+Level 2/10
+}
+
+STRING 1058
+// [w3skill.py]
+{
+Reduces incoming damage by 6%. Hard cap 10%.
+
+Level 3/10
+}
+
+STRING 1059
+// [w3skill.py]
+{
+Reduces incoming damage by 6%. Hard cap 10%.
+
+Level 4/10
+}
+
+STRING 1060
+// [w3skill.py]
+{
+Reduces incoming damage by 7%. Hard cap 10%.
+
+Level 5/10
+}
+
+STRING 1061
+// [w3skill.py]
+{
+Reduces incoming damage by 7%. Hard cap 10%.
+
+Level 6/10
+}
+
+STRING 1062
+// [w3skill.py]
+{
+Reduces incoming damage by 8%. Hard cap 10%.
+
+Level 7/10
+}
+
+STRING 1063
+// [w3skill.py]
+{
+Reduces incoming damage by 9%. Hard cap 10%.
+
+Level 8/10
+}
+
+STRING 1064
+// [w3skill.py]
+{
+Reduces incoming damage by 9%. Hard cap 10%.
+
+Level 9/10
+}
+
+STRING 1065
+// [w3skill.py]
+{
+Reduces incoming damage by 10%. Hard cap 10%.
+
+Level 10/10
+}
+
+STRING 1066
+// [w3skill.py]
+{
+Indestructible
+}
+
+STRING 1067
+// [w3skill.py]
+{
+Greatly raises armor for a short time.
+
+Level 1/10
+cd 60.0s   mana 60
+}
+
+STRING 1068
+// [w3skill.py]
+{
+Greatly raises armor for a short time.
+
+Level 2/10
+cd 57.4s   mana 63
+}
+
+STRING 1069
+// [w3skill.py]
+{
+Greatly raises armor for a short time.
+
+Level 3/10
+cd 54.8s   mana 66
+}
+
+STRING 1070
+// [w3skill.py]
+{
+Greatly raises armor for a short time.
+
+Level 4/10
+cd 52.4s   mana 69
+}
+
+STRING 1071
+// [w3skill.py]
+{
+Greatly raises armor for a short time.
+
+Level 5/10
+cd 50.1s   mana 73
+}
+
+STRING 1072
+// [w3skill.py]
+{
+Greatly raises armor for a short time.
+
+Level 6/10
+cd 47.9s   mana 77
+}
+
+STRING 1073
+// [w3skill.py]
+{
+Greatly raises armor for a short time.
+
+Level 7/10
+cd 45.8s   mana 80
+}
+
+STRING 1074
+// [w3skill.py]
+{
+Greatly raises armor for a short time.
+
+Level 8/10
+cd 43.8s   mana 84
+}
+
+STRING 1075
+// [w3skill.py]
+{
+Greatly raises armor for a short time.
+
+Level 9/10
+cd 41.9s   mana 89
+}
+
+STRING 1076
+// [w3skill.py]
+{
+Greatly raises armor for a short time.
+
+Level 10/10
+cd 40.0s   mana 93
+}

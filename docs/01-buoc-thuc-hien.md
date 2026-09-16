@@ -1,6 +1,6 @@
 # Các bước thực hiện
 
-> **Cập nhật:** 2026-09-14
+> **Cập nhật:** 2026-09-16
 
 Làm từng bước một. Mỗi bước phải **chạy được và kiểm được** trước khi sang bước
 sau — không dựng ba tầng rồi mới bật game lên xem.
@@ -16,124 +16,185 @@ sau — không dựng ba tầng rồi mới bật game lên xem.
 | Đo map size thật từ `war3map.w3e` | [04-map/kich-thuoc.md](04-map/kich-thuoc.md) |
 | 3 người chơi + 1 phe địch, quan hệ đồng minh | [1_player.lua](../src/2_nguoi_choi/1_player.lua) |
 | Lưới 5×5 tự chia theo vùng chơi được | [4_geometry.lua](../src/1_nen/4_geometry.lua) |
-| Gỡ sạch nội dung game cũ, để rỗng `05`–`08` | — |
 
-**Cách kiểm:** chạy `python build.py`, vào map bằng Ctrl+F9. Với `CFG.DEBUG = true`
-sẽ thấy:
-
-- Bảng số lưới in ra chat — đối chiếu với bảng trong
-  [04-map/luoi-25-o.md](04-map/luoi-25-o.md).
-- 25 chấm vàng ping trên minimap, đúng tâm 25 block, giãn cách đều nhau.
-
-Nếu 25 chấm không đều hoặc lệch ra mép, lưới sai — đọc số `[dbg]` trước khi sửa.
+**Cách kiểm:** `python build.py`, vào map. Với `CFG.DEBUG = true` sẽ thấy bảng số
+lưới in ra chat (đối chiếu với [04-map/luoi-25-o.md](04-map/luoi-25-o.md)) và 25
+chấm vàng ping đúng tâm 25 block.
 
 ---
 
-## 🔨 Bước 2 — Vẽ sông trong World Editor
+## ✅ Bước 2b — Nhà chính & vùng địch
 
-**Đang làm — vẽ tay.** Quyết định và lý do: [ADR 0004](05-quyet-dinh/0004-song-ve-tay.md).
+**Xong.** Vùng `MyHouseRegion` và `MyEmenyRegion` đã có trong map.
 
+Chi tiết: [02-he-thong/nha-chinh.md](02-he-thong/nha-chinh.md).
+
+**Cách kiểm:** đọc khối `=== Vung & nha chinh ===` lúc vào map (cần `CFG.DEBUG`).
+Nó in danh sách vùng WE nhìn thấy, toạ độ nhà, nhà rơi vào block nào, máu đặt
+được chưa.
+
+Vùng `MyTarvenRegion` không còn dùng tới; xoá trong World Editor lúc nào cũng được.
+
+---
+
+## ✅ Bước 5 — Đợt quái
+
+**Đã cài — chưa chơi thử.** [2_wave.lua](../src/3_tran_dau/2_wave.lua).
+
+Làm xong, theo đúng thứ tự đã định:
+
+1. ✅ Bộ đếm `stage` + đồng hồ wave, kèm lệnh dev `-wave <stage>`.
+2. ✅ Sinh `WAVE_MOB_COUNT` lính, đi tới nhà, phát lại lệnh mỗi `WAVE_TICK` giây.
+3. ✅ Áp đường cong chỉ số — EHP, giáp, sát thương, nhân theo số người.
+4. ✅ Tinh anh và boss (chỉ số + tên + thưởng).
+5. ✅ Tên quái theo cảnh giới + tầng, dòng báo thành phần đợt.
+6. ✅ Kinh tế: Linh Khí bám `LINHKHI_GROWTH`, Tinh Thạch từ boss.
+7. ✅ Máu nhà tính lại mỗi đợt theo `HOUSE_HP_HITS`.
+
+Hai câu hỏi từng chặn bước này **đã quyết**:
+
+- Nhà chính đếm máu hay đếm mạng → **đếm máu**, [ADR 0011](05-quyet-dinh/0011-nha-chinh-dem-mang.md)
+  bị lật.
+- Sức mạnh người chơi tăng bằng gì → Linh Căn + Kỹ năng đã cài; Trang bị và
+  Pháp Khí thì chưa (xem Bước 7).
+
+**Chưa làm trong bước này:** tu chính (`MODIFIERS`), 24 mẫu lính, thân boss.
+Xem [02-he-thong/dot-quai.md](02-he-thong/dot-quai.md#chưa-làm).
+
+---
+
+## 🔨 Bước 6 — Chơi thử, rồi cân bằng
+
+**Đây là việc tiếp theo, và không có gì thay thế được nó.**
+
+Mọi con số trong [03-du-lieu/](03-du-lieu/) là suy luận — **chưa ai chơi thử một
+giây nào**. Ba chỗ dễ sai nhất, theo thứ tự:
+
+1. **DPS thật của hero ở stage 1.** Cả đường cong dựng trên phỏng đoán ~60.
+2. **Thời gian quái đi bộ từ vùng địch tới nhà.** `WAVE_TIME` phải lớn hơn con
+   số đó, mà chưa ai đo.
+3. **`MOB_EHP_BASE`** — nút chỉnh độ khó tổng thể.
+
+Cách đo: dùng `-wave N` nhảy tới stage 1, 55, 110, 165, 220, bấm giờ xem hạ một
+đợt mất bao lâu, rồi so với `WAVE_TIME`. Lệch là **công thức sai — đừng chỉnh số
+để che**.
+
+Kèm theo, hai thứ phải sửa trước khi số đo có nghĩa:
+
+- **Sáu ability còn thiếu `Stats - Levels = 10`** (`A001 A002 A003 A005 A006
+  A007`). Nâng quá bậc gốc thì WC3 kẹp xuống im lặng — bảng ghi 10/10 mà trong
+  game vẫn là bậc 3. [02-he-thong/ky-nang.md](02-he-thong/ky-nang.md)
+- **`CFG.SKILL_DATA_LIVE = false`** — số liệu kỹ năng mới là thiết kế, chưa ghi
+  vào `war3map.w3a`. Tức ×2.4 của hệ nâng cấp chưa thu được đồng nào.
+
+Thêm ba thứ cần đo ở lần chơi thử đầu, đều mới cài và chưa ai nhìn thấy chạy:
+
+- **Ba đồng tiền có thật sự tách nhau không** — hay người chơi vẫn chỉ nhìn một
+  thanh vàng. [ADR 0015](05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md)
+- **300 Ngộ Tính có đủ không.** Tính ra tiêu 283/300, nhưng đó là khi hạ đủ 200
+  tinh anh — mà tinh anh dồn lại qua nhiều wave thì có thể không.
+- **Pháp Khí ×2.5 trả bằng đường vòng** — năm món cộng vào kinh tế và nhà chính,
+  không cộng thẳng sát thương.
+
+---
+
+## ✅ Bước 7 — Trang Bị & Pháp Khí
+
+**Đã cài.** [5_trangbi.lua](../src/2_nguoi_choi/5_trangbi.lua) ·
+[6_phapkhi.lua](../src/2_nguoi_choi/6_phapkhi.lua)
+
+Ngân sách ×967 từng đủ cả bốn nguồn (×985 trên giấy), nhưng Pháp Khí đã bị xoá
+nội dung 2026-09-16 nên **hiện chỉ còn ×392**. 230 điểm Ngộ Tính dư phải trả lại
+×2.5 đó khi thiết kế lại. Kèm theo là hai quyết định:
+
+- **Ba đồng tiền, mỗi đồng một loại quái** —
+  [ADR 0015](05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md). `LINHCAN_STEP`
+  đổi 1.215 → 1.17 vì ngân sách chuyển từ bản 3 nguồn sang bản 4 nguồn.
+- **Bảng phím E có hai kiểu thân** —
+  [ADR 0016](05-quyet-dinh/0016-bang-phim-e-hai-kieu-than.md).
+
+---
+
+## ⏸ Bước 7b — Kỹ năng cho Hvwd và Hkal
+
+**Hart xong.** Bảy kỹ năng đủ vỏ lẫn ruột: 10 bậc, hiệu ứng thật, và từ 2026-09-16
+có tên riêng, vị trí ô, tooltip 10 bậc — sinh bằng
+[w3skill.py](../w3skill.py) từ `CFG.SKILLS`, nên tooltip không thể nói khác bảng
+phím E.
+
+**Hvwd và Hkal vẫn trống.** Chọn được nhưng **không có kỹ năng nào**. Thiết kế cũ
+đã xoá để làm lại — [thiet-ke-hero.md](02-he-thong/thiet-ke-hero.md).
+
+**Chặn bởi một câu hỏi không phải cân bằng:** bộ mặt của map. Icon và hiệu ứng đều
+lấy từ kho có sẵn của Warcraft, nên mỗi kỹ năng trông giống ability gốc mà nó nhân
+bản. Chủ dự án dừng để nghĩ.
+
+**Việc phải làm trước khi mở lại:**
+
+- ✅ **`API.heroRecompute`** — đã xong. Mọi chỉ số hero giờ đi qua một cửa duy
+  nhất, nên thêm hero mới không sinh ra lỗi giẫm chân như Bất Hoại × Hiệu Lệnh.
+- Vào game **nhìn command card của Hart một lần** — xác nhận 7 nút đúng ô, đúng
+  tên, tooltip đúng số.
+- Gõ `-nat` xem `EVENT_PLAYER_UNIT_DAMAGING` có không — nó quyết định làm được
+  kiểu kỹ năng nào (chặn sát thương trước khi vào máu).
+
+---
+
+## ⬜ Bước 8 — Tu chính
+
+10 tầng của một cảnh giới hiện **giống hệt nhau** — chỉ số chỉ nhích ×1.174 suốt
+10 tầng. Bảng tu chính ở
+[02-he-thong/dot-quai.md](02-he-thong/dot-quai.md#tu-chính) còn là phác thảo,
+chưa có số và chưa có khoá `CFG` nào.
+
+---
+
+## ⬜ Bước 2 — Vẽ sông trong World Editor
+
+**Vẫn chưa vẽ.** Quyết định và lý do: [ADR 0004](05-quyet-dinh/0004-song-ve-tay.md).
 Bảng toạ độ: [04-map/toa-do-ve-song.md](04-map/toa-do-ve-song.md).
 
 Thứ tự:
 
 1. **Một ngã tư trước**, quanh `(−2 816, −3 072)`. Chừng 10 phút.
-2. **Vào game đi bộ quanh đó.** Sông 1 024 đơn vị là cản trở thật hay chỉ là
-   vạch kẻ? Block 4 608 đơn vị đi hết mất bao lâu?
+2. **Vào game đi bộ quanh đó.** Sông 1 024 đơn vị là cản trở thật hay chỉ là vạch
+   kẻ? Block 4 608 đơn vị đi hết mất bao lâu?
 3. **Trả lời xong mới vẽ nốt 7 con còn lại.**
 
 Vẽ cả 8 con trước khi biết cảm giác là vẽ mù.
 
-**Cách kiểm:** 25 ping minimap phải rơi vào giữa 25 khoảng đất, không chấm nào
-nằm dưới nước. Lệch thì sửa bên nào cũng được — vẽ lại sông, hoặc đổi
-`CFG.RIVER_TILES` rồi build lại.
-
----
-
-## 🔨 Bước 2b — Nhà chính & vùng địch
-
-**Code xong — chờ bạn tạo vùng trong World Editor.**
-
-Chi tiết: [02-he-thong/nha-chinh.md](02-he-thong/nha-chinh.md).
-
-1. Region Palette (phím **R**), vẽ `MyHouseRegion` và `MyEmenyRegion`.
-2. Save → `python build.py` → Ctrl+F9.
-
-**Cách kiểm:** đọc khối `=== Vung & nha chinh ===` lúc vào map. Nó in danh sách
-vùng WE nhìn thấy, toạ độ nhà, nhà rơi vào block nào, máu đặt được chưa.
-
-Quái **chưa** ra — cố ý hoãn.
-
-Chọn hero cũng chạy ở bước này — popup lúc vào map, xem
-[02-he-thong/chon-hero.md](02-he-thong/chon-hero.md).
-
-Vùng `MyTarvenRegion` không còn dùng tới; xoá trong World Editor lúc nào cũng được.
-
-Còn treo: giá hero mới là "miễn phí giả" (phát tiền rồi hoàn lại). Giá 0 thật
-sự cần Object Editor.
+> Bước này không chặn Bước 6 nữa (quái đi thẳng tới nhà, phương án A), nhưng nó
+> chặn việc đo `WAVE_TIME` cho đúng — đường đi có sông sẽ dài hơn hẳn.
 
 ---
 
 ## ⬜ Bước 3 — Chặn đường và chỗ qua sông
 
-Sông có nước rồi thì chưa chắc đã chặn được đường — WC3 cho đi qua nước nông.
-Cần chốt: sông chặn hoàn toàn, hay lội qua được nhưng chậm?
-
-Và nếu chặn thì qua sông bằng gì — cầu, cổng, hay phải phá?
-
----
-
-## ⬜ Bước 4 — Vùng cho từng block
-
-Gán region cho 25 block để bắt sự kiện vào/ra. Mở đường cho mọi lối chơi gắn với
-"đang đứng ở block nào".
+Sông có nước rồi thì chưa chắc đã chặn được đường — WC3 cho đi qua nước nông. Cần
+chốt: sông chặn hoàn toàn, hay lội qua được nhưng chậm? Và nếu chặn thì qua sông
+bằng gì — cầu, cổng, hay phải phá.
 
 ---
 
-## ⬜ Bước 5 — Đợt quái
+## 🧊 Bước 4 — Phó bản, thí luyện, linh mạch, đấu đài (bản đồ xong, lối chơi để dành)
 
-**Đã thiết kế xong, chưa viết một dòng code nào.**
+**Bản đồ đã chốt:** [phan-vung.md](02-he-thong/phan-vung.md).
+**Lối chơi vẫn hoãn có chủ ý:** [ADR 0014](05-quyet-dinh/0014-25-block-de-danh-cho-noi-dung-sau.md).
 
-| Tài liệu | Nội dung |
-|---|---|
-| [02-he-thong/dot-quai.md](02-he-thong/dot-quai.md) | Luật: 220 stage, thành phần wave, nhịp, tu chính |
-| [02-he-thong/boss.md](02-he-thong/boss.md) | 20 boss cuối cảnh giới |
-| [03-du-lieu/canh-gioi.md](03-du-lieu/canh-gioi.md) | Bảng 20 cảnh giới, cách chỉ số hoá stage |
-| [03-du-lieu/duong-cong-suc-manh.md](03-du-lieu/duong-cong-suc-manh.md) | Công thức chỉ số + bảng tra |
+Đã làm:
 
-**Hai thứ phải chốt trước khi gõ code:**
+- ✅ 25 vùng thật `Blk01..Blk25` trong World Editor — [w3region.py](../w3region.py)
+- ✅ Bảng vai trò `CFG.BLOCKS`, bốn loại vùng đã duyệt
+- ✅ Lệnh `-vung` xem bản đồ và ping minimap theo màu
+- ✅ [ADR 0017](05-quyet-dinh/0017-ten-vung-la-vi-tri-vai-tro-o-cfg.md) — tên vùng là vị trí, vai trò ở CFG
 
-1. **Nhà chính đếm máu hay đếm mạng** —
-   [ADR 0011](05-quyet-dinh/0011-nha-chinh-dem-mang.md). Quyết sau là phải gỡ code
-   đã chạy được.
-2. **Sức mạnh người chơi tăng bằng gì.** Hero không lên cấp mà địch mạnh lên ×967
-   trong 220 wave. Không có câu trả lời thì đường cong địch thành bức tường ở
-   khoảng cảnh giới 4, và mọi con số trong bảng tra vô nghĩa.
+Chưa làm: **toàn bộ lối chơi**. Bốn loại vùng mới có tên và vị trí, không loại
+nào có một dòng code. Khi bắt tay vào, làm **một loại** trước rồi chơi thử — đừng
+làm cả bốn rồi mới bật game lên xem.
 
-Thứ tự cài, mỗi bước chạy được và kiểm được:
-
-1. Bộ đếm `stage` + đồng hồ wave. Chưa sinh con nào — chỉ in ra "Pham Nhan tang 3"
-   đúng nhịp. Kèm lệnh dev `-wave <stage>` ngay từ đầu; không có nó thì không ai
-   kiểm được wave 180.
-2. Sinh `WAVE_MOB_COUNT` lính một mẫu duy nhất, chỉ số cố định, đi tới nhà.
-   Kiểm pathing và `WAVE_REORDER_TICK` trước khi thêm bất cứ gì.
-3. Áp đường cong chỉ số. In `EHP / máu thật / giáp / dmg` và đối chiếu bảng tra.
-   Lệch là **công thức sai**, đừng chỉnh số để che.
-4. Tinh anh, rồi 6 mẫu lính, rồi tu chính.
-5. Boss cảnh giới 1. Đánh thử. **Rồi mới** làm 19 con còn lại.
-
-**Cách kiểm:** đo thời gian hạ wave thật ở stage 1, 55, 110, 165, 220 rồi so với
-`WAVE_TIME`. Đây mới là cân bằng — ba bước trên chỉ là kiểm công thức.
-
-> **Bước này chặn bởi Bước 3.** Chưa biết sông có chặn đường không thì chưa biết
-> quái đi bộ tới nhà mất bao lâu, mà `WAVE_TIME` phải lớn hơn con số đó.
-
----
-
-## ⬜ Bước 6 — 25 block dùng để làm gì
-
-Vẫn chưa quyết. Đợt quái **không** trả lời câu này: quái đi từ block #16 tới nhà,
-23 block còn lại không có vai trò nào.
+> Ba loại vùng tuỳ chọn là **vòi thứ hai** của ba đồng tiền, và hai trong ba hiện
+> chỉ dư 6–9%. Hụt một boss ở cảnh giới 7 là vĩnh viễn thiếu một Pháp Khí — Phó
+> Bản là cách gỡ duy nhất.
 
 ---
 
@@ -143,9 +204,12 @@ Vẫn chưa quyết. Đợt quái **không** trả lời câu này: quái đi t�
 sửa địa hình trong World Editor  →  Save
 sửa code trong src/
 python build.py                  ←  luôn là bước cuối
-Ctrl+F9
 ```
 
-World Editor **ghi đè `war3map.lua` mỗi lần Save**. Save sau khi build là mất
-sạch code. Nếu vào map mà không thấy dòng `[dbg]` nào, gần như chắc chắn là quên
-chạy build.
+Rồi **`python build.py --run`** — đóng gói và chạy thẳng, không qua World Editor.
+Hai cái bẫy biến mất ở đó: Ctrl+F9 đóng gói bản trong *bộ nhớ* World Editor chứ
+không phải bản trên đĩa, và mỗi lần Save nó sinh lại `war3map.lua` xoá sạch code
+vừa chèn.
+
+Nếu vào map mà không thấy dòng `[build x.y.z] code da chay.`, gần như chắc chắn
+là quên chạy build. Xem thêm [04-map/dong-goi-map.md](04-map/dong-goi-map.md).

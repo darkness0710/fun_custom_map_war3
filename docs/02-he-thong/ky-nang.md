@@ -1,7 +1,37 @@
 # Hệ thống: Kỹ năng hero
 
-> **Trạng thái:** Cơ chế đã cài — **chờ ability trong Object Editor**
-> **Cập nhật:** 2026-09-15
+> **Trạng thái:** Hart **đủ vỏ và ruột**; Hvwd/Hkal **trống**
+> **Cập nhật:** 2026-09-16
+
+> **Hart đã hoàn chỉnh.** Bảy kỹ năng, đủ 10 bậc, hiệu ứng chạy thật, và từ
+> 2026-09-16 có cả **tên riêng, vị trí ô, tooltip 10 bậc** sinh bằng
+> [w3skill.py](../../w3skill.py). Trước đó 6/7 ability hiện nguyên tên Blizzard.
+>
+> **Hvwd và Hkal vẫn trống** — `CFG.SKILLS` chỉ có `H001`. Thiết kế cho hai hero
+> này đã bị xoá để làm lại, xem [thiet-ke-hero.md](thiet-ke-hero.md).
+>
+> **Mọi chỉ số hero đi qua một cửa duy nhất** — `API.heroRecompute`. Mỗi hệ chỉ
+> khai báo nó đóng góp bao nhiêu; không hệ nào tự ghi lên unit. Xem
+> [thiet-ke-hero.md](thiet-ke-hero.md#một-chỗ-duy-nhất-được-ghi-chỉ-số-hero).
+> **Code:** [4_skill.lua](../../src/2_nguoi_choi/4_skill.lua) (bậc, giá),
+> [7_hieuung.lua](../../src/2_nguoi_choi/7_hieuung.lua) (hiệu ứng thật)
+
+> **Hai thứ vừa xong, và chúng gỡ đúng hai chỗ chặn cũ.**
+>
+> **1. Cả bảy ability giờ có 10 bậc thật.** Trước đó chỉ `A004` đặt
+> `Stats - Levels = 10`; sáu cái còn lại giữ số bậc gốc của Blizzard (1–3), nên
+> nâng quá bậc đó thì `SetUnitAbilityLevel` **kẹp xuống im lặng**. Sửa bằng
+> `python w3obj.py levels test2.w3x/war3map.w3a 10` —
+> [sửa & clone ability](../06-object-editor/sua-va-clone-ability.md).
+>
+> **2. `CFG.SKILL_DATA_LIVE = true`.** Sát thương kỹ năng giờ ăn theo chỉ số
+> thật. Cách làm: **không** sửa trường sát thương trong `war3map.w3a` — mã
+> trường của `AOsh`/`AHhb`/`AHad` chưa ai đo, mà dự án cấm đoán. Thay vào đó
+> [7_hieuung.lua](../../src/2_nguoi_choi/7_hieuung.lua) bắt sự kiện cast và **tự
+> gây sát thương**, không cần biết mã trường nào.
+>
+> `probeMax()` vẫn giữ: nếu sau này thêm ability mà quên đặt bậc, bảng hiện
+> `3/3!` đỏ thay vì nói dối 10/10.
 > **Code:** [2_heropick.lua](../../src/2_nguoi_choi/2_heropick.lua), [1_player.lua](../../src/2_nguoi_choi/1_player.lua)
 > **Khoá CFG:** `SKILL_MODE` `SKILL_POINTS_START` `HEROES[i].abilities` `HERO_COMMON_ABILITIES`
 

@@ -199,9 +199,13 @@ local function registerEvents()
         API.msg(pid, CFG.C_RED .. API.t("wave_notclear", S.alive) .. CFG.C_END)
         return
       end
+      -- Dang o cua so nghi thi -next la thu DUY NHAT di tiep duoc, nen
+      -- bao ro ai la nguoi bam.
+      local cho = API.waveWaiting()
       if API.waveNow() then
         API.msg(nil, CFG.C_GREY .. GetPlayerName(Player(pid)) ..
-          " -> " .. API.t("wave_next") .. CFG.C_END)
+          " -> " .. API.t("wave_next") ..
+          (cho ~= nil and (" (" .. cho .. ")") or "") .. CFG.C_END)
       end
     end)
   end
@@ -252,6 +256,48 @@ local function registerEvents()
   end
   TriggerAddAction(tNat, function()
     API.nativeChat(GetPlayerId(GetTriggerPlayer()), GetEventPlayerChatString())
+  end)
+
+  -- "-vung" in ban do phan vung 25 block va ping minimap theo mau.
+  --
+  -- Luon dang ky, khong theo DEV_COMMANDS: chua he nao gan vao block,
+  -- nen day la cach DUY NHAT nhin thay bang CFG.BLOCKS co dung nhu dinh
+  -- khong -- va de doi chieu voi vung Blk.. trong World Editor.
+  local tVung = CreateTrigger()
+  for i = 1, #S.pids do
+    TriggerRegisterPlayerChatEvent(tVung, Player(S.pids[i]), "-vung", true)
+  end
+  TriggerAddAction(tVung, function()
+    local pid = GetPlayerId(GetTriggerPlayer())
+    API.msg(pid, CFG.C_GOLD .. "=== Phan vung 25 block ===" .. CFG.C_END)
+
+    local thieu = 0
+    -- In tu hang TREN xuong, dung chieu nguoi choi nhin ban do.
+    for row = S.grid.rows, 1, -1 do
+      local line = ""
+      for col = 1, S.grid.cols do
+        local idx = API.blockIndex(col, row)
+        local d   = API.blockRoleDef(idx)
+        if API.blockRegion(idx) == nil then thieu = thieu + 1 end
+        line = line .. string.format("%-14s", idx .. " " .. API.pick(d))
+      end
+      API.msg(pid, line)
+    end
+
+    -- Ping tam moi block, mau theo vai tro.
+    API.forEachBlock(function(col, row, idx, x0, y0, x1, y1)
+      local m = API.blockRoleDef(idx).mau
+      PingMinimapEx((x0 + x1) * 0.5, (y0 + y1) * 0.5, 6.0,
+                    m[1], m[2], m[3], false)
+    end)
+
+    if thieu > 0 then
+      API.msg(pid, CFG.C_RED .. "Thieu " .. thieu .. " vung " ..
+        CFG.BLOCK_RGN_PREFIX .. ".. trong World Editor." .. CFG.C_END ..
+        CFG.C_GREY .. " Chay: python w3region.py gen" .. CFG.C_END)
+    end
+    API.msg(pid, CFG.C_GREY ..
+      "Chua he nao gan vao block -- day moi la ban do." .. CFG.C_END)
   end)
 
   -- "-c" mo bang nhan vat, duong lui neu phim E khong gan duoc.

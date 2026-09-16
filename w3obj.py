@@ -8,6 +8,13 @@ w3obj.py -- doc va ghi file du lieu Object Editor cua Warcraft III.
                                                       # so tung byte
     python w3obj.py checkall test2.w3x                # kiem moi file co
 
+    python w3obj.py levels  test2.w3x/war3map.w3a 10  # alev = 10 cho MOI
+                                                      # ability tu tao
+    python w3obj.py set     test2.w3x/war3map.w3a A001 alev 10
+    python w3obj.py set     test2.w3x/war3map.w3a A001 anam "Chuong"
+
+    Them --dry de chi in ra, khong ghi.
+
 MUC DICH. Bang skill can 21 ability x 10 level = 210 dong du lieu. Go tay
 trong World Editor thi hong vi moi tay chu khong phai vi kho. File nay
 cho phep SINH RA chung, giong cach build.py sinh war3map.lua.
@@ -41,6 +48,7 @@ nhat giua hai ho file.
 """
 
 import os
+import shutil
 import struct
 import sys
 
@@ -177,6 +185,121 @@ def read_file(path):
     return parse(raw, is_leveled(path)), raw
 
 
+# Moi truong World Editor tu ghi deu ket bang BON BYTE 0 -- do duoc tren
+# ca 54 truong cua war3map.w3a hien co, khong co ngoai le. Mod moi phai
+# dung dung the, neu khong file lech va World Editor co the nuot mat
+# object ma khong bao gi.
+END_TAG = "\x00\x00\x00\x00"
+
+# Truong nao thuoc kieu nao. Chi liet ke thu DA DO duoc -- xem
+# docs/06-object-editor/sua-va-clone-ability.md. Truong khong co o day
+# thi tu choi ghi, chu khong doan kieu.
+FIELD_TYPE = {
+    "alev": TYPE_INT,      "aher": TYPE_INT,
+    "abpx": TYPE_INT,      "abpy": TYPE_INT,
+    "arpx": TYPE_INT,      "arpy": TYPE_INT,
+    "aubx": TYPE_INT,      "auby": TYPE_INT,
+    "acdn": TYPE_UNREAL,   "adur": TYPE_UNREAL,  "ahdu": TYPE_UNREAL,
+    "arac": TYPE_STRING,   "aart": TYPE_STRING,  "arar": TYPE_STRING,
+    "anam": TYPE_STRING,   "aret": TYPE_STRING,  "arut": TYPE_STRING,
+    "aub1": TYPE_STRING,
+}
+
+
+def set_field(obj, mid, value, level=0):
+    """Sua truong neu da co, them moi neu chua. Tra ve (cu, moi)."""
+    vtype = FIELD_TYPE.get(mid)
+    if vtype is None:
+        raise ValueError("chua do duoc kieu cua truong '%s' -- xem "
+                         "docs/06-object-editor/sua-va-clone-ability.md" % mid)
+    if vtype == TYPE_STRING:
+        value = str(value)
+    elif vtype == TYPE_INT:
+        value = int(value)
+    else:
+        value = float(value)
+
+    for m in obj.mods:
+        if m.mid == mid and m.level == level:
+            cu = m.value
+            m.value = value
+            return cu, value
+
+    obj.mods.append(Mod(mid, vtype, value, level, 0, END_TAG))
+    return None, value
+
+
+def write_back(path, version, orig, custom):
+    """Ghi lai, co sao luu va co DOC LAI de chac chan dung dinh dang."""
+    leveled = is_leveled(path)
+    blob = build(version, orig, custom, leveled)
+
+    # Doc lai ngay. File sai dinh dang thi World Editor co the khong mo
+    # duoc map, hoac lang le nuot mat object -- kieu hong te nhat vi
+    # khong bao gi. Kiem truoc khi cham vao file that.
+    try:
+        v2, o2, c2 = parse(blob, leveled)
+    except Exception as e:
+        print("[loi] doc lai ban vua dung KHONG duoc: %s -- da huy" % e)
+        return False
+    if v2 != version or len(o2) != len(orig) or len(c2) != len(custom):
+        print("[loi] doc lai khong khop so object -- da huy")
+        return False
+
+    bak = os.path.join(os.path.dirname(os.path.abspath(__file__)), "build")
+    os.makedirs(bak, exist_ok=True)
+    shutil.copyfile(path, os.path.join(bak, os.path.basename(path) + ".goc"))
+    with open(path, "wb") as f:
+        f.write(blob)
+    print("[ok] da ghi %s (%d byte); ban cu o build/%s.goc"
+          % (path, len(blob), os.path.basename(path)))
+    return True
+
+
+def cmd_set(path, objid, mid, value, dry):
+    (version, orig, custom), raw = read_file(path)
+    hit = [o for o in orig + custom if (o.newid or o.base) == objid]
+    if not hit:
+        print("[loi] khong thay object '%s'" % objid)
+        return False
+    for o in hit:
+        cu, moi = set_field(o, mid, value)
+        print("  %s.%s : %s -> %s" % (objid, mid,
+              "(chua co)" if cu is None else repr(cu), repr(moi)))
+    if dry:
+        print("[dry] khong ghi gi.")
+        return True
+    return write_back(path, version, orig, custom)
+
+
+def cmd_levels(path, n, dry):
+    """Dat Stats - Levels cho MOI ability tu tao.
+
+    Day la viec dau tien phai lam voi bo sinh nay: 6 trong 7 ability cua
+    Hart con giu so bac goc cua Blizzard (1-3). Nang qua bac do thi
+    SetUnitAbilityLevel KEP XUONG IM LANG -- tra du tien, bang ghi 10/10,
+    trong game van la bac 3.
+    """
+    (version, orig, custom), raw = read_file(path)
+    n = int(n)
+    doi = 0
+    for o in custom:
+        cu, moi = set_field(o, "alev", n)
+        dau = "   " if cu == moi else "-> "
+        if cu != moi:
+            doi += 1
+        print("  %s%-5s alev : %s -> %d"
+              % (dau, o.newid or o.base, "(chua co)" if cu is None else cu, moi))
+    print("[%d/%d object doi]" % (doi, len(custom)))
+    if dry:
+        print("[dry] khong ghi gi.")
+        return True
+    if doi == 0:
+        print("[ok] khong co gi de doi.")
+        return True
+    return write_back(path, version, orig, custom)
+
+
 def cmd_dump(path):
     (version, orig, custom), raw = read_file(path)
     print("%s -- %d byte, phien ban %d, %s"
@@ -234,6 +357,22 @@ def main():
         return 0 if cmd_check(target) else 1
     if cmd == "checkall":
         return 0 if cmd_checkall(target) else 1
+
+    dry = "--dry" in sys.argv
+    args = [a for a in sys.argv[3:] if a != "--dry"]
+
+    if cmd == "levels":
+        if len(args) != 1:
+            print("dung: w3obj.py levels <file.w3a> <so bac> [--dry]")
+            return 2
+        return 0 if cmd_levels(target, args[0], dry) else 1
+
+    if cmd == "set":
+        if len(args) != 3:
+            print("dung: w3obj.py set <file> <id> <truong> <gia tri> [--dry]")
+            return 2
+        return 0 if cmd_set(target, args[0], args[1], args[2], dry) else 1
+
     print("lenh khong biet: " + cmd)
     return 2
 

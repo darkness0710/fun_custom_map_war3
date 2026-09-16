@@ -1,8 +1,23 @@
 # Bảng nhân vật — phím E
 
-> **Trạng thái:** Nháp — chưa cài
-> **Cập nhật:** 2026-09-15
+> **Trạng thái:** Đã cài — **cả bốn thẻ có nội dung**
+> **Cập nhật:** 2026-09-16
+> **Code:** [1_panel.lua](../../src/4_giao_dien/1_panel.lua) (khung),
+> [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua),
+> [4_skill.lua](../../src/2_nguoi_choi/4_skill.lua) (nội dung)
+> **Khoá CFG:** `PANEL_X` `PANEL_Y` `PANEL_W` `PANEL_GRID` `PANEL_GRID_TEX`
 > **Liên quan:** [ky-nang.md](ky-nang.md), [kinh-te.md](kinh-te.md)
+
+> **Đã cài tới đâu.** Khung, bốn thẻ, phím **E** và lệnh lui `-c` đều chạy, và
+> cả bốn thẻ có nội dung thật.
+>
+> **Hai kiểu thân bảng**, không phải một —
+> [ADR 0016](../05-quyet-dinh/0016-bang-phim-e-hai-kieu-than.md). Thẻ khai báo
+> *dữ liệu*, bảng lo *bố cục*; trước đây ngược lại, mỗi thẻ phải tự khai báo bề
+> ngang từng cột.
+>
+> Chiều cao bảng **suy ra từ số mục của thẻ dài nhất**, không gõ tay — nên
+> `CFG.PANEL_H` không tồn tại.
 
 ## Ý tưởng
 
@@ -31,10 +46,40 @@ Mỗi thẻ là một nguồn sức mạnh trong ngân sách ×967 —
 
 | Thẻ | Nhân | Mua bằng | Cấu trúc |
 |---|---|---|---|
-| **Kỹ Năng** | ×2.4 | Linh Khí | 7 kỹ năng × 10 cấp, +10%/cấp |
-| **Trang Bị** | ×8 | Linh Khí | 6 ô × 10 cấp, +4%/cấp |
-| **Linh Căn** | ×20 | Linh Khí | 20 bậc tu vi, ×1.17/bậc |
-| **Pháp Khí** | ×2.5 | **Tinh Thạch** | 5 món, mỗi món ×1.2 |
+| **Linh Căn** | ×19.7 | **Linh Khí** | 20 bậc tu vi, ×1.17/bậc | `focus` |
+| **Kỹ Năng** | ×2.4 | **Ngộ Tính** | 7 kỹ năng × 10 cấp, +10%/cấp | `list` |
+| **Trang Bị** | ×8.3 | **Linh Khí** | 6 ô × 10 cấp, +4%/cấp | `list` |
+| **Pháp Khí** | ×2.5 | **Tinh Thạch** | 5 món, mua một lần | `list` |
+
+Ba đồng tiền, ba loại quái —
+[ADR 0015](../05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md). Linh Căn và Trang
+Bị cố ý dùng chung ví; đó là lựa chọn chính mỗi wave.
+
+## Hai kiểu thân bảng
+
+Bốn hệ không cùng hình dạng, nên bảng có hai kiểu thân chứ không một —
+[ADR 0016](../05-quyet-dinh/0016-bang-phim-e-hai-kieu-than.md).
+
+**`kind = "focus"`** — một thẻ lớn, **một** hành động. Dùng cho Linh Căn, vì
+trong 20 bậc chỉ có đúng bậc kế tiếp là mua được.
+
+```lua
+info(pid) -> { tieuDe, phu, dong = {{nhan, truoc, sau}, ...},
+               tienDo, ghiChu, nut, batNut }
+action(pid)
+```
+
+**`kind = "list"`** — danh sách mục: icon, tên, mô tả, trạng thái, một nút rộng.
+Dùng cho ba thẻ còn lại.
+
+```lua
+soMuc                         -- bang này cần mấy dòng
+items(pid) -> { { icon, ten, mota, trangThai, nut, batNut }, ... }
+itemAction(pid, i)
+```
+
+Thêm một hệ mới = trả về một danh sách mục. Không phải dựng thêm bảng, không phải
+đo bề ngang cột.
 
 ## Nhưng đừng làm cả bốn cùng lúc
 
@@ -140,23 +185,43 @@ lệch máy và đá người chơi ra khỏi trận.
 
 ## Hình học: hai số ràng buộc nhau
 
-**`ROW_H` phải lớn hơn `BTN_H`.** Trước đây `ROW_H = 0,021` còn nút cao `0,024`,
-nên nút của hai dòng kề nhau **chồng lên nhau 0,003** — bấm dòng này ăn vào dòng
-kia. Đó chính là lỗi "click bị trượt". Giờ `ROW_H = 0,030`, nút `0,024`.
+**`PANEL_ROW` phải lớn hơn `PANEL_BTN_H`.** Trước đây dòng cao `0,021` còn nút
+`0,024`, nên nút của hai dòng kề nhau **chồng lên nhau 0,003** — bấm dòng này ăn
+vào dòng kia. Đó chính là lỗi "click bị trượt". Giờ `0,048` và `0,026`.
 
-**Chiều cao bảng suy ra từ số dòng**, không gõ tay:
+**Chiều cao bảng suy ra từ số mục của thẻ dài nhất**, không gõ tay:
 
 ```lua
-local function panelH() return TOP + ROWS * ROW_H + FOOT end
+-- tinh luc startPanel(), tu truong soMuc cua tung the
+MAX_ITEMS = max(tab.soMuc)
+panelH()  = PAD + TAB_H + GAP + HEAD_H + GAP + MAX_ITEMS*ROW + GAP + FOOT + PAD
 ```
 
-Trước đây `ROWS` tăng từ 8 lên 10 mà `CFG.PANEL_H` đứng yên, hai dòng cuối tràn
-ra ngoài khung. Suy ra thì không thể lệch nữa.
+Thêm một hệ 9 mục thì bảng tự rộng ra. Trước đây `ROWS` tăng từ 8 lên 10 mà
+`CFG.PANEL_H` đứng yên, hai dòng cuối tràn ra ngoài khung.
 
-## Mỗi dòng: icon, chữ, nút riêng
+## Kích thước: bảng không nhỏ, nội dung mới nhỏ
+
+Đo ở 1080p, bản trước:
+
+| | Cũ | Mới |
+|---|---|---|
+| Khung | 828 × 709 px | 1008 × 907 px |
+| Một dòng | 43 px | 86 px |
+| Icon | **32 px** | 65 px |
+| Nút | **50 × 36 px** | 189 × 47 px |
+| Cỡ chữ | một cỡ cho mọi dòng | ba cấp |
+| Nền | `TeamColor27` — ô màu **đặc 1×1 px** | template FDF có viền |
+
+Khung cũ chiếm 66% chiều cao màn hình mà chứa icon 32 px và nút 50 px. Vấn đề
+không phải "bảng bé" — là **mật độ sai**.
+
+## Mỗi mục: icon, hai dòng chữ, một nút rộng
 
 | | |
 |---|---|
 | Icon | Lấy thẳng từ ability bằng `BlzGetAbilityIcon`, **không gõ đường dẫn** — gõ sai một chữ là hiện ô xanh lá mà không biết sai ở đâu |
-| Nút `[+]` | Của riêng từng dòng (`rowLabel`/`rowAction`). Một nút chung ở chân bảng không đủ cho bảy kỹ năng |
-| Vạch kẻ | Kẻ xen kẽ, và **chỉ kẻ dòng có chữ** — kẻ cả dòng trống thì bảng trông như bảng tính rỗng. Tắt bằng `CFG.PANEL_GRID` |
+| Nút | Rộng `PANEL_BTN_W`, chứa **chữ *và* giá** (`NANG   178`). Một dấu `+` không nói được nó tốn bao nhiêu |
+| Nút thiếu tiền | **Mờ đi, không ẩn.** Ẩn là giấu mất giá, mà giá chính là thứ cần để biết phải để dành bao nhiêu |
+| Vạch kẻ | Kẻ xen kẽ, và **chỉ kẻ dòng có nội dung**. Tắt bằng `CFG.PANEL_GRID` |
+| Chữ | Mọi frame chữ **đặt kích thước và canh lề**. Không đặt thì Warcraft căn giữa quanh điểm neo và chữ dài tràn sang cột bên |

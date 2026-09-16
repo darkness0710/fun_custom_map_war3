@@ -7,6 +7,42 @@
 Mọi con số trong tài liệu này **đọc ra từ file thật**, không chép từ đâu. Chỗ nào
 chưa đo được thì ghi rõ là chưa đo.
 
+## Hai bộ ghi
+
+**[w3obj.py](../../w3obj.py) — tầng định dạng, không biết gì về game:**
+
+```
+python w3obj.py levels test2.w3x/war3map.w3a 10   # alev = 10 cho MOI ability
+python w3obj.py set    test2.w3x/war3map.w3a A001 alev 10
+```
+
+**[w3skill.py](../../w3skill.py) — tầng dự án, sinh vỏ kỹ năng từ `CFG.SKILLS`:**
+
+```
+python w3skill.py show          # xem truoc, khong ghi
+python w3skill.py gen           # ten + vi tri o + tooltip 10 bac
+python w3skill.py gen --lang vi
+```
+
+Nó ghi **hai** file: `war3map.wts` (chuỗi) và `war3map.w3a` (tham chiếu
+`TRIGSTR_`). Chuỗi sinh ra chiếm id từ **1000** trở lên nên không đụng chuỗi của
+World Editor bên dưới; chạy lại bao nhiêu lần cũng ra một kết quả.
+
+> **Chữ không nằm trong `.w3a`.** World Editor ghi chuỗi vào `war3map.wts` rồi để
+> lại `TRIGSTR_nnn` trong object data. Đo được từ `A006` — object duy nhất từng có
+> vỏ đầy đủ. `w3skill.py` làm y hệt thay vì nhét chữ thẳng vào.
+
+Thêm `--dry` để chỉ in ra. Bản cũ chép vào `build/war3map.w3a.goc`.
+
+**Cách tự kiểm đã dùng:** đặt lại `alev = 10` cho `A004` — giá trị nó *đã có* —
+rồi so file với bản World Editor ghi ra. **Khớp từng byte.** Chỉ sau đó mới cho
+nó sửa sáu ability còn lại.
+
+> **Chỉ ghi được trường đã đo kiểu.** `FIELD_TYPE` trong
+> [w3obj.py](../../w3obj.py) liệt kê 18 trường; trường không có trong đó thì
+> **từ chối ghi** chứ không đoán kiểu. Đoán sai kiểu một trường bốn ký tự là file
+> hỏng âm thầm — World Editor có thể nuốt mất object mà không báo gì.
+
 ## Tại sao không gõ tay
 
 21 skill × 10 level. Riêng tooltip đã là 210 đoạn chữ, và **mỗi lần chỉnh cân
@@ -124,10 +160,19 @@ duy nhất trong nhóm Text cần viết riêng cho từng level.
 |---|---|---|
 | `AHav` | Avatar | `Hav1` `Hav2` `Hav3` `Hav4` |
 | `Aamk` | Attribute Bonus | `Istr` `Iagi` `Iint` |
-| `AOsh` | Shockwave | chưa đo — cần `Levels = 10` |
+| `AOsh` | Shockwave | chưa đo — **và không cần nữa**, xem dưới |
 | `AHhb` | Holy Light | chưa đo |
 | `AHad` | Devotion Aura | chưa đo |
 | `ACce` | Cleaving Attack (**lấy từ unit**, không phải hero) | chưa đo |
+
+> **Bốn dòng "chưa đo" ở trên không còn chặn việc gì.**
+> [7_hieuung.lua](../../src/2_nguoi_choi/7_hieuung.lua) không sửa trường sát
+> thương của ability — nó bắt `EVENT_PLAYER_UNIT_SPELL_EFFECT` rồi **tự gọi**
+> `UnitDamageTarget`. Sát thương gốc của Warcraft vẫn còn, nhưng ở bậc 10 với
+> Linh Căn bậc 20 thì nó là sai số làm tròn.
+>
+> Đo được mã trường vẫn có ích (đổi tooltip trong game, đỡ một sự kiện), nhưng
+> nó không còn là đường duy nhất.
 
 Mã Data **mỗi ability gốc một khác**, và đoán sai thì World Editor nuốt lặng,
 không báo gì. Chỉ có một cách biết: đọc từ file do nó ghi ra.

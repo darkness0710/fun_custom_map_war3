@@ -18,7 +18,11 @@ local function initPlayers()
       S.p[pid] = { active = true, hero = nil, heroCount = 0,
                    purseGold = 0, purseWood = 0, slots = {},
                    linhKhiTotal = 0, lkFrac = 0.0,
-                   linhCan = 1, fctGold = 0 }
+                   linhCan = 1, fctGold = 0,
+                   ngoTinh = 0,   -- dong tien thu ba, xem CFG.NGOTINH_*
+                   tb = {},       -- [so thu tu o trang bi] = cap
+                   tbUps = 0,     -- tong so lan da nang, de tra gia
+                   pk = {} }      -- [ma phap khi] = true
       S.pids[#S.pids + 1] = pid
     end
   end
@@ -240,6 +244,34 @@ local function spendLinhKhi(pid, amount)
   return true
 end
 
+-- ---------- Ngo Tinh ----------
+--
+-- Dong tien thu BA, va la dong duy nhat KHONG nam tren thanh tai nguyen
+-- cua Warcraft -- vang va go da dung het cho Linh Khi va Tinh Thach.
+-- No hien trong bang phim E.
+--
+-- La DIEM chu khong phai tien: khong duong cong mu, khong bam theo thu
+-- nhap. Ca van kiem duoc 300, tieu het 283 neu mo va nang tron bay ky
+-- nang. Xem docs/02-he-thong/kinh-te.md
+local function addNgoTinh(pid, amount)
+  if amount == nil or amount == 0 then return end
+  local d = S.p[pid]
+  if d == nil then return end
+  d.ngoTinh = (d.ngoTinh or 0) + amount
+  if d.ngoTinh < 0 then d.ngoTinh = 0 end
+end
+
+local function getNgoTinh(pid)
+  local d = S.p[pid]
+  return (d ~= nil) and (d.ngoTinh or 0) or 0
+end
+
+local function spendNgoTinh(pid, amount)
+  if getNgoTinh(pid) < amount then return false end
+  addNgoTinh(pid, -amount)
+  return true
+end
+
 local function addTinhThach(pid, amount)
   if amount == nil or amount == 0 then return end
   local p = Player(pid)
@@ -265,6 +297,9 @@ local function activeCount()
   return n
 end
 
+API.addNgoTinh       = addNgoTinh
+API.getNgoTinh       = getNgoTinh
+API.spendNgoTinh     = spendNgoTinh
 API.addLinhKhi       = addLinhKhi
 API.getLinhKhi       = getLinhKhi
 API.spendLinhKhi     = spendLinhKhi

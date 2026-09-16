@@ -202,25 +202,39 @@ cõi mới.
 `WAVE_TIME` theo cõi. Một cảnh giới tốn `10 × T` (wave thường) `+ 2 × T`
 (stage boss, `WAVE_BOSS_TIME_MULT` = 2) = `12 × T`.
 
-| Cõi | Cảnh giới | `WAVE_TIME` | Tốn |
-|---|---|---|---|
-| Phàm | 1–4 | 20 s | 16 phút |
-| Yêu | 5–10 | 28 s | 34 phút |
-| Tiên | 11–16 | 36 s | 43 phút |
-| Thần | 17–20 | 45 s | 36 phút |
-| | | | **129 phút** |
+> `WAVE_BOSS_TIME_MULT` **chưa tồn tại trong `CFG`**: hiện stage boss dùng đúng
+> `WAVE_TIME` như wave thường. Ngân sách dưới đây tính theo thiết kế, nên nó
+> **hơi dài hơn** thời lượng thật đang chạy.
 
-> **129 phút là vấn đề lớn nhất của thiết kế này, không phải đường cong.**
+| Cõi | Cảnh giới | `WAVE_TIME` | 50 đợt thường |
+|---|---|---|---|
+| Phàm | 1–5 | 32 s *(trước: 20)* | 27 phút |
+| Yêu | 6–10 | 28 s | 23 phút |
+| Tiên | 11–15 | 40 s *(trước: 36)* | 33 phút |
+| Thần | 16–20 | 45 s | 38 phút |
+| | | 20 boss (~40 s, **không đồng hồ**) | 13 phút |
+| | | | **134 phút** |
+
+> **134 phút là vấn đề lớn nhất của thiết kế này, không phải đường cong.**
 >
-> Một ván Warcraft III custom thường 40–90 phút. 2 giờ 9 phút nghĩa là gần như
-> không ai chơi hết — họ bỏ ở khoảng cảnh giới 12, và 8 cảnh giới đẹp nhất chưa
-> ai thấy bao giờ.
+> Một ván Warcraft III custom thường 40–90 phút. Hơn 2 giờ nghĩa là gần như không
+> ai chơi hết — họ bỏ ở khoảng cảnh giới 12, và 8 cảnh giới đẹp nhất chưa ai thấy
+> bao giờ.
+>
+> **Và con số này vừa tăng 16 phút** (từ 118) khi sửa `WAVE_TIME` cõi 1 và 3.
+> Bắt buộc phải sửa — không sửa thì cơ chế gọi sớm không dùng được, xem
+> [ADR 0018](../05-quyet-dinh/0018-nghi-giua-hai-canh-gioi.md).
 
 Bốn cách xử lý, không loại trừ nhau:
 
-**1. Gọi sớm (`WAVE_CALL_EARLY`).** Người chơi giỏi dọn wave trong nửa thời gian
-rồi bấm gọi tiếp. Cắt được ~25 % → **97 phút**. Rẻ nhất, giữ nguyên 220 stage, và
-thưởng cho người chơi giỏi. Nên làm dù chọn thêm cách nào.
+**1. Gọi sớm (`WAVE_AUTO_NEXT` + lệnh `-next`, đã cài).** Dọn sạch là vào đợt sau
+ngay, không chờ hết đồng hồ. Giữ nguyên 220 stage và thưởng cho người chơi giỏi.
+Nên làm dù chọn thêm cách nào.
+
+> Cơ chế này **từng nằm đó mà không dùng được**: `WAVE_TIME` cõi 1 là 20s trong
+> khi quái đi bộ đã hết 19.9s, nên map không bao giờ sạch và `S.alive` không bao
+> giờ về 0. Sửa `WAVE_TIME` mới là thứ bật nó lên — và cũng chính là thứ làm ván
+> dài thêm. Phần cắt và phần thêm không bù nhau.
 
 **2. Giảm còn 5 tầng mỗi cảnh giới.** 20 × 6 = 120 stage → **70 phút**. Giữ đủ 20
 cảnh giới và 20 boss, mất một nửa số tầng. Nếu buộc phải cắt, cắt ở đây — vì 10
@@ -284,13 +298,35 @@ kinh tế trước.
 | `SCALE_RECOUNT_EACH_WAVE` | Tính lại `P` mỗi wave | `true` — người thoát giữa chừng không khoá cứng ván của người ở lại |
 | `WAVE_TIME` | Giây mỗi wave, theo cõi | Xem ngân sách thời lượng. Đây là nút chỉnh **thời lượng ván**, và nó cũng chỉnh DPS cần — hai thứ dính nhau |
 
+## Hợp đồng đã thực hiện tới đâu
+
+**Ngân sách đã chuyển từ ba nguồn sang bốn** —
+[ADR 0015](../05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md). Bảng ×40/×12/×2 ở
+trên là **bản cũ**; bản đang chạy là:
+
+| Nguồn | Nhân | Mua bằng | Trạng thái |
+|---|---|---|---|
+| Linh Căn | ×19.7 | Linh Khí | **Đã cài** — [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua), `LINHCAN_STEP = 1.17` |
+| Trang Bị | ×8.3 | Linh Khí | **Đã cài** — [5_trangbi.lua](../../src/2_nguoi_choi/5_trangbi.lua), 6 ô × 10 cấp |
+| Kỹ Năng | ×2.4 | **Ngộ Tính** | **Đã cài** — [4_skill.lua](../../src/2_nguoi_choi/4_skill.lua), nhưng số liệu chưa có hiệu lực (`SKILL_DATA_LIVE = false`) |
+| Pháp Khí | ×2.5 | **Tinh Thạch** | **Đã cài** — [6_phapkhi.lua](../../src/2_nguoi_choi/6_phapkhi.lua), 5 món |
+| | **×392 / ×967** | | ⚠ thiếu ×2.5 vì Pháp Khí rỗng |
+
+**Hai bản không trộn được.** Linh Căn ×40.5 của bản cũ nhân với Trang Bị ×8 của
+bản mới cho ×1 942 — gấp đôi hợp đồng.
+
 ## Chưa làm
 
 - **Chưa chơi thử một giây nào.** Mọi con số ở đây là suy luận. Ba chỗ dễ sai
-  nhất: DPS thật của hero cấp 1 ở stage 1 (đoán 60), thời gian quái đi bộ tới nhà
-  (chưa có đường đi), và `MOB_EHP_BASE`.
-- Hệ tu vi. Chưa có gì — xem hợp đồng ở trên.
-- Kinh tế. Chưa có gì.
+  nhất: DPS thật của hero cấp 1 ở stage 1 (đoán 60), thời gian quái đi bộ tới nhà,
+  và `MOB_EHP_BASE`.
+- **Số liệu kỹ năng chưa có hiệu lực.** `CFG.SKILL_DATA_LIVE = false` — hệ bậc
+  và giá chạy đúng, nhưng sát thương thật vẫn là số gốc của Warcraft, nên ×2.4
+  kia chưa thu được đồng nào.
+- **Pháp Khí trả ×2.5 bằng đường vòng.** Năm món không món nào cộng thẳng sát
+  thương; chúng cộng vào kinh tế và sức chịu của nhà chính. Chưa đo được đường
+  vòng đó có bằng ×2.5 thật không.
 - `curve.py` để sinh lại bảng tra. Hiện bảng này chép tay từ một lần chạy.
-- Đường cong phần thưởng. Thu nhập phải bám ×967 chứ không bám ×2 176 — nếu bám
-  ×2 176 thì người chơi giàu dần tương đối và nửa sau game quá dễ.
+
+Đường cong phần thưởng thì **đã cài** và bám ×967, không bám ×2 176:
+`LINHKHI_GROWTH = 1.0319 = 967^(1/219)` — xem [kinh-te.md](../02-he-thong/kinh-te.md).

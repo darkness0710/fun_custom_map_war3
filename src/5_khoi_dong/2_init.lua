@@ -117,14 +117,15 @@ local function bootstrap()
 
   -- Cac he dang ky the TRUOC, roi bang moi dung -- bang can biet co
   -- bao nhieu the de chia be ngang.
-  API.startLinhCan()
-  API.startSkills()
-  API.panelAddTab(API.panelPlaceholder(API.t("panel_gear"),
-    "Can mon do trong Object Editor truoc."))
-  API.panelAddTab(API.panelPlaceholder(API.t("panel_treasure"),
-    "Mua bang Tinh Thach tu boss. Chua co mon nao."))
+  -- Thu tu dang ky = thu tu the trong bang. Bon he, bon dong tien nguon
+  -- khac nhau -- xem docs/02-he-thong/kinh-te.md
+  API.startLinhCan()   -- I.   Linh Khi
+  API.startSkills()    -- II.  Ngo Tinh
+  API.startTrangBi()   -- III. Linh Khi (tranh vi voi Linh Can, co y)
+  API.startPhapKhi()   -- IV.  Tinh Thach
   API.startPanel()
 
+  API.startSkillFx()
   API.startFct()
   API.startWaves()
   API.startHeroFrame()

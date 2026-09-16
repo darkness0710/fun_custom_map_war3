@@ -1,10 +1,24 @@
 -- ============================================================
---  2_heroframe.lua  --  Chon hero bang the (card)
+--  2_heroframe.lua  --  Bang chon hero, mot cot doc
 --
---  Dung khi CFG.HERO_PICK_MODE = "frame". Ve mot hang the, moi the mot
---  hero: icon lon, ten, vai.
+--  Dung khi CFG.HERO_PICK_MODE = "frame". Moi hero MOT DONG rong bang
+--  ca bang: icon ben trai, ten + vai o tren, ba gach mo ta o duoi.
 --
---  Cung hai rang buoc nhu 07b_skillframe, va vi cung mot ly do:
+--  VI SAO DOC CHU KHONG PHAI BA THE NGANG.
+--
+--  Frame chu cua Warcraft KHONG tu xuong dong, va text frame khong dat
+--  kich thuoc thi bi can giua quanh diem neo. The ngang rong 0.17 nghia
+--  la moi dong mo ta dai hon chung ay tran ra hai ben va de len chu cua
+--  the ben canh -- chu cang dai vung de cang rong, nen loi luc co luc
+--  khong. No con ep 'mota' phai ngan 3-4 tu, mot rang buoc sinh ra tu
+--  han che ky thuat chu khong tu thiet ke.
+--
+--  Dong rong bang ca bang thi chu luon co cho. Ba cho khac cung sua
+--  theo: nen dung template co vien that thay cho o mau phang, chu co
+--  ba co de co phan cap, va nhip doc SUY RA tu co icon/co chu chu khong
+--  go tay.
+--
+--  Cung hai rang buoc nhu 3_skillframe, va vi cung mot ly do:
 --
 --  1. Su kien bam frame CHI no tren may nguoi bam. Nen bam khong doi
 --     trang thai -- no gui mot mau tin qua API.syncSend (3_sync.lua),
@@ -45,6 +59,8 @@ local function framesAvailable()
     { "FRAMEEVENT_CONTROL_CLICK",     FRAMEEVENT_CONTROL_CLICK },
     { "FRAMEPOINT_CENTER",            FRAMEPOINT_CENTER },
     { "FRAMEPOINT_TOP",               FRAMEPOINT_TOP },
+    { "FRAMEPOINT_LEFT",              FRAMEPOINT_LEFT },
+    { "FRAMEPOINT_TOPLEFT",           FRAMEPOINT_TOPLEFT },
   })
   FRAME_OK = (#missing == 0)
   if not FRAME_OK then
@@ -77,57 +93,101 @@ local function hideFrame(pid)
   end
 end
 
--- Mot the: nut bam lam nen, ben trong co icon, ten, vai.
-local function buildCard(pid, parent, hero, x)
-  local card = BlzCreateFrameByType("GLUEBUTTON", "HeroCard", parent,
-                                    CFG.FRAME_BUTTON_TEMPLATE, pid)
-  if card == nil then return nil end
+-- ---------- Hinh hoc ----------
 
-  BlzFrameSetSize(card, CFG.CARD_W, CFG.CARD_H)
-  BlzFrameSetPoint(card, FRAMEPOINT_CENTER, parent, FRAMEPOINT_CENTER, x, 0.0)
+-- Cao mot dong: SUY RA tu co icon va hai dong chu, khong go tay.
+--
+-- Truoc day chieu cao la mot hang so trong CFG con vi tri tung dong chu
+-- la ba con so roi rac (y, y+0.018, y+0.040). Doi co chu mot cai la ca
+-- ba lech het, va do dung la loi bang phim E da dinh mot lan.
+local function rowH()
+  local text = 2 * CFG.CARD_LINE + 0.006
+  local h = (text > CFG.CARD_ICON) and text or CFG.CARD_ICON
+  return h + 2 * CFG.CARD_PAD
+end
+
+local function headH()
+  return CFG.CARD_PAD + CFG.CARD_LINE * CFG.CARD_SCALE_TITLE + 0.008
+end
+
+-- ---------- Mot dong chu ----------
+
+-- Neo TRAI vao mot o co be ngang THAT.
+--
+-- Phai dat be ngang: text frame khong co kich thuoc thi Warcraft can
+-- giua no quanh diem neo, va chu dai thi tran deu ca hai ben. Co o roi
+-- thi BlzFrameSetTextAlignment moi ep duoc ve mep trai.
+local function textLine(pid, parent, name, x, y, w, scale, text)
+  local f = BlzCreateFrameByType("TEXT", name, parent, "", pid)
+  if f == nil then return nil end
+
+  BlzFrameSetPoint(f, FRAMEPOINT_TOPLEFT, parent, FRAMEPOINT_TOPLEFT, x, -y)
+  BlzFrameSetSize(f, w, CFG.CARD_LINE)
+  if BlzFrameSetTextAlignment ~= nil
+     and TEXT_JUSTIFY_TOP ~= nil and TEXT_JUSTIFY_LEFT ~= nil then
+    BlzFrameSetTextAlignment(f, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
+  end
+  API.frameScale(f, scale)
+  BlzFrameSetText(f, text)
+  API.frameDead(f)
+  return f
+end
+
+-- ---------- Mot dong hero ----------
+--
+--   [icon]  Ten      Vai - Vai tro
+--           manh 1  |  manh 2  |  DIEM YEU
+local function buildRow(pid, parent, hero, dy)
+  local row = BlzCreateFrameByType("GLUEBUTTON", "HeroRow", parent,
+                                   CFG.CARD_BUTTON_TEMPLATE, pid)
+  if row == nil then return nil end
+
+  local P = CFG.CARD_PAD
+  BlzFrameSetSize(row, CFG.CARD_W, rowH())
+  BlzFrameSetPoint(row, FRAMEPOINT_TOP, parent, FRAMEPOINT_TOP, 0.0, -dy)
 
   if hero.icon ~= nil then
-    local ic = BlzCreateFrameByType("BACKDROP", "HeroCardIcon", card, "", pid)
+    local ic = BlzCreateFrameByType("BACKDROP", "HeroRowIcon", row, "", pid)
     if ic ~= nil then
       BlzFrameSetSize(ic, CFG.CARD_ICON, CFG.CARD_ICON)
-      BlzFrameSetPoint(ic, FRAMEPOINT_TOP, card, FRAMEPOINT_TOP,
-                       0.0, -CFG.CARD_TOP)
+      BlzFrameSetPoint(ic, FRAMEPOINT_LEFT, row, FRAMEPOINT_LEFT, P, 0.0)
       BlzFrameSetTexture(ic, hero.icon, 0, true)
       API.frameDead(ic)
     end
   end
 
-  if BlzFrameSetText ~= nil then
-    -- Moc theo mot goc CO DINH tinh tu dinh the, khong theo ti le cua
-    -- CARD_H: doi chieu cao the mot cai la moi dong troi di mot kieu.
-    local y = CFG.CARD_TOP + CFG.CARD_ICON + 0.008
+  if BlzFrameSetText == nil then return row end
 
-    local function dong(ten, chu, dy, mau)
-      local f = BlzCreateFrameByType("TEXT", ten, card, "", pid)
-      if f == nil then return end
-      BlzFrameSetPoint(f, FRAMEPOINT_TOP, card, FRAMEPOINT_TOP, 0.0, -dy)
-      BlzFrameSetText(f, mau .. chu .. CFG.C_END)
-      API.frameDead(f)
-    end
+  local x = P + CFG.CARD_ICON + P
+  local w = CFG.CARD_W - x - P
 
-    dong("HeroCardName", hero.name, y, CFG.C_GOLD)
-    if hero.role ~= nil then
-      dong("HeroCardRole", hero.role, y + 0.018, CFG.C_GREY)
-    end
+  -- Ten va vai nam tren CUNG mot frame. Gop chuoi thi khoi phai do be
+  -- ngang cua ten de biet dat vai o dau -- ma do be ngang chu thi
+  -- Warcraft khong co native nao lam duoc.
+  local head = CFG.C_GOLD .. hero.name .. CFG.C_END
+  if hero.role ~= nil then
+    head = head .. "   " .. CFG.C_GREY .. hero.role .. CFG.C_END
+  end
+  textLine(pid, row, "HeroRowName", x, P, w, CFG.CARD_SCALE_NAME, head)
 
-    -- Ba gach dau dong. Gach cuoi mau do vi no luon la diem yeu.
-    local list = (API.lang() == "en" and hero.mota_en) or hero.mota
-    if list ~= nil then
-      for i = 1, #list do
-        local mau = (i == #list) and CFG.C_RED or CFG.C_JADE
-        dong("HeroCardDesc" .. i, "- " .. list[i],
-             y + 0.040 + (i - 1) * CFG.CARD_LINE, mau)
-      end
+  -- Ba gach noi thanh MOT dong. Gach cuoi luon la diem yeu nen to do --
+  -- do la thu duy nhat lam nguoi choi phai nghi xem nen chon con nao.
+  local list = (API.lang() == "en" and hero.mota_en) or hero.mota
+  if list ~= nil and #list > 0 then
+    local parts = {}
+    for i = 1, #list do
+      local mau = (i == #list) and CFG.C_RED or CFG.C_JADE
+      parts[i] = mau .. list[i] .. CFG.C_END
     end
+    textLine(pid, row, "HeroRowDesc", x, P + CFG.CARD_LINE + 0.006, w,
+             CFG.CARD_SCALE_DESC,
+             table.concat(parts, CFG.C_GREY .. "  |  " .. CFG.C_END))
   end
 
-  return card
+  return row
 end
+
+-- ---------- Ca bang ----------
 
 -- Chay tren MOI may. Bang dung giong het nhau khap noi; chi khac o chuyen
 -- hien cho ai -- do la UI, khong phai trang thai game, nen dung
@@ -139,44 +199,47 @@ local function buildPanel(pid, list)
   local parent = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
   if parent == nil then return false end
 
-  local n = #list
-  local totalW = n * CFG.CARD_W + (n - 1) * CFG.CARD_GAP
+  local n  = #list
+  local P  = CFG.CARD_PAD
+  local H  = rowH()
+  local hd = headH()
 
-  st.panel = BlzCreateFrameByType("BACKDROP", "HeroPanel", parent, "", pid)
+  local bg, how = API.backdrop(CFG.CARD_BACKDROP, parent, pid, CFG.FRAME_BG)
+  st.panel = bg
   if st.panel == nil then return false end
+
   BlzFrameSetAbsPoint(st.panel, FRAMEPOINT_CENTER, CFG.CARD_X, CFG.CARD_Y)
-  BlzFrameSetSize(st.panel, totalW + 0.03, CFG.CARD_H + 0.05)
-  BlzFrameSetTexture(st.panel, CFG.FRAME_BG, 0, true)
+  BlzFrameSetSize(st.panel, CFG.CARD_W + 2 * P,
+                  hd + n * H + (n - 1) * CFG.CARD_GAP + P)
 
   if BlzFrameSetText ~= nil then
     local title = BlzCreateFrameByType("TEXT", "HeroPanelTitle", st.panel, "", pid)
     if title ~= nil then
-      BlzFrameSetPoint(title, FRAMEPOINT_TOP, st.panel, FRAMEPOINT_TOP, 0.0, -0.008)
-      BlzFrameSetText(title, API.t("pick_title"))
+      BlzFrameSetPoint(title, FRAMEPOINT_TOP, st.panel, FRAMEPOINT_TOP, 0.0, -P)
+      API.frameScale(title, CFG.CARD_SCALE_TITLE)
+      BlzFrameSetText(title, CFG.C_GOLD .. API.t("pick_title") .. CFG.C_END)
       API.frameDead(title)
     end
   end
 
   st.map = {}
   local made = 0
-  local step = CFG.CARD_W + CFG.CARD_GAP
-  local firstX = -(totalW - CFG.CARD_W) * 0.5
-
   for i = 1, n do
-    local card = buildCard(pid, st.panel, list[i], firstX + (i - 1) * step)
-    if card ~= nil then
-      BlzTriggerRegisterFrameEvent(S.hframe.trig, card, FRAMEEVENT_CONTROL_CLICK)
+    local row = buildRow(pid, st.panel, list[i], hd + (i - 1) * (H + CFG.CARD_GAP))
+    if row ~= nil then
+      BlzTriggerRegisterFrameEvent(S.hframe.trig, row, FRAMEEVENT_CONTROL_CLICK)
       -- Ghi SO THU TU trong CFG.HEROES, khong phai id: kenh dong bo chi
       -- tai duoc so nho. Xem src/1_nen/3_sync.lua.
-      st.map[card] = { pid = pid, idx = API.heroIndex(list[i].id) }
+      st.map[row] = { pid = pid, idx = API.heroIndex(list[i].id) }
       made = made + 1
     end
   end
 
-  API.trace("herocard: pid " .. pid .. " -- tao " .. made .. "/" .. n .. " the")
+  API.trace("herocard: pid " .. pid .. " -- tao " .. made .. "/" .. n ..
+            " dong, nen = " .. tostring(how))
   if made == 0 then
-    API.msg(nil, CFG.C_RED .. "herocard: khong tao duoc the nao -- thu doi " ..
-      "CFG.FRAME_BUTTON_TEMPLATE." .. CFG.C_END)
+    API.msg(nil, CFG.C_RED .. "herocard: khong tao duoc dong nao -- thu doi " ..
+      "CFG.CARD_BUTTON_TEMPLATE." .. CFG.C_END)
     destroyPanel(pid)
     return false
   end
@@ -190,7 +253,7 @@ end
 
 local function showFrame(pid)
   if not framesAvailable() then
-    API.msg(pid, CFG.C_GOLD .. "The chon hero khong ve duoc -- lui ve popup chu."
+    API.msg(pid, CFG.C_GOLD .. "Bang chon hero khong ve duoc -- lui ve popup chu."
       .. CFG.C_END)
     return API.showPicker(pid)
   end
@@ -241,7 +304,7 @@ local function startHeroFrame()
   S.hframe = { trig = nil, syncTrig = nil, byPid = {} }
   if CFG.HERO_PICK_MODE ~= "frame" then return end
   if not framesAvailable() then
-    API.msg(nil, CFG.C_RED .. "Khong ve duoc the chon hero tren ban nay -- " ..
+    API.msg(nil, CFG.C_RED .. "Khong ve duoc bang chon hero tren ban nay -- " ..
       "se dung popup chu." .. CFG.C_END)
     return
   end

@@ -65,6 +65,9 @@ CFG.OP_HERO   = 2   -- arg = so thu tu trong CFG.HEROES
 CFG.OP_SKILL  = 3   -- arg = slot * 100 + so thu tu trong choices
 CFG.OP_LC_UP  = 4   -- arg = 0
 CFG.OP_LC_SET = 5   -- arg = bac Linh Can muon nhay toi (dev)
+-- OP_SKILL_UP = 6, khai bao canh bang CFG.SKILLS ben duoi.
+CFG.OP_TB_UP  = 7   -- arg = so thu tu o trang bi trong CFG.TRANGBI
+CFG.OP_PK_BUY = 8   -- arg = so thu tu phap khi trong CFG.PHAPKHI
 
 -- ---------- Mau chu ----------
 CFG.C_GOLD = "|cffffcc00"
@@ -338,15 +341,62 @@ CFG.HERO_PICK_MODE = "frame"
 
 -- CFG.PICK_TITLE da chuyen sang 6_lang.lua, khoa "pick_title".
 
--- Kich thuoc the chon hero. Toa do man hinh: X 0.0..0.8, Y 0.0..0.6.
-CFG.CARD_W    = 0.170   -- be ngang mot the; du cho ba gach dau dong
-CFG.CARD_H    = 0.200
-CFG.CARD_GAP  = 0.014   -- khoang cach giua hai the
-CFG.CARD_ICON = 0.064   -- canh o icon trong the
-CFG.CARD_TOP  = 0.014   -- tu dinh the toi icon
-CFG.CARD_LINE = 0.016   -- khoang cach hai gach dau dong
-CFG.CARD_X    = 0.40    -- tam ngang cua ca hang the
-CFG.CARD_Y    = 0.38    -- tam doc
+-- ---------- Bang chon hero ----------
+-- Toa do man hinh: X 0.0..0.8, Y 0.0..0.6.
+--
+-- BO CUC MOT COT DOC: moi hero mot dong, rong bang ca bang.
+--
+-- Truoc day la ba the ngang moi the rong 0.17. Bo vi frame chu cua
+-- Warcraft KHONG tu xuong dong, va text frame khong dat kich thuoc thi
+-- bi can giua quanh diem neo -- mot dong mo ta dai hon 0.17 la tran ra
+-- hai ben va de len chu cua the ben canh. Chu cang dai vung de cang
+-- rong, nen loi luc co luc khong.
+--
+-- No con ep 'mota' phai ngan 3-4 tu: mot rang buoc sinh ra tu han che
+-- ky thuat chu khong tu thiet ke. Dong rong bang ca bang thi chu luon
+-- co cho, va rang buoc do bien mat.
+CFG.CARD_W     = 0.360   -- be ngang vung noi dung = be ngang mot dong
+CFG.CARD_GAP   = 0.005   -- khoang cach hai dong
+CFG.CARD_ICON  = 0.040   -- canh o icon
+CFG.CARD_PAD   = 0.010   -- le trong
+CFG.CARD_LINE  = 0.014   -- khoang cach hai dong chu ben trong mot dong
+CFG.CARD_X     = 0.40    -- tam ngang cua bang
+CFG.CARD_Y     = 0.38    -- tam doc
+
+-- CFG.CARD_H va CFG.CARD_TOP da bo. Cao mot dong SUY RA tu co icon va
+-- so dong chu (xem rowH trong 2_heroframe.lua) -- de o day thi doi co
+-- chu mot cai la chu tro ra ngoai vien, dung loi ma bang phim E da dinh
+-- mot lan roi.
+
+-- Co chu. 1.0 la co mac dinh cua Warcraft.
+--
+-- Ba muc khac nhau de co PHAN CAP: khong co no thi ten hero, vai va mo
+-- ta cung mot co, nhin vao chi thay mot khoi chu deu deu.
+CFG.CARD_SCALE_TITLE = 1.25
+CFG.CARD_SCALE_NAME  = 1.10
+CFG.CARD_SCALE_DESC  = 0.90
+
+-- Template FDF lam nen bang, thu lan luot tu tren xuong.
+--
+-- Het thi lui ve CFG.FRAME_BG -- va day la ly do phai co danh sach nay:
+-- FRAME_BG la TeamColor27, mot bang mau DAC 1x1 pixel von dung de to
+-- mau phe. Keo no lam nen thi duoc dung mot hinh chu nhat xam phang,
+-- khong vien khong bo goc. Template co san cua game co vien that.
+--
+-- Da dung duong nao thi doc o file vet, dong "herocard: nen =".
+CFG.CARD_BACKDROP = { "EscMenuBackdrop", "QuestButtonBaseTemplate" }
+
+-- Template nut cho MOT DONG hero.
+--
+-- Dong la hinh rong-va-thap, dung ti le von co cua mot nut tab -- nen
+-- ScoreScreenTabButtonTemplate hop o day. Chinh no keo thanh the vuong
+-- 0.17 x 0.20 thi phan trang tri hai dau gian ra meo mo, va do la mot
+-- phan ly do bo cuc cu nhin xau.
+--
+-- Nut khong an hoac nhin sai thi thu:
+--   "ScriptDialogButton"  "IconButtonTemplate"
+--   "StandardLightButtonTemplate"  "DebugButton"
+CFG.CARD_BUTTON_TEMPLATE = "ScoreScreenTabButtonTemplate"
 
 -- Cho vai giay roi moi hien popup: hien ngay luc map vua nap thi no bi
 -- man hinh chuyen canh nuot mat.
@@ -396,7 +446,10 @@ CFG.REALMS = {
 -- Doi so nay la doi tong so stage. Moi cong thuc suy ra tu no, khong
 -- hard-code so 11 o dau ca.
 CFG.TIERS_PER_REALM = 10
-CFG.TIER_VIEN_MAN   = "vien man"   -- ten rieng cua tang cuoi
+
+-- CFG.TIER_VIEN_MAN da chuyen sang 6_lang.lua, khoa "tier_full". Ten
+-- tang cuoi la CHU HIEN THI chu khong phai tham so, ma chu hien thi
+-- phai co ca hai thu tieng. Cung ly do voi CFG.PICK_TITLE truoc day.
 
 -- ---------- Thanh phan wave ----------
 CFG.WAVE_MOB_COUNT   = 50    -- co dinh, khong doi theo so nguoi (ADR 0009)
@@ -404,7 +457,25 @@ CFG.WAVE_ELITE_COUNT = 1
 
 -- Giay moi wave, theo coi. Day la nut chinh THOI LUONG VAN, va no cung
 -- chinh DPS can -- hai thu dinh nhau.
-CFG.WAVE_TIME = { 20.0, 28.0, 36.0, 45.0 }
+-- RANG BUOC, khong phai so chinh tu do:
+--
+--   WAVE_TIME[coi]  >  quang duong/toc do  +  thoi gian giet het mot dot
+--
+-- Thieu ve phai thi nhanh "don sach -> vao dot sau" KHONG BAO GIO chay
+-- duoc: map khong bao gio sach, nen S.alive khong bao gio ve 0, nen ca
+-- WAVE_AUTO_NEXT lan lenh -next deu chet.
+--
+-- Do duoc (cua quai cach nha 5,361 don vi):
+--   coi 1  Footman     270  di 19.9s  -> can >= 30s, truoc day dat 20  SAI
+--   coi 2  Ghoul       350  di 15.3s  -> can >= 25s, dat 28            ok
+--   coi 3  Abomination 190  di 28.2s  -> can >= 38s, truoc day dat 36  SAI
+--   coi 4  Frost Wyrm  200  di 26.8s  -> can >= 37s, dat 45            ok
+--
+-- Vi sao coi 1 (32s) lai DAI HON coi 2 (28s) du de hon: WAVE_TIME khong
+-- phai thuan do kho -- no bi chan duoi boi TOC DO MAU LINH. Footman cua
+-- coi 1 cham hon Ghoul cua coi 2, nen no can nhieu giay hon du wave de
+-- hon. Doi CFG.MOB_UNIT la phai tinh lai bang nay.
+CFG.WAVE_TIME = { 32.0, 28.0, 40.0, 45.0 }
 CFG.WAVE_FIRST_DELAY = 15.0
 
 -- Don sach wave thi vao wave sau NGAY, khong ngoi cho het dong ho.
@@ -421,6 +492,26 @@ CFG.WAVE_WAIT_FIRST  = true
 
 CFG.WAVE_AUTO_NEXT   = true
 CFG.WAVE_CLEAR_DELAY = 1.5   -- giay, de kip doc chu truoc khi wave sau ra
+
+-- ---------- Nghi giua hai canh gioi ----------
+--
+-- Dong ho chay suot 10 tang, roi DUNG HAN o hai moc:
+--
+--   tang 1..10        dong ho chay        <- ap luc, dot chong duoc
+--   tang 10 don sach  DUNG dong ho        <- nghi
+--     -next           BOSS
+--   boss chet         DUNG dong ho        <- nghi, tieu Tinh Thach
+--     -next           canh gioi sau
+--
+-- Vi sao khong bo han dong ho cho ca 11 stage: WAVE_TIME dang la MO NEO
+-- cua hop dong DPS x967 -- "wave phai ha kip gio". Bo ap luc thoi gian
+-- trong canh gioi thi hop dong mat neo va phai neo lai vao mau nha.
+-- Giu dong ho trong 10 tang thi ap luc con nguyen, ma van co nhip.
+--
+-- Va no sua mot loi that: mo bang phim E khong dung game (frame khong
+-- dung game duoc), nen truoc day mua sam nghia la dung chiu don. Gio
+-- viec do co cho cua no.
+CFG.WAVE_REST = true
 
 -- Tran unit song. Qua nguong thi HOAN wave moi thay vi chong them.
 CFG.WAVE_MAX_ALIVE = 300
@@ -498,14 +589,29 @@ CFG.LINHKHI_MOB_SHARE = 0.60   -- 50 linh chia 60%, tinh anh 40%
 -- Khong co cong tac "chia theo nguoi ket lieu". Da do: cach do lam ba
 -- nguoi choi moi nguoi thieu 41% so tien can. Xem ADR 0013.
 
--- ---------- Gia nang cap ky nang ----------
--- Moi bac ky nang trai 2 canh gioi, nen buoc gia = buoc Linh Can binh
--- phuong (1.412^2). Nho vay "nang ca 7 skill mot bac" luon xap xi "mot
--- lan dot pha Linh Can" cung thoi diem -- ti le 0.99..1.01 suot 220 stage.
--- Do la mot lua chon doc duoc, khong phai hai duong cong khong lien quan.
-CFG.SKILL_COST_BASE = 89.0     -- bac 1 -> 2
-CFG.SKILL_COST_STEP = 1.99
-CFG.SKILL_MAX_LEVEL = 10
+-- ---------- Gia nang cap ky nang: tra bang NGO TINH ----------
+--
+-- Ky nang KHONG mua bang Linh Khi nua. Ly do o docs/02-he-thong/kinh-te.md:
+-- bon he ma ba he cung rut mot cai vi thi khong he nao co ban sac rieng,
+-- va nguoi choi chi phai tra loi dung mot cau hoi ("gom du tien chua").
+--
+-- Ngo Tinh la DIEM, khong phai tien: khong co duong cong mu, khong bam
+-- theo thu nhap. Nho vay bo duoc han mot duong cong phai can bang, va
+-- "nang ky nang" tro thanh cau hoi khac han "mua gi" -- no hoi "da giet
+-- du tinh anh chua".
+--
+-- MOT diem cho moi lan, ke ca lan mo khoa. Khong co bang, khong co
+-- duong cong.
+--
+-- Truoc day gia tang dan { 1,2,2,3,3,4,4,5,5 } va mo khoa tang theo so
+-- cai da mo. Bo het: voi gia phang thi nguoi choi khong phai tinh toan
+-- gi ca, chi phai chon THU TU -- mo cai nao truoc, don bac cai nao.
+--
+-- Tong chi de mo va max tron bay ky nang:
+--   7 x (1 mo khoa + 9 lan nang) = 70 diem, tren 300 diem ca van.
+CFG.SKILL_NGO_UNLOCK = 1    -- mo khoa mot ky nang
+CFG.SKILL_NGO_UP     = 1    -- nang mot bac
+CFG.SKILL_MAX_LEVEL  = 10
 
 -- ---------- Mo khoa ky nang ----------
 --
@@ -519,15 +625,19 @@ CFG.SKILL_MAX_LEVEL = 10
 --     chem lan, Dam Dat. Cho ca bay ngay tu dau la hero manh hon hop
 --     dong stage 1 rat nhieu, dau van thanh de khong.
 --
--- Gia suy tu duong cong thu nhap: mo duoc skill thu k vao khoang stage
--- MOC[k] = {3:15, 4:40, 5:75, 6:120, 7:170}, neu danh 22% thu nhap cong
--- don cho viec mo khoa. Xem docs/03-du-lieu/nang-cap-ky-nang.md
-CFG.SKILL_START_COUNT = 2
+-- Bao nhieu ky nang duoc PHAT SAN. Dat 0: khong cai nao mien phi.
+--
+-- Hero vao map voi command card TRONG (chi Move/Stop/Hold/Attack/Patrol).
+-- Con tinh anh dau tien chet cho 1 diem, du mo mot ky nang -- va do la
+-- quyet dinh dau tien cua van: mo cai nao truoc.
+--
+-- Doi lai: dot 1 danh bang don thuong. Voi WAVE_WAIT_FIRST bat thi
+-- nguoi choi co thoi gian nhin bang truoc khi go -next, nen khong ai bi
+-- nem vao tran ma khong biet minh co gi.
+CFG.SKILL_START_COUNT = 0
 
--- Gia theo SO CAI DA MO, khong theo cai nao. Mo cai thu 3 la 250 du do
--- la ky nang nao -- nguoi choi thich mo cai nao truoc thi mo, khong bi
--- ep thu tu.
-CFG.SKILL_UNLOCK = { 0, 0, 250, 790, 2910, 13560, 68210 }
+-- Bay ky nang deu mo khoa duoc NGAY TU DAU, gia nhu nhau. Khong con
+-- bang gia theo so cai da mo -- xem CFG.SKILL_NGO_UNLOCK o tren.
 
 -- ---------- Bay ky nang cua tung hero ----------
 --
@@ -542,43 +652,103 @@ CFG.SKILL_UNLOCK = { 0, 0, 250, 790, 2910, 13560, 68210 }
 -- Cach ra he so 1.32 cua A001: docs/03-du-lieu/nang-cap-ky-nang.md
 CFG.SKILLS = {}
 
+-- 'fx' la LOAI HIEU UNG, do src/2_nguoi_choi/7_hieuung.lua doc.
+--
+-- Vi sao co o nay thay vi viet rieng cho tung ability: bay loai hieu ung
+-- duoi day dung lai duoc cho Hvwd va Hkal. Them hero moi la khai bao
+-- them dong, khong phai viet them code.
+--
+--   "line"   gay sat thuong tren mot duong thang truoc mat
+--   "heal"   hoi mau mot muc tieu
+--   "buff"   tu tang giap + mau trong CFG.FX_BUFF_TIME giay
+--   "cleave" bi dong: don danh van % sat thuong sang ben
+--   "reduce" bi dong: giam % sat thuong nhan vao (co tran cung)
+--   "stat"   bi dong: +% ca ba chi so
+--   "aura"   +% giap cho ca doi
 CFG.SKILLS[id('H001')] = {
   -- HAI CAI DAU la ky nang phat san (CFG.SKILL_START_COUNT). Xep dau
   -- bang la chu dich: Chem Lan don quai dong, Chuong don theo duong --
   -- du hai viec de song qua nhung canh gioi dau.
-  { id = id('A005'), ten = "Chem Lan", en = "Cleaving Blow",   loai = "bidong",  pct = 0.20,
+  { id = id('A005'), ten = "Chem Lan", en = "Cleaving Blow",   loai = "bidong",  pct = 0.20, fx = "cleave",
     mota = "Don danh van %s sat thuong sang muc tieu ben canh.",
     mota_en = "Attacks splash %s damage to nearby targets." },
-  { id = id('A001'), ten = "Chuong", en = "Palm Strike",       loai = "chudong", heSo = 1.32, cd = 8.0, mana = 25,
+  { id = id('A001'), ten = "Chuong", en = "Palm Strike",       loai = "chudong", heSo = 1.32, cd = 8.0, mana = 25, fx = "line",
     mota = "Gay %s sat thuong len mot duong thang.",
     mota_en = "Deals %s damage in a line." },
 
-  -- Nam cai duoi mua bang Linh Khi, THU TU NAO CUNG DUOC. Gia phu thuoc
+  -- Nam cai duoi mua bang Ngo Tinh, THU TU NAO CUNG DUOC. Gia phu thuoc
   -- da mo bao nhieu cai, khong phu thuoc mo cai nao.
-  { id = id('A002'), ten = "Ho The", en = "Guarding Light",    loai = "chudong", heSo = 2.20, cd = 10.0, mana = 30,
+  { id = id('A002'), ten = "Ho The", en = "Guarding Light",    loai = "chudong", heSo = 2.20, cd = 10.0, mana = 30, fx = "heal",
     mota = "Hoi %s mau cho ban than hoac dong doi.",
     mota_en = "Heals %s to yourself or an ally." },
-  { id = id('A003'), ten = "Hieu Lenh", en = "Rallying Order", loai = "aura",    pct = 0.15,
-    mota = "Dong doi quanh ban duoc +%s giap ban than.",
-    mota_en = "Allies near you gain +%s of their armor." },
-  { id = id('A004'), ten = "Luyen The", en = "Body Forging",   loai = "bidong",  pct = 0.12,
+  -- 'giap' chu khong phai 'pct': Warcraft dung GIAP PHANG, khong phai
+  -- phan tram. Giam sat thuong = giap x 0.06 / (1 + giap x 0.06), chinh
+  -- la CFG.ARMOR_DR_PER_POINT ma he dot quai dang dung.
+  --
+  -- Ban cu la "+15% giap": tren mot hero co 3 giap thi do la +0.45 giap,
+  -- tuc +2.6% mau hieu dung -- gan nhu bang khong. Gio +3 giap phang
+  -- (bac 10: +6), tuong duong +18% -> +36% mau hieu dung.
+  { id = id('A003'), ten = "Hieu Lenh", en = "Rallying Order", loai = "aura",    giap = 3.0, fx = "aura",
+    mota = "Ca doi duoc %s giap.",
+    mota_en = "The whole party gains %s armor." },
+  { id = id('A004'), ten = "Luyen The", en = "Body Forging",   loai = "bidong",  pct = 0.12, fx = "stat",
     mota = "+%s ca ba chi so.",
     mota_en = "+%s to all three attributes." },
-  { id = id('A006'), ten = "Da Sat", en = "Ironhide",          loai = "bidong",  pct = 0.05,
+  { id = id('A006'), ten = "Da Sat", en = "Ironhide",          loai = "bidong",  pct = 0.05, fx = "reduce",
     mota = "Giam %s sat thuong nhan vao. Tran cung 10%%.",
     mota_en = "Reduces incoming damage by %s. Hard cap 10%%." },
-  { id = id('A007'), ten = "Bat Hoai", en = "Indestructible",  loai = "chudong", heSo = 0.0, cd = 60.0, mana = 60,
-    mota = "Tang manh giap va mau trong thoi gian ngan.",
-    mota_en = "Greatly raises armor and health for a short time." },
+  { id = id('A007'), ten = "Bat Hoai", en = "Indestructible",  loai = "chudong", heSo = 0.0, cd = 60.0, mana = 60, fx = "buff",
+    mota = "Tang manh giap trong thoi gian ngan.",
+    mota_en = "Greatly raises armor for a short time." },
 }
+
+-- ---------- Hang so hieu ung ky nang ----------
+--
+-- SAT THUONG CONG THEM, khong sua truong cua ability.
+--
+-- Muon Chuong gay dung x1.32 chi so thi cach "chinh thong" la ghi so vao
+-- truong Data cua Shockwave trong war3map.w3a. Khong lam duoc: ma truong
+-- cua AOsh / AHhb / AHad CHUA AI DO
+-- (docs/06-object-editor/sua-va-clone-ability.md), ma du an nay co luat
+-- khong doan -- doan sai mot ma truong la file hong am tham.
+--
+-- Nen 7_hieuung.lua bat su kien cast va TU gay sat thuong bang
+-- UnitDamageTarget. Sat thuong goc cua Warcraft van con, nhung o bac 10
+-- voi Linh Can bac 20 thi no la sai so lam tron.
+--
+-- Doi lai: hieu ung NHIN THAY (song xung kich cua Shockwave) van la cua
+-- Warcraft, nen tam ban va tam nhin co the lech nhau chut. Chinh
+-- FX_LINE_LEN cho khop mat nhin.
+CFG.FX_LINE_LEN    = 700.0   -- do dai duong danh cua "line"
+CFG.FX_LINE_WIDTH  = 125.0   -- nua be ngang duong danh
+CFG.FX_CLEAVE_AOE  = 200.0   -- ban kinh van cua "cleave"
+CFG.FX_REDUCE_CAP  = 0.10    -- tran cung cua "reduce" -- xem mota A006
+CFG.FX_BUFF_TIME   = 12.0    -- giay cua "buff"
+CFG.FX_BUFF_ARMOR  = 30.0    -- giap cong them khi buff
+
+-- CFG.FX_BUFF_HP da bo. Bat Hoai truoc day cong ca mau toi da, nhung
+-- mau toi da cua hero SUY RA tu Suc manh -- ma Linh Can va Luyen The
+-- doi Suc manh luc nao cung duoc. Cong roi tru lai mot con so tuyet doi
+-- tren mot dai luong tu no thay doi la sai chac chan.
+--
+-- Bo phan mau, bu bang giap (20 -> 30). Giap moi la thu "bat hoai" that:
+-- no giam sat thuong, va no suy ra duoc tu nen nen khong bao gio lech.
+
+-- Hieu ung nhin thay. Duong dan phai viet bang [[...]] (ADR 0003).
+CFG.FX_HIT_LINE   = [[Abilities\Spells\Orc\Shockwave\ShockwaveMissile.mdl]]
+CFG.FX_HIT_CLEAVE = [[Abilities\Weapons\WitchDoctorMissile\WitchDoctorMissile.mdl]]
+CFG.FX_HIT_HEAL   = [[Abilities\Spells\Human\Heal\HealTarget.mdl]]
+CFG.FX_HIT_BUFF   = [[Abilities\Spells\Human\Avatar\AvatarCaster.mdl]]
 
 CFG.OP_SKILL_UP = 6   -- arg = so thu tu ky nang trong CFG.SKILLS cua hero
 
--- Bat khi bo sinh da ghi so lieu vao war3map.w3a VA cac skill bi dong da
--- duoc viet bang Lua. Con false thi bang phim E noi ro con so dang hien
--- la thiet ke chu chua co hieu luc -- trong game van la so goc cua
--- Warcraft. Bang ma hien so dep nhung sai thi te hon la khong hien.
-CFG.SKILL_DATA_LIVE = false
+-- Bat khi cac hieu ung da duoc viet that. Con false thi bang phim E noi
+-- ro con so dang hien la thiet ke chu chua co hieu luc -- bang ma hien
+-- so dep nhung sai thi te hon la khong hien.
+--
+-- Bat tu 2026-09-16: src/2_nguoi_choi/7_hieuung.lua tu gay sat thuong
+-- theo dung CFG.SKILLS, va w3obj.py da dat alev = 10 cho ca bay ability.
+CFG.SKILL_DATA_LIVE = true
 
 -- Suc manh moi bac. Ngan sach cho ca he nang cap la x2 (xem
 -- docs/03-du-lieu/duong-cong-suc-manh.md). x2 la TICH cua moi nut chinh,
@@ -599,6 +769,26 @@ CFG.SKILL_MANA_STEP = 1.05   -- x1.55 sau 9 lan nang
 CFG.TINHTHACH_BOSS_BASE = 10   -- boss canh gioi r roi BASE + STEP*(r-1)
 CFG.TINHTHACH_BOSS_STEP = 5
 
+-- ---------- Ngo Tinh ----------
+--
+-- Dong tien thu BA. Nguon: TINH ANH, moi wave mot con -- khong phai
+-- linh thuong, khong phai boss.
+--
+-- Vi sao them mot dong tien nua thay vi dung Linh Khi cho tat ca: ba
+-- nguon quai co ba NHIP khac han nhau, va do la thu san co de gan cho
+-- ba he khac nhau ma khong phai bia ra co che gi moi.
+--
+--   linh thuong  11,000 con ca van  -> nhip giay   -> Linh Khi
+--   tinh anh        200 con         -> nhip wave   -> Ngo Tinh
+--   boss             20 con         -> nhip canh gioi -> Tinh Thach
+--
+-- Ngo Tinh KHONG hien tren thanh tai nguyen (Warcraft chi co vang va
+-- go, ca hai da dung roi). No hien trong bang phim E.
+--
+-- Tong ca van: 200 x1 + 20 x5 = 300 diem.
+CFG.NGOTINH_ELITE = 1
+CFG.NGOTINH_BOSS  = 5
+
 -- ============================================================
 --  LINH CAN  --  tu vi cua nguoi choi
 --  docs/02-he-thong/kinh-te.md · bang-nhan-vat.md
@@ -608,12 +798,22 @@ CFG.TINHTHACH_BOSS_STEP = 5
 --  ke dich tu tien tren cung mot con duong.
 -- ============================================================
 
--- 1.215, KHONG phai 1.17. Voi 1.17 thi 19 buoc chi cho x19.7, nhan voi
--- trang bi x12 va ky nang x2 la x474 -- trong khi hop dong can x967.
--- Tuc cuoi game nguoi choi chi manh bang 49% muc can, thua chac.
--- 1.215^19 = x40.5  ->  40.5 x 12 x 2 = x971 ~ x967. Xem
--- docs/03-du-lieu/duong-cong-suc-manh.md
-CFG.LINHCAN_STEP = 1.215
+-- 1.17, KHONG phai 1.215.
+--
+-- Con so nay da doi mot lan, va ly do doi dang ghi lai o day vi no de
+-- bi lat nguoc lai:
+--
+--   Ban cu (BA nguon): Linh Can x40.5 x Trang Bi x12 x Ky Nang x2 = x971.
+--   Voi 1.17 thi chi x474 -- thieu mot nua, nen 1.215 la dung LUC DO.
+--
+--   Ban nay (BON nguon): Phap Khi da thanh he that, nen ngan sach chia
+--   lai: x19.7 x 8 x 2.4 x 2.5 = x948 ~ x967. Voi 1.215 thi thanh
+--   x1,942 -- gap DOI muc hop dong, va nua sau van thanh di dao.
+--
+-- Tuc hai con so deu tung dung, chi la voi hai ban ngan sach khac nhau.
+-- KHONG duoc tron: doi mot cai o day thi phai kiem lai TICH cua ca bon.
+-- Xem ADR 0015 va docs/02-he-thong/kinh-te.md.
+CFG.LINHCAN_STEP = 1.17
 
 -- Gia dot pha bac r = BASE x STEP^(r-1).
 -- 1.412 = 1.0319^11 = thu nhap tron mot canh gioi, nen gia luon dang
@@ -652,6 +852,198 @@ CFG.LINHCAN_STAT_BASE = 10.0   -- chi so hero luc bac 1
 -- do thay hero manh vuot duong cong.
 CFG.LINHCAN_STAT_MODE = "all"
 
+
+-- ============================================================
+--  TRANG BI  --  6 o, moi o 10 cap
+--  docs/02-he-thong/kinh-te.md
+--
+--  Mua bang LINH KHI, cung vi voi Linh Can -- co y. Do la lua chon
+--  chinh cua moi wave: dot pha hay nang do. Hai he kia (Ky Nang, Phap
+--  Khi) khong tranh vi nay, chung bi chan boi NOI DUNG chu khong boi
+--  tien -- xem CFG.NGOTINH_ELITE va CFG.TINHTHACH_BOSS_BASE.
+-- ============================================================
+
+-- Sau o. Ten la huong vi; TAC DUNG cua ca sau giong nhau: +4% sat
+-- thuong moi cap.
+--
+-- Vi sao khong cho moi o mot tac dung khac nhau cho da dang: ngan sach
+-- Trang Bi la x8 SAT THUONG, ma x8 do chinh la (1.04^9)^6. Chia ba o
+-- sang mau/giap thi sat thuong chi con (1.04^9)^3 = x2.9, va tich bon
+-- he tut tu x948 xuong x344. Muon o thu/cong khac nhau thi phai suy
+-- lai ca ngan sach truoc -- dung sua mot minh cho nay.
+CFG.TRANGBI = {
+  { ten = "Vu Khi",       en = "Weapon",   icon = [[ReplaceableTextures\CommandButtons\BTNSteelMelee.blp]] },
+  { ten = "Ho Giap",      en = "Armor",    icon = [[ReplaceableTextures\CommandButtons\BTNSteelArmor.blp]] },
+  { ten = "Chien Ngoa",   en = "Boots",    icon = [[ReplaceableTextures\CommandButtons\BTNBootsOfSpeed.blp]] },
+  { ten = "Ngoc Boi",     en = "Pendant",  icon = [[ReplaceableTextures\CommandButtons\BTNPendantOfEnergy.blp]] },
+  { ten = "Ho Than Phu",  en = "Talisman", icon = [[ReplaceableTextures\CommandButtons\BTNTalisman.blp]] },
+  { ten = "Tru Vat Gioi", en = "Ring",     icon = [[ReplaceableTextures\CommandButtons\BTNRingViolet.blp]] },
+}
+
+CFG.TRANGBI_MAX_LEVEL = 10
+CFG.TRANGBI_PCT       = 0.04    -- moi cap +4% sat thuong
+
+-- Gia theo TONG SO LAN da nang cua ca sau o, khong theo cap cua rieng
+-- mot o. Cung nguyen tac voi ky nang truoc day: don het vao mot o khong
+-- re hon rai deu, nen nguoi choi chon theo loi choi chu khong theo phep
+-- tinh.
+--
+-- 1.134 = 1.0319^4.07 = thu nhap cua 4,07 stage. 54 lan nang trai deu
+-- 220 stage thi moi lan cach nhau dung 4,07 stage -- nen "mot lan nang
+-- do dang may wave" la hang so suot van, giong het cach Linh Can bam
+-- theo 7,1 wave.
+--
+-- BASE 147 (khong phai 86): Ky Nang da chuyen sang Ngo Tinh nen phan
+-- 22% Linh Khi cua no doi sang day. Trang Bi gio an 52% ngan sach.
+CFG.TRANGBI_COST_BASE = 147.0
+CFG.TRANGBI_COST_STEP = 1.134
+
+-- ============================================================
+--  PHAP KHI  --  5 mon, mua MOT lan, khong co cap
+--  docs/02-he-thong/kinh-te.md
+--
+--  Nguon tien duy nhat la TINH THACH, ma Tinh Thach chi roi tu boss.
+--  Nen day la he duy nhat khong cay duoc: thua mot boss la mat han mot
+--  mon, khong co cach bu.
+-- ============================================================
+
+-- Moi mon DOI MOT LUAT, khong cong chi so -- ba he kia da lo chi so roi.
+--
+-- 'ma' la thu code doc de biet ap hieu ung nao. Them mon moi thi them
+-- ma moi VA sua cho doc ma do; khong co bang dieu phoi tu dong nao ca.
+--
+-- CA NAM deu doc-luc-dung, khong mon nao can trigger rieng. Do la tieu
+-- chi chon: mot mon can bo bat su kien rieng la mot mon co the hong am
+-- tham, ma Phap Khi thi ca van chi mua duoc 5 lan.
+-- RONG CO Y -- 2026-09-16.
+--
+-- Nam mon cu (Tu Linh Tran, Ngo Dao Bi, Hon Thien Kinh, Kim Cang Phu,
+-- Thoi Dien Chau) da xoa. Chung mua bang Tinh Thach; he nay gio tra
+-- bang NGO TINH, va noi dung se thiet ke lai.
+--
+-- NGAN SACH DANH SAN: ca van kiem 300 Ngo Tinh, ky nang tieu 70, nen
+-- con 230 diem cho day. Con so do la rang buoc khi thiet ke lai.
+--
+-- Code van chay voi bang rong: the hien mot dong "chua co gi", khong
+-- mua duoc gi, va moi hieu ung tra ve false. Them mon moi la them dong
+-- vao bang nay VA viet cho doc 'ma' cua no -- khong co bang dieu phoi
+-- tu dong nao ca.
+CFG.PHAPKHI = {}
+
+-- Tong gia 1,050 tren 1,150 Tinh Thach cua ca van -- mua du ca nam neu
+-- ha het 20 boss, va CHI neu ha het.
+--
+-- Hai mon dau cong vao chinh nen kinh te, nen mua som lai hon mua muon.
+-- Do la lua chon that: bo 60 Tinh Thach vao "Tu Linh Tran" ngay canh
+-- gioi 1 nghia la chap nhan cham co mon thu nam.
+
+-- Ngan sach suc manh cua Phap Khi (x2.5) la cho VAY.
+--
+-- Nam mon o tren khong mon nao nhan thang sat thuong; chung cong vao
+-- kinh te va vao kha nang song sot cua nha. Tuc x2.5 dang duoc tra bang
+-- duong vong -- nhieu Linh Khi hon thi nhieu Trang Bi hon.
+--
+-- Chua do duoc duong vong do co bang x2.5 that khong. Day la cho dau
+-- tien phai kiem khi choi thu, chu khong phai cho de sua so.
+CFG.PHAPKHI_LIVE = true
+
+
+-- ---------- Phan vung 25 block ----------
+--
+-- Luoi 25 block truoc day chi la TOA DO tinh luc chay. Gio moi block co
+-- mot vai tro ghi o day, va mot vung THAT trong World Editor ten
+-- Blk01..Blk25 (sinh bang w3region.py).
+--
+-- TEN VUNG LA VI TRI, VAI TRO NAM O DAY. Blk13 doi doi la Blk13; doi y
+-- ve vai tro thi sua bang nay, khong dong toi file nhi phan nao va
+-- khong gay tham chieu gg_rct_ nao.
+--
+-- CHUA CAI LOI CHOI NAO. Bang nay moi la ban do -- no cho biet dinh lam
+-- gi o dau, de khi bat tay vao thi khong phai quyet lai tu dau. Xem
+-- docs/02-he-thong/phan-vung.md va ADR 0014.
+--
+--        c1          c2          c3          c4          c5
+--  r5   21 NHA       22  .       23  .       24  .       25  .
+--  r4   16 CUA       17 MACH     18  .       19  .       20  .
+--  r3   11  .        12  .       13 TAM THE  14  .       15  .
+--  r2    6  .         7  .        8  .        9  .       10  .
+--  r1    1  .         2  .        3 TAM DAO   4  .        5 TRAN MA
+--
+-- BON VUNG, BON CO CHE KHAC NHAU. Khong co vung nao lap lai vung nao.
+--
+-- Ban truoc co 4 pho ban + 4 thi luyen + 4 linh mach = mot y tuong chep
+-- bon lan, khong phai bon vung. Chep lai thi nguoi choi lam cai dau
+-- xong la biet het ba cai sau, va 12 block do chi khac nhau o quang
+-- duong phai chay.
+--
+-- LUAT MOI: moi vung phai BUOC ca ba nguoi cung lam, va moi vung buoc
+-- theo mot kieu KHAC NHAU. Khong nghi ra co che moi thi DE RONG -- mot
+-- block hoang khong ton gi, mot block chep lai thi ton dung cai cam
+-- giac moi me cua nguoi choi.
+--
+-- Bon dong tu, bon vung:
+--   chia ra roi dong bo   Tam The Tran (13)
+--   ba cho, giu lien tuc  Linh Mach    (17)
+--   moi nguoi mot vai     Tam Dao Mon  (3)
+--   mot nguoi bi khoa     Tran Ma Thap (5)
+--
+-- Xa nha dan = kho dan. Nha o block 21 (1,5):
+--   17 cach 1 song ngang + 1 doc   -- vung lam thuong xuyen nhat
+--   13 cach 2 + 2                  -- su kien, tam ban do
+--    3 cach 2 + 4
+--    5 cach 4 + 4                  -- xa nhat, kho nhat
+CFG.BLOCKS = {
+  [21] = { vai = "nha" },
+  [16] = { vai = "cua" },
+
+  [17] = { vai = "linhmach" },
+  [13] = { vai = "tamthe" },
+  [3]  = { vai = "tamdao" },
+  [5]  = { vai = "tranma" },
+}
+
+-- Block khong co trong bang tren = "hoang" (chua giao viec). De trong
+-- CO Y, khong phai quen -- ADR 0014 va ADR 0018.
+--
+-- 'coop' la CO CHE buoc ba nguoi phai phoi hop. No la ly do ton tai cua
+-- vung; vung nao khong dien duoc o nay thi chua nen co.
+-- 'tien' la dong tien vung do sinh ra.
+-- 'mau'  dung cho ping minimap cua lenh "-vung".
+CFG.BLOCK_ROLE = {
+  nha  = { ten = "Tong Mon", en = "Sect",       mau = {255, 220,  80} },
+  cua  = { ten = "Ma Mon",   en = "Demon Gate", mau = {255,  80,  80} },
+
+  tamthe = { ten = "Tam The Tran", en = "Three-Body Array",
+             mau = {255, 140, 255}, tien = "Tinh Thach",
+             coop = "Boss chia ba than o ba goc. Than nao chet le thi hai" ..
+                    " than kia hoi sinh no. Phai ha ca ba trong mot cua so" ..
+                    " thoi gian -- ba nguoi, ba cho, mot nhip." },
+
+  linhmach = { ten = "Linh Mach", en = "Qi Vein",
+               mau = {255, 200, 120}, tien = "Linh Khi",
+               coop = "Ba tru dan khi. Mach chi chay khi CA BA tru deu co" ..
+                      " nguoi dung. Quai lien tuc ra de day nguoi khoi tru." },
+
+  tamdao = { ten = "Tam Dao Mon", en = "Three Paths",
+             mau = {120, 255, 160}, tien = "Ngo Tinh",
+             coop = "Ba cua, moi cua chi mot VAI qua duoc: Kim can nguoi" ..
+                    " chiu don, Moc can nguoi giai, Hoa can nguoi pha nhanh." ..
+                    " Dung ba hero cua CFG.HEROES." },
+
+  tranma = { ten = "Tran Ma Thap", en = "Warding Pagoda",
+             mau = {120, 200, 255}, tien = "Tinh Thach",
+             coop = "Mot nguoi phai dung yen dan phap, khong danh khong" ..
+                    " chay duoc. Hai nguoi con lai gong ca tran. Doi phien" ..
+                    " nhau khi nguoi dang dan sap guc." },
+
+  hoang = { ten = "Hoang Dia", en = "Wilds", mau = {130, 130, 130},
+            coop = "Chua co y tuong. De rong cho toi khi co -- xem ADR 0018." },
+}
+
+-- Ten vung trong World Editor, de code tim duoc gg_rct_Blk07.
+-- w3region.py sinh dung tien to nay.
+CFG.BLOCK_RGN_PREFIX = "Blk"
+
 -- ---------- Chu bay (floating combat text) ----------
 -- Warcraft III chi cho ~100 text tag ton tai cung luc. Mot wave 50 con,
 -- ve moi don danh mot chu la vai giay sau dat tran va TU DO khong con
@@ -668,8 +1060,34 @@ CFG.FCT_LIFE      = 1.4
 
 -- Giao dien bang nhan vat (phim E). Bon he dung chung khung nay.
 CFG.PANEL_X = 0.40
-CFG.PANEL_Y = 0.36
-CFG.PANEL_W = 0.46    -- rong ra: dong ky nang co ten + bac + so lieu + gia
+CFG.PANEL_Y = 0.30
+CFG.PANEL_W = 0.56    -- do duoc: 5 cot cua bang cu chi con 81px cho cot "Bac"
+
+-- Hinh hoc mot DONG kieu "list" (Ky Nang, Trang Bi, Phap Khi).
+--
+-- So cu: dong 0.024, icon 0.018, nut 0.028 -- o 1080p la 43px / 32px /
+-- 50px. Mot khung 828px chua nut bam 50px thi khong phai bang be, ma la
+-- MAT DO SAI: khung thua cho ma noi dung thi nho.
+CFG.PANEL_ROW   = 0.048   -- cao mot dong  (86px o 1080p)
+CFG.PANEL_ICON  = 0.036   -- canh icon     (65px)
+CFG.PANEL_BTN_W = 0.105   -- be ngang nut  (189px, du cho "NANG  178")
+CFG.PANEL_BTN_H = 0.026
+CFG.PANEL_PAD   = 0.012
+
+-- Co chu ba cap. Bang cu khong goi BlzFrameSetScale lan nao nen moi
+-- dong mot co -- nhin vao chi thay mot khoi chu deu deu.
+CFG.PANEL_SCALE_HEAD = 1.20
+CFG.PANEL_SCALE_NAME = 1.05
+CFG.PANEL_SCALE_SUB  = 0.85
+
+-- Nen bang. Cung danh sach voi bang chon hero: template FDF co vien
+-- that, het thi lui ve CFG.FRAME_BG (o mau dac, khong vien).
+CFG.PANEL_BACKDROP = { "EscMenuBackdrop", "QuestButtonBaseTemplate" }
+
+-- Thanh tien do cua the kieu "focus". Hai o mau DAC -- va o day thi mot
+-- o mau dac dung la thu can, khac han truong hop dung no lam nen bang.
+CFG.PANEL_BAR_BG   = [[ReplaceableTextures\TeamColor\TeamColor27]]
+CFG.PANEL_BAR_FILL = [[ReplaceableTextures\TeamColor\TeamColor04]]
 -- Cao cua bang SUY RA tu so dong trong 4_giao_dien/1_panel.lua, khong
 -- go tay o day -- de o day thi them mot dong la tran ra ngoai khung.
 

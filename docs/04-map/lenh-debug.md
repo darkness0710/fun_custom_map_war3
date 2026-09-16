@@ -44,6 +44,7 @@ Không phụ thuộc công tắc nào. Đây là lối chơi, không phải debu
 | `-lc` | Mở thẳng thẻ Linh Căn |
 | `-lc up` | Đột phá một bậc, không cần mở bảng |
 | `-sync` | Đường đồng bộ nào đang chạy, native nào có, ping có về không |
+| `-vung` | Bản đồ vai trò 25 block + ping minimap theo màu. Báo đỏ nếu thiếu vùng `Blk..` |
 
 > **Lệnh chat luôn đúng trong nhiều người chơi.** `EVENT_PLAYER_CHAT_STRING` nổ
 > trên mọi máy cùng lúc, nên `-lc up` đổi trạng thái game thẳng, không qua kênh

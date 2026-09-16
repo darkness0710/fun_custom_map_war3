@@ -46,10 +46,16 @@ src/
      2_state.lua       tạo S và API, tiện ích chung
      3_sync.lua        kênh đồng bộ nhiều người chơi
      4_geometry.lua    lưới 25 ô, toạ độ, vùng
+     5_natives.lua     bản 1.31.1 này có native nào — đo, không đoán
+     6_lang.lua        hai thứ tiếng: API.t và API.pick
   2_nguoi_choi/
      1_player.lua      đăng ký người chơi, tiền tệ, khoá hero
      2_heropick.lua    chọn hero, cây kỹ năng
-     3_linhcan.lua     tu vi — nguồn sức mạnh lớn nhất
+     3_linhcan.lua     tu vi — nguồn sức mạnh lớn nhất (Linh Khí)
+     4_skill.lua       bảy kỹ năng, mua bằng Ngộ Tính
+     5_trangbi.lua     sáu ô trang bị, mua bằng Linh Khí
+     6_phapkhi.lua     năm pháp khí, mua bằng Tinh Thạch
+     7_hieuung.lua     hiệu ứng kỹ năng thật: sát thương, bị động, aura
   3_tran_dau/
      1_house.lua       nhà chính, chết là thua
      2_wave.lua        220 stage, sinh quái, tiền thưởng
@@ -62,6 +68,12 @@ src/
      1_events.lua      trigger, lệnh chat
      2_init.lua        bootstrap, móc vào main()
 ```
+
+**Mỗi file nguồn được bọc một khối `do...end` riêng.** Lua chỉ cho 200 biến
+`local` sống cùng lúc trong một hàm, mà cả bản build là một hàm — gộp 18 file vào
+một khối là ~500 local và map không biên dịch được. Khối riêng thì mỗi file có
+hạn mức 200 của chính nó, và cái giá phải trả chính là ADR 0002: file sau không
+nhìn thấy `local` của file trước, nên mọi lời gọi chéo phải đi qua `API`.
 
 **Thứ tự thư mục là thứ tự nạp.** Chỉ ba ràng buộc thật: `1_config` trước
 (nó tạo `CFG`), `2_state` ngay sau (tạo `S` và `API`), `5_khoi_dong` cuối cùng.
@@ -85,6 +97,7 @@ docs/
      bang-nhan-vat.md    Bảng phím E: Kỹ Năng / Trang Bị / Linh Căn / Pháp Khí
      dot-quai.md         220 đợt quái: cấu trúc, thành phần, nhịp, tu chính
      boss.md             20 boss cuối cảnh giới
+     phan-vung.md        25 block: vai trò từng ô, và vì sao
   03-du-lieu/
      bang-can-bang.md    Khoá CFG -> ý nghĩa -> ràng buộc
      canh-gioi.md        Bảng 20 cảnh giới, chỉ số hoá stage 1..220
@@ -108,9 +121,15 @@ docs/
      0008-ky-nang-hero-phai-sua-o-object-editor.md
      0009-so-luong-linh-co-dinh.md
      0010-giap-khong-nam-trong-duong-cong.md
-     0011-nha-chinh-dem-mang.md        <- CHUA CHOT
+     0011-nha-chinh-dem-mang.md        <- DA BI LAT
      0012-mot-kenh-dong-bo-duy-nhat.md
      0013-thuong-chia-deu-cho-moi-nguoi.md
+     0014-25-block-de-danh-cho-noi-dung-sau.md
+     0015-ba-dong-tien-ba-loai-quai.md
+     0016-bang-phim-e-hai-kieu-than.md
+     0017-ten-vung-la-vi-tri-vai-tro-o-cfg.md
+     0018-nghi-giua-hai-canh-gioi.md
+     0019-moi-vung-mot-co-che-co-op.md
   06-object-editor/
      sua-va-clone-ability.md  Đọc/ghi war3map.w3a bằng script, mã trường đã đo
      import-model.md         Import model/texture bằng script, bẫy World Editor giữ bộ nhớ
@@ -122,6 +141,21 @@ docs/
 Mỗi hệ thống lối chơi một file trong `02-he-thong/`, theo [mẫu](mau/he-thong.md).
 
 ## Hai cái bẫy đã cắn, đừng để cắn lại
+
+### Công cụ ngoài map
+
+| | |
+|---|---|
+| [build.py](../build.py) | nối `src/*.lua` → `war3map.lua`; `--pack` `--run` bỏ qua World Editor |
+| [w3mpq.py](../w3mpq.py) | đóng gói thư mục map thành `.w3x` |
+| [w3obj.py](../w3obj.py) | đọc/ghi object data (`.w3a` `.w3u` …) — tầng định dạng |
+| [w3skill.py](../w3skill.py) | sinh tên · vị trí ô · tooltip 10 bậc cho kỹ năng, từ `CFG.SKILLS` |
+| [w3region.py](../w3region.py) | sinh 25 vùng `Blk01..Blk25` vào `war3map.w3r` |
+| [w3import.py](../w3import.py) | import model/texture |
+
+**Cả bốn bộ ghi đều đọc lại file sau khi ghi** để chắc chắn đúng định dạng — file
+object sai là World Editor có thể lặng lẽ nuốt mất dữ liệu, kiểu hỏng tệ nhất.
+Và cả bốn đều **cần đóng World Editor trước khi chạy**.
 
 **Không gọi `FourCC` trần** — nó trả về *hai* giá trị và nở ra ở vị trí cuối của
 bảng. Dùng `id()` trong [1_config.lua](../src/1_nen/1_config.lua).

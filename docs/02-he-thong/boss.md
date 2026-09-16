@@ -1,9 +1,18 @@
 # Hệ thống: Boss cuối cảnh giới
 
-> **Trạng thái:** Đã chốt — chưa cài
-> **Cập nhật:** 2026-09-15
-> **Code:** [2_wave.lua](../../src/3_tran_dau/2_wave.lua) (đang rỗng)
-> **Khoá CFG:** `BOSS_*`
+> **Trạng thái:** Khung đã cài — **thân boss chưa có**
+> **Cập nhật:** 2026-09-16
+> **Code:** [2_wave.lua](../../src/3_tran_dau/2_wave.lua)
+> **Khoá CFG:** `BOSS_EHP` `BOSS_DMG` `BOSS_SCALE` `TINHTHACH_BOSS_*`
+
+> **Đã cài tới đâu.** Stage `11 × r` sinh đúng một con, chỉ số theo `BOSS_EHP` /
+> `BOSS_DMG`, to hơn và đỏ hơn, tên `"<cảnh giới> - Ma Ton"`, hạ xong rơi Tinh
+> Thạch và cả đội cùng nhận. Hạ boss stage 220 là thắng.
+>
+> **Chưa có gì của L4–L6**: kháng khống chế, đổi giai đoạn, phát điên. Cũng chưa
+> có 20 unit type riêng — boss hiện dùng chung mẫu lính của cõi đó, phóng to
+> `BOSS_SCALE` lần. Những khoá `BOSS_CC_RESIST`, `BOSS_PHASES`, `BOSS_ENRAGE_*`,
+> `BOSS_ARMOR_BONUS`, `BOSSES` nhắc dưới đây **chưa tồn tại trong `CFG`**.
 > **Xem kèm:** [dot-quai.md](dot-quai.md) ·
 > [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md)
 
@@ -23,8 +32,8 @@ chỉ biết dọn đám đông.
 Không lính thường, không tinh anh. Người chơi vừa dọn xong tầng viên mãn, màn
 hình lặng đi, rồi boss bước ra.
 
-**L2. Boss mạnh gấp `BOSS_EHP_MULT` lần lính của chính stage đó.**
-`BOSS_EHP_MULT` = 80, so với 60 của cả một wave. Nghĩa là trận boss dài bằng
+**L2. Boss mạnh gấp `BOSS_EHP` lần lính của chính stage đó.**
+`BOSS_EHP` = 80, so với 60 của cả một wave. Nghĩa là trận boss dài bằng
 `80/60 ≈ 1.33` lần thời gian dọn một wave — ở **mọi** cảnh giới, vì boss và lính
 trôi trên cùng một đường cong.
 
@@ -32,7 +41,7 @@ trôi trên cùng một đường cong.
 nhau từ Phàm Nhân tới Sáng Thế Thần, không phải số cho đẹp.
 
 **L3. Đòn đánh thường của boss phải nhẹ. Mối đe doạ nằm ở kỹ năng.**
-`BOSS_DMG_MULT` = 3, không phải 10. Ở cảnh giới 20 con số đó là ~5 000 mỗi đòn,
+`BOSS_DMG` = 3, không phải 10. Ở cảnh giới 20 con số đó là ~5 000 mỗi đòn,
 đúng 3 đòn là hero phải lùi.
 
 Cho boss đánh thường nặng là thiết kế lười: người chơi không có gì để đọc, không
@@ -61,7 +70,10 @@ và ván game treo mà không ai thua. Phát điên biến "thiếu DPS" thành 
 hai phút" — thua rõ ràng tốt hơn treo vô hạn.
 
 **L7. Boss chạm nhà chính là thua ngay.**
-Không trừ mạng, không tính `LEAK_COST`. Boss lọt qua là hết.
+Không trừ mạng — không có cơ chế mạng nào cả
+([ADR 0011](../05-quyet-dinh/0011-nha-chinh-dem-mang.md) đã bị lật). Boss đánh
+nhà bằng sát thương thường, mà `BOSS_DMG` = 3 lần lính thì nhà cạn máu trong
+khoảng `HOUSE_HP_HITS / 3` đòn. Trên thực tế là hết.
 
 **L8. Hạ boss stage 220 là thắng.**
 Điều kiện thắng duy nhất của map.
@@ -92,16 +104,26 @@ dần chứ không bị ném vào một trận boss ba cơ chế ngay từ Phàm
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-| `BOSS_EHP_MULT` | Gấp mấy lần lính cùng stage | 80. Đổi nó là đổi **thời lượng mọi trận boss cùng lúc** — tỉ lệ với `60` của một wave |
-| `BOSS_DMG_MULT` | Gấp mấy lần lính cùng stage | Giữ thấp (3). Xem L3 |
-| `BOSS_ARMOR_BONUS` | Giáp cộng thêm | Giáp là EHP trá hình — máu thật phải chia lại. [ADR 0010](../05-quyet-dinh/0010-giap-khong-nam-trong-duong-cong.md) |
+**Đã có trong `CFG`:**
+
+| Khoá | Ý nghĩa | Ràng buộc |
+|---|---|---|
+| `BOSS_EHP` | Gấp mấy lần lính cùng stage | 80. Đổi nó là đổi **thời lượng mọi trận boss cùng lúc** — tỉ lệ với `60` của một wave |
+| `BOSS_DMG` | Gấp mấy lần lính cùng stage | Giữ thấp (3). Xem L3 |
 | `BOSS_SCALE` | Cỡ model | Thuần hình ảnh, nhưng là thứ báo "đây là boss" trước cả thanh máu |
+| `SCALE_BOSS_EHP_PER_PLAYER` | Nhân máu theo số người | Cao hơn lính — [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) |
+| `TINHTHACH_BOSS_BASE` `TINHTHACH_BOSS_STEP` | Tinh Thạch rơi ra ở cảnh giới `r` | `BASE + STEP × (r−1)`. Nguồn Tinh Thạch **duy nhất** của cả ván — [kinh-te.md](kinh-te.md) |
+
+**Chưa tồn tại — thiết kế cho L4–L6:**
+
+| Khoá | Ý nghĩa | Ràng buộc |
+|---|---|---|
+| `BOSS_ARMOR_BONUS` | Giáp cộng thêm | Giáp là EHP trá hình — máu thật phải chia lại. [ADR 0010](../05-quyet-dinh/0010-giap-khong-nam-trong-duong-cong.md) |
 | `BOSS_CC_RESIST` | Giảm bao nhiêu phần thời gian khống chế | `0.0`–`1.0`. `1.0` là miễn nhiễm — **đừng** |
 | `BOSS_ENRAGE_TIME` | Giây trước khi phát điên | Phải lớn hơn hẳn thời gian hạ boss dự kiến (~1.33 × `WAVE_TIME`), nếu không đội chơi đúng cũng bị phạt |
 | `BOSS_ENRAGE_STEP` `BOSS_ENRAGE_DMG` | Cứ mấy giây thì cộng bao nhiêu | |
 | `BOSS_PHASES` | Mốc % máu đổi giai đoạn | Giảm dần, ví dụ `{0.70, 0.40}` |
-| `BOSSES` | Bảng 20 dòng `{ id, ten, tenGame, abilities }` | Đúng 20 dòng, khớp thứ tự `REALMS`. Id phải qua `id()` — [ADR 0006](../05-quyet-dinh/0006-fourcc-tra-hai-gia-tri.md) |
-| `SCALE_BOSS_EHP_PER_PLAYER` | Nhân máu theo số người | Cao hơn lính — [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) |
+| `BOSSES` | Bảng 20 dòng `{ id, ten, en, abilities }` | Đúng 20 dòng, khớp thứ tự `REALMS`. Id phải qua `id()` — [ADR 0006](../05-quyet-dinh/0006-fourcc-tra-hai-gia-tri.md) |
 
 ## Ràng buộc kỹ thuật
 
@@ -131,9 +153,15 @@ chân dung riêng) thì phải làm lại y hệt những xử lý đó.
 
 ## Chưa làm
 
-- 20 tên boss, 20 unit type, và toàn bộ kỹ năng. Chưa có con nào.
+- **20 unit type và toàn bộ kỹ năng boss.** Hiện boss dùng chung mẫu lính của
+  cõi, phóng to và tô đỏ. Tên thì đã đúng (`"<cảnh giới> - Ma Ton"`).
+- **L4 kháng khống chế, L5 đổi giai đoạn, L6 phát điên** — chưa có dòng nào.
+  Riêng L6 đáng làm sớm: không có nó thì một đội thiếu DPS treo ván vô hạn.
 - Thanh máu boss.
-- Phần thưởng hạ boss. Boss là nút thắt lớn nhất mà chưa rơi ra gì.
 - Chuyện gì xảy ra nếu cả đội chết lúc đang đánh boss. Hiện chưa có hồi sinh
   hero.
-- Màn kết sau khi hạ boss stage 220.
+- Màn kết sau khi hạ boss stage 220. Hiện chỉ có một dòng `win_final` rồi
+  `CustomVictoryBJ`.
+
+Phần thưởng thì **đã có**: `TINHTHACH_BOSS_BASE + STEP × (r−1)`, chia đều cho cả
+đội ([ADR 0013](../05-quyet-dinh/0013-thuong-chia-deu-cho-moi-nguoi.md)).

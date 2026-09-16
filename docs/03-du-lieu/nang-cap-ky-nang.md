@@ -1,8 +1,18 @@
 # Nâng cấp kỹ năng: giá và sức mạnh mỗi bậc
 
-> **Trạng thái:** Đã chốt đường cong, chưa gán số cho từng skill
-> **Cập nhật:** 2026-09-15
-> **Khoá CFG:** `SKILL_COST_BASE` `SKILL_COST_STEP` `SKILL_DMG_STEP` `SKILL_CD_STEP` `SKILL_PASSIVE_STEP`
+> **Trạng thái:** Đường cong sức mạnh đã chốt — **giá đã đổi sang Ngộ Tính**
+> **Cập nhật:** 2026-09-16
+> **Khoá CFG:** `SKILL_NGO_UP` `SKILL_NGO_UNLOCK` `SKILL_DMG_STEP` `SKILL_CD_STEP` `SKILL_PASSIVE_STEP`
+
+> **Phần GIÁ của trang này đã lỗi thời.** Kỹ năng không mua bằng Linh Khí nữa —
+> nó mua bằng **Ngộ Tính**, một đồng tiền rơi từ tinh anh, và giá là một **bảng
+> điểm** chứ không phải đường cong mũ.
+> [ADR 0015](../05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md) ·
+> [kinh-te.md](../02-he-thong/kinh-te.md)
+>
+> Phần **sức mạnh mỗi bậc** (`SKILL_DMG_STEP`, `SKILL_CD_STEP`,
+> `SKILL_PASSIVE_STEP`, ngân sách ×2.4) thì **vẫn đúng nguyên** — nó không dính
+> gì tới chuyện trả bằng đồng tiền nào.
 
 10 bậc mỗi skill, 7 skill mỗi hero. Bậc 1 được phát sẵn khi chọn skill, nên mỗi
 skill có **9 lần nâng** — cả hero là 63 lần, trải 220 stage.
@@ -41,13 +51,31 @@ bac           gia     cong don    cd 60s    he so  bi dong     tich
 10         21,888       43,908     40.0s     1.33     2.00     1.99
 ```
 
-Giá tính bằng Linh Khí, cho **một** skill. Cả 7 skill lên bậc 10: **307 356**
-Linh Khí, tức 16% thu nhập cả ván.
+> **Cột `gia` và `cong don` ở trên là bản cũ** (Linh Khí, `89 × 1.99^(bac-1)`).
+> Giữ lại vì phần còn lại của bảng — `cd`, `he so`, `bi dong`, `tich` — vẫn là số
+> đang chạy. Giá hiện tại **phẳng, 1 điểm Ngộ Tính mỗi lần**:
+>
+> ```
+> CFG.SKILL_NGO_UNLOCK = 1    -- mo khoa mot ky nang
+> CFG.SKILL_NGO_UP     = 1    -- nang mot bac
+> ```
+>
+> Trọn một kỹ năng = **10 điểm** (1 mở khoá + 9 nâng). Bảy kỹ năng = **70** trên
+> 300 điểm kiếm được cả ván; 230 điểm còn lại dành cho Pháp Khí.
 
-## Vì sao bước giá là 1,99
+## Vì sao bước giá từng là 1,99 — và vì sao nó không còn
 
 Linh Căn có 20 bậc, kỹ năng có 10 — mỗi bậc kỹ năng trải **2 cảnh giới**. Nên
-bước giá kỹ năng = bước giá Linh Căn bình phương: 1,412² = 1,99.
+bước giá kỹ năng = bước giá Linh Căn bình phương: 1,412² = 1,99. Nhờ đó "nâng cả
+7 skill một bậc" luôn xấp xỉ "một lần đột phá Linh Căn" cùng thời điểm.
+
+**Tính chất đó đã mất**, và mất có chủ ý. Nó chỉ có nghĩa khi hai hệ tiêu **cùng
+một đồng tiền** — so 89 Linh Khí với 439 Linh Khí thì được, so 2 Ngộ Tính với
+439 Linh Khí thì không so được.
+
+Đổi lại: Linh Căn và Kỹ Năng không còn tranh nhau một cái ví, nên mỗi hệ có một
+câu trả lời riêng cho "cần gì để nâng".
+[ADR 0015](../05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md)
 
 Hệ quả là một câu so sánh người chơi đọc được:
 
@@ -189,7 +217,8 @@ nằm trong bảng Lua — chỉnh cân bằng không cần build lại file nh�
 
 ## Mở khóa: hero **không** có sẵn cả bảy
 
-Bắt đầu với **2** kỹ năng đầu tiên; năm cái còn lại mua bằng Linh Khí.
+**Không cái nào phát sẵn** (`CFG.SKILL_START_COUNT = 0`) — hero vào map với
+command card trống. Cả bảy mở khoá bằng **Ngộ Tính**, mỗi cái 1 điểm.
 
 Hai lý do, lý do thứ hai mới là cái nặng:
 

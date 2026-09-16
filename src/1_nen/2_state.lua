@@ -51,6 +51,9 @@ S.mobStage   = {}      -- [unit] = stage luc SINH, de tra thuong dung gia
 S.alive      = 0
 S.wave       = {}      -- { players, spawnFail } cua wave hien tai
 S.waveTimer  = nil
+-- nil = dong ho dang chay. "boss" = da don sach tang 10, cho -next goi
+-- boss. "realm" = da ha boss, cho -next sang canh gioi sau.
+S.waitNext   = nil
 S.waveDlg    = nil
 S.tickTimer  = nil
 S.dumped      = {}     -- [unit] = true, da do danh sach ability chua
@@ -71,6 +74,44 @@ local function frameDead(f)
   return f
 end
 API.frameDead = frameDead
+
+-- Nen co vien that, thay cho mot o mau phang.
+--
+-- BlzCreateFrameByType("BACKDROP", ...) chi cho mot hinh chu nhat tron,
+-- phai tu dap texture vao. Ma texture chac chan ton tai o moi ban
+-- (TeamColor) lai la mot o mau DAC 1x1 pixel -- nen ket qua luon la mot
+-- hinh chu nhat phang, khong vien, canh cung.
+--
+-- BlzCreateFrame dung TEMPLATE co san trong giao dien game, nen no keo
+-- theo ca vien, bo goc va hoa tiet. Doi lai: ten template khong co that
+-- thi tra ve nil, nen phai thu lan luot roi moi lui ve cach cu.
+--
+-- Tra ve ca frame LAN TEN da dung -- khong ghi lai duoc thi khong co
+-- cach nao biet no dang ve bang duong nao, dung kieu im lang cua
+-- ADR 0012.
+local function backdrop(names, parent, pid, fallbackTex)
+  if BlzCreateFrame ~= nil and names ~= nil then
+    for i = 1, #names do
+      local f = BlzCreateFrame(names[i], parent, 0, pid)
+      if f ~= nil then return f, names[i] end
+    end
+  end
+  if BlzCreateFrameByType == nil then return nil, "thieu native" end
+  local f = BlzCreateFrameByType("BACKDROP", "FlatBackdrop", parent, "", pid)
+  if f ~= nil and fallbackTex ~= nil and BlzFrameSetTexture ~= nil then
+    BlzFrameSetTexture(f, fallbackTex, 0, true)
+  end
+  return f, "o mau phang (lui ve)"
+end
+API.backdrop = backdrop
+
+-- Co chu. Khong co native thi bo qua -- chu ve co mac dinh, van doc duoc.
+local function frameScale(f, s)
+  if f ~= nil and s ~= nil and BlzFrameSetScale ~= nil then
+    BlzFrameSetScale(f, s)
+  end
+end
+API.frameScale = frameScale
 
 -- ---------- Tien ich ----------
 

@@ -53,28 +53,66 @@ lang: en, hai bang khop nhau
 lang: LECH BANG -- vi:skill_up en:panel_foo
 ```
 
-## Tên quái: 60 tên từ 23 chuỗi
+## Tên quái: 460 tên từ 25 chuỗi
 
 Trước đây quái tên là **"Footman"** — vô nghĩa trong một map tu tiên.
 
-Tên quái ghép từ tên cảnh giới cộng hậu tố theo loại:
-
-| Loại | Hậu tố en | Hậu tố vi |
-|---|---|---|
-| lính thường | Cultivator | Tan Tu |
-| tinh anh | Elite | Tinh Anh |
-| boss | Lord | Ma Ton |
+Tên quái ghép từ **tên cảnh giới + tầng + hậu tố theo loại**:
 
 ```
-Mortal Cultivator · Golden Core Elite · Great Luo Lord
-Pham Nhan Tan Tu  · Kim Dan Tinh Anh  · Dai La Ma Ton
+<cảnh giới>  <tầng>  -  <hậu tố>
 ```
 
-20 cảnh giới × 3 loại = **60 tên, sinh ra từ 20 + 3 chuỗi.**
+| Mảnh | Khoá | en | vi |
+|---|---|---|---|
+| cảnh giới | `CFG.REALMS[r]` | Qi Refining | Luyen Khi |
+| tầng 1–9 | `tier_word` | Tier 3 | Tang 3 |
+| tầng 10 | `tier_full` | Perfection | Vien Man |
+| lính thường | `mob_suffix` | Cultivator | Tan Tu |
+| tinh anh | `elite_suffix` | Elite | Tinh Anh |
+| boss | `boss_suffix` | Lord | Ma Ton |
 
-Đổi tên bằng `BlzSetUnitName` lúc sinh quái, nên **không phải tạo unit type nào
-trong Object Editor**, và đổi tiếng cũng không phải đụng tới nó. Thiếu native
-thì bỏ qua, quái giữ tên gốc — không sập.
+```
+Luyen Khi Tang 1 - Tan Tu       Qi Refining Tier 1 - Cultivator
+Luyen Khi Tang 1 - Tinh Anh     Qi Refining Tier 1 - Elite
+Luyen Khi Vien Man - Tan Tu     Qi Refining Perfection - Cultivator
+Luyen Khi - Ma Ton              Qi Refining - Lord
+```
+
+20 cảnh giới × 11 stage × 2 loại + 20 boss = **460 tên, sinh ra từ 20 tên cảnh
+giới + 5 chuỗi.**
+
+### Vì sao tầng phải nằm trong tên
+
+Không có tầng thì cả 11 stage của một cảnh giới ra **cùng một cái tên**. Mà quái
+dồn lại qua nhiều wave — đo được: ở stage 6 vẫn còn 174 con sống — nên trên map
+lúc nào cũng có vài thế hệ cùng lúc. Nhìn một con không biết nó thuộc đợt nào,
+cũng không biết nó đang trả giá thưởng của stage nào
+([`S.mobStage`](../../src/3_tran_dau/2_wave.lua) trả theo stage lúc **sinh**).
+
+Boss không cần tầng: nó là lần độ kiếp **duy nhất** của cảnh giới đó.
+
+### Dòng báo thành phần wave
+
+Một wave có hai loại quái, nên dòng báo phải kể ra cả hai — bằng **đúng cái tên
+đang nằm trên con quái**, để đối chiếu được cái nhìn thấy với cái vừa đọc:
+
+```
+[12/220] Luyen Khi Tang 1
+   50 x Luyen Khi Tang 1 - Tan Tu   +   1 x Luyen Khi Tang 1 - Tinh Anh
+```
+
+Khoá `wave_comp`. Stage boss thay bằng `boss_coming` và một dòng tên boss.
+
+### Đổi tên lúc chạy, không qua Object Editor
+
+`BlzSetUnitName` đổi tên **từng con** lúc sinh, nên không phải tạo unit type nào
+trong Object Editor, và đổi tiếng cũng không đụng tới nó.
+
+Thiếu native thì quái giữ tên gốc của **mẫu lính** làm nó — `Footman`, `Ghoul`,
+`Abomination`, `Frost Wyrm` theo `CFG.MOB_UNIT`. Đó là lỗi im lặng đúng kiểu ADR
+0012, nên [5_natives.lua](../../src/1_nen/5_natives.lua) đo `BlzSetUnitName` và
+ghi vào file vết; `-nat` xem lại được trong game.
 
 ## Chưa phủ hết
 
@@ -83,8 +121,25 @@ triển**: dòng vết, báo cáo `-nat`, `-sync`, cảnh báo thiếu native. C
 chúng dành cho người làm map, không phải người chơi.
 
 Chưa dịch: tên hero (`Hart`/`Hvwd`/`Hkal` là tên riêng, giữ nguyên), vai hero
-(`Warrior`/`Shooter`/`Mage` — vốn đã tiếng Anh).
+(`Warrior`/`Shooter`/`Mage` — vốn đã tiếng Anh), và `CFG.HOUSE_NAME`.
 
-**Tooltip của kỹ năng trong command card chưa dịch** vì nó nằm trong
-`war3map.w3a`, không nằm trong Lua. Bộ sinh sẽ ghi nó ra theo `CFG.LANG` — xem
-[sửa & clone ability](../06-object-editor/sua-va-clone-ability.md).
+`CFG.TIER_VIEN_MAN` **đã bỏ** — tên tầng cuối là chữ hiển thị chứ không phải
+tham số, nên nó chuyển sang khoá `tier_full` ở đây. Cùng lý do với
+`CFG.PICK_TITLE` trước đó.
+
+**Tooltip của kỹ năng trong command card: đã có bộ sinh, nhưng chỉ một thứ tiếng
+mỗi lần.**
+
+[w3skill.py](../../w3skill.py) ghi tên và tooltip 10 bậc vào `war3map.wts` theo
+`CFG.LANG`, hoặc theo `--lang` nếu chỉ định.
+
+> ⚠ **`build.py --lang vi` KHÔNG đổi được tooltip.** Nó chỉ chèn `CFG.LANG` vào
+> Lua; `war3map.wts` là file riêng và chỉ giữ được một thứ tiếng.
+>
+> Muốn bản tiếng Việt đầy đủ thì phải chạy **cả hai**:
+> ```
+> python w3skill.py gen --lang vi
+> python build.py --lang vi
+> ```
+> Hai bản map khác tiếng cần hai lần sinh — và vì `w3skill.py` ghi thẳng vào thư
+> mục map, **không build song song hai tiếng cùng lúc được**.

@@ -1,7 +1,8 @@
 # Hai mươi cảnh giới
 
-> **Trạng thái:** Đã chốt — chưa cài
-> **Cập nhật:** 2026-09-15
+> **Trạng thái:** Đã cài
+> **Cập nhật:** 2026-09-16
+> **Code:** [2_wave.lua](../../src/3_tran_dau/2_wave.lua) — `decode()`, `tierLabel()`
 > **Khoá CFG:** `REALMS` `TIERS_PER_REALM`
 
 Bảng tra. Đây là dữ liệu tham chiếu, không phải luật — luật nằm ở

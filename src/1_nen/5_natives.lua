@@ -57,7 +57,10 @@ local function groups()
         "chu tren nut se nuot cu bam -- bam dung chu thi khong an" },
     }},
 
-    { ten = "Chi so hero", muc = {
+    { ten = "Chi so & ten unit", muc = {
+      { "BlzSetUnitName",           BlzSetUnitName,
+        "quai giu ten goc cua mau linh (Footman, Ghoul...) -- nhin vao" ..
+        " con quai khong biet no thuoc canh gioi nao, tang may" },
       { "BlzGetUnitBaseDamage",     BlzGetUnitBaseDamage, "" },
       { "BlzSetUnitBaseDamage",     BlzSetUnitBaseDamage, "" },
       { "BlzGetUnitArmor",          BlzGetUnitArmor, "" },

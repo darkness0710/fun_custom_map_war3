@@ -111,8 +111,12 @@ local function spawnHero(pid, uid)
   if u ~= nil then
     API.lockHero(u)
     giveAbilities(u, uid)
-    API.linhCanApply(pid, u)   -- giu tu vi khi doi hero
-    API.skillApply(pid)        -- dat lai bac cho dung bang da mua
+    -- THU TU QUAN TRONG. Doc chi so NEN cua hero moi TRUOC khi bat cu
+    -- he nao cong vao -- doc sau la doc phai con so da cong roi, va moi
+    -- lan doi hero se nhan chong them mot lan.
+    API.heroBaseCapture(pid)
+    API.skillApply(pid)          -- dat lai bac cho dung bang da mua
+    API.heroRecomputeAll()       -- Linh Can + Trang Bi + bi dong + aura
     API.waveReadyCheck()       -- du nguoi thi vao dot 1 ngay, khoi cho
     if CFG.SKILL_MODE == "learn" then
       API.grantSkillPoints(u, CFG.SKILL_POINTS_START)

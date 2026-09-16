@@ -63,28 +63,19 @@ end
 
 -- Gia mo khoa theo SO CAI DA MO, khong theo cai nao. Thich mo cai nao
 -- truoc thi mo -- ep thu tu la lay mat mot lua chon ma chang duoc gi.
-local function unlockCost(pid)
-  local list = CFG.SKILLS[S.p[pid] and S.p[pid].hero
-                          and GetUnitTypeId(S.p[pid].hero) or 0]
-  if list == nil then return nil end
-
-  local daMo = 0
-  local d = S.p[pid]
-  for i = 1, #list do
-    local lv = (d.skill and d.skill[list[i].id])
-               or (i <= CFG.SKILL_START_COUNT and 1 or 0)
-    if lv > 0 then daMo = daMo + 1 end
-  end
-
-  local c = CFG.SKILL_UNLOCK[daMo + 1]
-  if c == nil or c <= 0 then return nil end
-  return c
-end
-
+-- Gia tinh bang NGO TINH, va la MOT diem cho moi lan.
+--
+-- Ky nang bi chan boi "da giet du tinh anh chua", khong phai "da gom du
+-- tien chua" -- ma tien thi Linh Can va Trang Bi da tranh nhau roi.
+-- Xem docs/02-he-thong/kinh-te.md
+--
+-- Gia phang nen khong con ham unlockCost: mo khoa cai thu nhat hay cai
+-- thu bay deu 1 diem. Nguoi choi khong phai tinh toan gi, chi phai chon
+-- THU TU -- mo cai nao truoc, don bac cai nao.
 local function costOf(pid, level, aid)
-  if level <= 0 then return unlockCost(pid) end
+  if level <= 0 then return CFG.SKILL_NGO_UNLOCK end
   if level >= (aid and maxOf(aid) or CFG.SKILL_MAX_LEVEL) then return nil end
-  return math.floor(CFG.SKILL_COST_BASE * CFG.SKILL_COST_STEP ^ (level - 1) + 0.5)
+  return CFG.SKILL_NGO_UP
 end
 
 -- ---------- Suc manh theo bac ----------
@@ -102,6 +93,15 @@ end
 
 local function pctAt(sk, level)
   return (sk.pct or 0) * CFG.SKILL_PASSIVE_STEP ^ (level - 1)
+end
+
+-- Giap PHANG cua aura. Dung buoc bi dong nhu pct: 3.0 -> 6.0 sau 9 lan.
+--
+-- Rieng mot ham chu khong dung pctAt vi day la GIAP, khong phai phan
+-- tram. Warcraft dung giap phang; "+15% giap" tren hero co 3 giap la
+-- +0.45 -- gan nhu bang khong.
+local function giapAt(sk, level)
+  return (sk.giap or 0) * CFG.SKILL_PASSIVE_STEP ^ (level - 1)
 end
 
 local function manaAt(sk, level)
@@ -174,9 +174,10 @@ local function upgrade(pid, index)
     end
     return
   end
-  if not API.spendLinhKhi(pid, gia) then
-    API.msg(pid, CFG.C_RED .. API.t("no_qi") .. CFG.C_END ..
-      API.t("need_have", API.num(gia), API.num(API.getLinhKhi(pid))))
+  if not API.spendNgoTinh(pid, gia) then
+    API.msg(pid, CFG.C_RED .. API.t("no_ngo") .. CFG.C_END ..
+      API.t("need_have", API.num(gia), API.num(API.getNgoTinh(pid))) ..
+      CFG.C_GREY .. " " .. API.t("ngo_note") .. CFG.C_END)
     API.panelRefresh(pid)
     return
   end
@@ -189,6 +190,7 @@ local function upgrade(pid, index)
       SetUnitAbilityLevel(d.hero, sk.id, 1)
       S.skillMax[sk.id] = probeMax(d.hero, sk.id)
       SetUnitAbilityLevel(d.hero, sk.id, 1)
+      API.skillFxRecompute(pid)   -- vua mo khoa mot bi dong
     else
       API.msg(pid, CFG.C_RED .. "Khong gan duoc " .. API.idToStr(sk.id) ..
         CFG.C_END)
@@ -201,6 +203,7 @@ local function upgrade(pid, index)
   end
 
   applyLevel(pid, sk, cur + 1)
+  API.skillFxRecompute(pid)   -- bi dong "stat"/"aura" tinh lai theo bac moi
 
   -- Doc lai bac THAT tren unit. Neu no khong bang bac vua mua thi bang
   -- dang noi doi, va tha nguoi choi biet ngay con hon phat hien sau
@@ -218,88 +221,18 @@ end
 -- ---------- The "Ky Nang" trong bang phim E ----------
 
 local function fmt(sk, level)
+  if sk.giap ~= nil then
+    return "+" .. string.format("%.0f", giapAt(sk, level))
+  end
   if sk.loai == "aura" or sk.loai == "bidong" then
     return string.format("%.0f%%", pctAt(sk, level) * 100)
   end
   return "x" .. string.format("%.2f", heSoAt(sk, level))
 end
 
-local function tabRows(pid)
-  local list = listOf(pid)
-  if #list == 0 then
-    return { CFG.C_GREY .. API.t("skill_none") .. CFG.C_END }
-  end
-
-  local out = {}
-  for i = 1, #list do
-    local sk = list[i]
-    local lv = levelOf(pid, sk.id, i)
-    local tran = maxOf(sk.id)
-    local gia = costOf(pid, lv, sk.id)
-
-    -- Hien TRAN THAT, khong hien tran thiet ke. Bang bao 10/10 trong khi
-    -- unit chi len duoc bac 3 la bang noi doi.
-    -- Dong bi khoa: chi hien ten, chu "khoa" va gia mo. Hien luon ca so
-    -- lieu cua no la lo het, chang con gi de mong.
-    local co = (gia ~= nil and API.getLinhKhi(pid) >= gia) and CFG.C_JADE or CFG.C_GREY
-    local oGia = (gia == nil) and (CFG.C_GREY .. API.t("panel_max") .. CFG.C_END)
-                              or (co .. API.num(gia) .. CFG.C_END)
-
-    if lv <= 0 then
-      -- Dong bi khoa: chi ten va gia. Hien luon so lieu la lo het.
-      out[i] = { CFG.C_GREY .. API.pick(sk) .. CFG.C_END,
-                 CFG.C_GREY .. API.t("skill_locked") .. CFG.C_END, "", "", oGia }
-    else
-      local oBac = lv .. "/" .. tran
-      if tran < CFG.SKILL_MAX_LEVEL then
-        oBac = CFG.C_RED .. oBac .. "!" .. CFG.C_END
-      end
-
-      local oHl = CFG.C_JADE .. fmt(sk, lv) .. CFG.C_END
-      if sk.heSo ~= nil and sk.heSo > 0 then
-        -- Ghi ro dang an theo chi so nao. Cong thuc lay chi so CAO NHAT,
-        -- ma nguoi choi khong co cach nao biet do la cai nao neu khong noi.
-        local _, ten = topStat(S.p[pid] and S.p[pid].hero)
-        oHl = oHl .. CFG.C_GREY .. " " .. API.t("stat_" .. ten) .. CFG.C_END
-      end
-
-      local oDung = ""
-      if sk.cd ~= nil and sk.cd > 0 then
-        oDung = string.format("%.1fs", cdAt(sk, lv))
-        if manaAt(sk, lv) > 0 then oDung = oDung .. " / " .. manaAt(sk, lv) end
-        oDung = CFG.C_GREY .. oDung .. CFG.C_END
-      end
-
-      out[i] = { CFG.C_GOLD .. API.pick(sk) .. CFG.C_END, oBac, oHl, oDung, oGia }
-    end
-  end
-
-  -- Mot dong su that o cuoi: con so mau ngoc o tren la THIET KE, chua
-  -- phai thu dang chay. Chung chi thanh that khi bo sinh ghi so vao
-  -- war3map.w3a va cac skill bi dong duoc viet bang Lua.
-  if not CFG.SKILL_DATA_LIVE then
-    out[#out + 1] = ""
-    out[#out + 1] = CFG.C_RED .. API.t("skill_notlive") .. CFG.C_END ..
-                    CFG.C_GREY .. API.t("skill_notlive2") .. CFG.C_END
-  end
-  return out
-end
-
--- Nut [+] cua tung dong. Nil = dong do khong co nut.
-local function tabRowLabel(pid, i)
-  local sk = listOf(pid)[i]
-  if sk == nil then return nil end
-  local lv = levelOf(pid, sk.id, i)
-  if costOf(pid, lv, sk.id) == nil then return nil end
-  if lv <= 0 then return API.t("skill_buy") end
-  return "+"
-end
-
 -- Icon lay THANG tu ability, khong go duong dan trong bang. Go tay thi
 -- sai mot chu la hien o xanh la, ma khong ai biet sai o dau.
-local function tabRowIcon(pid, i)
-  local sk = listOf(pid)[i]
-  if sk == nil then return nil end
+local function iconOf(sk)
   if sk.icon ~= nil then return sk.icon end
   if BlzGetAbilityIcon == nil then return nil end
   local p = BlzGetAbilityIcon(sk.id)
@@ -307,28 +240,98 @@ local function tabRowIcon(pid, i)
   return p
 end
 
-local function tabRowAction(pid, i)
+-- Mot dong mo ta: hieu luc, roi hoi chieu / mana neu co.
+local function subOf(pid, sk, lv)
+  local s = fmt(sk, lv)
+  if sk.heSo ~= nil and sk.heSo > 0 then
+    -- Ghi ro dang an theo chi so nao. Cong thuc lay chi so CAO NHAT, ma
+    -- nguoi choi khong co cach nao biet do la cai nao neu khong noi.
+    local _, ten = topStat(S.p[pid] and S.p[pid].hero)
+    s = s .. " (" .. API.t("stat_" .. ten) .. ")"
+  end
+  if sk.cd ~= nil and sk.cd > 0 then
+    s = s .. "   " .. string.format("%.1fs", cdAt(sk, lv))
+    if manaAt(sk, lv) > 0 then s = s .. " / " .. manaAt(sk, lv) .. " mana" end
+  end
+  return s
+end
+
+local function tabItems(pid)
+  local list = listOf(pid)
+  if #list == 0 then return {} end
+
+  local ngo = API.getNgoTinh(pid)
+  local out = {}
+  for i = 1, #list do
+    local sk   = list[i]
+    local lv   = levelOf(pid, sk.id, i)
+    local tran = maxOf(sk.id)
+    local gia  = costOf(pid, lv, sk.id)
+
+    local it = { icon = iconOf(sk), ten = API.pick(sk) }
+
+    if lv <= 0 then
+      -- Ky nang chua mo: KHONG hien so lieu cua no. Lo het thi chang
+      -- con gi de mong khi bo tien ra mo.
+      it.ten       = CFG.C_GREY .. API.pick(sk) .. CFG.C_END
+      it.trangThai = CFG.C_GREY .. API.t("skill_locked") .. CFG.C_END
+      it.mota      = ""
+      if gia ~= nil then
+        it.nut    = API.t("btn_unlock") .. "   " .. gia
+        it.batNut = (ngo >= gia)
+      end
+    else
+      -- Hien TRAN THAT, khong hien tran thiet ke. Bang bao 10/10 trong
+      -- khi unit chi len duoc bac 3 la bang noi doi.
+      local bac = lv .. "/" .. tran
+      if tran < CFG.SKILL_MAX_LEVEL then
+        bac = CFG.C_RED .. bac .. " !" .. CFG.C_END
+      else
+        bac = CFG.C_JADE .. bac .. CFG.C_END
+      end
+      it.trangThai = bac
+      it.mota      = subOf(pid, sk, lv)
+      if gia ~= nil then
+        it.nut    = API.t("btn_up") .. "   " .. gia
+        it.batNut = (ngo >= gia)
+      else
+        it.trangThai = CFG.C_GREY .. API.t("st_max") .. CFG.C_END
+      end
+    end
+    out[i] = it
+  end
+
+  -- Mot dong su that o cuoi: con so mau ngoc o tren la THIET KE, chua
+  -- phai thu dang chay. Chung chi thanh that khi bo sinh ghi so vao
+  -- war3map.w3a va cac skill bi dong duoc viet bang Lua.
+  --
+  -- Giu lai sau khi doi bo cuc: bang ma hien so dep nhung sai thi te
+  -- hon la khong hien gi.
+  if not CFG.SKILL_DATA_LIVE then
+    out[#out + 1] = {
+      ten  = CFG.C_RED .. API.t("skill_notlive") .. CFG.C_END,
+      mota = API.t("skill_notlive2"),
+    }
+  end
+  return out
+end
+
+local function tabItemAction(pid, i)
   if listOf(pid)[i] == nil then return end
   API.syncSend(pid, CFG.OP_SKILL_UP, i)
 end
 
 local function startSkills()
   API.panelAddTab({
-    ten         = API.t("panel_skill"),
-    cols        = { { ten = API.t("col_skill"),  w = 0.28 },
-                    { ten = API.t("col_level"),  w = 0.12 },
-                    { ten = API.t("col_effect"), w = 0.22 },
-                    { ten = API.t("col_use"),    w = 0.18 },
-                    { ten = API.t("col_cost"),   w = 0.20 } },
-    rows        = tabRows,
-    rowLabel    = tabRowLabel,
-    rowAction   = tabRowAction,
-    rowIcon     = tabRowIcon,
-    actionLabel = function() return nil end,
-    action      = function() end,
+    ten        = API.t("panel_skill"),
+    kind       = "list",
+    soMuc      = 8,   -- 7 ky nang + 1 dong canh bao SKILL_DATA_LIVE
+    items      = tabItems,
+    itemAction = tabItemAction,
+    trong      = API.t("skill_none"),
   })
   API.syncOn(CFG.OP_SKILL_UP, upgrade)
-  API.trace("skill: the Ky Nang san sang")
+  API.trace("skill: the Ky Nang san sang (Ngo Tinh)")
 end
 
 -- Goi khi hero vua duoc tao: dat lai bac cho dung voi bang da mua.
@@ -371,6 +374,7 @@ API.skillDamage  = skillDamage
 API.skillHeSo    = heSoAt
 API.skillCd      = cdAt
 API.skillPct     = pctAt
+API.skillGiap    = giapAt
 API.skillMana    = manaAt
 API.skillTopStat = topStat
 API.skillApply   = applyToHero

@@ -12,8 +12,15 @@
 --  Nho: goi ham cua file khac phai qua API.
 -- ============================================================
 
-local ROWS_AHEAD = 5    -- so bac ke tiep hien trong thang
-local ROWS_BACK  = 1    -- so bac da qua hien trong thang
+-- The nay dung kieu "focus" cua bang: MOT the lon, MOT hanh dong.
+--
+-- Truoc day no la mot cai thang 7 dong. Nhung trong 7 dong do chi co
+-- DUNG MOT dong bam duoc -- bac ke tiep. Sau dong con lai la thong tin
+-- tham khao chen cho dung mot viec lam duoc, va nguoi choi phai do mat
+-- tim xem dong nao moi la dong cua minh.
+--
+-- Bang 20 bac van con, nhung no thuoc ve tai lieu
+-- (docs/03-du-lieu/canh-gioi.md) chu khong phai giao dien.
 
 -- ---------- Toan ----------
 
@@ -37,86 +44,60 @@ local function costOf(r)
   return math.floor(CFG.LINHCAN_COST_BASE * CFG.LINHCAN_COST_STEP ^ (r - 1) + 0.5)
 end
 
--- Cong PHAN CHENH giua hai bac, khong dat lai tu dau -- SetHeroStr cong
--- don, dat lai tu dau se de len bonus cua trang bi sau nay.
+-- Linh Can KHONG tu ghi chi so nua. No chi tra loi mot cau: "tu vi cong
+-- them bao nhieu diem so voi bac 1?"
 --
--- Xem CFG.LINHCAN_STAT_MODE ve danh doi giua "all" va "primary".
-local function applyRank(hero, fromR, toR)
-  if hero == nil then return end
-  local d = math.floor(statAt(toR) - statAt(fromR) + 0.5)
-  if d == 0 then return end
-
-  local str = GetHeroStr(hero, false)
-  local agi = GetHeroAgi(hero, false)
-  local int = GetHeroInt(hero, false)
-
-  if CFG.LINHCAN_STAT_MODE == "primary" then
-    -- Cong vao chi so dang cao nhat. Cung quy uoc voi cach skill an
-    -- chi so, nen hero khong bao gio doi chi so chinh giua van.
-    if str >= agi and str >= int then
-      SetHeroStr(hero, str + d, true)
-    elseif agi >= int then
-      SetHeroAgi(hero, agi + d, true)
-    else
-      SetHeroInt(hero, int + d, true)
-    end
-  else
-    SetHeroStr(hero, str + d, true)
-    SetHeroAgi(hero, agi + d, true)
-    SetHeroInt(hero, int + d, true)
-  end
+-- API.heroRecompute trong 7_hieuung.lua la cho DUY NHAT ghi chi so hero
+-- -- no cong nen + so nay, roi nhan % cua bi dong, roi ghi mot lan. Truoc
+-- day moi he tu cong vao, va hai he cung ghi mot thuoc tinh thi lech.
+--
+-- CFG.LINHCAN_STAT_MODE quyet dinh cong vao chi so nao; phan do do
+-- recompute lo.
+local function statBonus(pid)
+  local d = S.p[pid]
+  if d == nil then return 0 end
+  return math.floor(statAt(d.linhCan) - statAt(1) + 0.5)
 end
 
 -- ---------- Noi dung the ----------
-
--- Mot dong = mot bang cac o, moi o mot cot. Xem 4_giao_dien/1_panel.lua
-local function rowText(pid, r, cur)
-  local name = rankName(r)
-  local pw   = string.format("x%.2f", powerAt(r))
-
-  if r < cur then
-    local g = CFG.C_GREY
-    return { g .. r .. CFG.C_END, g .. name .. CFG.C_END, g .. pw .. CFG.C_END,
-             g .. API.t("lc_passed") .. CFG.C_END }
-  elseif r == cur then
-    local g = CFG.C_GOLD
-    return { g .. "> " .. r .. CFG.C_END, g .. name .. CFG.C_END,
-             g .. pw .. CFG.C_END, g .. API.t("lc_here") .. CFG.C_END }
-  end
-
-  -- Bac tuong lai: hien gia CONG DON tu bac hien tai toi bac do.
-  local sum = 0
-  for k = cur, r - 1 do sum = sum + costOf(k) end
-  local co = (API.getLinhKhi(pid) >= sum) and CFG.C_JADE or CFG.C_GREY
-  return { tostring(r), name, CFG.C_JADE .. pw .. CFG.C_END,
-           co .. API.num(sum) .. CFG.C_END }
-end
-
-local function tabRows(pid)
+--
+-- Cai nguoi choi can biet la TRUOC -> SAU va GIA. Khong phai ca bang.
+local function tabInfo(pid)
   local d = S.p[pid]
-  if d == nil then return { "?" } end
+  if d == nil then return {} end
 
   local cur = d.linhCan
-  local out = {}
-  out[1] = { "", CFG.C_GOLD .. API.t("lc_power") .. CFG.C_END,
-             CFG.C_JADE .. string.format("x%.2f", powerAt(cur)) .. CFG.C_END,
-             API.t("lc_stat") .. " +" ..
-             API.num(statAt(cur) - CFG.LINHCAN_STAT_BASE) }
+  local top = maxRank()
+  local out = {
+    tieuDe = API.t("lc_rank", cur, top),
+    phu    = rankName(cur),
+    tienDo = cur / top,
+  }
 
-  local first = cur - ROWS_BACK
-  if first < 1 then first = 1 end
-  for i = 1, ROWS_AHEAD + ROWS_BACK + 1 do
-    local r = first + i - 1
-    if r > maxRank() then break end
-    out[#out + 1] = rowText(pid, r, cur)
+  if cur >= top then
+    out.dong = {
+      { API.t("lc_power"), string.format("x%.2f", powerAt(cur)), "" },
+      { API.t("lc_stat"),
+        "+" .. API.num(statAt(cur) - CFG.LINHCAN_STAT_BASE), "" },
+    }
+    out.ghiChu = API.t("lc_peak")
+    return out
   end
-  return out
-end
 
-local function tabActionLabel(pid)
-  local d = S.p[pid]
-  if d == nil or d.linhCan >= maxRank() then return nil end
-  return API.t("lc_break") .. " " .. API.num(costOf(d.linhCan))
+  local gia = costOf(cur)
+  out.dong = {
+    { API.t("lc_power"),
+      string.format("x%.2f", powerAt(cur)),
+      string.format("x%.2f", powerAt(cur + 1)) },
+    { API.t("lc_stat"),
+      "+" .. API.num(statAt(cur)     - CFG.LINHCAN_STAT_BASE),
+      "+" .. API.num(statAt(cur + 1) - CFG.LINHCAN_STAT_BASE) },
+    { API.t("col_realm"), rankName(cur), rankName(cur + 1) },
+  }
+  out.nut    = API.t("lc_next", rankName(cur + 1)) .. "      " .. API.num(gia)
+  out.batNut = (API.getLinhKhi(pid) >= gia)
+  out.ghiChu = API.t("lc_have", API.num(API.getLinhKhi(pid)))
+  return out
 end
 
 -- ---------- Dot pha ----------
@@ -132,7 +113,7 @@ local function setRank(pid, newR, dev)
   if newR == old then return end
 
   d.linhCan = newR
-  applyRank(d.hero, old, newR)
+  API.heroRecompute(pid)
   API.panelRefresh(pid)
 
   if dev then
@@ -206,14 +187,10 @@ end
 
 local function startLinhCan()
   S.lcTabIndex = API.panelAddTab({
-    ten         = API.t("panel_root"),
-    cols        = { { ten = API.t("col_rank"),  w = 0.10 },
-                    { ten = API.t("col_realm"), w = 0.38 },
-                    { ten = API.t("col_power"), w = 0.22 },
-                    { ten = API.t("col_cost"),  w = 0.30 } },
-    rows        = tabRows,
-    actionLabel = tabActionLabel,
-    action      = tabAction,
+    ten    = API.t("panel_root"),
+    kind   = "focus",
+    info   = tabInfo,
+    action = tabAction,
   })
 
   API.syncOn(CFG.OP_LC_UP,  function(pid) breakthrough(pid) end)
@@ -222,17 +199,17 @@ local function startLinhCan()
   API.trace("linhcan: the so " .. S.lcTabIndex .. ", dong bo=" .. API.syncMode())
 end
 
--- Goi khi hero vua duoc tao: ap lai bac hien tai, de doi hero khong mat tu vi.
+-- Goi khi hero vua duoc tao. Khong con lam gi rieng: recompute doc
+-- statBonus roi tu ap. Giu ten de cho goi cu khong gay.
 local function applyToHero(pid, hero)
-  local d = S.p[pid]
-  if d == nil or hero == nil then return end
-  applyRank(hero, 1, d.linhCan)
+  API.heroRecompute(pid)
 end
 
 API.linhCanRank   = function(pid) return S.p[pid] and S.p[pid].linhCan or 1 end
 API.linhCanPower  = function(pid) return powerAt(API.linhCanRank(pid)) end
 API.linhCanCost   = costOf
 API.linhCanStatAt = statAt
+API.linhCanStatBonus = statBonus
 API.linhCanChat   = onChat
 API.linhCanApply  = applyToHero
 API.startLinhCan  = startLinhCan

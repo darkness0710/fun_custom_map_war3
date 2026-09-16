@@ -1,0 +1,5 @@
+SylvanasHighElf.mdx
+war3mapImported/SylvanasHighElf.mdx
+
+BlackArrow1.blp
+war3mapImported/BlackArrow1.blp

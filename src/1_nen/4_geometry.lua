@@ -247,6 +247,35 @@ local function regionMissing(cfgKey, name)
   end
 end
 
+-- ---------- Vai tro cua tung block ----------
+--
+-- Block khong khai bao trong CFG.BLOCKS thi la "hoang" -- chua giao
+-- viec. Tra ve "hoang" chu khong tra nil: goi ben ngoai khong phai kiem
+-- nil truoc moi lan dung.
+local function blockRole(idx)
+  local b = CFG.BLOCKS[idx]
+  return (b ~= nil and b.vai) or "hoang"
+end
+
+local function blockRoleDef(idx)
+  return CFG.BLOCK_ROLE[blockRole(idx)] or CFG.BLOCK_ROLE.hoang
+end
+
+local function blockRoleName(idx)
+  return API.pick(blockRoleDef(idx))
+end
+
+-- Vung World Editor cua mot block: gg_rct_Blk07. Tra ve nil neu chua
+-- chay w3region.py -- goi ben ngoai phai chiu duoc chuyen do.
+local function blockRegion(idx)
+  return region(string.format("%s%02d", CFG.BLOCK_RGN_PREFIX, idx))
+end
+
+API.blockRole     = blockRole
+API.blockRoleDef  = blockRoleDef
+API.blockRoleName = blockRoleName
+API.blockRegion   = blockRegion
+
 API.regionNames   = regionNames
 API.regionLabel   = regionLabel
 API.regionMissing = regionMissing

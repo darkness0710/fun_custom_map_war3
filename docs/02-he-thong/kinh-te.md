@@ -1,7 +1,25 @@
 # Kinh tế & bốn hệ nâng cấp
 
-> **Trạng thái:** Nháp — công thức đã chốt, chưa cài
-> **Cập nhật:** 2026-09-15
+> **Trạng thái:** Đã cài — **chưa chơi thử**
+> **Cập nhật:** 2026-09-16
+> **Code:** [1_player.lua](../../src/2_nguoi_choi/1_player.lua) (ví tiền),
+> [2_wave.lua](../../src/3_tran_dau/2_wave.lua) (thu nhập),
+> [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua),
+> [4_skill.lua](../../src/2_nguoi_choi/4_skill.lua),
+> [5_trangbi.lua](../../src/2_nguoi_choi/5_trangbi.lua),
+> [6_phapkhi.lua](../../src/2_nguoi_choi/6_phapkhi.lua) (chỗ tiêu)
+
+> **Ba hệ chạy, một hệ rỗng.** Pháp Khí đã bị xoá sạch nội dung (2026-09-16) và
+> sẽ thiết kế lại để tiêu **Ngộ Tính**, không tiêu Tinh Thạch.
+>
+> ⚠ **Hai hệ quả phải biết:**
+>
+> **1. Ngân sách sức mạnh tụt còn ×392 trên ×967.** Pháp Khí gánh ×2.5; bỏ nó ra
+> thì `19.7 × 8.3 × 2.4 = 392`, tức **41%** mức hợp đồng. 230 điểm Ngộ Tính dư
+> phải trả lại chỗ đó khi thiết kế lại.
+>
+> **2. Tinh Thạch không còn chỗ tiêu nào.** Boss vẫn rơi 1 150 điểm cả ván, nhưng
+> không mua được gì — một đồng tiền chỉ vào không ra. Xem mục cuối trang.
 > **Xem kèm:** [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) ·
 > [bang-nhan-vat.md](bang-nhan-vat.md) · [dot-quai.md](dot-quai.md)
 
@@ -9,17 +27,51 @@ Trang này trả lời câu hỏi mà
 [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) để ngỏ: **×967 sức
 mạnh người chơi đến từ đâu, và mua bằng gì.**
 
-## Hai đồng tiền, và chỉ hai
+## Ba đồng tiền, ba loại quái, ba nhịp
 
-| | Nguồn | Mua gì | Nhịp |
-|---|---|---|---|
-| **Linh Khí** *(vàng)* | Mọi quái | Linh Căn, Trang Bị, Kỹ Năng | Chảy đều, tiêu liên tục |
-| **Tinh Thạch** *(gỗ)* | **Chỉ boss** — 20 lần cả ván | Pháp Khí | Hiếm, theo mốc |
+[ADR 0015](../05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md)
 
-Hai đồng tiền chỉ tạo chiều sâu khi **khác nguồn** và **khác chỗ tiêu**. Ở đây
-khác cả hai: Linh Khí là thu nhập đều để nâng dần, Tinh Thạch là phần thưởng cột
-mốc để mua thứ đổi cách chơi. Nếu cả hai cùng rơi từ quái và cùng dùng nâng cấp
-thì đó không phải lựa chọn, chỉ là làm phép cộng ở hai chỗ.
+| | Rơi từ | Cả ván | Mua gì | Nhịp | Hiện ở |
+|---|---|---|---|---|---|
+| **Linh Khí** *(vàng)* | lính thường | ~1 880 000 | Linh Căn, Trang Bị | giây | thanh vàng |
+| **Ngộ Tính** | **tinh anh + boss** | 300 | **Kỹ Năng · Pháp Khí** | wave | bảng phím E |
+| **Tinh Thạch** *(gỗ)* | boss | 1 150 | ⚠ **không gì cả** | cảnh giới | thanh gỗ |
+
+Ba loại quái đã có sẵn ba **nhịp** khác hẳn nhau — 11 000 con lính, 200 tinh anh,
+20 boss. Gắn mỗi đồng tiền vào một nhịp thì mỗi hệ nâng cấp trả lời được bằng
+**một câu**:
+
+| Hệ | Cần gì để nâng |
+|---|---|
+| Linh Căn | *giết quái, gom tiền* |
+| Trang Bị | *giết quái, gom tiền* |
+| Kỹ Năng | *giết tinh anh và boss* |
+| Pháp Khí | *giết tinh anh và boss* — cùng ví với Kỹ Năng |
+
+**Linh Căn và Trang Bị cố ý dùng chung ví.** Đó là lựa chọn chính của mỗi wave:
+đột phá, hay nâng đồ? Hai hệ kia không tranh ví đó — chúng bị chặn bởi **nội
+dung** chứ không bởi tiền, nên không cày tiền để bỏ qua được.
+
+### Ngộ Tính là điểm, và giá là MỘT điểm
+
+Không đường cong mũ, không bảng giá. **Mỗi lần trả đúng 1 điểm** — mở khoá một kỹ
+năng: 1 điểm; nâng một bậc: 1 điểm.
+
+| | Điểm |
+|---|---|
+| Kiếm cả ván | 200 tinh anh × 1 + 20 boss × 5 = **300** |
+| Mở và max trọn 7 kỹ năng | 7 × (1 + 9) = **70** |
+| **Dư cho Pháp Khí** | **230** |
+
+Giá phẳng nên người chơi **không phải tính toán gì cả** — chỉ phải chọn **thứ
+tự**: mở cái nào trước, dồn bậc cái nào.
+
+> **Bảy kỹ năng max xong vào khoảng stage 51 / 220** — mỗi cảnh giới kiếm 15 điểm,
+> 70 điểm là gần 5 cảnh giới. Tức Kỹ Năng thôi là hệ tiến triển từ **23% ván đầu**.
+> Đó chính là lý do 230 điểm còn lại phải có chỗ tiêu.
+
+Ngộ Tính **không** lên thanh tài nguyên: Warcraft chỉ có vàng và gỗ, cả hai đã
+dùng. Nó hiện trong bảng phím E.
 
 ### Dùng luôn thanh tài nguyên của Warcraft III
 
@@ -49,11 +101,13 @@ thông báo ta vẫn gọi đúng tên, vài phút sau không ai để ý nữa.
 cái là phải kiểm lại tích. Lệch 20% ở một nguồn nghe nhỏ, nhưng lệch 20% ở cả bốn
 là tích lệch hơn gấp đôi.
 
-> Bản trước của [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) chia
-> ba nguồn (tu vi ×40, trang bị ×12, kỹ năng ×2 = ×960). Bảng trên là **cùng ngân
-> sách đó tách làm bốn** để khớp bốn thẻ của [bảng nhân vật](bang-nhan-vat.md).
-> Linh Căn nhận phần lớn nhất vì nó chính là hệ tu vi — nó giữ đúng vai trò cũ,
-> chỉ đổi tên và tách bớt một phần sang Pháp Khí.
+> **Đây là bản đang chạy trong code.** `CFG.LINHCAN_STEP = 1.17` (không phải
+> 1.215) và `CFG.TRANGBI_COST_BASE = 147` (không phải 86) đều thuộc bản này.
+>
+> Bản cũ chia **ba** nguồn: tu vi ×40.5, trang bị ×12, kỹ năng ×2 = ×971. Cũng
+> đúng — nhưng **không trộn được**. Trộn Linh Căn ×40.5 của bản cũ với Trang Bị
+> ×8 của bản này cho ×1 942, gấp đôi hợp đồng.
+> [ADR 0015](../05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md)
 
 ## Thu nhập
 
@@ -81,19 +135,22 @@ con lính — đủ để đáng đi giết riêng, không đủ để bỏ mặ
 
 ### Chia ngân sách
 
-| Hệ | Tỉ lệ | Linh Khí |
+Chỉ **hai** hệ tiêu Linh Khí — Kỹ Năng và Pháp Khí đều tiêu Ngộ Tính, nên phần
+Linh Khí còn lại dồn hết cho Linh Căn và Trang Bị.
+
+| Hệ | Tỉ lệ | Linh Khí (đo được) |
 |---|---|---|
-| Linh Căn | 40% | ~750 000 |
-| Trang Bị | 30% | ~563 000 |
-| Kỹ Năng | 22% | ~413 000 |
-| Không tiêu hết | 8% | ~150 000 |
+| Linh Căn | 40% | 747 839 |
+| Trang Bị | 52% | 974 605 |
+| Không tiêu hết | 8% | 157 743 |
 
 Phần không tiêu hết **cố ý có**. Người chơi không nên mua được sạch mọi thứ trong
 một ván — nếu tiêu hết mà vẫn thắng thì lần chơi sau không còn gì để làm khác đi.
+Cả ba đồng tiền đều giữ khoảng dư này: Ngộ Tính tiêu 94%, Tinh Thạch 91%.
 
 ## Bảng giá
 
-Cả ba hệ dùng một nguyên tắc: **giá bám theo thu nhập**. Giá tăng cùng nhịp với
+Hai hệ tiêu Linh Khí dùng một nguyên tắc: **giá bám theo thu nhập**. Giá tăng cùng nhịp với
 Linh Khí rơi ra, nên "một lần nâng cấp đáng mấy wave" là **hằng số suốt 220 stage**.
 
 Đây là tính chất quan trọng nhất của bảng giá. Không có nó thì hoặc đầu game nghèo
@@ -120,36 +177,73 @@ cũng phải để dành ~7 wave.
 ### Trang Bị — 6 ô × 9 lần nâng
 
 ```
-gia(lan thu k) = 86 × 1.134^(k-1)
+gia(lan thu k) = TRANGBI_COST_BASE × TRANGBI_COST_STEP^(k-1)
+               = 147 × 1.134^(k-1)
 ```
 
 | Lần nâng | Giá |
 |---|---|
-| 1 | 85 |
-| 18 | 723 |
-| 36 | 6 936 |
-| 54 | 66 471 |
+| 1 | 147 |
+| 18 | 1 236 |
+| 36 | 11 858 |
+| 54 | 113 632 |
 
 Mỗi cấp +4% sát thương. Sáu ô đầy cấp 10 = `(1.04⁹)⁶ ≈ ×8.3`.
 
-### Kỹ Năng — 7 kỹ năng × 9 lần nâng
+`1.134 = 1.0319^4.07` — 54 lần nâng trải đều 220 stage thì mỗi lần cách nhau
+4,07 stage, nên "một lần nâng đồ đáng mấy wave" là hằng số suốt ván. Cùng nguyên
+tắc với 7,1 wave của Linh Căn.
+
+> **Sáu ô có tác dụng giống hệt nhau (+4% sát thương).** Không phải quên làm cho
+> đa dạng: ngân sách Trang Bị là ×8 **sát thương**, mà ×8 đó chính là
+> `(1.04⁹)⁶`. Chia ba ô sang máu/giáp thì sát thương còn `(1.04⁹)³ = ×2.9` và
+> tích bốn hệ tụt đi hơn một nửa. Muốn ô thủ/công khác nhau thì phải suy lại
+> cả ngân sách trước.
+
+### Kỹ Năng — 1 điểm mỗi lần
 
 ```
-gia(lan thu k) = 56 × 1.113^(k-1)
+CFG.SKILL_NGO_UNLOCK = 1    -- mo khoa mot ky nang
+CFG.SKILL_NGO_UP     = 1    -- nang mot bac
+CFG.SKILL_START_COUNT = 0   -- khong cai nao phat san
 ```
 
-| Lần nâng | Giá |
+**Không kỹ năng nào được phát sẵn.** Hero vào map với command card trống — chỉ
+Move/Stop/Hold/Attack/Patrol. Con tinh anh đầu tiên chết cho 1 điểm, đủ mở một kỹ
+năng, và **đó là quyết định đầu tiên của ván**: mở cái nào trước.
+
+Đợt 1 đánh bằng đòn thường. Với `WAVE_WAIT_FIRST` bật thì người chơi có thời gian
+nhìn bảng trước khi gõ `-next`, nên không ai bị ném vào trận mà chưa biết mình có gì.
+
+| | Điểm |
 |---|---|
-| 1 | 55 |
-| 21 | 472 |
-| 42 | 4 446 |
-| 63 | 41 821 |
+| Mở khoá 7 kỹ năng | 7 |
+| Nâng mỗi cái lên bậc 10 | 7 × 9 = 63 |
+| **Tổng** | **70** trên 300 |
 
-Mỗi cấp +10% hiệu lực. Một kỹ năng cấp 10 = `1.10⁹ ≈ ×2.36`.
+### Pháp Khí — rỗng, chờ thiết kế lại
 
-> Giá tính theo **tổng số lần đã nâng**, không theo cấp của riêng kỹ năng đó. Nên
-> dồn hết vào một kỹ năng không rẻ hơn rải đều — người chơi chọn theo lối chơi chứ
-> không theo phép tính.
+`CFG.PHAPKHI = {}`. Năm món cũ đã xoá — chúng mua bằng Tinh Thạch.
+
+**Ngân sách đã dành sẵn: 230 điểm Ngộ Tính**, và phần sức mạnh phải trả lại là
+**×2.5** của hợp đồng ×967.
+
+Code chạy được với bảng rỗng: thẻ hiện một dòng "chưa có gì", và mọi hiệu ứng trả
+về `false` nên `2_wave.lua` gọi vẫn an toàn.
+
+### ⚠ Tinh Thạch hiện không có chỗ tiêu
+
+Boss vẫn rơi `TINHTHACH_BOSS_BASE + STEP × (r−1)`, tổng **1 150** cả ván. Nhưng
+Pháp Khí đã chuyển sang Ngộ Tính, nên **không hệ nào tiêu Tinh Thạch nữa** —
+`API.spendTinhThach` còn trong code nhưng không ai gọi.
+
+Ba cách xử lý, chưa chọn:
+
+| | Cách | Ghi chú |
+|---|---|---|
+| A | **Bỏ hẳn Tinh Thạch** | Còn hai đồng tiền. Gọn nhất, nhưng mất một mốc thưởng khi hạ boss |
+| B | **Tìm việc mới cho nó** | Ví dụ: một hệ thứ năm, hoặc mở khoá phó bản |
+| C | Giữ nguyên, để dành | Người chơi thấy một con số tăng mãi mà không dùng được — **tệ nhất** |
 
 ### Pháp Khí — Tinh Thạch
 
