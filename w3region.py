@@ -252,19 +252,29 @@ def cmd_rm(map_dir, ten, dry):
     """Xoa mot vung theo ten. Dung cho vung bo di ma con sot lai."""
     w3r = os.path.join(map_dir, "war3map.w3r")
     ver, regs = read_regions(w3r)
-    giu = [r for r in regs if r["name"].lower() != ten.lower()]
-    if len(giu) == len(regs):
-        print("[canh bao] khong co vung nao ten %r" % ten)
+
+    # Ten ket thuc bang * thi xoa theo TIEN TO: "Blk*" xoa ca 25 vung.
+    if ten.endswith("*"):
+        pre = ten[:-1].lower()
+        khop = lambda nm: nm.lower().startswith(pre)
+    else:
+        khop = lambda nm: nm.lower() == ten.lower()
+
+    giu = [r for r in regs if not khop(r["name"])]
+    bo  = [r for r in regs if khop(r["name"])]
+    if not bo:
+        print("[canh bao] khong co vung nao khop %r" % ten)
         print("   dang co: " + ", ".join(r["name"] for r in regs))
         return
-    print("xoa %r -- con %d vung" % (ten, len(giu)))
+    print("xoa %d vung: %s" % (len(bo), ", ".join(r["name"] for r in bo)))
+    print("con lai %d vung" % len(giu))
     if dry:
         print("[dry] khong ghi gi.")
         return
     n = write_regions(w3r, ver, giu)
     print("[ok] da ghi %s -- %d vung, %d byte" % (w3r, len(giu), n))
-    print("     gg_rct_%s trong war3map.lua se mat o lan World Editor luu sau."
-          % ten)
+    print("     dong gg_rct_* tuong ung trong war3map.lua se mat o lan"
+          " World Editor luu sau.")
 
 
 def main():
