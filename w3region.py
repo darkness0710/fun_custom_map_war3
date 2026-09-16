@@ -248,9 +248,29 @@ def cmd_gen(map_dir, dry):
           % (PREFIX, PREFIX, GRID_COLS * GRID_ROWS))
 
 
+def cmd_rm(map_dir, ten, dry):
+    """Xoa mot vung theo ten. Dung cho vung bo di ma con sot lai."""
+    w3r = os.path.join(map_dir, "war3map.w3r")
+    ver, regs = read_regions(w3r)
+    giu = [r for r in regs if r["name"].lower() != ten.lower()]
+    if len(giu) == len(regs):
+        print("[canh bao] khong co vung nao ten %r" % ten)
+        print("   dang co: " + ", ".join(r["name"] for r in regs))
+        return
+    print("xoa %r -- con %d vung" % (ten, len(giu)))
+    if dry:
+        print("[dry] khong ghi gi.")
+        return
+    n = write_regions(w3r, ver, giu)
+    print("[ok] da ghi %s -- %d vung, %d byte" % (w3r, len(giu), n))
+    print("     gg_rct_%s trong war3map.lua se mat o lan World Editor luu sau."
+          % ten)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("lenh", choices=["list", "gen"])
+    ap.add_argument("lenh", choices=["list", "gen", "rm"])
+    ap.add_argument("--ten", help="ten vung can xoa (dung voi lenh rm)")
     ap.add_argument("--map")
     ap.add_argument("--dry", action="store_true")
     a = ap.parse_args()
@@ -258,6 +278,10 @@ def main():
     map_dir = find_map(a.map)
     if a.lenh == "list":
         cmd_list(map_dir)
+    elif a.lenh == "rm":
+        if not a.ten:
+            raise SystemExit("[loi] lenh rm can --ten <TenVung>")
+        cmd_rm(map_dir, a.ten, a.dry)
     else:
         cmd_gen(map_dir, a.dry)
 
