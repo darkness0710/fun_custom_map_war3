@@ -154,6 +154,40 @@ duy nhất trong nhóm Text cần viết riêng cho từng level.
 >
 > Chưa đo: mana, tầm thi triển, bán kính, loại mục tiêu hợp lệ. Cùng cách lấy.
 
+### Ability ẩn: đặt Button Position ra ngoài lưới
+
+Command card là lưới **4 × 3** — X từ 0–3, Y từ 0–2. Button Position chỉ là toạ
+độ trong lưới đó, nên đặt **ngoài** phạm vi thì nút vẫn tồn tại và ability vẫn
+chạy, nhưng **vẽ ở chỗ không có ô nào** — tức không hiện.
+
+```
+abpx = 0
+abpy = -11        <- ngoai luoi, nut khong hien
+```
+
+**Dùng khi nào.** Một ability chỉ để mang hiệu ứng, không cần người chơi bấm hay
+nhìn: bonus của trang bị, cờ trạng thái, vật mang cho code Lua. Hero chỉ có
+**7 ô trống** và bảy kỹ năng đã chiếm hết — mọi ability thêm sau **bắt buộc**
+phải ẩn, nếu không nó đè lên một kỹ năng và cái đó **bấm không được**.
+
+**Vì sao chọn cách này thay vì `BlzUnitHideAbility`:**
+
+| | |
+|---|---|
+| `BlzUnitHideAbility` | Là **native** — chưa xác minh bản 1.31.1 có, và phải gọi lúc chạy cho từng hero |
+| Button Position `(0, −11)` | Là **dữ liệu** — nằm sẵn trong `.w3a`, không phụ thuộc phiên bản, không cần một dòng Lua nào |
+
+Đúng nguyên tắc của dự án: để dữ liệu lo thay vì viết code lo.
+
+**Bộ ghi xử lý được số âm.** `abpx`/`abpy` là int32 **có dấu**; `w3obj.py` ghi
+bằng `struct "<i"` nên `-11` ra `f5 ff ff ff` và đọc lại đúng — đã kiểm bằng một
+vòng ghi–đọc.
+
+> **Chưa nhìn tận mắt trong game.** Đây là cách quen thuộc trong cộng đồng WC3 và
+> khớp với cơ chế lưới mà `w3skill.py` đang dùng để đặt 7 nút của Hart, nhưng
+> chưa ai trong dự án này bật game lên xác nhận. Kiểm một lần khi làm ô trang bị
+> đầu tiên.
+
 ### Theo từng ability gốc
 
 | Gốc | Là gì | Mã Data |
