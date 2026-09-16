@@ -359,6 +359,10 @@ CFG.CARD_W     = 0.360   -- be ngang vung noi dung = be ngang mot dong
 CFG.CARD_GAP   = 0.005   -- khoang cach hai dong
 CFG.CARD_ICON  = 0.040   -- canh o icon
 CFG.CARD_PAD   = 0.010   -- le trong
+-- Vien trang tri cua backdrop an mat mep trong. EscMenuBackdrop co
+-- vien day, va CARD_PAD mot minh khong du -- tieu de leo len dung
+-- duong vien vang. Do bang mat tren anh chup 1080p.
+CFG.CARD_BORDER = 0.010
 CFG.CARD_LINE  = 0.014   -- khoang cach hai dong chu ben trong mot dong
 CFG.CARD_X     = 0.40    -- tam ngang cua bang
 CFG.CARD_Y     = 0.38    -- tam doc

@@ -106,8 +106,14 @@ local function rowH()
   return h + 2 * CFG.CARD_PAD
 end
 
+-- Vien trang tri cua backdrop an mat mot phan mep trong. CARD_PAD 0.010
+-- khong du, nen tieu de leo len dung duong vien vang.
+local function titleTop()
+  return CFG.CARD_BORDER + CFG.CARD_PAD
+end
+
 local function headH()
-  return CFG.CARD_PAD + CFG.CARD_LINE * CFG.CARD_SCALE_TITLE + 0.008
+  return titleTop() + CFG.CARD_LINE * CFG.CARD_SCALE_TITLE + 0.008
 end
 
 -- ---------- Mot dong chu ----------
@@ -215,7 +221,19 @@ local function buildPanel(pid, list)
   if BlzFrameSetText ~= nil then
     local title = BlzCreateFrameByType("TEXT", "HeroPanelTitle", st.panel, "", pid)
     if title ~= nil then
-      BlzFrameSetPoint(title, FRAMEPOINT_TOP, st.panel, FRAMEPOINT_TOP, 0.0, -P)
+      -- Neo TRAI vao mot o co be ngang THAT roi can giua bang
+      -- SetTextAlignment -- dung ly do da ghi o textLine(). Neo bang
+      -- FRAMEPOINT_TOP ma khong dat kich thuoc thi Warcraft can frame
+      -- quanh diem neo, va frameScale lai phong quanh TAM, nen mep tren
+      -- troi len tren diem neo. Cong voi vien backdrop la chu de len
+      -- duong vien vang.
+      BlzFrameSetPoint(title, FRAMEPOINT_TOPLEFT, st.panel, FRAMEPOINT_TOPLEFT,
+                       P, -titleTop())
+      BlzFrameSetSize(title, CFG.CARD_W, CFG.CARD_LINE)
+      if BlzFrameSetTextAlignment ~= nil
+         and TEXT_JUSTIFY_TOP ~= nil and TEXT_JUSTIFY_CENTER ~= nil then
+        BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
+      end
       API.frameScale(title, CFG.CARD_SCALE_TITLE)
       BlzFrameSetText(title, CFG.C_GOLD .. API.t("pick_title") .. CFG.C_END)
       API.frameDead(title)
