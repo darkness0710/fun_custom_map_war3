@@ -184,7 +184,7 @@ thành một dòng, ngăn bằng `|`. Muốn viết dài hơn thì nới `CFG.CA
 Nhịp dọc **suy ra** từ cỡ icon và cỡ chữ (`rowH()` trong
 [2_heroframe.lua](../../src/4_giao_dien/2_heroframe.lua)), không gõ tay. Trước đây
 vị trí ba dòng chữ là ba hằng số rời rạc (`y`, `y+0.018`, `y+0.040`) — đổi cỡ chữ
-một cái là cả ba lệch, đúng lỗi mà bảng phím E đã dính một lần.
+một cái là cả ba lệch, đúng lỗi mà bảng phím R đã dính một lần.
 
 > Dùng đường nào để vẽ nền thì đọc file vết, dòng `herocard: ... nen = `. Không
 > ghi lại thì không có cách nào biết — đúng kiểu lỗi im lặng của

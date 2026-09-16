@@ -103,7 +103,7 @@ local function onLinhCanCmd()
   API.linhCanChat(GetPlayerId(GetTriggerPlayer()), GetEventPlayerChatString())
 end
 
--- Lenh dev cho tien: "-lk 50000" them linh khi, "-tt 300" them tinh thach.
+-- Lenh dev cho tien: "-lk 5000" Linh Khi, "-go 300" Go, "-vang 5000" Vang.
 -- Khong co no thi muon thu bac Linh Can 15 phai cay 155 wave.
 local function onMoneyCmd()
   local pid = GetPlayerId(GetTriggerPlayer())
@@ -119,15 +119,25 @@ local function onMoneyCmd()
     return
   end
 
-  n = tonumber(raw:match("^%s*%-tt%s+(%d+)"))
+  n = tonumber(raw:match("^%s*%-go%s+(%d+)"))
   if n ~= nil then
-    API.addTinhThach(pid, n)
-    API.msg(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " tinh thach -> " ..
-      API.num(API.getTinhThach(pid)) .. CFG.C_END)
+    API.addGo(pid, n)
+    API.msg(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " go -> " ..
+      API.num(API.getGo(pid)) .. CFG.C_END)
+    API.panelRefresh(pid)
     return
   end
 
-  API.msg(pid, CFG.C_RED .. "Dung: -lk <so>  hoac  -tt <so>" .. CFG.C_END)
+  n = tonumber(raw:match("^%s*%-vang%s+(%d+)"))
+  if n ~= nil then
+    API.addVang(pid, n)
+    API.msg(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " vang -> " ..
+      API.num(API.getVang(pid)) .. CFG.C_END)
+    API.panelRefresh(pid)
+    return
+  end
+
+  API.msg(pid, CFG.C_RED .. "Dung: -lk <so> | -go <so> | -vang <so>" .. CFG.C_END)
 end
 
 local function registerEvents()
@@ -163,7 +173,8 @@ local function registerEvents()
     local tMoney = CreateTrigger()
     for i = 1, #S.pids do
       TriggerRegisterPlayerChatEvent(tMoney, Player(S.pids[i]), "-lk", false)
-      TriggerRegisterPlayerChatEvent(tMoney, Player(S.pids[i]), "-tt", false)
+      TriggerRegisterPlayerChatEvent(tMoney, Player(S.pids[i]), "-go", false)
+      TriggerRegisterPlayerChatEvent(tMoney, Player(S.pids[i]), "-vang", false)
     end
     TriggerAddAction(tMoney, onMoneyCmd)
   end
@@ -257,6 +268,40 @@ local function registerEvents()
   TriggerAddAction(tNat, function()
     API.nativeChat(GetPlayerId(GetTriggerPlayer()), GetEventPlayerChatString())
   end)
+
+  -- "-reg" DO hoi mau that cua hero. Lenh dev: no ha mau hero xuong nua
+  -- va doi chi so trong luc do, khong phai thu de go giua tran.
+  if CFG.DEV_COMMANDS then
+    local tReg = CreateTrigger()
+    for i = 1, #S.pids do
+      TriggerRegisterPlayerChatEvent(tReg, Player(S.pids[i]), "-reg", false)
+    end
+    TriggerAddAction(tReg, function()
+      local pid = GetPlayerId(GetTriggerPlayer())
+      local raw = GetEventPlayerChatString() or ""
+      -- "-reg" mau | "-reg mana" mana | "-reg 5" / "-reg mana 5" doi so giay
+      local loai = raw:find("mana", 1, true) and "mana" or "hp"
+      API.nativeRegen(pid, tonumber(raw:match("(%d+)")), loai)
+    end)
+  end
+
+  -- "-do <n>" dung do o o n (1..6) qua DUNG duong ma phim so di.
+  -- Tach duoc hai kha nang ma tu ngoai khong phan biet noi:
+  --   "-do 1" chay ma phim khong  -> su kien phim khong no
+  --   ca hai deu khong chay       -> dut o doan dong bo hoac UnitUseItem
+  if CFG.DEV_COMMANDS then
+    local tDo = CreateTrigger()
+    for i = 1, #S.pids do
+      TriggerRegisterPlayerChatEvent(tDo, Player(S.pids[i]), "-do", false)
+    end
+    TriggerAddAction(tDo, function()
+      local pid = GetPlayerId(GetTriggerPlayer())
+      local n = tonumber((GetEventPlayerChatString() or ""):match("(%d+)")) or 1
+      if n < 1 then n = 1 elseif n > 6 then n = 6 end
+      API.dungDoVet("dungdo: -do " .. n .. " (khong qua phim)")
+      API.syncSend(pid, CFG.OP_ITEM, n - 1)
+    end)
+  end
 
   -- "-vung" in ban do phan vung 25 block va ping minimap theo mau.
   --

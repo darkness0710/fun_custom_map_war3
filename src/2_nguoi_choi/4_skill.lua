@@ -73,9 +73,9 @@ end
 -- thu bay deu 1 diem. Nguoi choi khong phai tinh toan gi, chi phai chon
 -- THU TU -- mo cai nao truoc, don bac cai nao.
 local function costOf(pid, level, aid)
-  if level <= 0 then return CFG.SKILL_NGO_UNLOCK end
+  if level <= 0 then return CFG.SKILL_GO_UNLOCK end
   if level >= (aid and maxOf(aid) or CFG.SKILL_MAX_LEVEL) then return nil end
-  return CFG.SKILL_NGO_UP
+  return CFG.SKILL_GO_UP
 end
 
 -- ---------- Suc manh theo bac ----------
@@ -141,6 +141,31 @@ local function applyLevel(pid, sk, level)
   -- bac do, va ta khong biet no se nhay len bac nao truoc khi ta kip
   -- goi lai.
   local tran = maxOf(sk.id)
+
+  -- TAT hieu ung GOC. Xem CFG.SKILL_TAT_GOC.
+  --
+  -- Dat cho MOI bac, cung ly do voi mana/hoi chieu ben duoi. Hang so nao
+  -- khong co trong ban nay thi GHI VET chu khong lang le bo qua -- mot
+  -- cai ten go sai tra ve nil va khong lam gi ca (ADR 0012).
+  local ab = (BlzGetUnitAbility ~= nil) and BlzGetUnitAbility(d.hero, sk.id) or nil
+
+  local function tat(bang, dat)
+    local zero = bang and bang[sk.id] or nil
+    if zero == nil or ab == nil or dat == nil then return end
+    for k = 1, #zero do
+      local F = _G[zero[k]]
+      if F == nil then
+        API.trace("skill: KHONG co hang so " .. zero[k] ..
+                  " -- hieu ung goc VAN CHAY")
+      else
+        for lv = 1, tran do dat(ab, F, lv - 1, 0) end
+      end
+    end
+  end
+
+  tat(CFG.SKILL_TAT_GOC,     BlzSetAbilityRealLevelField)
+  tat(CFG.SKILL_TAT_GOC_INT, BlzSetAbilityIntegerLevelField)
+
   for lv = 1, tran do
     if BlzSetUnitAbilityManaCost ~= nil and sk.mana ~= nil then
       BlzSetUnitAbilityManaCost(d.hero, sk.id, lv - 1, manaAt(sk, lv))
@@ -174,9 +199,9 @@ local function upgrade(pid, index)
     end
     return
   end
-  if not API.spendNgoTinh(pid, gia) then
-    API.msg(pid, CFG.C_RED .. API.t("no_ngo") .. CFG.C_END ..
-      API.t("need_have", API.num(gia), API.num(API.getNgoTinh(pid))) ..
+  if not API.spendGo(pid, gia) then
+    API.msg(pid, CFG.C_RED .. API.t("no_go") .. CFG.C_END ..
+      API.t("need_have", API.num(gia), API.num(API.getGo(pid))) ..
       CFG.C_GREY .. " " .. API.t("ngo_note") .. CFG.C_END)
     API.panelRefresh(pid)
     return
@@ -190,6 +215,12 @@ local function upgrade(pid, index)
       SetUnitAbilityLevel(d.hero, sk.id, 1)
       S.skillMax[sk.id] = probeMax(d.hero, sk.id)
       SetUnitAbilityLevel(d.hero, sk.id, 1)
+      -- PHAI goi applyLevel o day nua. Truoc day nhanh mo khoa return
+      -- thang, nen mana va hoi chieu cua ability giu nguyen so cua
+      -- Object Editor -- Chuong la ban sao cua Shockwave nen no doi 100
+      -- mana trong khi bang ghi 25, va hero chi co 75 mana. Bang noi mot
+      -- dang, game lam mot neo.
+      applyLevel(pid, sk, 1)
       API.skillFxRecompute(pid)   -- vua mo khoa mot bi dong
     else
       API.msg(pid, CFG.C_RED .. "Khong gan duoc " .. API.idToStr(sk.id) ..
@@ -260,7 +291,7 @@ local function tabItems(pid)
   local list = listOf(pid)
   if #list == 0 then return {} end
 
-  local ngo = API.getNgoTinh(pid)
+  local ngo = API.getGo(pid)
   local out = {}
   for i = 1, #list do
     local sk   = list[i]
@@ -277,7 +308,7 @@ local function tabItems(pid)
       it.trangThai = CFG.C_GREY .. API.t("skill_locked") .. CFG.C_END
       it.mota      = ""
       if gia ~= nil then
-        it.nut    = API.t("btn_unlock") .. "   " .. gia
+        it.nut    = API.t("btn_unlock") .. "  " .. gia .. " " .. API.t("cur_go")
         it.batNut = (ngo >= gia)
       end
     else
@@ -292,7 +323,7 @@ local function tabItems(pid)
       it.trangThai = bac
       it.mota      = subOf(pid, sk, lv)
       if gia ~= nil then
-        it.nut    = API.t("btn_up") .. "   " .. gia
+        it.nut    = API.t("btn_up") .. "  " .. gia .. " " .. API.t("cur_go")
         it.batNut = (ngo >= gia)
       else
         it.trangThai = CFG.C_GREY .. API.t("st_max") .. CFG.C_END
@@ -325,7 +356,10 @@ local function startSkills()
   API.panelAddTab({
     ten        = API.t("panel_skill"),
     kind       = "list",
-    soMuc      = 8,   -- 7 ky nang + 1 dong canh bao SKILL_DATA_LIVE
+    -- Dong canh bao SKILL_DATA_LIVE chi hien khi co la false, nen chi
+    -- dat cho no khi do. Mot hang thua = 0.048 chieu cao khung, ma
+    -- chieu cao dang tranh nhau voi thanh giao dien duoi.
+    soMuc      = 7 + (CFG.SKILL_DATA_LIVE and 0 or 1),
     items      = tabItems,
     itemAction = tabItemAction,
     trong      = API.t("skill_none"),

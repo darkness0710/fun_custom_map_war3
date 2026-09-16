@@ -1,5 +1,50 @@
 # Kinh tế & bốn hệ nâng cấp
 
+> ## Viết lại toàn bộ — 2026-09-16
+>
+> Bản trước: ba đồng tiền *(Linh Khí, Ngộ Tính, Tinh Thạch)*, thu nhập là đường
+> cong mũ `60 × 1.0319^(stage−1)` cho tổng `1,880,187` Linh Khí. Bỏ hết.
+>
+> **Thu nhập giờ phẳng — một con một đồng:**
+>
+> | Loại quái | Rơi ra | Số con cả ván | Tổng |
+> |---|---|---|---|
+> | lính thường | 1 Linh Khí + 1 Vàng | 10,000 | 10,000 + 10,000 |
+> | tinh anh | 1 Gỗ | 200 | 200 |
+> | boss | 5 Gỗ | 20 | 100 |
+>
+> **Ba đồng tiền, ba hệ, ba nhịp:**
+>
+> | Tiền | Ở đâu | Nhịp | Tiêu vào | Ngân sách |
+> |---|---|---|---|---|
+> | **Linh Khí** | biến riêng, hiện ở bảng R | giây | Linh Căn | 9,118 / 10,000 = **91%** |
+> | **Vàng** | thanh tài nguyên | giây | Shop | ~8,000 / 10,000 nếu mua đều |
+> | **Gỗ** | thanh tài nguyên | wave / cảnh giới | Kỹ Năng | 210 / 300 = **70%** |
+>
+> Linh Khí rời thanh tài nguyên vì thanh đó chỉ có **hai** ô mà giờ có **ba**
+> đồng tiền. Vàng và Gỗ được ưu tiên vì chúng là thứ tiêu liên tục; Linh Khí
+> chỉ tiêu ở đúng một chỗ nên nằm trong bảng là đủ.
+>
+> **Hai hệ tạm khoá:** Trang Bị *(`TRANGBI_LOCKED`)* hiện đủ sáu ô ghi `0/0`
+> không có nút; Pháp Khí *(`PHAPKHI_LOCKED`)* hiện dòng "tạm khoá". Hiện thẻ đầy
+> đủ rồi khoá thì người chơi biết hệ đó tồn tại và đang đóng — để thẻ trống thì
+> họ tưởng giao diện hỏng.
+>
+> **Tinh Thạch xoá hẳn.** Sau khi Pháp Khí khoá thì không hệ nào tiêu nó, mà một
+> con số chỉ tăng chứ không bao giờ dùng được thì tệ hơn là không có.
+>
+> Giá suy ngược từ thu nhập phẳng:
+> - **Linh Căn** `220 × 1.08^(bậc−1)`, 19 lần = `9,118`. Số cũ `439 × 1.412` cho
+>   tổng `747,839` — tính cho thu nhập mũ, với thu nhập phẳng thì bậc cuối
+>   `218,519` là không bao giờ với tới.
+> - **Kỹ Năng** `3` Gỗ mỗi lần *(mở khoá và đôn bậc như nhau)*, trọn bảy =
+>   `210`. Giá `1` thì chỉ tốn `70/300`: max hết quanh wave 70 rồi 150 wave sau
+>   Gỗ thành vô nghĩa.
+> - **Shop** lọ máu `40`, lọ mana `30` vàng. Thu 50 vàng/wave nên giá đặt quanh
+>   mức **một lọ một wave** — mỗi wave là một lựa chọn nhỏ thay vì một phép cộng
+>   dồn.
+
+
 > **Trạng thái:** Đã cài — **chưa chơi thử**
 > **Cập nhật:** 2026-09-16
 > **Code:** [1_player.lua](../../src/2_nguoi_choi/1_player.lua) (ví tiền),
@@ -34,7 +79,7 @@ mạnh người chơi đến từ đâu, và mua bằng gì.**
 | | Rơi từ | Cả ván | Mua gì | Nhịp | Hiện ở |
 |---|---|---|---|---|---|
 | **Linh Khí** *(vàng)* | lính thường | ~1 880 000 | Linh Căn, Trang Bị | giây | thanh vàng |
-| **Ngộ Tính** | **tinh anh + boss** | 300 | **Kỹ Năng · Pháp Khí** | wave | bảng phím E |
+| **Ngộ Tính** | **tinh anh + boss** | 300 | **Kỹ Năng · Pháp Khí** | wave | bảng phím R |
 | **Tinh Thạch** *(gỗ)* | boss | 1 150 | ⚠ **không gì cả** | cảnh giới | thanh gỗ |
 
 Ba loại quái đã có sẵn ba **nhịp** khác hẳn nhau — 11 000 con lính, 200 tinh anh,
@@ -71,7 +116,7 @@ tự**: mở cái nào trước, dồn bậc cái nào.
 > Đó chính là lý do 230 điểm còn lại phải có chỗ tiêu.
 
 Ngộ Tính **không** lên thanh tài nguyên: Warcraft chỉ có vàng và gỗ, cả hai đã
-dùng. Nó hiện trong bảng phím E.
+dùng. Nó hiện trong bảng phím R.
 
 ### Dùng luôn thanh tài nguyên của Warcraft III
 
@@ -203,14 +248,24 @@ tắc với 7,1 wave của Linh Căn.
 ### Kỹ Năng — 1 điểm mỗi lần
 
 ```
-CFG.SKILL_NGO_UNLOCK = 1    -- mo khoa mot ky nang
-CFG.SKILL_NGO_UP     = 1    -- nang mot bac
-CFG.SKILL_START_COUNT = 0   -- khong cai nao phat san
+CFG.SKILL_NGO_UNLOCK  = 1   -- mo khoa mot ky nang
+CFG.SKILL_NGO_UP      = 1   -- nang mot bac
+CFG.SKILL_START_COUNT = 0   -- vao map tay khong
+CFG.NGOTINH_START     = 1   -- nhung cam san mot diem
 ```
 
-**Không kỹ năng nào được phát sẵn.** Hero vào map với command card trống — chỉ
-Move/Stop/Hold/Attack/Patrol. Con tinh anh đầu tiên chết cho 1 điểm, đủ mở một kỹ
-năng, và **đó là quyết định đầu tiên của ván**: mở cái nào trước.
+**Hero vào map tay không, nhưng cầm sẵn 1 Ngộ Tính** *(chốt 2026-09-16)*.
+
+Một điểm đó là **quyết định đầu tiên của ván**, và là quyết định thật: mở cái nào
+trước? Khác hẳn hai bản đã thử và bỏ:
+
+| Bản | Vấn đề |
+|---|---|
+| Cả bảy phát sẵn | Giây đầu không còn gì để chọn — bảy ô đầy ngay là hết chuyện |
+| Tay không, **0 điểm** | Giây đầu không chọn được gì cả — phải đánh đòn thường tới con tinh anh đầu tiên mới có cái để bấm |
+
+Giá phẳng: mở cái thứ nhất hay thứ bảy đều 1 điểm, đôn một bậc cũng 1 điểm.
+Trọn bảy cái là `7 × (1 mở + 9 đôn) = 70` điểm trên 300 kiếm được cả ván.
 
 Đợt 1 đánh bằng đòn thường. Với `WAVE_WAIT_FIRST` bật thì người chơi có thời gian
 nhìn bảng trước khi gõ `-next`, nên không ai bị ném vào trận mà chưa biết mình có gì.

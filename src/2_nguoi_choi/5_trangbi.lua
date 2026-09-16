@@ -112,13 +112,22 @@ local function tabItems(pid)
       mota      = API.t("tb_effect", pct),
       trangThai = CFG.C_JADE .. lv .. "/" .. CFG.TRANGBI_MAX_LEVEL .. CFG.C_END,
     }
-    if gia ~= nil then
-      it.nut    = API.t("btn_up") .. "   " .. API.num(gia)
+
+    -- KHOA TAM THOI: van hien du sau o, nhung ghi 0/0 va khong co nut.
+    -- Hien the day du roi khoa thi nguoi choi biet he nay ton tai va
+    -- dang dong; de the trong thi ho tuong giao dien hong.
+    if CFG.TRANGBI_LOCKED then
+      it.ten       = CFG.C_GREY .. API.pick(slot) .. CFG.C_END
+      it.mota      = CFG.C_GREY .. API.t("tb_locked") .. CFG.C_END
+      it.trangThai = CFG.C_GREY .. "0/0" .. CFG.C_END
+      out[i] = it
+    elseif gia ~= nil then
+      it.nut    = API.t("btn_up") .. "  " .. API.num(gia) .. " " .. API.t("cur_lk")
       it.batNut = (lk >= gia)
     else
       it.trangThai = CFG.C_GREY .. API.t("st_max") .. CFG.C_END
     end
-    out[i] = it
+    if not CFG.TRANGBI_LOCKED then out[i] = it end   -- nhanh khoa da gan o tren
   end
   return out
 end
@@ -126,6 +135,7 @@ end
 -- Bam nut KHONG doi trang thai -- no gui mot tin, va upgrade() ben duoi
 -- chay tren moi may cung mot nhip. Xem ADR 0012.
 local function tabItemAction(pid, i)
+  if CFG.TRANGBI_LOCKED then return end
   if CFG.TRANGBI[i] == nil then return end
   API.syncSend(pid, CFG.OP_TB_UP, i)
 end

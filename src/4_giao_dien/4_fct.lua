@@ -114,6 +114,25 @@ local function onDamage()
   local source = GetEventDamageSource()
   if target == nil then return end
 
+  -- NHA CHINH: ai cung thay (pid = nil).
+  --
+  -- Truoc day ham nay chi ve cho hero cua nguoi choi, nen ca tran danh
+  -- quanh nha chinh dien ra khong mot con so nao -- thu quan trong nhat
+  -- cua van lai la thu duy nhat khong co phan hoi.
+  --
+  -- Khong gan cho mot pid nao: nha chinh do la ca ba nguoi cung thua,
+  -- nen mot nguoi thay so con hai nguoi kia khong thay la sai.
+  if S.house ~= nil then
+    if target == S.house then
+      addPending(target, nil, amount, "taken")
+      return
+    end
+    if source == S.house then
+      addPending(target, nil, amount, "dealt")
+      return
+    end
+  end
+
   -- Sat thuong hero cua nguoi choi NHAN VAO: ve tren dau hero, mau do.
   for i = 1, #S.pids do
     local pid = S.pids[i]

@@ -110,7 +110,7 @@ nội dung 2026-09-16 nên **hiện chỉ còn ×392**. 230 điểm Ngộ Tính 
 - **Ba đồng tiền, mỗi đồng một loại quái** —
   [ADR 0015](05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md). `LINHCAN_STEP`
   đổi 1.215 → 1.17 vì ngân sách chuyển từ bản 3 nguồn sang bản 4 nguồn.
-- **Bảng phím E có hai kiểu thân** —
+- **Bảng phím R có hai kiểu thân** —
   [ADR 0016](05-quyet-dinh/0016-bang-phim-e-hai-kieu-than.md).
 
 ---
@@ -120,7 +120,7 @@ nội dung 2026-09-16 nên **hiện chỉ còn ×392**. 230 điểm Ngộ Tính 
 **Hart xong.** Bảy kỹ năng đủ vỏ lẫn ruột: 10 bậc, hiệu ứng thật, và từ 2026-09-16
 có tên riêng, vị trí ô, tooltip 10 bậc — sinh bằng
 [w3skill.py](../w3skill.py) từ `CFG.SKILLS`, nên tooltip không thể nói khác bảng
-phím E.
+phím R.
 
 **Hvwd và Hkal vẫn trống.** Chọn được nhưng **không có kỹ năng nào**. Thiết kế cũ
 đã xoá để làm lại — [thiet-ke-hero.md](02-he-thong/thiet-ke-hero.md).

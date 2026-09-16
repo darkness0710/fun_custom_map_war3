@@ -17,9 +17,9 @@ local function initPlayers()
        and GetPlayerController(p) == MAP_CONTROL_USER then
       S.p[pid] = { active = true, hero = nil, heroCount = 0,
                    purseGold = 0, purseWood = 0, slots = {},
-                   linhKhiTotal = 0, lkFrac = 0.0,
+                   linhKhi = 0, linhKhiTotal = 0, lkFrac = 0.0,
                    linhCan = 1, fctGold = 0,
-                   ngoTinh = 0,   -- dong tien thu ba, xem CFG.NGOTINH_*
+
                    tb = {},       -- [so thu tu o trang bi] = cap
                    tbUps = 0,     -- tong so lan da nang, de tra gia
                    pk = {} }      -- [ma phap khi] = true
@@ -219,23 +219,38 @@ local function startHeroLock()
   end
 end
 
--- ---------- Hai dong tien ----------
--- Linh Khi = VANG cua Warcraft III, Tinh Thach = GO. Dung luon thanh
--- tai nguyen co san: mien phi cho hien thi, cap nhat tuc thi, va nguoi
--- choi da quen nhin cho do. Xem docs/02-he-thong/kinh-te.md
+-- ---------- BA DONG TIEN ----------
+--
+--   Linh Khi   bien rieng, hien o bang phim R   <- quai thuong, 1/con
+--   Vang       thanh tai nguyen VANG cua Warcraft <- quai thuong, 1/con
+--   Go         thanh tai nguyen GO cua Warcraft   <- tinh anh 1, boss 5
+--
+-- Vi sao Linh Khi khong con nam tren thanh tai nguyen: thanh do chi co
+-- HAI o ma gio co BA dong tien. Vang va Go duoc uu tien vi chung la thu
+-- nguoi choi tieu lien tuc (shop moi wave, ky nang moi tinh anh); Linh
+-- Khi chi tieu o DUNG MOT cho (Linh Can), nen nam trong bang la du.
+--
+-- Hai dong tien cu, Ngo Tinh va Tinh Thach, da bo: Ngo Tinh thanh Go,
+-- con Tinh Thach khong con he nao tieu sau khi Phap Khi bi khoa -- giu
+-- lai la de nguoi choi nhin mot con so tang mai ma khong bao gio dung
+-- duoc. Xem docs/02-he-thong/kinh-te.md
 
+-- ---------- Linh Khi ----------
 local function addLinhKhi(pid, amount)
   if amount == nil or amount == 0 then return end
-  local p = Player(pid)
-  local cur = GetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD)
-  SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, cur + amount)
   local d = S.p[pid]
-  if d ~= nil then d.linhKhiTotal = (d.linhKhiTotal or 0) + amount end
-  if amount > 0 then API.fctOnLinhKhi(pid, amount) end
+  if d == nil then return end
+  d.linhKhi = (d.linhKhi or 0) + amount
+  if d.linhKhi < 0 then d.linhKhi = 0 end
+  if amount > 0 then
+    d.linhKhiTotal = (d.linhKhiTotal or 0) + amount
+    API.fctOnLinhKhi(pid, amount)
+  end
 end
 
 local function getLinhKhi(pid)
-  return GetPlayerState(Player(pid), PLAYER_STATE_RESOURCE_GOLD)
+  local d = S.p[pid]
+  return (d ~= nil) and (d.linhKhi or 0) or 0
 end
 
 local function spendLinhKhi(pid, amount)
@@ -244,48 +259,43 @@ local function spendLinhKhi(pid, amount)
   return true
 end
 
--- ---------- Ngo Tinh ----------
---
--- Dong tien thu BA, va la dong duy nhat KHONG nam tren thanh tai nguyen
--- cua Warcraft -- vang va go da dung het cho Linh Khi va Tinh Thach.
--- No hien trong bang phim E.
---
--- La DIEM chu khong phai tien: khong duong cong mu, khong bam theo thu
--- nhap. Ca van kiem duoc 300, tieu het 283 neu mo va nang tron bay ky
--- nang. Xem docs/02-he-thong/kinh-te.md
-local function addNgoTinh(pid, amount)
+-- ---------- Vang (thanh tai nguyen) ----------
+local function addVang(pid, amount)
   if amount == nil or amount == 0 then return end
-  local d = S.p[pid]
-  if d == nil then return end
-  d.ngoTinh = (d.ngoTinh or 0) + amount
-  if d.ngoTinh < 0 then d.ngoTinh = 0 end
+  local p = Player(pid)
+  local cur = GetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD)
+  local moi = cur + amount
+  if moi < 0 then moi = 0 end
+  SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, moi)
 end
 
-local function getNgoTinh(pid)
-  local d = S.p[pid]
-  return (d ~= nil) and (d.ngoTinh or 0) or 0
+local function getVang(pid)
+  return GetPlayerState(Player(pid), PLAYER_STATE_RESOURCE_GOLD)
 end
 
-local function spendNgoTinh(pid, amount)
-  if getNgoTinh(pid) < amount then return false end
-  addNgoTinh(pid, -amount)
+local function spendVang(pid, amount)
+  if getVang(pid) < amount then return false end
+  addVang(pid, -amount)
   return true
 end
 
-local function addTinhThach(pid, amount)
+-- ---------- Go (thanh tai nguyen) ----------
+local function addGo(pid, amount)
   if amount == nil or amount == 0 then return end
   local p = Player(pid)
-  SetPlayerState(p, PLAYER_STATE_RESOURCE_LUMBER,
-                 GetPlayerState(p, PLAYER_STATE_RESOURCE_LUMBER) + amount)
+  local cur = GetPlayerState(p, PLAYER_STATE_RESOURCE_LUMBER)
+  local moi = cur + amount
+  if moi < 0 then moi = 0 end
+  SetPlayerState(p, PLAYER_STATE_RESOURCE_LUMBER, moi)
 end
 
-local function getTinhThach(pid)
+local function getGo(pid)
   return GetPlayerState(Player(pid), PLAYER_STATE_RESOURCE_LUMBER)
 end
 
-local function spendTinhThach(pid, amount)
-  if getTinhThach(pid) < amount then return false end
-  addTinhThach(pid, -amount)
+local function spendGo(pid, amount)
+  if getGo(pid) < amount then return false end
+  addGo(pid, -amount)
   return true
 end
 
@@ -297,15 +307,15 @@ local function activeCount()
   return n
 end
 
-API.addNgoTinh       = addNgoTinh
-API.getNgoTinh       = getNgoTinh
-API.spendNgoTinh     = spendNgoTinh
 API.addLinhKhi       = addLinhKhi
 API.getLinhKhi       = getLinhKhi
 API.spendLinhKhi     = spendLinhKhi
-API.addTinhThach     = addTinhThach
-API.getTinhThach     = getTinhThach
-API.spendTinhThach   = spendTinhThach
+API.addVang          = addVang
+API.getVang          = getVang
+API.spendVang        = spendVang
+API.addGo            = addGo
+API.getGo            = getGo
+API.spendGo          = spendGo
 API.grantSkillPoints = grantSkillPoints
 API.lockHero      = lockHero
 API.sweepHeroes   = sweepHeroes

@@ -35,7 +35,7 @@ S.skillPick   = {}     -- [pid] = { dlg, map, slot }
 S.skillTrigger= nil
 S.sframe      = {}     -- giao dien ky nang, do 07b_skillframe dung
 S.hframe      = {}     -- the chon hero,   do 07c_heroframe dung
-S.panel       = { tabs = {}, byPid = {}, trig = nil }  -- bang phim E, 07e
+S.panel       = { tabs = {}, byPid = {}, trig = nil }  -- bang phim R
 S.lcTabIndex  = nil    -- so thu tu the Linh Can trong bang
 S.skillMax    = {}     -- [abilId] = so bac THAT doc tu unit, do 4_skill dung
 -- S.sync do 3_sync.lua dung, khai bao ngay trong file do.
@@ -55,6 +55,7 @@ S.waveTimer  = nil
 -- boss. "realm" = da ha boss, cho -next sang canh gioi sau.
 S.waitNext   = nil
 S.waveDlg    = nil
+S.waveHold   = false   -- dang hoan dot sau vi wave cu chua sach
 S.tickTimer  = nil
 S.dumped      = {}     -- [unit] = true, da do danh sach ability chua
 S.spReported  = {}     -- [unit] = true, da bao so diem ky nang chua

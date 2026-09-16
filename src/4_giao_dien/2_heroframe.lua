@@ -127,8 +127,14 @@ local function textLine(pid, parent, name, x, y, w, scale, text)
   local f = BlzCreateFrameByType("TEXT", name, parent, "", pid)
   if f == nil then return nil end
 
-  BlzFrameSetPoint(f, FRAMEPOINT_TOPLEFT, parent, FRAMEPOINT_TOPLEFT, x, -y)
-  BlzFrameSetSize(f, w, CFG.CARD_LINE)
+  -- CHIA cho ti le phong, CA TOA DO lan kich thuoc -- cung mot bai hoc
+  -- voi text() cua bang phim R: BlzFrameSetScale phong luon khoang cach
+  -- tu frame toi diem neo cua cha, nen frame dat cach cha x se duoc ve o
+  -- x * scale.
+  local s = scale or 1.0
+  BlzFrameSetPoint(f, FRAMEPOINT_TOPLEFT, parent, FRAMEPOINT_TOPLEFT,
+                   x / s, -(y / s))
+  BlzFrameSetSize(f, w / s, CFG.CARD_LINE / s)
   if BlzFrameSetTextAlignment ~= nil
      and TEXT_JUSTIFY_TOP ~= nil and TEXT_JUSTIFY_LEFT ~= nil then
     BlzFrameSetTextAlignment(f, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_LEFT)
@@ -227,16 +233,20 @@ local function buildPanel(pid, list)
       -- quanh diem neo, va frameScale lai phong quanh TAM, nen mep tren
       -- troi len tren diem neo. Cong voi vien backdrop la chu de len
       -- duong vien vang.
-      BlzFrameSetPoint(title, FRAMEPOINT_TOPLEFT, st.panel, FRAMEPOINT_TOPLEFT,
-                       P, -titleTop())
-      -- CHIA cho ti le phong. BlzFrameSetScale phong quanh DIEM NEO chu
-      -- khong quanh tam: neo TOPLEFT thi o chu no sang phai va xuong
-      -- duoi. Dat be ngang 0.360 roi phong 1.25 la o thanh 0.450, va chu
-      -- can giua trong o do lech phai 0.045 -- khoang 81 px o 1080p.
+      -- CHIA cho ti le phong, CA TOA DO lan kich thuoc.
       --
-      -- Cac dong hero khong lo chuyen nay vi chung can TRAI: o rong hon
-      -- thi chu van dung yen. Chi can GIUA moi lo ra loi.
-      BlzFrameSetSize(title, CFG.CARD_W / CFG.CARD_SCALE_TITLE, CFG.CARD_LINE)
+      -- BlzFrameSetScale phong luon khoang cach toi diem neo cua cha, va
+      -- phong ca kich thuoc. Muon o chu nam dung [P, CARD_W - P] thi
+      -- phai chia ca hai: neo P/s de duoc ve o P, rong (CARD_W-2P)/s de
+      -- duoc ve rong CARD_W-2P. Luc do chu can GIUA moi roi dung
+      -- CARD_W/2.
+      --
+      -- Ban truoc chi chia be ngang: o thanh [P, P + CARD_W] -- tran ra
+      -- ngoai the ben phai dung P, nen chu can giua lech phai P/2.
+      local s = CFG.CARD_SCALE_TITLE
+      BlzFrameSetPoint(title, FRAMEPOINT_TOPLEFT, st.panel, FRAMEPOINT_TOPLEFT,
+                       P / s, -(titleTop() / s))
+      BlzFrameSetSize(title, (CFG.CARD_W - 2 * P) / s, CFG.CARD_LINE / s)
       if BlzFrameSetTextAlignment ~= nil
          and TEXT_JUSTIFY_TOP ~= nil and TEXT_JUSTIFY_CENTER ~= nil then
         BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)

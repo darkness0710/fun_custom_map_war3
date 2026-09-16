@@ -202,7 +202,7 @@ FIELD_TYPE = {
     "acdn": TYPE_UNREAL,   "adur": TYPE_UNREAL,  "ahdu": TYPE_UNREAL,
     "arac": TYPE_STRING,   "aart": TYPE_STRING,  "arar": TYPE_STRING,
     "anam": TYPE_STRING,   "aret": TYPE_STRING,  "arut": TYPE_STRING,
-    "aub1": TYPE_STRING,
+    "aub1": TYPE_STRING,   "atp1": TYPE_STRING,  "ahky": TYPE_STRING,
 }
 
 

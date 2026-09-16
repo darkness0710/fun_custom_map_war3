@@ -195,46 +195,21 @@ local function spawnOne(stage, realm, kind)
 end
 
 -- ---------- Kinh te ----------
-
-local function waveIncome(stage)
-  return CFG.LINHKHI_BASE * CFG.LINHKHI_GROWTH ^ (stage - 1)
-end
-
--- Linh khi cho mot con, theo loai. Tra ve SO THUC, khong lam tron.
 --
--- O stage 1, mot con linh dang gia 60 x 0.60 / 50 = 0.72 linh khi. Lam
--- tron xuong la 0 -- giet sach 50 con dau game duoc khong dong nao.
--- Lam tron len thanh 1 thi thu nhap dau game vot 23% so voi duong cong.
--- Ca hai deu sai, nen giu so thuc va cong don phan le o payBounty.
-local function bountyOf(stage, kind)
-  local total = waveIncome(stage)
-  if kind == "elite" then
-    return total * (1 - CFG.LINHKHI_MOB_SHARE) / CFG.WAVE_ELITE_COUNT
-  elseif kind == "boss" then
-    return total
-  end
-  return total * CFG.LINHKHI_MOB_SHARE / CFG.WAVE_MOB_COUNT
-end
-
--- Cong don phan le, tra ra khi du mot don vi. Tong tra ra bam dung
--- duong cong thu nhap, khong mat mat do lam tron.
+-- Ba ham cu -- waveIncome(), bountyOf(), payBounty() -- da xoa het.
 --
--- Phap Khi "Tu Linh Tran" cong o DAY chu khong o addLinhKhi: lenh dev
--- "-lk 50000" khong duoc nhan len, va con so cong vao van di qua dung
--- mot cho nen khong the quen mot duong.
-local function payBounty(pid, amount)
-  local d = S.p[pid]
-  if d == nil then return end
-  if API.phapKhiCo ~= nil and API.phapKhiCo(pid, "linhkhi") then
-    amount = amount * 1.25
-  end
-  d.lkFrac = (d.lkFrac or 0) + amount
-  local whole = math.floor(d.lkFrac)
-  if whole > 0 then
-    d.lkFrac = d.lkFrac - whole
-    API.addLinhKhi(pid, whole)
-  end
-end
+-- Chung ton tai de giai MOT bai toan: thu nhap la duong cong mu
+-- 60 x 1.0319^(stage-1), chia cho 50 con, nen o stage 1 mot con dang
+-- gia 0.72 Linh Khi. Lam tron xuong la ca wave dau duoc 0 dong; lam
+-- tron len la thu nhap dau game vot 23%. Nen phai giu so thuc va cong
+-- don phan le.
+--
+-- Thu nhap gio PHANG: mot con dung mot dong. Khong con phan le nao de
+-- cong don, nen ca ba ham thanh thua. rewardAll() goi thang
+-- API.addLinhKhi / addVang / addGo.
+--
+-- He so x1.25 cua Phap Khi "Tu Linh Tran" mat theo, va do la dung: he
+-- Phap Khi dang khoa (CFG.PHAPKHI_LOCKED).
 
 -- ---------- Mot wave ----------
 
@@ -312,9 +287,7 @@ local function waveSeconds(stage)
   return CFG.WAVE_TIME[realmCoi(realm)] or 30.0
 end
 
--- Dong ho chay bat ke wave truoc da don chua -- do la ap luc chinh.
--- Nhung qua tran unit song thi HOAN, neu khong mot lan vo tran se keo
--- theo day chuyen va khong bao gio go lai duoc. (L5)
+-- Dong ho KHONG duoc phep chong dot len nhau: xem CFG.WAVE_ONLY_WHEN_CLEAR.
 local function onWaveTimer()
   if not S.running then return end
 
@@ -323,6 +296,23 @@ local function onWaveTimer()
     API.endGame(true, API.t("win_final", realmName(#CFG.REALMS)))
     return
   end
+
+  -- CHAN CHINH: con mot con song thi khong dot nao moi duoc ra.
+  --
+  -- Bao MOT lan roi im, va tat dong ho dem di. Bao moi nhip WAVE_TICK
+  -- la lap chu day man hinh; con de dong ho dung yen o 0:00 thi nguoi
+  -- choi tuong game treo -- dung loi ma pauseWaves() da phai xu ly.
+  if CFG.WAVE_ONLY_WHEN_CLEAR and S.alive > 0 then
+    if not S.waveHold then
+      S.waveHold = true
+      if S.waveDlg ~= nil then TimerDialogDisplay(S.waveDlg, false) end
+      API.msg(nil, CFG.C_GREY .. API.t("wave_hold", S.alive) .. CFG.C_END)
+      API.trace("wave: HOAN dot " .. nextStage .. ", con song " .. S.alive)
+    end
+    TimerStart(S.waveTimer, CFG.WAVE_TICK, false, onWaveTimer)
+    return
+  end
+  S.waveHold = false
 
   -- Boss chiem TRON stage, mot minh (L4 trong dot-quai.md). Neu dong ho
   -- het gio ma tang 10 chua don xong thi HOAN, dung sinh boss de len
@@ -334,8 +324,9 @@ local function onWaveTimer()
     return
   end
 
+  -- Chi con y nghia khi WAVE_ONLY_WHEN_CLEAR tat.
   if S.alive >= CFG.WAVE_MAX_ALIVE then
-    API.msg(nil, CFG.C_GREY .. API.t("wave_hold") .. CFG.C_END)
+    API.msg(nil, CFG.C_GREY .. API.t("wave_hold", S.alive) .. CFG.C_END)
     TimerStart(S.waveTimer, CFG.WAVE_TICK, false, onWaveTimer)
     return
   end
@@ -368,6 +359,7 @@ local function waveNow()
   API.trace("waveNow: keo dot ke tiep (stage hien tai " .. S.stage ..
             ", cho=" .. tostring(S.waitNext) .. ")")
   S.waitNext = nil
+  S.waveHold = false
   if S.waveDlg ~= nil then TimerDialogDisplay(S.waveDlg, true) end
   PauseTimer(S.waveTimer)
   TimerStart(S.waveTimer, 0.02, false, onWaveTimer)
@@ -383,40 +375,44 @@ end
 -- Mot cho duy nhat, vi truoc day Linh Khi va Tinh Thach moi cai mot vong
 -- lap rieng: thu them mot loai thuong nua la quen mot cho.
 local function rewardAll(stage, kind)
-  local lk = bountyOf(stage, kind)
-  local realm = decode(stage)
-
-  -- Ba loai quai, ba dong tien -- day la cho DUY NHAT cot chung do lai.
+  -- Ba loai quai, ba dong tien. So PHANG, khong theo stage:
   --
-  --   linh thuong -> Linh Khi   (nhip giay)
-  --   tinh anh    -> Ngo Tinh   (nhip wave)
-  --   boss        -> Tinh Thach (nhip canh gioi)
+  --   linh thuong -> 1 Linh Khi + 1 Vang   (nhip giay)
+  --   tinh anh    -> 1 Go                  (nhip wave)
+  --   boss        -> 5 Go                  (nhip canh gioi)
   --
-  -- Linh Khi thi moi loai deu tra; hai dong kia thi khong. Nho vay ba
-  -- he nang cap bi chan boi ba loai NOI DUNG khac nhau chu khong chi
-  -- boi mot cai vi. Xem docs/02-he-thong/kinh-te.md
-  local tt, ngo = 0, 0
+  -- Moi loai quai mo khoa dung mot he, nen ba he bi chan boi ba loai
+  -- NOI DUNG khac nhau chu khong chi boi mot cai vi:
+  --   Linh Khi -> Linh Can   Vang -> Shop   Go -> Ky Nang
+  --
+  -- Xem docs/02-he-thong/kinh-te.md
+  local lk, vang, go = 0, 0, 0
   if kind == "boss" then
-    tt  = CFG.TINHTHACH_BOSS_BASE + CFG.TINHTHACH_BOSS_STEP * (realm - 1)
-    ngo = CFG.NGOTINH_BOSS
+    go = CFG.THUONG_BOSS_GO
   elseif kind == "elite" then
-    ngo = CFG.NGOTINH_ELITE
+    go = CFG.THUONG_ELITE_GO
+  else
+    lk   = CFG.THUONG_MOB_LINHKHI
+    vang = CFG.THUONG_MOB_VANG
   end
 
   for i = 1, #S.pids do
     local pid = S.pids[i]
     if S.p[pid] ~= nil and S.p[pid].active then
-      payBounty(pid, lk)
-      if tt > 0 then API.addTinhThach(pid, tt) end
-      if ngo > 0 then
-        local n = ngo
+      if lk > 0 then API.addLinhKhi(pid, lk) end
+      if vang > 0 then API.addVang(pid, vang) end
+      if go > 0 then
+        local n = go
         if kind == "elite" and API.phapKhiCo ~= nil
-           and API.phapKhiCo(pid, "ngotinh") then n = n + 1 end
-        API.addNgoTinh(pid, n)
+           and API.phapKhiCo(pid, "go") then n = n + 1 end
+        API.addGo(pid, n)
       end
     end
   end
-  if ngo > 0 then API.panelRefreshAll() end
+  -- Ve lai bang khi mot dong tien DOI BAC: Go nhay tung diem mot nen
+  -- moi diem deu dang ke. Linh Khi va Vang nhay 1 moi con, ve lai moi
+  -- con la ve lai 50 lan mot wave -- de nhip refresh cua bang lo.
+  if go > 0 then API.panelRefreshAll() end
 
   if kind == "boss" then
     API.msg(nil, CFG.C_JADE .. API.t("boss_down", realmName(realm), tt) .. CFG.C_END)
@@ -557,7 +553,6 @@ API.tierLabel      = tierLabel
 API.ehpOf          = ehpOf
 API.dmgOf          = dmgOf
 API.armorOf        = armorOf
-API.waveIncome     = waveIncome
 API.mobName        = mobName
 API.waveNow        = waveNow
 API.waveWaiting    = function() return S.waitNext end

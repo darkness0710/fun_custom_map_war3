@@ -1,4 +1,22 @@
-# Bảng nhân vật — phím E
+# Bảng nhân vật — phím R
+
+> **Viền nút tự vẽ, không mượn backdrop có sẵn** *(2026-09-16)*. Hai lần hỏng
+> trước khi ra cách này:
+>
+> 1. `ScoreScreenTabButtonTemplate` (template của `GLUEBUTTON`) **không vẽ gì**
+>    — nút chỉ là chữ trôi giữa nền, không ai biết bấm vào đâu.
+> 2. Đổi sang `EscMenuBackdrop`, template đang vẽ khung bảng. Đó là backdrop
+>    **9 ô**: bốn góc và bốn cạnh của nó là *ảnh có kích thước riêng*, không co
+>    lại theo frame. Đắp lên một nút cao `0.026` thì mỗi nút mở ra một cái
+>    khung gỗ to bằng nửa màn hình — cả bảng biến thành cái cũi gỗ.
+>
+> Bài học: **một backdrop dùng cho khung không dùng lại được cho nút.** Giờ nút
+> tự vẽ bằng hai ô màu đặc lồng nhau — ô ngoài là viền, ô trong thụt vào
+> `CFG.PANEL_BTN_BORDER` là ruột. Ô màu đặc co lại được ở mọi kích thước.
+>
+> Và chỉ dùng hai số hiệu `TeamColor` **đã thấy vẽ ra màu** trên ảnh chụp: `04`
+> vàng, `27` đen. Đoán sai số hiệu thì ra ô **xanh lá** — đúng lỗi mà
+> `BTNRingViolet` đã dính.
 
 > **Trạng thái:** Đã cài — **cả bốn thẻ có nội dung**
 > **Cập nhật:** 2026-09-16

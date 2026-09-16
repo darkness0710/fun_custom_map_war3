@@ -15,7 +15,7 @@ Tất cả nằm ở đầu [1_config.lua](../../src/1_nen/1_config.lua). Đổi
 | `CFG.DEV_COMMANDS` | `true` | Mở nhóm lệnh dev bên dưới |
 | `CFG.TRACE` | `true` | Ghi vết khởi động ra file |
 | `CFG.DEBUG` | `false` | In sơ đồ lưới, ping 25 block, báo cáo chi tiết lúc vào map |
-| `CFG.REVEAL_MAP` | `true` | Mở toàn bộ sương mù |
+| `CFG.REVEAL_MAP` | `true` | Mở toàn bộ sương mù — **không phải công tắc dev**, xem dưới |
 
 **Bốn cái này không kéo theo nhau.** Tắt `DEBUG` vẫn gõ lệnh dev được, vẫn có file
 vết. Đây là bài học từ một lần hỏng thật: trước đây lệnh `-sp` gắn vào `CFG.DEBUG`,
@@ -27,11 +27,17 @@ nên tắt báo cáo chi tiết là lệnh biến mất luôn mà không báo g�
 CFG.DEV_COMMANDS = false
 CFG.TRACE        = false
 CFG.DEBUG        = false
-CFG.REVEAL_MAP   = false
 ```
 
-Quên `REVEAL_MAP` là cả bản đồ sáng trưng, mất hết sương mù — dễ sót nhất vì nó
-không gây lỗi gì.
+**`REVEAL_MAP` ở lại `true`** *(chốt 2026-09-16)*. Nó từng nằm trong danh sách
+này như một công tắc dev, giờ là **luật của map**: đây là map thủ trận, quái đi
+theo đường có sẵn tới nhà chính, không có gì để trinh sát và không ai giấu quân
+được. Sương mù ở đây không tạo ra quyết định nào, nó chỉ làm người chơi không
+thấy đợt quái đang tới.
+
+Vì không còn là chế độ dev nên lúc vào map **không báo gì nữa** — dòng
+`[dev] Da mo toan bo suong mu` đã bỏ, nó chỉ làm người chơi tưởng mình đang ở
+bản chưa xong.
 
 ## Lệnh luôn dùng được
 
@@ -40,7 +46,7 @@ Không phụ thuộc công tắc nào. Đây là lối chơi, không phải debu
 | Lệnh | Làm gì |
 |---|---|
 | `E` | Mở bảng nhân vật (4 thẻ) |
-| `-c` | Như phím E — đường lui nếu phím không gán được |
+| `-c` | Như phím R — đường lui nếu phím không gán được |
 | `-lc` | Mở thẳng thẻ Linh Căn |
 | `-lc up` | Đột phá một bậc, không cần mở bảng |
 | `-sync` | Đường đồng bộ nào đang chạy, native nào có, ping có về không |
@@ -51,7 +57,7 @@ Không phụ thuộc công tắc nào. Đây là lối chơi, không phải debu
 > đồng bộ. Đó là đường lui thật sự nếu các nút bấm không ăn.
 
 > Phím **E** cần `BlzTriggerRegisterPlayerKeyEvent` và `OSKEY_E`. Hai cái này
-> **chưa xác minh trên 1.31.1**. Kiểm bằng file vết: thấy `panel: da gan phim E`
+> **chưa xác minh trên 1.31.1**. Kiểm bằng file vết: thấy `panel: da gan phim R`
 > là chạy, thấy `panel: KHONG co Blz...` thì dùng `-c`.
 
 ## Lệnh dev
@@ -68,6 +74,9 @@ Cần `CFG.DEV_COMMANDS = true`.
 | `-next` | Gọi đợt kế tiếp — **chỉ khi đã dọn sạch** quái trên map | |
 | `-spawn` | Tạo thẳng một `H001` bằng `CreateUnit`, cạnh hero | để so với unit đặt sẵn |
 | `-nat` | Bản Warcraft này có native nào | |
+| `-nat <chữ>` | Liệt kê hằng số `ABILITY_*` có tên chứa `<chữ>` | |
+| `-reg` / `-reg mana` | **Đo** hồi máu / hồi mana thật. Thêm số để đổi giây (`-reg mana 3`). Tự báo đỏ nếu bể đầy giữa chừng — xem [hoi-mau-hoi-mana.md](../03-du-lieu/hoi-mau-hoi-mana.md) | dev |
+| `-nat card` | **Đo** ô command card thật của hero đang cầm — cả lệnh cơ bản lẫn bảy kỹ năng — rồi báo đỏ ô nào bị hai ability cùng nhận | |
 
 **`-wave` là lệnh quan trọng nhất.** Không có nó thì muốn xem stage 180 phải chơi
 hai tiếng. Mọi thứ về cân bằng đều kiểm bằng lệnh này.
@@ -111,7 +120,7 @@ Những dòng đáng để mắt:
 |---|---|
 | `chunk: da nap` | Code đã vào map. Không có dòng nào cả = map không chứa code |
 | `BOOTSTRAP HOAN TAT` | Khởi động sạch |
-| `panel: da gan phim E` | Phím E dùng được |
+| `panel: da gan phim R` | Phím E dùng được |
 | `fct: san sang` | Chữ bay chạy |
 | `fct: THIEU su kien sat thuong` | 1.31.1 không có event đó, chữ bay tự tắt |
 | `sync: mode=...` | Đường đồng bộ nào đang chạy — xem phần dưới |

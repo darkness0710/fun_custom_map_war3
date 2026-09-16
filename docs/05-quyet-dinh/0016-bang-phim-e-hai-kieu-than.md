@@ -1,5 +1,10 @@
 # 0016 — Bảng phím E có hai kiểu thân, không phải một
 
+> **Phím đã đổi E → R** (2026-09-16). E trở thành phím tắt của Bất Hoại, kỹ
+> năng chủ động thứ ba, và một phím không thể vừa bấm skill vừa mở bảng. Tiêu
+> đề và tên file giữ nguyên để không gãy liên kết; phím thật nằm ở
+> `CFG.PANEL_KEY`.
+
 > **Trạng thái:** Đã chốt
 > **Ngày:** 2026-09-16
 

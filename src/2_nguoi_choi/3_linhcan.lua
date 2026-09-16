@@ -94,7 +94,8 @@ local function tabInfo(pid)
       "+" .. API.num(statAt(cur + 1) - CFG.LINHCAN_STAT_BASE) },
     { API.t("col_realm"), rankName(cur), rankName(cur + 1) },
   }
-  out.nut    = API.t("lc_next", rankName(cur + 1)) .. "      " .. API.num(gia)
+  out.nut    = API.t("lc_next", rankName(cur + 1)) .. "     " ..
+               API.num(gia) .. " " .. API.t("cur_lk")
   out.batNut = (API.getLinhKhi(pid) >= gia)
   out.ghiChu = API.t("lc_have", API.num(API.getLinhKhi(pid)))
   return out

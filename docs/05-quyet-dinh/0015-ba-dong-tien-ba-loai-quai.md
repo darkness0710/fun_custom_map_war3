@@ -29,7 +29,7 @@ dùng tới:
 | Đồng tiền | Rơi từ | Cả ván | Mua | Hiện ở |
 |---|---|---|---|---|
 | **Linh Khí** | lính thường | ~1 880 000 | Linh Căn, Trang Bị | thanh vàng |
-| **Ngộ Tính** | **tinh anh** | 300 | Kỹ Năng | bảng phím E |
+| **Ngộ Tính** | **tinh anh** | 300 | Kỹ Năng | bảng phím R |
 | **Tinh Thạch** | boss | 1 150 | Pháp Khí | thanh gỗ |
 
 Mỗi hệ nâng cấp giờ trả lời được bằng **một câu**:

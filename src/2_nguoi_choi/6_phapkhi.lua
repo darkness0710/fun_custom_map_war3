@@ -57,9 +57,10 @@ local function buy(pid, i)
   if d.pk == nil then d.pk = {} end
   if d.pk[mon.ma] then return end
 
-  if not API.spendNgoTinh(pid, mon.gia) then
-    API.msg(pid, CFG.C_RED .. API.t("no_ngo") .. CFG.C_END ..
-      API.t("need_have", API.num(mon.gia), API.num(API.getNgoTinh(pid))) ..
+  if CFG.PHAPKHI_LOCKED then return end
+  if not API.spendGo(pid, mon.gia) then
+    API.msg(pid, CFG.C_RED .. API.t("no_go") .. CFG.C_END ..
+      API.t("need_have", API.num(mon.gia), API.num(API.getGo(pid))) ..
       CFG.C_GREY .. " " .. API.t("ngo_note") .. CFG.C_END)
     API.panelRefresh(pid)
     return
@@ -100,7 +101,10 @@ local function motaOf(mon)
 end
 
 local function tabItems(pid)
-  local ngo = API.getNgoTinh(pid)
+  -- KHOA TAM THOI: khong ban gi ca. Tra ve rong de bang hien dong
+  -- "chua co gi" + ly do, thay vi hien mon mua khong duoc.
+  if CFG.PHAPKHI_LOCKED then return {} end
+  local ngo = API.getGo(pid)
   local out = {}
   for i = 1, #CFG.PHAPKHI do
     local mon = CFG.PHAPKHI[i]
@@ -110,7 +114,9 @@ local function tabItems(pid)
       it.trangThai = CFG.C_JADE .. API.t("st_owned") .. CFG.C_END
     else
       it.trangThai = CFG.C_GREY .. API.num(mon.gia) .. CFG.C_END
-      it.nut       = API.t("btn_buy") .. "   " .. API.num(mon.gia)
+      -- GO: buy() goi API.spendGo. Nhan sai tien tren nut la noi doi voi
+      -- nguoi choi ve thu ho dang de danh.
+      it.nut       = API.t("btn_buy") .. "  " .. API.num(mon.gia) .. " " .. API.t("cur_go")
       it.batNut    = (ngo >= mon.gia)
     end
     out[i] = it
@@ -130,7 +136,7 @@ local function startPhapKhi()
     soMuc      = #CFG.PHAPKHI,
     items      = tabItems,
     itemAction = tabItemAction,
-    trong      = API.t("pk_empty"),
+    trong      = CFG.PHAPKHI_LOCKED and API.t("pk_locked") or API.t("pk_empty"),
   })
   API.syncOn(CFG.OP_PK_BUY, buy)
   API.trace("phapkhi: " .. #CFG.PHAPKHI .. " mon, the san sang")

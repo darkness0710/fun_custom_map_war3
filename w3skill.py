@@ -45,12 +45,24 @@ LANG_LUA = os.path.join(ROOT, "src", "1_nen", "6_lang.lua")
 # de mot khoang cach lon thi hai ben khong bao gio giam len nhau.
 GEN_BASE = 1000
 
-# Bay o trong cua command card. Lenh co ban chiem (0,0)-(3,0) va (0,1).
+# Bay o trong cua command card (luoi 4x3).
 #
-# Quy uoc: HANG GIUA (y=1) la ba ky nang CHU DONG, HANG DUOI (y=2) la bon
-# BI DONG. Giu nguyen o moi hero thi doi hero khong phai hoc lai vi tri tay.
-O_CHUDONG = [(1, 1), (2, 1), (3, 1)]
-O_BIDONG  = [(0, 2), (1, 2), (2, 2), (3, 2)]
+# DA DO, khong phai tri nho: anh chup trong game 2026-09-16 cho thay lenh
+# co ban chiem tron hang y=0 (Move / Hold / Attack / Stop) va o (0,1)
+# (Patrol). Bay o con lai vua dung bay ky nang.
+#
+# Do lai bat cu luc nao bang "-nat card" trong game: no doc
+# ABILITY_IF_BUTTON_POSITION_NORMAL_X/Y cua ca lenh co ban lan bay ky nang
+# tren chinh con hero dang cam, roi bao o nao bi hai ability cung nhan.
+# DA DO (anh chup trong game, 2026-09-16): lenh co ban chiem tron hang
+# y=0 (Move / Hold / Attack / Stop) va o (0,1) (Patrol). Bay o con lai la
+# (1,1) (2,1) (3,1) va tron hang y=2.
+#
+# Hang y=2 la hang DUY NHAT du bon o lien nhau, nen ba ky nang chu dong
+# Q W E nam o day, roi mot bi dong lap cho thu tu. Ba bi dong con lai len
+# hang y=1 -- xep sao cung duoc, chung khong co phim tat.
+O_CHUDONG = [(0, 2), (1, 2), (2, 2)]
+O_BIDONG  = [(3, 2), (1, 1), (2, 1), (3, 1)]
 
 
 def die(msg):
@@ -92,7 +104,7 @@ def parse_skills(src, hero):
     for chunk in re.findall(r"\{\s*id = id\('(\w+)'\)(.*?)\},", blk, re.S):
         aid, body = chunk
         d = {"id": aid}
-        for k in ("ten", "en", "loai", "mota", "mota_en", "fx"):
+        for k in ("ten", "en", "loai", "mota", "mota_en", "fx", "phim"):
             m = re.search(r'\b%s\s*=\s*"((?:[^"\\]|\\.)*)"' % k, body)
             if m:
                 d[k] = m.group(1)
@@ -146,6 +158,14 @@ def ten_of(sk, lang):
 def mota_of(sk, lang):
     return (sk.get("mota_en") or sk.get("mota")) if lang == "en" else \
            (sk.get("mota") or sk.get("mota_en"))
+
+
+def ten_ngan(ten, phim):
+    """Dong chu tren nut. Warcraft KHONG tu them phim tat vao day -- muon
+    nguoi choi thay "Palm Strike [Q]" thi phai tu ghi chu [Q] vao."""
+    if not phim:
+        return ten
+    return "%s [|cffffcc00%s|r]" % (ten, phim)
 
 
 def tooltip(sk, lv, cur, lang, T):
@@ -235,11 +255,18 @@ def build_plan(lang):
         ten = ten_of(s, lang)
         strings[sid] = ten
         item = {"id": s["id"], "ten": ten, "o": o[s["id"]],
-                "anam": sid, "tips": []}
+                "phim": s.get("phim"), "anam": sid, "tips": [], "tens": []}
         sid += 1
         for lv in range(1, cur.maxlv + 1):
             strings[sid] = tooltip(s, lv, cur, lang, T)
             item["tips"].append((lv, sid))
+            sid += 1
+            # Tooltip NGAN (atp1) la dong chu hien khi re chuot len nut.
+            # Truoc day khong ai ghi no, nen no thua ke tu ability goc:
+            # re vao "Chuong" thi game noi "Shockwave". Va day cung la
+            # cho DUY NHAT in duoc phim tat ra man hinh.
+            strings[sid] = ten_ngan(ten, s.get("phim"))
+            item["tens"].append((lv, sid))
             sid += 1
         plan.append(item)
     return plan, strings, cur
@@ -275,10 +302,15 @@ def cmd_gen(map_dir, lang):
         w3obj.set_field(ob, "anam", "TRIGSTR_%03d" % it["anam"])
         w3obj.set_field(ob, "abpx", it["o"][0])
         w3obj.set_field(ob, "abpy", it["o"][1])
+        if it["phim"]:
+            w3obj.set_field(ob, "ahky", it["phim"])
         for lv, sid in it["tips"]:
             w3obj.set_field(ob, "aub1", "TRIGSTR_%03d" % sid, level=lv)
-        print("  %s  ten + %d tooltip + o (%d,%d)"
-              % (it["id"], len(it["tips"]), it["o"][0], it["o"][1]))
+        for lv, sid in it["tens"]:
+            w3obj.set_field(ob, "atp1", "TRIGSTR_%03d" % sid, level=lv)
+        print("  %s  ten + %d tooltip + o (%d,%d)%s"
+              % (it["id"], len(it["tips"]), it["o"][0], it["o"][1],
+                 ("  phim " + it["phim"]) if it["phim"] else ""))
 
     raw, _ = wts_read(wts)
     n = wts_write(wts, raw, strings)

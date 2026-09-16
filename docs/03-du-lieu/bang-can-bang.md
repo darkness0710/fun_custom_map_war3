@@ -192,7 +192,8 @@ Chi tiết: [nang-cap-ky-nang.md](nang-cap-ky-nang.md) ·
 | `SKILL_MAX_LEVEL` | Trần thiết kế | Trần **thật** là `min(trần này, Stats - Levels trong Object Editor)`. Code đo bậc thật rồi mới cho nâng — bảng ghi 10/10 mà unit ở bậc 3 là bảng nói dối |
 | `SKILL_NGO_UP` | Giá nâng một bậc, bằng **Ngộ Tính** | `1`. Một con số phẳng, không bảng, không đường cong |
 | `SKILL_NGO_UNLOCK` | Giá mở khoá một kỹ năng | `1`. Mở cái thứ nhất hay thứ bảy đều như nhau — người chơi chỉ chọn **thứ tự**, không phải tính toán |
-| `SKILL_START_COUNT` | Bao nhiêu kỹ năng phát sẵn | `0` — command card trống khi vào map. Con tinh anh đầu tiên cho 1 điểm, đủ mở một cái |
+| `SKILL_START_COUNT` | Bao nhiêu kỹ năng phát sẵn | `0` — command card trống khi vào map |
+| `NGOTINH_START` | Ngộ Tính cầm sẵn lúc vào map | `1` — vừa đủ mở **một** kỹ năng ngay giây đầu. Đó là quyết định đầu tiên của ván |
 | `SKILL_DMG_STEP` `SKILL_CD_STEP` `SKILL_PASSIVE_STEP` | Sức mạnh mỗi bậc | Ngân sách cả hệ là ×2, và ×2 đó là **tích** của mọi nút chỉnh: chủ động ×1.33 sát thương × 1.5 tần suất; bị động ăn trọn ×2 vì không có hồi chiêu |
 | `SKILL_MANA_STEP` | Mana mỗi bậc | Tăng **chậm hơn** bộ mana (Linh Căn cộng cả Int). Chủ ý: đầu ván mana là ràng buộc thật, cuối ván không còn |
 | `SKILL_DATA_LIVE` | Số liệu đã có hiệu lực chưa | `false` — bảng ghi rõ "đây là thiết kế". Hiện số dep mà sai; bật khi bộ sinh đã ghi vào `war3map.w3a` |
@@ -243,7 +244,7 @@ Chi tiết: [ADR 0012](../05-quyet-dinh/0012-mot-kenh-dong-bo-duy-nhat.md) ·
 | `C_GOLD` `C_JADE` `C_RED` `C_GREY` `C_END` | Mã màu; mọi chuỗi tô màu phải đóng bằng `C_END` |
 | `MSG_TIME` | Giây hiện một dòng thông báo |
 | `LANG` | `"en"` hoặc `"vi"`. `build.py --lang` ghi đè, **không** sửa file trên đĩa |
-| `PANEL_X` `PANEL_Y` `PANEL_W` | Bảng phím E | Chiều cao **suy ra từ số mục của thẻ dài nhất** — không có `PANEL_H` |
+| `PANEL_X` `PANEL_Y` `PANEL_W` | Bảng phím R | Chiều cao **suy ra từ số mục của thẻ dài nhất** — không có `PANEL_H` |
 | `PANEL_ROW` `PANEL_ICON` `PANEL_BTN_W` `PANEL_BTN_H` `PANEL_PAD` | Hình học một mục kiểu `list` | `PANEL_ROW` phải **lớn hơn** `PANEL_BTN_H`, nếu không nút hai dòng kề nhau chồng lên nhau và bấm dòng này ăn vào dòng kia |
 | `PANEL_SCALE_HEAD` `_NAME` `_SUB` | Cỡ chữ ba cấp | Một cỡ cho mọi dòng thì mất phân cấp — nhìn vào chỉ thấy một khối chữ đều đều |
 | `PANEL_BACKDROP` | Template FDF làm nền, thử lần lượt | Hết thì lùi về `FRAME_BG` (ô màu đặc, không viền) |
@@ -263,7 +264,17 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | `DEBUG` | `false` | Dòng `[dbg]`, bảng số lưới, ping minimap, báo cáo chi tiết. Lỗi thật (thiếu vùng, tạo unit hỏng) vẫn hiện dù tắt |
 | `DEV_COMMANDS` | `true` | `-sp` `-wave` `-lk` `-tt` `-spawn`. Có **riêng** một cờ để tắt báo cáo mà vẫn gõ lệnh thử được |
 | `TRACE` `TRACE_FILE` | `true` | Ghi vết khởi động ra file. Game sập thì mọi dòng chat đều mất — đây là cách duy nhất biết nó chết ở bước nào |
-| `REVEAL_MAP` | `true` | Mở toàn bộ sương mù |
+| `REVEAL_MAP` | `true` | Mở toàn bộ sương mù — **luật của map**, không phải công tắc dev |
+| `THUONG_MOB_LINHKHI` `THUONG_MOB_VANG` | `1` `1` | Lính thường rơi ra. **Phẳng**, không theo stage |
+| `THUONG_ELITE_GO` `THUONG_BOSS_GO` | `1` `5` | Nguồn Gỗ duy nhất |
+| `LINHCAN_COST_BASE` `_STEP` | `220` `1.08` | 19 lần = 9,118 = 91% của 10,000 Linh Khí |
+| `SKILL_GO_UNLOCK` `SKILL_GO_UP` | `3` `3` | 70 giao dịch × 3 = 210 = 70% của 300 Gỗ |
+| `GO_START` | `3` | Đủ mở **một** kỹ năng ngay giây đầu |
+| `TRANGBI_LOCKED` `PHAPKHI_LOCKED` | `true` | Tạm khoá. Mở lại phải chọn lại đồng tiền — Linh Khí đã bị Linh Căn ăn 91% |
+| `MOB_EHP_BASE` | `120` | Đo từ "Chưởng phát đầu mất 1/3 máu ở wave 1": `1.32 × (17+13) × 3 = 119` |
+| `PANEL_W` | `0.68` | Năm thẻ. Ở `0.56` thì nhãn `IV. Treasures` tràn sang `V. Shop` |
+| `HOUSE_FROZEN` | `true` | Chốt Nhà Chính tại chỗ. `HOUSE_UNIT` là `Hmkg` — unit hero **có chân** thuộc slot máy, nên AI mặc định của Warcraft cho nó đi lang thang |
+| `WAVE_ONLY_WHEN_CLEAR` | `true` | Đợt mới chỉ ra khi đợt cũ đã dọn sạch. Tắt thì đồng hồ `WAVE_TIME` lại chồng đợt lên nhau |
 
 > `-next`, `-lc`, `-c`, `-sync`, `-nat` **không** theo `DEV_COMMANDS`: ba cái đầu
 > là lối chơi, hai cái sau là chỗ phải nhìn đầu tiên khi một hệ im lặng không

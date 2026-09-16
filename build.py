@@ -362,6 +362,12 @@ def build_block(sources, lang=None):
         parts.append("-- build.py --lang " + lang)
         parts.append('CFG.LANG = "' + lang + '"')
 
+    # Dau thoi gian build, in ra dong dau khi vao map. Khong co no thi
+    # khong phan biet duoc "code sai" voi "dang chay ban cu" -- da can
+    # mot lan voi "-nat card".
+    parts.append("")
+    parts.append('CFG.BUILD = "' + stamp + '"')
+
     parts.append("")
     parts.append("end")
     parts.append(END)

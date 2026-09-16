@@ -31,7 +31,7 @@ WAVE_TIME[cõi]  >  quãng đường/tốc độ  +  thời gian giết hết m�
 Cõi 3 cũng vi phạm (cần ≥38s, đang đặt 36).
 
 **Hai: 220 đợt là một dòng chảy phẳng, không có nhịp.** Không có mở, không có
-kết, không có chỗ thở. Và vì frame **không dừng game**, mở bảng phím E để mua sắm
+kết, không có chỗ thở. Và vì frame **không dừng game**, mở bảng phím R để mua sắm
 nghĩa là đứng chịu đòn — nên việc tiêu tiền không có chỗ của nó trong cả ván.
 
 ## Quyết định

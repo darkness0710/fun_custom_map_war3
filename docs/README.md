@@ -60,7 +60,7 @@ src/
      1_house.lua       nhà chính, chết là thua
      2_wave.lua        220 stage, sinh quái, tiền thưởng
   4_giao_dien/
-     1_panel.lua       bảng phím E, bốn thẻ
+     1_panel.lua       bảng phím R, bốn thẻ
      2_heroframe.lua   thẻ chọn hero
      3_skillframe.lua  bảng chọn kỹ năng
      4_fct.lua         chữ bay
@@ -94,7 +94,7 @@ docs/
      ky-nang.md          Kỹ năng cố định & hệ nâng cấp bằng nút +
      ngon-ngu.md         Hai thứ tiếng, build --lang en|vi, tên quái
      kinh-te.md          Hai đồng tiền, ngân sách ×967, bảng giá bốn hệ
-     bang-nhan-vat.md    Bảng phím E: Kỹ Năng / Trang Bị / Linh Căn / Pháp Khí
+     bang-nhan-vat.md    Bảng phím R: Kỹ Năng / Trang Bị / Linh Căn / Pháp Khí
      dot-quai.md         220 đợt quái: cấu trúc, thành phần, nhịp, tu chính
      boss.md             20 boss cuối cảnh giới
      phan-vung.md        25 block: vai trò từng ô, và vì sao
@@ -104,6 +104,7 @@ docs/
      duong-cong-suc-manh.md  Công thức chỉ số địch + hợp đồng người chơi
      curve.py            Sinh lại bảng tra trong file trên
      nang-cap-ky-nang.md Đường cong giá và sức mạnh 10 bậc kỹ năng
+     hoi-mau-hoi-mana.md Số ĐO hai trường regen -- công thức, luật một chỗ ghi
   04-map/
      kich-thuoc.md       Số đo thật, đọc từ war3map.w3e
      luoi-25-o.md        Lưới 5x5 và các dòng sông

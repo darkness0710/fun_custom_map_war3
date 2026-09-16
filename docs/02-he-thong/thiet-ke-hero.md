@@ -21,7 +21,7 @@ Trang này ghi **cái đang có trong map**, không ghi đề xuất.
 | **Hvwd** | `H002` | Shooter — Carry | **0** | Chọn được, **không có nút nào** |
 | **Hkal** | `H003` | Mage — Support | **0** | Chọn được, **không có nút nào** |
 
-Chọn Hvwd hoặc Hkal thì thẻ Kỹ Năng trong bảng phím E hiện đúng một dòng:
+Chọn Hvwd hoặc Hkal thì thẻ Kỹ Năng trong bảng phím R hiện đúng một dòng:
 *"Chưa có hero, hoặc hero này chưa khai báo kỹ năng."* Hero vẫn đánh thường được.
 
 > **Bộ 21 kỹ năng từng thiết kế cho cả ba hero đã bị xoá khỏi trang này**
@@ -44,26 +44,59 @@ Chọn Hvwd hoặc Hkal thì thẻ Kỹ Năng trong bảng phím E hiện đúng
 | **(2,2)** | **Luyện Thể** *(Body Forging)* | bị động · chỉ số | +12% cả ba chỉ số | +24% |
 | **(3,2)** | **Da Sắt** *(Ironhide)* | bị động · giảm sát thương | −5% *(trần 10%)* | **−10%** — chạm trần |
 
-**Không cái nào phát sẵn** *(`CFG.SKILL_START_COUNT = 0`)*. Cả bảy mở khoá bằng
-**Ngộ Tính**, mỗi lần 1 điểm, thứ tự nào cũng được — mở khoá 1 điểm, nâng một bậc
-1 điểm, trọn bảy cái là **70 điểm** trên 300 kiếm được cả ván.
-
-Hero vào map với command card trống. Con tinh anh đầu tiên chết cho 1 điểm, đủ mở
-một kỹ năng, và đó là quyết định đầu tiên của ván.
+**Không cái nào phát sẵn** *(`CFG.SKILL_START_COUNT = 0`)*, nhưng hero **cầm sẵn
+1 Ngộ Tính** *(`CFG.NGOTINH_START = 1`)* — vừa đủ mở một kỹ năng ngay giây đầu.
+Mở khoá 1 điểm, đôn một bậc 1 điểm, thứ tự nào cũng được; trọn bảy cái là
+`7 × (1 + 9) = 70` điểm trên 300 kiếm được cả ván.
 
 **Da Sắt chạm trần đúng ở bậc 10** — `0.05 × 1.0801⁹ = 10.0%` = `CFG.FX_REDUCE_CAP`.
 Không bậc nào bị phí; trần và đích đến khớp nhau.
 
+## Phím tắt
+
+| Phím | Kỹ năng |
+|---|---|
+| **Q** | Chưởng *(Palm Strike)* |
+| **W** | Hộ Thể *(Guarding Light)* |
+| **E** | Bất Hoại *(Indestructible)* |
+| **R** | mở bảng nhân vật *(`CFG.PANEL_KEY`)* |
+
+Bốn kỹ năng bị động không có phím — không bấm được thì không cần phím.
+
+Phím khai ở `phim = "Q"` trong `CFG.SKILLS`, và [w3skill.py](../../w3skill.py)
+ghi nó vào `ahky` của `war3map.w3a`. Warcraft **không** tự in phím tắt ra
+tooltip, nên `w3skill.py` cũng ghi `atp1` *(Tooltip - Normal)* thành
+`Palm Strike [Q]`. Trước đó `atp1` chưa ai ghi nên nó thừa kế từ ability gốc:
+rê chuột vào "Chưởng" thì game nói *Shockwave*.
+
 ## Bố cục command card
 
+**Đã đo** bằng ảnh chụp trong game (2026-09-16), không còn là trí nhớ: lệnh cơ
+bản chiếm trọn hàng `y=0` và ô `(0,1)`. Bảy ô còn lại vừa đúng bảy kỹ năng.
+
 ```
-Y=0   Move   │ Stop   │ Hold   │ Attack  │   ← lệnh cơ bản
-Y=1  Patrol  │ Chưởng │ Hộ Thể │ Bất Hoại│   ← 3 chủ động
-Y=2 Chém Lan │HiệuLệnh│LuyệnThể│ Da Sắt  │   ← 4 bị động
+Y=0   Move   │  Hold  │ Attack │  Stop   │   ← lệnh cơ bản, 4 ô
+Y=1  Patrol  │HiệuLệnh│LuyệnThể│ Da Sắt  │   ← lệnh cơ bản + 3 bị động
+Y=2 Chưởng Q │Hộ Thể W│BấtHoại E│Chém Lan│   ← 3 chủ động + 1 bị động
 ```
 
-Quy ước: **hàng giữa là nút bấm, hàng dưới là bị động.** Giữ nguyên cho mọi hero
-sau này thì đổi hero không phải học lại vị trí tay.
+Quy ước: **hàng `y=2` là hàng duy nhất đủ bốn ô liền nhau**, nên ba kỹ năng chủ
+động Q W E nằm ở đó theo đúng thứ tự phím, rồi một bị động lấp chỗ thứ tư. Ba bị
+động còn lại lên `y=1` — xếp sao cũng được, chúng không có phím tắt.
+
+Giữ nguyên cho mọi hero sau này thì đổi hero không phải học lại vị trí tay.
+
+> Ô khai ở `O_CHUDONG` / `O_BIDONG` trong [w3skill.py](../../w3skill.py), sửa
+> xong chạy `python w3skill.py gen --lang en`. Muốn đo lại bất cứ lúc nào thì
+> gõ **`-nat card`** trong game — nó đọc
+> `ABILITY_IF_BUTTON_POSITION_NORMAL_X/Y` trên chính con hero đang cầm rồi báo
+> ô nào bị hai kỹ năng cùng nhận.
+>
+> **Lệnh cơ bản không đọc được bằng trường này.** Đo được: `Amov` và `Aatk`
+> đều trả về `(0,0)`, còn `Astp` / `Ahol` / `Apat` thì unit không hề có như một
+> ability — vị trí thật của chúng do game quyết định. Nên `-nat card` in chúng
+> ra màu xám kèm chữ *"game tự đặt, số này không tin được"* và **chỉ đếm trùng
+> ô giữa bảy kỹ năng**. Bản đầu của lệnh đếm cả lệnh cơ bản và báo động giả.
 
 ## Vỏ ability: đã sinh bằng script
 
@@ -81,7 +114,7 @@ python w3skill.py gen --lang vi
 ```
 
 **Nguồn sự thật là `CFG.SKILLS`.** Tên và mọi con số trong tooltip đều suy ra từ
-bảng đó, nên **tooltip không thể nói khác bảng phím E** — cả hai ra từ một chỗ.
+bảng đó, nên **tooltip không thể nói khác bảng phím R** — cả hai ra từ một chỗ.
 Đổi một hệ số trong `CFG` rồi chạy lại là tooltip tự khớp.
 
 Tooltip sinh cho **cả 10 bậc**, ví dụ Chưởng:

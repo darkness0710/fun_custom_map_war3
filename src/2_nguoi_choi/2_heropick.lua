@@ -234,6 +234,26 @@ local function applyHeroPick(pid, uid)
   if CFG.HERO_UNIQUE then S.heroTaken[uid] = true end
   pickerHide(pid)
 
+  -- Qua khoi dau, phat SAU KHI CO HERO chu khong luc vao map.
+  --
+  -- Truoc day Go phat trong initPlayers, tuc truoc khi ai kip chon hero.
+  -- Do la sai thu tu: qua la cua HERO, ma luc do hero chua ton tai --
+  -- lo do voi vat pham thi khong co tui nao de bo vao.
+  --
+  -- Chi phat cho lan pick DAU TIEN. Doi hero (heroCount > 1) ma phat
+  -- lai la mot duong de nhan qua vo han.
+  if d.heroCount == 1 then
+    if CFG.GO_START ~= nil and CFG.GO_START > 0 then
+      API.addGo(pid, CFG.GO_START)
+    end
+    if CFG.START_ITEMS ~= nil and API.shopGive ~= nil then
+      for k = 1, #CFG.START_ITEMS do
+        local q = CFG.START_ITEMS[k]
+        API.shopGive(pid, q.ma, q.so)
+      end
+    end
+  end
+
   API.msg(nil, API.t("pick_done",
     CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END,
     CFG.C_JADE .. heroNameOf(uid) .. CFG.C_END))

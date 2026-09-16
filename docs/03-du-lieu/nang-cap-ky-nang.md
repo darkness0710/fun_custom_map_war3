@@ -215,44 +215,31 @@ nằm trong bảng Lua — chỉnh cân bằng không cần build lại file nh�
 > hàm. Các hàm đều có. Phải dò xem bản này dùng tên hằng nào — và còn **chưa
 > đo** liệu sửa xong có ăn ngay hay phải `IncUnitAbilityLevel` để làm mới.
 
-## Mở khóa: hero **không** có sẵn cả bảy
+## Mở khóa: tay không, nhưng cầm sẵn 1 điểm
 
-**Không cái nào phát sẵn** (`CFG.SKILL_START_COUNT = 0`) — hero vào map với
-command card trống. Cả bảy mở khoá bằng **Ngộ Tính**, mỗi cái 1 điểm.
+**Chốt 2026-09-16:** `CFG.SKILL_START_COUNT = 0` và `CFG.NGOTINH_START = 1`.
+Hero vào map với command card trống, ví có đúng **một** Ngộ Tính — vừa đủ mở một
+kỹ năng ngay giây đầu. Mở khoá 1 điểm, đôn một bậc 1 điểm, trọn bảy cái là
+`7 × (1 + 9) = 70` điểm.
 
-Hai lý do, lý do thứ hai mới là cái nặng:
+Ba bản đã thử, và cái nào hỏng thì hỏng ở đâu:
 
-1. Cả bảy ngay từ stage 1 thì không còn gì để mong. Bảy ô trong command card
-   đầy ngay giây đầu là hết chuyện.
-2. **Phép tính hệ số 1,32 cho Chưởng chỉ đếm ba nguồn**: đánh thường, Chém
-   Lan, Chưởng. Cho cả bảy ngay từ đầu là hero mạnh hơn hợp đồng stage 1
-   rất nhiều — đầu ván thành dễ không.
+| Bản | Hỏng ở đâu |
+|---|---|
+| Giá leo theo số cái đã mở *(250 → 68 210 Linh Khí)* | Bắt người chơi tính một đường cong để trả lời một câu hỏi đáng ra rất đơn giản |
+| Cả bảy phát sẵn | Giây đầu **không còn gì để chọn** — bảy ô đầy ngay là hết chuyện |
+| Tay không, **0 điểm** | Giây đầu **không chọn được gì** — phải đánh đòn thường tới con tinh anh đầu tiên mới có cái để bấm |
 
-Giá suy từ đường cong thu nhập: mở được kỹ năng thứ *k* vào khoảng stage này
-nếu dành 22% thu nhập cộng dồn cho việc mở khóa:
+Một điểm cầm sẵn lấp đúng khe giữa hai cái sau: có một quyết định, và chỉ một.
 
-| Lần mở thứ | Mở được khoảng stage | Giá |
-|---|---|---|
-| 3 | 15 | 250 |
-| 4 | 40 | 790 |
-| 5 | 75 | 2 910 |
-| 6 | 120 | 13 560 |
-| 7 | 170 | 68 210 |
+Cái phải chịu: "mở cái nào" và "đôn cái nào" vẫn tiêu chung một đồng tiền. Đó là
+đánh đổi có ý thức — giá **phẳng** nên người chơi không phải tính, chỉ phải chọn.
 
-Tổng mở khóa **85 720**. Cộng với nâng cấp (307 356) và Linh Căn (747 839) là
-**61% thu nhập cả ván** — trước là 56%, vẫn còn chỗ cho các nguồn tiêu sau này.
+Hệ số 1,32 của Chưởng tính cho hero **có** Chém Lan và đòn thường, nên thứ tự
+mở khoá ảnh hưởng thật đến đợt đầu — xem bảng kỹ năng, hai cái đó xếp đầu.
 
-**Giá theo số cái đã mở, không theo cái nào.** Mở cái thứ ba là 250 dù đó là kỹ
-năng nào — người chơi thích mở cái nào trước thì mở. Ép thứ tự là lấy mất một
-lựa chọn mà chẳng được gì.
-
-Hai kỹ năng phát sẵn là **Chém Lan** và **Chưởng**: một nguồn dọn quái đông, một
-nguồn đánh theo đường — đủ hai việc để sống qua những cảnh giới đầu.
-
-`CFG.SKILL_START_COUNT = 7` là quay về kiểu cũ, có sẵn cả bảy.
-
-> Dòng bị khóa trong bảng **không hiện số liệu** — chỉ tên, chữ "chưa mở" và
-> giá. Hiện luôn cả số thì lộ hết, chẳng còn gì để mong.
+> Bảy ô command card **đã đo** và vừa khít bảy kỹ năng — sơ đồ ở
+> [thiet-ke-hero.md](../02-he-thong/thiet-ke-hero.md). Đo lại bằng `-nat card`.
 
 ## Số gốc cho 7 kỹ năng của Hart
 

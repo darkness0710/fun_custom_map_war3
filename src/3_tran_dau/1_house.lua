@@ -95,6 +95,21 @@ local function createHouse()
   API.trace("house: SetUnitInvulnerable")
   SetUnitInvulnerable(S.house, CFG.HOUSE_INVULNERABLE)
 
+  -- Chot nha chinh tai cho. BA lop, vi khong lop nao mot minh du chac:
+  --   SetUnitMoveSpeed(0)  Warcraft ep ve toc do toi thieu chu khong ve
+  --                        0 han, nen day chi la lop giam thiet hai.
+  --   "stop"               huy lenh di chuyen dang co san trong hang doi.
+  --   PauseUnit(true)      chot han: unit khong nhan lenh nao nua.
+  --
+  -- PauseUnit KHONG lam no bat tu: unit bi chot van an sat thuong, van
+  -- chet, van ban su kien chet -- nen duong thua van chay.
+  if CFG.HOUSE_FROZEN then
+    API.trace("house: FROZEN (move 0 + stop + PauseUnit)")
+    if SetUnitMoveSpeed ~= nil then SetUnitMoveSpeed(S.house, 0.0) end
+    if IssueImmediateOrder ~= nil then IssueImmediateOrder(S.house, "stop") end
+    if PauseUnit ~= nil then PauseUnit(S.house, true) end
+  end
+
   API.trace("house: XONG")
   return S.house
 end

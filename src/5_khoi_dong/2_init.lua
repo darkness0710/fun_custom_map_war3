@@ -62,13 +62,19 @@ local function bootstrap()
   if S.running then return end
 
   API.trace("bootstrap: bat dau")
-  API.msg(nil, CFG.C_GOLD .. "[build " .. CFG.VERSION .. "] code da chay." .. CFG.C_END)
+  -- In ca DAU THOI GIAN build, khong chi so hieu. CFG.VERSION go tay
+  -- nen hai ban build khac nhau van cung mot so -- va luc do "go lenh
+  -- moi ma khong thay gi" khong phan biet duoc voi "dang chay ban cu".
+  API.msg(nil, CFG.C_GOLD .. "[build " .. CFG.VERSION ..
+          (CFG.BUILD and ("  " .. CFG.BUILD) or "") ..
+          "] code da chay." .. CFG.C_END)
 
-  -- Chi de phat trien: mo toan bo suong mu.
+  -- Mo suong mu. Khong bao gi: day la cach map nay chay binh thuong,
+  -- khong phai mot cong tac dev dang bat. Bao moi van mot dong "[dev]"
+  -- chi lam nguoi choi tuong minh dang o ban chua xong.
   if CFG.REVEAL_MAP then
     FogEnable(false)
     FogMaskEnable(false)
-    API.msg(nil, CFG.C_GOLD .. "[dev] Da mo toan bo suong mu (CFG.REVEAL_MAP)." .. CFG.C_END)
   end
 
   local n = API.initPlayers()
@@ -117,12 +123,14 @@ local function bootstrap()
 
   -- Cac he dang ky the TRUOC, roi bang moi dung -- bang can biet co
   -- bao nhieu the de chia be ngang.
-  -- Thu tu dang ky = thu tu the trong bang. Bon he, bon dong tien nguon
-  -- khac nhau -- xem docs/02-he-thong/kinh-te.md
+  -- Thu tu dang ky = thu tu the trong bang. Nam he -- xem
+  -- docs/02-he-thong/kinh-te.md
   API.startLinhCan()   -- I.   Linh Khi
-  API.startSkills()    -- II.  Ngo Tinh
-  API.startTrangBi()   -- III. Linh Khi (tranh vi voi Linh Can, co y)
-  API.startPhapKhi()   -- IV.  Tinh Thach
+  API.startSkills()    -- II.  Go
+  API.startTrangBi()   -- III. (tam khoa)
+  API.startPhapKhi()   -- IV.  (tam khoa)
+  API.startShop()      -- V.   Vang
+  API.startDungDo()
   API.startPanel()
 
   API.startSkillFx()
