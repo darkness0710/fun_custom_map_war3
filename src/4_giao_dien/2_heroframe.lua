@@ -229,7 +229,14 @@ local function buildPanel(pid, list)
       -- duong vien vang.
       BlzFrameSetPoint(title, FRAMEPOINT_TOPLEFT, st.panel, FRAMEPOINT_TOPLEFT,
                        P, -titleTop())
-      BlzFrameSetSize(title, CFG.CARD_W, CFG.CARD_LINE)
+      -- CHIA cho ti le phong. BlzFrameSetScale phong quanh DIEM NEO chu
+      -- khong quanh tam: neo TOPLEFT thi o chu no sang phai va xuong
+      -- duoi. Dat be ngang 0.360 roi phong 1.25 la o thanh 0.450, va chu
+      -- can giua trong o do lech phai 0.045 -- khoang 81 px o 1080p.
+      --
+      -- Cac dong hero khong lo chuyen nay vi chung can TRAI: o rong hon
+      -- thi chu van dung yen. Chi can GIUA moi lo ra loi.
+      BlzFrameSetSize(title, CFG.CARD_W / CFG.CARD_SCALE_TITLE, CFG.CARD_LINE)
       if BlzFrameSetTextAlignment ~= nil
          and TEXT_JUSTIFY_TOP ~= nil and TEXT_JUSTIFY_CENTER ~= nil then
         BlzFrameSetTextAlignment(title, TEXT_JUSTIFY_TOP, TEXT_JUSTIFY_CENTER)
