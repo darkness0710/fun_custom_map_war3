@@ -1077,6 +1077,10 @@ CFG.PANEL_ICON  = 0.036   -- canh icon     (65px)
 CFG.PANEL_BTN_W = 0.105   -- be ngang nut  (189px, du cho "NANG  178")
 CFG.PANEL_BTN_H = 0.026
 CFG.PANEL_PAD   = 0.012
+-- Vien trang tri cua EscMenuBackdrop an mat mep trong. PANEL_PAD mot
+-- minh khong du: dong nen va cum focus tran ra ngoai duong vien vang.
+-- Cung bai hoc voi CFG.CARD_BORDER cua bang chon hero.
+CFG.PANEL_BORDER = 0.012
 
 -- Co chu ba cap. Bang cu khong goi BlzFrameSetScale lan nao nen moi
 -- dong mot co -- nhin vao chi thay mot khoi chu deu deu.

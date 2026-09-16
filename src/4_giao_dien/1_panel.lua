@@ -40,7 +40,9 @@ local LINE   = 0.016    -- khoang cach hai dong chu trong mot muc
 -- neu khong doi the mot cai la khung nhay -- nen lay max voi kieu list.
 local FOCUS_H = 0.200
 
-local function PAD()   return CFG.PANEL_PAD end
+-- Le trong THAT = le + vien trang tri cua backdrop. Moi thu ben trong
+-- dung con so nay, nen doi backdrop chi phai sua mot cho.
+local function PAD()   return CFG.PANEL_PAD + (CFG.PANEL_BORDER or 0.0) end
 local function ROW()   return CFG.PANEL_ROW end
 local function ICON()  return CFG.PANEL_ICON end
 local function BTN_W() return CFG.PANEL_BTN_W end
@@ -283,7 +285,10 @@ local function build(pid)
     local t = BlzCreateFrameByType("TEXT", name, parentF, "", pid)
     if t == nil then return nil end
     BlzFrameSetPoint(t, FRAMEPOINT_TOPLEFT, parentF, FRAMEPOINT_TOPLEFT, dx, -dy)
-    BlzFrameSetSize(t, w, LINE)
+    -- CHIA cho ti le phong. BlzFrameSetScale phong quanh DIEM NEO chu
+    -- khong quanh tam: neo TOPLEFT thi o no sang phai. Chu can trai thi
+    -- khong thay, nhung chu can PHAI thi troi theo mep phai cua o.
+    BlzFrameSetSize(t, w / (scale or 1.0), LINE)
     if BlzFrameSetTextAlignment ~= nil and TEXT_JUSTIFY_TOP ~= nil then
       BlzFrameSetTextAlignment(t, TEXT_JUSTIFY_TOP,
         phai and TEXT_JUSTIFY_RIGHT or TEXT_JUSTIFY_LEFT)
@@ -293,12 +298,19 @@ local function build(pid)
     return t
   end
 
-  local function button(name, label, dx, dy, w, h)
-    local b = BlzCreateFrameByType("GLUEBUTTON", name, st.panel,
+  -- CHA la tham so, khong co dinh st.panel.
+  --
+  -- Truoc day ham nay va backdropFrame() luon gan vao st.panel, ke ca
+  -- khi goi tu cum "focus". Ket qua: nut va thanh tien do la ANH EM cua
+  -- f.root chu khong phai CON, nen tat f.root khong tat duoc chung --
+  -- "BREAK THROUGH -> Qi Refining" hien tren CA BON the.
+  local function button(name, label, dx, dy, w, h, parentF)
+    parentF = parentF or st.panel
+    local b = BlzCreateFrameByType("GLUEBUTTON", name, parentF,
                                    CFG.FRAME_BUTTON_TEMPLATE, pid)
     if b == nil then return nil end
     BlzFrameSetSize(b, w, h)
-    BlzFrameSetPoint(b, FRAMEPOINT_TOPLEFT, st.panel, FRAMEPOINT_TOPLEFT, dx, -dy)
+    BlzFrameSetPoint(b, FRAMEPOINT_TOPLEFT, parentF, FRAMEPOINT_TOPLEFT, dx, -dy)
     local t = BlzCreateFrameByType("TEXT", name .. "Txt", b, "", pid)
     if t ~= nil then
       BlzFrameSetPoint(t, FRAMEPOINT_CENTER, b, FRAMEPOINT_CENTER, 0, 0)
@@ -309,11 +321,12 @@ local function build(pid)
     return { btn = b, txt = t }
   end
 
-  local function backdropFrame(name, dx, dy, w, h, tex)
-    local f = BlzCreateFrameByType("BACKDROP", name, st.panel, "", pid)
+  local function backdropFrame(name, dx, dy, w, h, tex, parentF)
+    parentF = parentF or st.panel
+    local f = BlzCreateFrameByType("BACKDROP", name, parentF, "", pid)
     if f == nil then return nil end
     BlzFrameSetSize(f, w, h)
-    BlzFrameSetPoint(f, FRAMEPOINT_TOPLEFT, st.panel, FRAMEPOINT_TOPLEFT, dx, -dy)
+    BlzFrameSetPoint(f, FRAMEPOINT_TOPLEFT, parentF, FRAMEPOINT_TOPLEFT, dx, -dy)
     if tex ~= nil then BlzFrameSetTexture(f, tex, 0, true) end
     BlzFrameSetVisible(f, false)
     API.frameDead(f)
@@ -395,13 +408,15 @@ local function build(pid)
         }
       end
 
-      f.barBg = backdropFrame("CharFBarBg", P, top + 0.108, fw, 0.010,
-                              CFG.PANEL_BAR_BG)
-      f.barFill = backdropFrame("CharFBarFill", P, top + 0.108, fw * 0.5, 0.010,
-                                CFG.PANEL_BAR_FILL)
+      -- Toa do theo F.ROOT, khong theo st.panel. f.root nam o (P, -top)
+      -- nen diem panel (P + x, top + y) chinh la diem root (x, y).
+      f.barBg = backdropFrame("CharFBarBg", 0.0, 0.108, fw, 0.010,
+                              CFG.PANEL_BAR_BG, f.root)
+      f.barFill = backdropFrame("CharFBarFill", 0.0, 0.108, fw * 0.5, 0.010,
+                                CFG.PANEL_BAR_FILL, f.root)
 
-      local b = button("CharFBtn", "", P + fw * 0.10, top + 0.130,
-                       fw * 0.80, BTN_H() + 0.006)
+      local b = button("CharFBtn", "", fw * 0.10, 0.130,
+                       fw * 0.80, BTN_H() + 0.006, f.root)
       if b ~= nil then f.btn, f.btnTxt = b.btn, b.txt end
 
       f.ghiChu = text("CharFNote", f.root, 0.010, 0.176, fw - 0.020,
