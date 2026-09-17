@@ -436,7 +436,7 @@ CFG.HERO_UNIQUE = true
 CFG.HERO_SPAWN_OFFSET = 500.0
 
 -- ============================================================
---  DOT QUAI  --  220 stage
+--  DOT QUAI  --  100 stage
 --  Luat: docs/02-he-thong/dot-quai.md
 --  Duong cong: docs/03-du-lieu/duong-cong-suc-manh.md
 -- ============================================================
@@ -558,12 +558,13 @@ CFG.WAVE_CLEAR_DELAY = 1.5   -- giay, de kip doc chu truoc khi wave sau ra
 --   tang 1..10        dong ho chay        <- ap luc, dot chong duoc
 --   tang 10 don sach  DUNG dong ho        <- nghi
 --     -next           BOSS
---   boss chet         DUNG dong ho        <- nghi, tieu Tinh Thach
+--   boss chet         DUNG dong ho        <- nghi, tieu Go
 --     -next           canh gioi sau
 --
--- Vi sao khong bo han dong ho cho ca 11 stage: WAVE_TIME dang la MO NEO
--- cua hop dong DPS x967 -- "wave phai ha kip gio". Bo ap luc thoi gian
--- trong canh gioi thi hop dong mat neo va phai neo lai vao mau nha.
+-- Vi sao khong bo han dong ho cho ca 5 stage: WAVE_TIME la thu DUY NHAT
+-- con ep "wave phai ha kip gio". Quai bam theo duong cong Tu Vi nen do
+-- kho tu can bang, nhung no khong noi gi ve TOC DO -- khong co dong ho
+-- thi mot doi danh cham van thang, chi lau hon.
 -- Giu dong ho trong 10 tang thi ap luc con nguyen, ma van co nhip.
 --
 -- Va no sua mot loi that: mo bang phim E khong dung game (frame khong
@@ -656,8 +657,9 @@ CFG.MOB_UNIT = {
 -- ---------- Mau nha chinh ----------
 -- Nha nhan sat thuong, chet la thua. Khong co dem mang, khong co lot.
 --
--- Mau CO DINH khong dung duoc: sat thuong dich tang x279 qua 220 stage,
--- nen 1000 mau o stage 220 chet trong DUOI MOT GIAY. Thay vao do tinh
+-- Mau CO DINH khong dung duoc: sat thuong dich tang x339 qua 100 stage
+-- (do lai 2026-09-17 sau khi quai bam theo duong cong Linh Can), nen
+-- 1000 mau o stage 100 chet trong DUOI MOT GIAY. Thay vao do tinh
 -- theo "chiu duoc bao nhieu don cua mot con linh", va tinh lai moi wave
 -- -- ti le song sot giu nguyen suot van:
 --
@@ -672,8 +674,8 @@ CFG.HOUSE_HP_HITS = 400
 CFG.HOUSE_REGEN_PER_WAVE = 0.20
 
 -- ---------- Kinh te ----------
--- Thu nhap bam x967 (hop dong suc manh), KHONG bam x2176 (duong cong
--- EHP dich). Bam nham la nua sau game qua de.
+-- Thu nhap khong bam theo duong cong nao nua: no PHANG, va moi canh
+-- gioi kiem dung mot lan dot pha. Do la ca hop dong.
 -- ---------- THU NHAP: PHANG, mot con mot dong ----------
 --
 -- Ban truoc thu nhap la duong cong mu: 60 x 1.0319^(stage-1), ca van
@@ -710,7 +712,7 @@ CFG.THUONG_BOSS_GO     = 5
 -- bon he ma ba he cung rut mot cai vi thi khong he nao co ban sac rieng,
 -- va nguoi choi chi phai tra loi dung mot cau hoi ("gom du tien chua").
 --
--- Ngo Tinh la DIEM, khong phai tien: khong co duong cong mu, khong bam
+-- Go la DIEM, khong phai tien: khong co duong cong mu, khong bam
 -- theo thu nhap. Nho vay bo duoc han mot duong cong phai can bang, va
 -- "nang ky nang" tro thanh cau hoi khac han "mua gi" -- no hoi "da giet
 -- du tinh anh chua".
@@ -724,16 +726,17 @@ CFG.THUONG_BOSS_GO     = 5
 --
 -- Tong chi de mo va max tron bay ky nang:
 --   7 x (1 mo khoa + 9 lan nang) = 70 go, tren 260 go ca van.
--- Ky nang tra bang GO. Go chi roi tu tinh anh (1) va boss (5), ca van
--- duoc 300 -- nen no bi chan boi "da giet du tinh anh chua", khong phai
+-- Ky nang tra bang GO. Go chi roi tu tinh anh (2) va boss (5), ca van
+-- duoc 260 -- nen no bi chan boi "da giet du tinh anh chua", khong phai
 -- "da gom du tien chua".
 --
 -- MOT go mot lan. Day la con so chu du an chot, khong phai con so suy
 -- ra tu ngan sach -- toi da tu doi no thanh 3 va bi tra lai.
 --
--- He qua da biet va da chap nhan: tron bay ky nang chi ton 70/300 go,
--- max het quanh wave 70 roi 150 wave sau go du ra. Phan du do de danh
--- cho Phap Khi khi he do mo lai.
+-- He qua da biet va da chap nhan: tron bay ky nang chi ton 70/260 go,
+-- va voi 13 go moi canh gioi thi MAX HET O STAGE 27 -- roi 73 stage
+-- cuoi go chi tang chu khong tieu duoc. Phan du (190) de danh cho Phap
+-- Khi khi he do mo lai; tu gio den luc do no la con so chet.
 CFG.SKILL_GO_UNLOCK = 1    -- mo khoa mot ky nang
 CFG.SKILL_GO_UP     = 1    -- nang mot bac
 CFG.SKILL_MAX_LEVEL  = 10
@@ -869,7 +872,7 @@ CFG.SKILLS = {}
 CFG.SKILLS[id('H001')] = {
   -- Khong cai nao phat san (CFG.SKILL_START_COUNT = 0). Thu tu trong
   -- bang la thu tu hien o bang phim R, nen xep hai cai co ban len dau --
-  -- Chem Lan don quai dong, Chuong don theo duong -- de diem Ngo Tinh
+  -- Chem Lan don quai dong, Chuong don theo duong -- de diem Go
   -- dau tien roi vao tam mat truoc.
   -- 'goc' = ma ability GOC ma cai nay nhan ban tu do. Doc duoc tu
   -- war3map.w3a, nhung code luc chay khong thay -- ma no la thu can de
@@ -998,15 +1001,16 @@ CFG.SKILL_MANA_STEP = 1.05   -- x1.55 sau 9 lan nang
 -- Ba nguon quai co ba NHIP khac han nhau, va do la thu san co de gan
 -- cho ba he khac nhau ma khong phai bia ra co che gi moi:
 --
---   linh thuong  10,000 con ca van -> nhip giay      -> Linh Khi + Vang
---   tinh anh        200 con        -> nhip wave      -> Go
+--   linh thuong   4,000 con ca van -> nhip giay      -> Linh Khi + Vang
+--   tinh anh         80 con        -> nhip wave      -> Go (2 moi con)
 --   boss             20 con        -> nhip canh gioi -> Go (5 moi con)
 --
 -- Moi he bi chan boi mot loai NOI DUNG, khong phai boi mot cai vi:
 --   Linh Khi -> Linh Can   Vang -> Shop   Go -> Ky Nang
 --
--- Tong ca van: Linh Khi 10,000 | Vang 10,000 | Go 300.
--- So thuong nam o CFG.THUONG_* phia tren.
+-- Tong ca van: Linh Khi 10,000 | Vang 4,000 | Go 260.
+-- So thuong nam o CFG.THUONG_* phia tren. (Vang con duoc cong tu the 3
+-- cua Co Duyen, nhung so do tuy nguoi choi chon nen khong chot duoc.)
 --
 -- Hai dong tien cu da bo:
 --   Ngo Tinh   -> doi ten thanh Go va chuyen len thanh tai nguyen
@@ -1018,25 +1022,25 @@ CFG.SKILL_MANA_STEP = 1.05   -- x1.55 sau 9 lan nang
 --  LINH CAN  --  tu vi cua nguoi choi
 --  docs/02-he-thong/kinh-te.md · bang-nhan-vat.md
 --
---  Nguon suc manh LON NHAT cua nguoi choi: x20 trong hop dong x967.
+--  Nguon suc manh CHINH: EHP quai dinh nghia bang chinh he so cua no
+--  (CFG.MOB_EHP_THEO_LINHCAN), nen mot minh no du bam quai.
 --  Dung chung thang ten voi 20 canh gioi cua phe dich -- nguoi choi va
 --  ke dich tu tien tren cung mot con duong.
 -- ============================================================
 
--- 1.17, KHONG phai 1.215.
+-- KHOA CFG.LINHCAN_STEP DA BO (2026-09-17), cung voi ca cach nghi
+-- "ngan sach x967". Ghi lai vi day la thay doi de bi lat nguoc:
 --
--- Con so nay da doi mot lan, va ly do doi dang ghi lai o day vi no de
--- bi lat nguoc lai:
+--   Ban cu: bon he nhan nhau phai ra x967, va x967 do la duong cong
+--   EHP cua quai -- hai ve dung rieng nen phai deo nhau bang tay.
 --
---   Ban cu (BA nguon): Linh Can x40.5 x Trang Bi x12 x Ky Nang x2 = x971.
---   Voi 1.17 thi chi x474 -- thieu mot nua, nen 1.215 la dung LUC DO.
+--   Ban nay: CFG.MOB_EHP_THEO_LINHCAN = true. EHP quai DINH NGHIA
+--   bang chinh he so Linh Can, nen hai ve co cung thua so va no triet
+--   tieu. Khong con ngan sach nao phai khop ca.
 --
---   Ban nay (BON nguon): Phap Khi da thanh he that, nen ngan sach chia
---   lai: x19.7 x 8 x 2.4 x 2.5 = x948 ~ x967. Voi 1.215 thi thanh
---   x1,942 -- gap DOI muc hop dong, va nua sau van thanh di dao.
---
--- Tuc hai con so deu tung dung, chi la voi hai ban ngan sach khac nhau.
--- KHONG duoc tron: doi mot cai o day thi phai kiem lai TICH cua ca bon.
+-- HE QUA phai nho: Tu Vi mot minh da du bam quai. MOI nguon khac --
+-- Co Duyen (+40% chi so ca van), bac ky nang, va Trang Bi neu mo lai
+-- -- deu la phan VUOT LEN thuan, khong phai phan bu cho du.
 -- Xem ADR 0015 va docs/02-he-thong/kinh-te.md.
 -- ---------- Chi so moi lan dot pha ----------
 --
@@ -1097,8 +1101,8 @@ CFG.LINHCAN_STAT_BASE = 10.0   -- chi so hero luc bac 1
 -- "all"     ca ba Str/Agi/Int deu cong bang nhau.
 --           Duoc : Str cho mau (phuc vu hop dong EHP x279), Int cho
 --                  mana (Support can), Agi cho giap.
---           Mat  : Agi con cho TOC DANH -- do la DPS NGOAI ngan sach
---                  x967. O bac 20 la +749 Agi, khong phai it.
+--           Mat  : Agi con cho TOC DANH -- mot nguon DPS nua ma duong
+--                  cong quai khong he biet. O bac 20 la +749 Agi.
 --
 -- "primary" chi cong vao chi so dang cao nhat.
 --           Duoc : sat thuong dung x19.7, khong thua khong thieu.
@@ -1124,11 +1128,15 @@ CFG.LINHCAN_STAT_MODE = "all"
 -- Sau o. Ten la huong vi; TAC DUNG cua ca sau giong nhau: +4% sat
 -- thuong moi cap.
 --
--- Vi sao khong cho moi o mot tac dung khac nhau cho da dang: ngan sach
--- Trang Bi la x8 SAT THUONG, ma x8 do chinh la (1.04^9)^6. Chia ba o
--- sang mau/giap thi sat thuong chi con (1.04^9)^3 = x2.9, va tich bon
--- he tut tu x948 xuong x344. Muon o thu/cong khac nhau thi phai suy
--- lai ca ngan sach truoc -- dung sua mot minh cho nay.
+-- Vi sao ca sau o cung mot tac dung: ngan sach Trang Bi tung la x8 SAT
+-- THUONG, ma x8 do chinh la (1.04^9)^6 -- chia ba o sang mau/giap thi
+-- chi con x2.9.
+--
+-- LAP LUAN DO DA MAT NEN tu khi MOB_EHP_THEO_LINHCAN bat: khong con
+-- tich bon he nao phai dat x948 ca. Gio Trang Bi la phan VUOT LEN
+-- thuan, nen cau hoi khong con la "co du x8 khong" ma la "cho vuot
+-- len bao nhieu la vua". Giu nguyen sau o giong nhau cho toi khi tra
+-- loi duoc cau do -- dung sua mot minh cho nay.
 CFG.TRANGBI = {
   { ten = "Vu Khi",       en = "Weapon",   icon = [[ReplaceableTextures\CommandButtons\BTNSteelMelee.blp]] },
   { ten = "Ho Giap",      en = "Armor",    icon = [[ReplaceableTextures\CommandButtons\BTNSteelArmor.blp]] },
@@ -1161,13 +1169,21 @@ CFG.TRANGBI_PCT       = 0.04    -- moi cap +4% sat thuong
 -- re hon rai deu, nen nguoi choi chon theo loi choi chu khong theo phep
 -- tinh.
 --
--- 1.134 = 1.0319^4.07 = thu nhap cua 4,07 stage. 54 lan nang trai deu
--- 220 stage thi moi lan cach nhau dung 4,07 stage -- nen "mot lan nang
--- do dang may wave" la hang so suot van, giong het cach Linh Can bam
--- theo 7,1 wave.
+-- CA HAI SO DUOI DAY DA CHET, va phai tinh lai truoc khi bo
+-- CFG.TRANGBI_LOCKED. Chung duoc suy ra tu thu nhap MU cu
+-- (60 x 1.0319^stage, tong 1,880,187 Linh Khi ca van):
 --
--- BASE 147 (khong phai 86): Ky Nang da chuyen sang Ngo Tinh nen phan
--- 22% Linh Khi cua no doi sang day. Trang Bi gio an 52% ngan sach.
+--   1.134 = 1.0319^4.07 -- thu nhap cua 4,07 stage thoi do.
+--   BASE 147            -- 52% cua ngan sach thoi do.
+--
+-- Thu nhap gio PHANG va ca van chi co 10,000 Linh Khi, ma:
+--   tron 60 lan nang  = 974,606 Linh Khi   (gap 97 lan so kiem duoc)
+--   lan nang thu 54   = 115,295 Linh Khi   (mot lan)
+--   10,000 mua duoc   = 18/60 lan
+--   500 du sau Tu Vi  =  2/60 lan
+--
+-- Tuc mo khoa ngay bay gio thi he nay gan nhu khong dung duoc. Chon
+-- lai dong tien VA duong cong cung luc -- xem docs/02-he-thong/kinh-te.md.
 CFG.TRANGBI_COST_BASE = 147.0
 CFG.TRANGBI_COST_STEP = 1.134
 
@@ -1175,9 +1191,8 @@ CFG.TRANGBI_COST_STEP = 1.134
 --  PHAP KHI  --  5 mon, mua MOT lan, khong co cap
 --  docs/02-he-thong/kinh-te.md
 --
---  Nguon tien duy nhat la TINH THACH, ma Tinh Thach chi roi tu boss.
---  Nen day la he duy nhat khong cay duoc: thua mot boss la mat han mot
---  mon, khong co cach bu.
+--  Tra bang GO (tinh anh 2, boss 5) -- Tinh Thach da xoa han
+--  2026-09-17. Ngan sach la phan Go ky nang khong dung toi.
 -- ============================================================
 
 -- Moi mon DOI MOT LUAT, khong cong chi so -- ba he kia da lo chi so roi.
@@ -1191,11 +1206,11 @@ CFG.TRANGBI_COST_STEP = 1.134
 -- RONG CO Y -- 2026-09-16.
 --
 -- Nam mon cu (Tu Linh Tran, Ngo Dao Bi, Hon Thien Kinh, Kim Cang Phu,
--- Thoi Dien Chau) da xoa. Chung mua bang Tinh Thach; he nay gio tra
--- bang NGO TINH, va noi dung se thiet ke lai.
+-- Thoi Dien Chau) da xoa. Chung mua bang Tinh Thach, dong tien do gio
+-- khong con; noi dung se thiet ke lai.
 --
--- NGAN SACH DANH SAN: ca van kiem 300 Ngo Tinh, ky nang tieu 70, nen
--- con 230 diem cho day. Con so do la rang buoc khi thiet ke lai.
+-- NGAN SACH DANH SAN: ca van kiem 260 Go, ky nang tieu 70, nen con
+-- 190 diem cho day. Con so do la rang buoc khi thiet ke lai.
 --
 -- Code van chay voi bang rong: the hien mot dong "chua co gi", khong
 -- mua duoc gi, va moi hieu ung tra ve false. Them mon moi la them dong
@@ -1206,12 +1221,6 @@ CFG.PHAPKHI_LOCKED = true
 
 CFG.PHAPKHI = {}
 
--- Tong gia 1,050 tren 1,150 Tinh Thach cua ca van -- mua du ca nam neu
--- ha het 20 boss, va CHI neu ha het.
---
--- Hai mon dau cong vao chinh nen kinh te, nen mua som lai hon mua muon.
--- Do la lua chon that: bo 60 Tinh Thach vao "Tu Linh Tran" ngay canh
--- gioi 1 nghia la chap nhan cham co mon thu nam.
 
 -- (CFG.PHAPKHI_LIVE da bo: khong file nao doc no.)
 
@@ -1256,25 +1265,61 @@ CFG.QUAY_DAI_MAX = 1.30
 -- Vang thi la bo dem cong thuan, khong ai so huu, va no chay thang vao
 -- shop -- them mon moi vao shop la the 3 tu co gia tri.
 --
--- 12 chon de o canh gioi dau, 7 luot cho 185 vang, con quai cho 200 --
--- hai nguon ngang nhau. Ve sau quay vuot len (canh gioi 20: mot the =
--- 3,859 vang) vi no bam theo bac con quai thi phang.
+-- PHANG, va NGAU NHIEN TRONG DAI -- 2026-09-17.
 --
--- HE QUA phai nho khi them mon vao shop: gia mon PHAI leo theo bac,
--- neu khong nua sau van vang thanh vo nghia. Lo thuoc 10 vang la do
--- co tinh -- no la do tieu hao vat, khong phai thu de danh.
-CFG.QUAY_VANG_MOI_DIEM = 12
+-- Ban cu: 12 x gia tri the, tuc nhan theo bac. Do duoc hau qua: canh
+-- gioi 20 mot the cho 3,859 vang = 154 da (gia da 25), trong khi the 1
+-- cho 3 da. Tu khoang canh gioi 10 tro di, chon the 3 roi mua da LUON
+-- LUON loi hon chon the 1 -- the 1 thanh the chet.
+--
+-- Nguyen nhan: the 3 leo x180 ca van con the 1 phang. Mot ben leo, mot
+-- ben dung yen thi som muon cung cat nhau.
+--
+-- Luat rut ra:  TIEN THI PHANG, SUC MANH THI LEO.
+--   the 1 (da)     -> tien   -> phang
+--   the 3 (vang)   -> tien   -> phang
+--   the 2 (chi so) -> suc manh -> van leo x1.30
+-- Dung huong ca nen kinh te da di: thu nhap phang, Tu Vi phang 500, ky
+-- nang phang 1 go. The 3 la thu cuoi cung con sot lai cua thoi thu
+-- nhap mu.
+--
+-- VI SAO 30-90 CHU KHONG PHAI MOT SO CO DINH. So co dinh thi phep so
+-- sanh ba the giai DUNG MOT LAN roi lap lai 140 lan -- nguoi choi bam
+-- theo quan tinh. Co dai thi thinh thoang no dao nguoc, nen moi luot
+-- phai nhin that.
+--
+-- Dat dai theo the 1 quy ra vang (gia da 25):
+--   the 1 = 3 da = 75 vang, nhung KHOA -- chi mua duoc trang bi
+--   the 3 = 30..90, tb 60  -- thap hon mot chut vi vang LINH HOAT hon
+--                             (doi nguoc lai da luc nao cung duoc)
+-- Dinh dai 90 PHAI vuot 75, neu khong the 3 thua moi luot va lai chet.
+--
+-- Doi chieu voi tien quai: quai cho 200 vang mot canh gioi, 7 luot the
+-- 3 cho ~420 -- gap doi, du de no la lua chon that.
+CFG.QUAY_VANG_MIN = 30
+CFG.QUAY_VANG_MAX = 90
 
--- The 1: da Huyen Thiet, PHANG 10, khong nhan theo bac.
+-- The 1: da Huyen Thiet, PHANG, khong nhan theo bac.
 --
--- Phang vi gia nang Trang Bi se co dinh theo luong da -- chu du an chot.
--- Ca van neu luon chon the 1: 140 x 10 = 1,400 da, va do la ngan sach
--- tron de thiet ke Trang Bi quanh no.
+-- Phang vi gia nang trang bi co dinh theo luong da -- chu du an chot.
 --
--- CANH BAO: Trang Bi dang KHOA (CFG.TRANGBI_LOCKED), nen tu gio den luc
--- mo lai, da chi tang chu khong tieu duoc -- dung cai bay da giet Tinh
--- Thach. Mo Trang Bi cang som cang tot.
-CFG.QUAY_DA = 10
+-- CON SO NAY BAM THEO SO MON TRANG BI, quy tac:
+--
+--     QUAY_DA ~= 2.5 x so mon
+--
+-- Cach ra: mot mon di tron thang 100 bac ton ~300 da (ky vong 15 lan
+-- thu moi canh gioi x 20). Ca van co 140 luot quay, nen:
+--     1 mon  ->  300 da can  ->  QUAY_DA = 3   (140x3 = 420)
+--     4 mon  -> 1,200 da can ->  QUAY_DA = 10  (140x10 = 1,400)
+--
+-- Hien moi co MOT mon (Kiem) nen de 3. THEM MON LA PHAI SUA SO NAY --
+-- de nguyen 10 thi da thua 4.7 lan, ma da thua thi bam mai cung trung,
+-- tuc he xac suat 100/75/50/25/15 khong con nghia gi.
+--
+-- Va no phai HOI THIEU mot chut so voi nhu cau: co thieu thi vang moi
+-- co viec (shop ban da), va shop moi dung vai "go khi den" thay vi
+-- thanh duong leo chinh.
+CFG.QUAY_DA = 3
 
 -- The 2 cong vao MOT chi so ngau nhien trong ba.
 --
@@ -1313,6 +1358,23 @@ CFG.SHOP = {
     icon = [[ReplaceableTextures\CommandButtons\BTNPotionBlueSmall.blp]],
     mota    = "Hoi mana ngay. Dung duoc mot lan.",
     mota_en = "Restores mana instantly. One use." },
+
+  -- Da Huyen Thiet: mon DUY NHAT trong shop khong phai item.
+  --
+  -- 'da' thay cho 'item': buy() cong thang vao S.p[pid].da chu khong bo
+  -- gi vao tui. Nen no khong ton o tui, khong can conCho(), va khong bi
+  -- probeItems() do (khong co ma item de do).
+  --
+  -- VAI CUA MON NAY LA GO KHI DEN, khong phai duong leo chinh. The 1 cua
+  -- Co Duyen cho 3 da mien phi; day la cho bo tien ra khi xui nhieu lan
+  -- lien tiep o cap 15%. Gia 25 dat co y: 3 da cua the 1 = 75 vang, ma
+  -- mot luot the 3 chi cho 30-90 -- nen mua da bang vang luon LO hon
+  -- nhat the 1, chi duoc cai la chu dong duoc.
+  { ma = "da", ten = "Da Huyen Thiet", en = "Black Iron",
+    da = 1, gia = 25,
+    icon = [[ReplaceableTextures\CommandButtons\BTNStaffOfSanctuary.blp]],
+    mota    = "Mot vien da, dung de nang cap trang bi.",
+    mota_en = "One stone, used to upgrade equipment." },
 
   -- 500 vang = 10 wave thu nhap cua mot nguoi (50 vang/wave). Dat cao
   -- hon hai lo kia hai bac do vi no mua thu khac han: khong phai mot
@@ -1432,7 +1494,7 @@ CFG.BLOCK_ROLE = {
   cua  = { ten = "Ma Mon",   en = "Demon Gate", mau = {255,  80,  80} },
 
   tamthe = { ten = "Tam The Tran", en = "Three-Body Array",
-             mau = {255, 140, 255}, tien = "Tinh Thach",
+             mau = {255, 140, 255}, tien = "Go",
              coop = "Boss chia ba than o ba goc. Than nao chet le thi hai" ..
                     " than kia hoi sinh no. Phai ha ca ba trong mot cua so" ..
                     " thoi gian -- ba nguoi, ba cho, mot nhip." },
@@ -1443,13 +1505,13 @@ CFG.BLOCK_ROLE = {
                       " nguoi dung. Quai lien tuc ra de day nguoi khoi tru." },
 
   tamdao = { ten = "Tam Dao Mon", en = "Three Paths",
-             mau = {120, 255, 160}, tien = "Ngo Tinh",
+             mau = {120, 255, 160}, tien = "Go",
              coop = "Ba cua, moi cua chi mot VAI qua duoc: Kim can nguoi" ..
                     " chiu don, Moc can nguoi giai, Hoa can nguoi pha nhanh." ..
                     " Dung ba hero cua CFG.HEROES." },
 
   tranma = { ten = "Tran Ma Thap", en = "Warding Pagoda",
-             mau = {120, 200, 255}, tien = "Tinh Thach",
+             mau = {120, 200, 255}, tien = "Go",
              coop = "Mot nguoi phai dung yen dan phap, khong danh khong" ..
                     " chay duoc. Hai nguoi con lai gong ca tran. Doi phien" ..
                     " nhau khi nguoi dang dan sap guc." },

@@ -27,9 +27,12 @@ thiết kế, và là chỗ mọi con số quy về —
 | Khoá kinh nghiệm & điểm kỹ năng | [1_player.lua](../src/2_nguoi_choi/1_player.lua) | Quét lại toàn map mỗi `HERO_XP_SWEEP` giây |
 | **100 đợt quái** | [2_wave.lua](../src/3_tran_dau/2_wave.lua) | Đường cong chỉ số, tinh anh, boss, tiền thưởng |
 | **Tu Vi** — tu vi người chơi | [3_linhcan.lua](../src/2_nguoi_choi/3_linhcan.lua) | 20 bậc, ×19.7 — mua bằng **Linh Khí** |
-| **Bảy kỹ năng, 10 bậc** | [4_skill.lua](../src/2_nguoi_choi/4_skill.lua) · [7_hieuung.lua](../src/2_nguoi_choi/7_hieuung.lua) | ×2.4 — mua bằng **Ngộ Tính**. Sát thương **đã ăn theo chỉ số thật** |
+| **Bảy kỹ năng, 10 bậc** | [4_skill.lua](../src/2_nguoi_choi/4_skill.lua) · [7_hieuung.lua](../src/2_nguoi_choi/7_hieuung.lua) | Mua bằng **Gỗ**, 1 điểm mỗi lần. Sát thương **đã ăn theo chỉ số thật** |
 | **Sáu ô trang bị** | [5_trangbi.lua](../src/2_nguoi_choi/5_trangbi.lua) | ×8.3 — mua bằng **Linh Khí** |
-| **Năm pháp khí** | [6_phapkhi.lua](../src/2_nguoi_choi/6_phapkhi.lua) | ×2.5 — mua bằng **Tinh Thạch** (boss) |
+| **Cửa hàng** | [8_shop.lua](../src/2_nguoi_choi/8_shop.lua) | Hệ duy nhất tiêu **Vàng**, và duy nhất bán đồ tiêu hao. Gộp lọ cùng loại vào một ô |
+| **Cơ Duyên** | [10_quay.lua](../src/2_nguoi_choi/10_quay.lua) · [5_quayframe.lua](../src/4_giao_dien/5_quayframe.lua) | Khung ba cột riêng, mở ngay khi tinh anh/boss chết. Chọn 1 trong 3 |
+| **Dùng đồ bằng hàng số trên** | [9_dungdo.lua](../src/2_nguoi_choi/9_dungdo.lua) | Thêm vào numpad sẵn có, không thay |
+| **Trang Bị · Pháp Khí** | [5_trangbi.lua](../src/2_nguoi_choi/5_trangbi.lua) · [6_phapkhi.lua](../src/2_nguoi_choi/6_phapkhi.lua) | ⏸ **đang khoá** (`TRANGBI_LOCKED` `PHAPKHI_LOCKED`) — thẻ vẫn hiện để người chơi biết hệ tồn tại |
 | Bảng nhân vật (phím **E**) | [1_panel.lua](../src/4_giao_dien/1_panel.lua) | 4 thẻ, hai kiểu thân bảng |
 | Chữ bay | [4_fct.lua](../src/4_giao_dien/4_fct.lua) | Cộng dồn sát thương trước khi vẽ |
 | Lưới 25 block, 4+4 dòng sông | [4_geometry.lua](../src/1_nen/4_geometry.lua) | Có vùng thật `Blk01..Blk25` trong World Editor; địa hình chưa vẽ |
@@ -49,7 +52,7 @@ thiết kế, và là chỗ mọi con số quy về —
 | Thành phần một đợt | 50 lính + 1 tinh anh, **cố định** | [ADR 0009](05-quyet-dinh/0009-so-luong-linh-co-dinh.md) |
 | Thua | Nhà chính chết. Không đếm mạng | [ADR 0011](05-quyet-dinh/0011-nha-chinh-dem-mang.md) — đã bị lật |
 | Thưởng | Chia đều cho mọi người, không theo ai kết liễu | [ADR 0013](05-quyet-dinh/0013-thuong-chia-deu-cho-moi-nguoi.md) |
-| Ba đồng tiền | Linh Khí (lính) · Ngộ Tính (tinh anh) · Tinh Thạch (boss) | [ADR 0015](05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md) |
+| Ba đồng tiền | Linh Khí (Tu Vi) · Vàng (Shop) · Gỗ (Kỹ Năng) | [ADR 0015](05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md) |
 
 Ba người chơi là đồng minh, chung tầm nhìn.
 
@@ -63,23 +66,34 @@ code**: lối chơi vẫn hoãn có chủ ý,
 > **19.9s của đồng hồ 20s** — người chơi không có giây nào đứng ở nhà mà đánh.
 > Ba cách sửa ở [phan-vung.md](02-he-thong/phan-vung.md), quyết sau khi chơi thử.
 
-## Ngân sách sức mạnh đã đủ — trên giấy
+## Không còn ngân sách sức mạnh
 
-Đường cong địch đòi người chơi mạnh lên **×967** qua 100 đợt. Bốn hệ đã cài đủ:
+**Đường cong quái giờ *là* đường cong Tu Vi** (`MOB_EHP_THEO_LINHCAN`). Hai vế
+có chung thừa số nên nó triệt tiêu: tỉ lệ "mấy phát một con" phẳng theo định
+nghĩa, không nhờ cân bằng khéo —
+[ADR 0020](05-quyet-dinh/0020-duong-cong-quai-bam-theo-tu-vi.md).
 
-| Nguồn | Nhân | Mua bằng | Trạng thái |
+Nên **con số ×967 không còn là hợp đồng nào cả**. Tu Vi một mình đã bám đúng
+quái; mọi nguồn khác là phần **vượt lên thuần**:
+
+| Nguồn | Đóng góp | Mua bằng | Trạng thái |
 |---|---|---|---|
-| Tu Vi | ×19.7 | Linh Khí | Đã cài |
-| Trang Bị | ×8.3 | Linh Khí | Đã cài |
-| Kỹ Năng | ×2.4 | Ngộ Tính | Đã cài và **đã có hiệu lực** |
-| Pháp Khí | ×2.5 | **Ngộ Tính** | ⚠ **rỗng** — năm món cũ đã xoá 2026-09-16 |
-| | **×392 / ×967** | | thiếu ×2.5 cho tới khi Pháp Khí có nội dung |
+| Tu Vi | ×1.00 so với quái | Linh Khí | Đã cài — triệt tiêu theo định nghĩa |
+| Cơ Duyên | **+40%** chỉ số cả ván | *(rơi ra)* | Đã cài |
+| Kỹ Năng | bậc 1→10 | Gỗ | Đã cài và **đã có hiệu lực** |
+| Trang Bị | ×8.3 nếu mở lại | Linh Khí | ⏸ **khoá** — giá đã chết, xem dưới |
+| Pháp Khí | chưa có nội dung | Gỗ | ⏸ **khoá** — 190 Gỗ dành sẵn |
 
-Một chỗ con số trên giấy chưa thành thật trong game:
+Điều kiện duy nhất: người chơi phải lên **đúng một bậc mỗi cảnh giới**. Đó là
+giao kèo `LINHCAN_COST_BASE = 500` phẳng + một cảnh giới kiếm đúng 500 Linh Khí.
 
-- **Pháp Khí không cộng thẳng sát thương.** Năm món cộng vào kinh tế và sức chịu
-  của nhà chính, tức ×2.5 đang trả bằng đường vòng. Chưa đo được đường vòng đó
-  có bằng ×2.5 thật không.
+> ⚠ **Hai chỗ tiền chỉ vào mà không ra.**
+>
+> - **Đá Huyền Thiết** — Cơ Duyên rơi 10 mỗi lượt, cả ván **1 400**, mà ô tiêu
+>   duy nhất là Trang Bị đang khoá. Đúng cái bẫy đã giết Tinh Thạch.
+> - **Giá Trang Bị đã chết** — `147 × 1.134ⁿ` suy từ thu nhập **mũ** cũ. Với
+>   10 000 Linh Khí cả ván thì trọn 60 lần nâng tốn **974 606**. Phải tính lại
+>   trước khi bỏ khoá.
 
 `SKILL_DATA_LIVE` **đã bật** từ 2026-09-16: cả bảy ability có 10 bậc thật, và
 sát thương ăn theo chỉ số qua [7_hieuung.lua](../src/2_nguoi_choi/7_hieuung.lua).

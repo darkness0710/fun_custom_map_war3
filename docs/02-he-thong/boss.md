@@ -112,7 +112,8 @@ dần chứ không bị ném vào một trận boss ba cơ chế ngay từ Phàm
 | `BOSS_DMG` | Gấp mấy lần lính cùng stage | Giữ thấp (3). Xem L3 |
 | `BOSS_SCALE` | Cỡ model | Thuần hình ảnh, nhưng là thứ báo "đây là boss" trước cả thanh máu |
 | `SCALE_BOSS_EHP_PER_PLAYER` | Nhân máu theo số người | Cao hơn lính — [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) |
-| `TINHTHACH_BOSS_BASE` `TINHTHACH_BOSS_STEP` | Tinh Thạch rơi ra ở cảnh giới `r` | `BASE + STEP × (r−1)`. Nguồn Tinh Thạch **duy nhất** của cả ván — [kinh-te.md](kinh-te.md) |
+| `THUONG_BOSS_LINHKHI` `THUONG_BOSS_GO` | Boss rơi ra | `100` + `5`, **phẳng** — không theo cảnh giới. Gỗ chỉ rơi từ tinh anh và boss, nên nó bị chặn bởi **nội dung** chứ không phải bởi ví — [kinh-te.md](kinh-te.md) |
+| `QUAY_BOSS` | Số lượt Cơ Duyên boss cho | `3` *(tinh anh cho `1`)* — [quay-thuong.md](quay-thuong.md) |
 
 **Chưa tồn tại — thiết kế cho L4–L6:**
 

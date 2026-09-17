@@ -74,7 +74,7 @@ T.en = {
   -- Chung
   no_qi           = "Not enough Spirit Qi.",
   need_have       = " Need %s, have %s.",
-  boss_down       = "Boss %s defeated. Everyone gains %d Spirit Stone.",
+  boss_down       = "Boss %s defeated. Everyone gains %d Lumber.",
 
   -- Quai
   pick_title      = "Choose your hero",
@@ -104,7 +104,7 @@ T.en = {
   btn_buy         = "BUY",
   btn_unlock      = "UNLOCK",
   -- Ten tien NGAN, chi dung tren nut. Nut cu chi in con so: "UPGRADE 1"
-  -- doc ra la "nang len bac 1", khong ai doan duoc 1 do la 1 Ngo Tinh.
+  -- doc ra la "nang len bac 1", khong ai doan duoc 1 do la 1 Go.
   cur_lk          = "Qi",
   cur_go          = "Lumber",
   cur_vang        = "Gold",
@@ -128,9 +128,9 @@ T.en = {
   tb_effect       = "+%s attack damage",
   tb_bought       = "%s raised %s to level %d.",
   pk_bought       = "%s obtained %s.",
-  pk_note         = "Spirit Stone only drops from bosses -- 20 times a run.",
-  pk_empty        = "No treasures yet -- leftover Insight will be spent here.",
-  ngo_note        = "Insight comes from elites -- one per wave.",
+  pk_note         = "Treasures are locked for now.",
+  pk_empty        = "No treasures yet -- leftover Lumber will be spent here.",
+  go_note         = "Lumber comes from elites (2) and bosses (5).",
   tier_word       = "Tier",
   tier_full       = "Perfection",
   stage_boss      = "BOSS",
@@ -188,7 +188,7 @@ T.vi = {
 
   no_qi           = "Khong du linh khi.",
   need_have       = " Can %s, dang co %s.",
-  boss_down       = "Ha duoc boss %s. Moi nguoi nhan %d Tinh Thach.",
+  boss_down       = "Ha duoc boss %s. Moi nguoi nhan %d Go.",
 
   pick_title      = "Chon hero cua ban",
   pick_done       = "%s da chon %s.",
@@ -239,9 +239,9 @@ T.vi = {
   tb_effect       = "+%s sat thuong don danh",
   tb_bought       = "%s nang %s len cap %d.",
   pk_bought       = "%s da co %s.",
-  pk_note         = "Tinh Thach chi roi tu boss -- 20 lan ca van.",
-  pk_empty        = "Chua co phap khi nao -- Ngo Tinh du se tieu o day.",
-  ngo_note        = "Ngo Tinh den tu tinh anh -- moi wave mot con.",
+  pk_note         = "He Phap Khi dang tam khoa.",
+  pk_empty        = "Chua co phap khi nao -- Go du se tieu o day.",
+  go_note         = "Go roi tu tinh anh (2) va boss (5).",
   tier_word       = "Tang",
   tier_full       = "Vien Man",
   stage_boss      = "BOSS",

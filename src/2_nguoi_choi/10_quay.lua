@@ -5,11 +5,14 @@
 --
 --    the 1  10 da Huyen Thiet, phang
 --    the 2  +V vao MOT chi so ngau nhien trong ba
---    the 3  vang, V x CFG.QUAY_VANG_MOI_DIEM
+--    the 3  vang, PHANG, ngau nhien QUAY_VANG_MIN..MAX
 --
 --  V = CFG.QUAY_GIA_TRI x LINHCAN_STAT_STEP^(bac-1), ngau nhien +-30%.
---  Dung CHINH buoc cua Tu Vi nen quay tu bam theo -- doi duong cong Tu
---  Vi thi quay tu co theo.
+--  CHI the 2 dung V. Dung CHINH buoc cua Tu Vi nen no tu bam theo --
+--  doi duong cong Tu Vi thi the 2 tu co theo.
+--
+--  The 1 va the 3 KHONG dung V: chung la TIEN, ma tien thi phang. Xem
+--  chu thich CFG.QUAY_VANG_MIN ve vi sao the 3 tung leo va vi sao bo.
 --
 --  BA THE SINH O DAU, va vi sao cho do.
 --
@@ -43,7 +46,7 @@ local function rutThe(pid)
     { loai = "da",    so = CFG.QUAY_DA },
     { loai = "chiso", so = math.floor(v + 0.5),
       chi = CFG.QUAY_CHISO[GetRandomInt(1, #CFG.QUAY_CHISO)] },
-    { loai = "vang", so = math.floor(v * CFG.QUAY_VANG_MOI_DIEM + 0.5) },
+    { loai = "vang", so = GetRandomInt(CFG.QUAY_VANG_MIN, CFG.QUAY_VANG_MAX) },
   }
 end
 

@@ -42,7 +42,14 @@ end
 
 -- Con cho de NHAN them mot lo khong: hoac con o trong, hoac co mot o
 -- cung loai chua day luot.
+-- Mon cong thang vao bo dem (da Huyen Thiet) thay vi bo item vao tui.
+local function laDaMon(mon)
+  return (mon ~= nil) and (mon.da ~= nil) and (mon.da > 0)
+end
+
 local function conCho(u, maItem)
+  -- maItem = nil nghia la mon nay khong dung tui do -- luon con cho.
+  if maItem == nil then return true end
   if not CFG.SHOP_CHECK_BAG then return true end
   if u == nil then return false end
   if oGop(u, maItem) ~= nil then return true end
@@ -73,7 +80,24 @@ local function buy(pid, i)
   if mon == nil then return end
 
   local d = S.p[pid]
-  if d == nil or d.hero == nil then return end
+  if d == nil then return end
+
+  -- Da: khong dung tui do, nen khong can hero va khong can kiem o.
+  if laDaMon(mon) then
+    if not API.spendVang(pid, mon.gia) then
+      API.msg(pid, CFG.C_RED .. API.t("no_vang") .. CFG.C_END ..
+        API.t("need_have", API.num(mon.gia), API.num(API.getVang(pid))))
+      API.panelRefresh(pid)
+      return
+    end
+    d.da = (d.da or 0) + mon.da
+    API.msg(pid, API.t("shop_bought",
+      CFG.C_JADE .. API.pick(mon) .. CFG.C_END, API.num(mon.gia)))
+    API.panelRefresh(pid)
+    return
+  end
+
+  if d.hero == nil then return end
 
   if not conCho(d.hero, mon.item) then
     API.msg(pid, CFG.C_RED .. API.t("shop_full") .. CFG.C_END)
@@ -177,8 +201,14 @@ local function tabItems(pid)
   for i = 1, #CFG.SHOP do
     local mon = CFG.SHOP[i]
     local con = conCho(hero, mon.item)
+    -- Icon da: lay cai 10_quay.lua DO DUOC luc vao map, khong go tay.
+    -- Doc o day chu khong o startShop vi shop khoi dong TRUOC quay.
+    local ic = mon.icon
+    if laDaMon(mon) and API.quayIcon ~= nil then
+      ic = API.quayIcon("da") or ic
+    end
     out[i] = {
-      icon      = mon.icon,
+      icon      = ic,
       ten       = API.pick(mon),
       mota      = motaOf(mon),
       -- Trang thai la CHO TRONG TUI, khong phai gia: gia da nam tren
@@ -212,8 +242,10 @@ local function probeItems()
   local bad = {}
   for i = 1, #CFG.SHOP do
     local mon = CFG.SHOP[i]
-    local it = CreateItem(mon.item, 0.0, 0.0)
-    if it == nil then
+    local it = (mon.item ~= nil) and CreateItem(mon.item, 0.0, 0.0) or nil
+    if mon.item == nil then
+      -- Mon khong dung tui do (da Huyen Thiet): khong co gi de do.
+    elseif it == nil then
       bad[#bad + 1] = API.idToStr(mon.item)
     else
       if BlzGetItemIconPath ~= nil then

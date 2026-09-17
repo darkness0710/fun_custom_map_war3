@@ -232,7 +232,7 @@ local function upgrade(pid, index)
   if not API.spendGo(pid, gia) then
     API.msg(pid, CFG.C_RED .. API.t("no_go") .. CFG.C_END ..
       API.t("need_have", API.num(gia), API.num(API.getGo(pid))) ..
-      CFG.C_GREY .. " " .. API.t("ngo_note") .. CFG.C_END)
+      CFG.C_GREY .. " " .. API.t("go_note") .. CFG.C_END)
     API.panelRefresh(pid)
     return
   end
@@ -398,7 +398,7 @@ local function startSkills()
     trong      = API.t("skill_none"),
   })
   API.syncOn(CFG.OP_SKILL_UP, upgrade)
-  API.trace("skill: the Ky Nang san sang (Ngo Tinh)")
+  API.trace("skill: the Ky Nang san sang (Go)")
 end
 
 -- Goi khi hero vua duoc tao: dat lai bac cho dung voi bang da mua.

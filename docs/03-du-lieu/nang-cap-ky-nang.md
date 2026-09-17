@@ -1,12 +1,12 @@
 # Nâng cấp kỹ năng: giá và sức mạnh mỗi bậc
 
-> **Trạng thái:** Đường cong sức mạnh đã chốt — **giá đã đổi sang Ngộ Tính**
-> **Cập nhật:** 2026-09-16
-> **Khoá CFG:** `SKILL_NGO_UP` `SKILL_NGO_UNLOCK` `SKILL_DMG_STEP` `SKILL_CD_STEP` `SKILL_PASSIVE_STEP`
+> **Trạng thái:** Đường cong sức mạnh đã chốt — **giá trả bằng Gỗ**
+> **Cập nhật:** 2026-09-17
+> **Khoá CFG:** `SKILL_GO_UP` `SKILL_GO_UNLOCK` `GO_START` `SKILL_DMG_STEP` `SKILL_CD_STEP` `SKILL_PASSIVE_STEP`
 
 > **Phần GIÁ của trang này đã lỗi thời.** Kỹ năng không mua bằng Linh Khí nữa —
-> nó mua bằng **Ngộ Tính**, một đồng tiền rơi từ tinh anh, và giá là một **bảng
-> điểm** chứ không phải đường cong mũ.
+> nó mua bằng **Gỗ**, rơi từ tinh anh (2) và boss (5), và giá là **1 điểm mỗi
+> lần** chứ không phải đường cong mũ.
 > [ADR 0015](../05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md) ·
 > [kinh-te.md](../02-he-thong/kinh-te.md)
 >

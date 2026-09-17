@@ -1,7 +1,7 @@
 # Cơ Duyên — khung ba cột
 
 > **Khoá CFG:** `QUAY_ELITE` `QUAY_BOSS` `QUAY_GIA_TRI` `QUAY_DAI_MIN/MAX`
-> `QUAY_DA` `QUAY_VANG_MOI_DIEM` `QUAY_CHISO` `QUAY_X/Y`
+> `QUAY_DA` `QUAY_VANG_MIN/MAX` `QUAY_CHISO` `QUAY_X/Y`
 > **Mã:** [10_quay.lua](../../src/2_nguoi_choi/10_quay.lua) *(số liệu)* ·
 > [5_quayframe.lua](../../src/4_giao_dien/5_quayframe.lua) *(giao diện)*
 
@@ -24,26 +24,59 @@ cả thanh giao diện đáy (~0.12) lẫn mép trên.
 Hạ **tinh anh** được 1 lượt, **boss** được 3 lượt. Mỗi lượt mở **ba thẻ**, chọn
 **một**.
 
-| Thẻ | Nhận được | Ghi chú |
+| Thẻ | Nhận được | Phẳng hay leo |
 |---|---|---|
-| 1 | **10 Đá Huyền Thiết** | phẳng, không theo bậc |
-| 2 | **+V** vào **một** chỉ số ngẫu nhiên trong Str/Agi/Int | canh bạc |
-| 3 | **V × 12 vàng** | chắc chắn |
+| 1 | **3 Đá Huyền Thiết** | **phẳng** — tiền |
+| 2 | **+V** vào **một** chỉ số ngẫu nhiên trong Str/Agi/Int | **leo ×1.30** — sức mạnh |
+| 3 | **30–90 vàng**, ngẫu nhiên | **phẳng** — tiền |
 
 ```
 V(bậc) = CFG.QUAY_GIA_TRI × LINHCAN_STAT_STEP^(bậc−1)      ± 30%
-       = 2.2 × 1.30^(bậc−1)
+       = 2.2 × 1.30^(bậc−1)          <- CHI the 2 dung V
 ```
 
-Dùng **chính** bước của Tu Vi, nên quay tự bám theo: đổi đường cong Tu Vi thì
-quay tự co giãn, không phải chỉnh lại ở đây.
+> ## Tiền thì phẳng, sức mạnh thì leo — 2026-09-17
+>
+> Bản trước thẻ 3 là `V × 12`, tức **nhân theo bậc**. Đo được hậu quả:
+>
+> | Cảnh giới | Thẻ 3 | = mấy đá *(giá 25)* | Thẻ 1 | Ai hơn |
+> |---|---|---|---|---|
+> | 1 | 26 | 1.1 | 3 | thẻ 1 ×2.8 |
+> | 10 | 280 | 11.2 | 3 | **thẻ 3 ×3.7** |
+> | 20 | 3 859 | **154** | 3 | **thẻ 3 ×51** |
+>
+> Từ khoảng cảnh giới 5–10 trở đi, chọn thẻ 3 rồi mang vàng đi mua đá **luôn
+> luôn** lợi hơn chọn thẻ 1 — thẻ 1 thành **thẻ chết** đúng nửa sau ván.
+>
+> Nguyên nhân không phải con số 12, mà là **một thẻ leo ×180 trong khi thẻ kia
+> đứng yên**. Hai đường khác độ dốc thì sớm muộn cũng cắt nhau.
+>
+> **Luật rút ra:** thẻ 1 và thẻ 3 cho **tiền** → phẳng. Thẻ 2 cho **sức mạnh**
+> → leo. Đúng hướng cả nền kinh tế đã đi (thu nhập phẳng, Tu Vi phẳng 500, kỹ
+> năng phẳng 1 Gỗ); thẻ 3 là thứ cuối cùng còn sót lại của thời thu nhập mũ.
 
-| Bậc | V | Thẻ 2 | Thẻ 3 (vàng) | 7 lượt = vàng | Quái cho |
-|---|---|---|---|---|---|
-| 1 | 2 | +2 | 26 | 185 | 200 |
-| 5 | 6 | +6 | 75 | 528 | 200 |
-| 10 | 23 | +23 | 280 | 1,960 | 200 |
-| 20 | 322 | +322 | 3,859 | 27,016 | 200 |
+### Vì sao thẻ 3 là **dải** chứ không phải một số cố định
+
+Số cố định thì phép so sánh ba thẻ **giải đúng một lần rồi lặp lại 140 lần** —
+người chơi bấm theo quán tính. Có dải thì thỉnh thoảng nó đảo ngược, nên mỗi
+lượt phải nhìn thật.
+
+Dải đặt theo thẻ 1 quy ra vàng (giá đá `25`):
+
+| Lượt rơi | = mấy đá | Nên chọn |
+|---|---|---|
+| 30 | 1.2 | thẻ 1 |
+| 60 *(trung bình)* | 2.4 | ngang ngửa |
+| 90 | 3.6 | thẻ 3 |
+
+Thẻ 1 cho 3 đá = **75 vàng**, nhưng **khoá** — chỉ mua được trang bị. Trung
+bình thẻ 3 thấp hơn 75 một chút vì vàng **linh hoạt hơn**: nó đổi ngược lại
+thành đá lúc nào cũng được, còn đá thì không đổi ngược thành vàng.
+
+**Đỉnh dải phải vượt 75**, nếu không thẻ 3 thua mọi lượt và lại chết.
+
+Đối chiếu với tiền quái: quái cho **200 vàng** một cảnh giới, còn 7 lượt thẻ 3
+cho **~420** — gấp đôi, đủ để nó là lựa chọn thật.
 
 ## Vì sao 1 lượt / 3 lượt, không phải 5 / 10
 

@@ -45,8 +45,13 @@ qua chúng.
 
 ### Ngộ Tính là điểm, không phải tiền
 
-Không có đường cong mũ, không bám theo thu nhập. Cả ván kiếm 300 điểm
-(200 tinh anh × 1 + 20 boss × 5), tiêu hết 283 nếu mở và nâng trọn bảy kỹ năng.
+Không có đường cong mũ, không bám theo thu nhập. Cả ván kiếm **260** Gỗ
+(80 tinh anh × 2 + 20 boss × 5), tiêu **70** nếu mở và nâng trọn bảy kỹ năng.
+
+> **Cập nhật 2026-09-17.** Con số cũ *(300 điểm, tiêu 283)* tính cho 220 stage
+> và giá bậc thang `{1,2,2,3,3,4,4,5,5}`. Giờ là **100 stage** và giá **phẳng 1
+> điểm**, nên trọn bảy kỹ năng max hết ở **stage 27** — phần dư 190 Gỗ dành cho
+> Pháp Khí. Đồng tiền cũng đã đổi tên: *Ngộ Tính* → **Gỗ**, và *Tinh Thạch* xoá hẳn.
 
 Nhờ vậy **bỏ hẳn được một đường cong phải cân bằng** (`SKILL_COST_BASE`/`STEP`).
 Đổi lại là mất tính chất "nâng cả 7 skill ≈ một lần đột phá" — xem phần dưới.

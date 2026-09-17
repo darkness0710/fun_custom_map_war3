@@ -11,7 +11,7 @@
 -- ============================================================
 --  3_linhcan.lua  --  Linh Can (tu vi cua nguoi choi)
 --
---  Nguon suc manh LON NHAT: x20 trong hop dong x967
+--  Nguon suc manh CHINH: EHP quai bam theo chinh he so cua no
 --  (docs/03-du-lieu/duong-cong-suc-manh.md). 20 bac, dung chung thang
 --  ten voi 20 canh gioi cua phe dich.
 --

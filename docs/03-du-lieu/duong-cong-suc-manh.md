@@ -326,14 +326,16 @@ trên là **bản cũ**; bản đang chạy là:
 
 | Nguồn | Nhân | Mua bằng | Trạng thái |
 |---|---|---|---|
-| Tu Vi | ×19.7 | Linh Khí | **Đã cài** — [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua), `LINHCAN_STEP = 1.17` |
-| Trang Bị | ×8.3 | Linh Khí | **Đã cài** — [5_trangbi.lua](../../src/2_nguoi_choi/5_trangbi.lua), 6 ô × 10 cấp |
-| Kỹ Năng | ×2.4 | **Ngộ Tính** | **Đã cài** — [4_skill.lua](../../src/2_nguoi_choi/4_skill.lua), nhưng số liệu chưa có hiệu lực (`SKILL_DATA_LIVE = false`) |
-| Pháp Khí | ×2.5 | **Tinh Thạch** | **Đã cài** — [6_phapkhi.lua](../../src/2_nguoi_choi/6_phapkhi.lua), 5 món |
-| | **×392 / ×967** | | ⚠ thiếu ×2.5 vì Pháp Khí rỗng |
+| Tu Vi | ×1.00 so với quái | Linh Khí | **Đã cài** — [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua) |
+| Cơ Duyên | **+40%** chỉ số | *(rơi ra)* | **Đã cài** — [10_quay.lua](../../src/2_nguoi_choi/10_quay.lua) |
+| Kỹ Năng | bậc 1→10 | **Gỗ** | **Đã cài**, `SKILL_DATA_LIVE = true` từ 2026-09-16 |
+| Trang Bị | ×8.3 nếu mở | Linh Khí | ⏸ **khoá** — [5_trangbi.lua](../../src/2_nguoi_choi/5_trangbi.lua) |
+| Pháp Khí | chưa có nội dung | **Gỗ** | ⏸ **khoá** — [6_phapkhi.lua](../../src/2_nguoi_choi/6_phapkhi.lua) |
 
-**Hai bản không trộn được.** Tu Vi ×40.5 của bản cũ nhân với Trang Bị ×8 của
-bản mới cho ×1 942 — gấp đôi hợp đồng.
+> **Cột "Nhân" đã hết nghĩa từ 2026-09-17.** `MOB_EHP_THEO_LINHCAN` làm EHP
+> quái **định nghĩa bằng** hệ số Tu Vi, nên không còn tích nào phải đạt ×967 —
+> [ADR 0020](../05-quyet-dinh/0020-duong-cong-quai-bam-theo-tu-vi.md). Tu Vi
+> triệt tiêu với quái; mọi hệ khác là phần **vượt lên**, không phải phần bù.
 
 ## Chưa làm
 

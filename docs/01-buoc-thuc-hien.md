@@ -1,6 +1,6 @@
 # Các bước thực hiện
 
-> **Cập nhật:** 2026-09-16
+> **Cập nhật:** 2026-09-17
 
 Làm từng bước một. Mỗi bước phải **chạy được và kiểm được** trước khi sang bước
 sau — không dựng ba tầng rồi mới bật game lên xem.
@@ -48,15 +48,15 @@ Làm xong, theo đúng thứ tự đã định:
 3. ✅ Áp đường cong chỉ số — EHP, giáp, sát thương, nhân theo số người.
 4. ✅ Tinh anh và boss (chỉ số + tên + thưởng).
 5. ✅ Tên quái theo cảnh giới + tầng, dòng báo thành phần đợt.
-6. ✅ Kinh tế: Linh Khí bám `LINHKHI_GROWTH`, Tinh Thạch từ boss.
+6. ✅ Kinh tế **phẳng**: `THUONG_*`, ba đồng tiền Linh Khí · Vàng · Gỗ.
 7. ✅ Máu nhà tính lại mỗi đợt theo `HOUSE_HP_HITS`.
 
 Hai câu hỏi từng chặn bước này **đã quyết**:
 
 - Nhà chính đếm máu hay đếm mạng → **đếm máu**, [ADR 0011](05-quyet-dinh/0011-nha-chinh-dem-mang.md)
   bị lật.
-- Sức mạnh người chơi tăng bằng gì → Tu Vi + Kỹ năng đã cài; Trang bị và
-  Pháp Khí thì chưa (xem Bước 7).
+- Sức mạnh người chơi tăng bằng gì → Tu Vi + Kỹ Năng + Cơ Duyên đã cài; Trang
+  Bị và Pháp Khí đang khoá (xem Bước 7).
 
 **Chưa làm trong bước này:** tu chính (`MODIFIERS`), 24 mẫu lính, thân boss.
 Xem [02-he-thong/dot-quai.md](02-he-thong/dot-quai.md#chưa-làm).
@@ -79,39 +79,70 @@ Cách đo: dùng `-wave N` nhảy tới stage 1, 25, 50, 75, 100, bấm giờ xe
 đợt mất bao lâu, rồi so với `WAVE_TIME`. Lệch là **công thức sai — đừng chỉnh số
 để che**.
 
-Kèm theo, hai thứ phải sửa trước khi số đo có nghĩa:
+Hai thứ từng chặn bước này **đã xong**: cả bảy ability đã có `Stats - Levels =
+10`, và `CFG.SKILL_DATA_LIVE` đã bật — sát thương ăn theo chỉ số thật qua
+[7_hieuung.lua](../src/2_nguoi_choi/7_hieuung.lua).
 
-- **Sáu ability còn thiếu `Stats - Levels = 10`** (`A001 A002 A003 A005 A006
-  A007`). Nâng quá bậc gốc thì WC3 kẹp xuống im lặng — bảng ghi 10/10 mà trong
-  game vẫn là bậc 3. [02-he-thong/ky-nang.md](02-he-thong/ky-nang.md)
-- **`CFG.SKILL_DATA_LIVE = false`** — số liệu kỹ năng mới là thiết kế, chưa ghi
-  vào `war3map.w3a`. Tức ×2.4 của hệ nâng cấp chưa thu được đồng nào.
-
-Thêm ba thứ cần đo ở lần chơi thử đầu, đều mới cài và chưa ai nhìn thấy chạy:
+Những thứ mới cài, chưa ai nhìn thấy chạy:
 
 - **Ba đồng tiền có thật sự tách nhau không** — hay người chơi vẫn chỉ nhìn một
   thanh vàng. [ADR 0015](05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md)
-- **300 Ngộ Tính có đủ không.** Tính ra tiêu 283/300, nhưng đó là khi hạ đủ 200
-  tinh anh — mà tinh anh dồn lại qua nhiều wave thì có thể không.
-- **Pháp Khí ×2.5 trả bằng đường vòng** — năm món cộng vào kinh tế và nhà chính,
-  không cộng thẳng sát thương.
+- **Quái bám đúng đường cong Tu Vi chưa.** Đây là thứ đáng đo nhất: nếu đúng thì
+  "mấy phát một con" phải **không đổi** từ stage 1 tới 100. Dùng `-wave N` nhảy
+  tới 1, 25, 50, 75, 100 rồi đếm.
+  [ADR 0020](05-quyet-dinh/0020-duong-cong-quai-bam-theo-tu-vi.md)
+- **Cơ Duyên có ngắt nhịp không.** Khung mở **ngay** khi tinh anh chết, giữa
+  lúc còn quái — vui hay phiền thì phải nhìn mới biết.
+- **Ba máy có rút cùng bộ ba thẻ không.** Thẻ sinh trong sự kiện quái chết nên
+  *phải* đồng bộ; lệch một lần là lệch cả ván. Chơi thử **hai máy** mới đo được.
+- **`-nat oskey`** — hàng số trên có bắt phím không, và có đụng lệnh gọi nhóm
+  quân của Warcraft đến mức khó chịu không.
 
 ---
 
-## ✅ Bước 7 — Trang Bị & Pháp Khí
+## ⏸ Bước 7 — Trang Bị & Pháp Khí (đã cài, **đang khoá**)
 
-**Đã cài.** [5_trangbi.lua](../src/2_nguoi_choi/5_trangbi.lua) ·
-[6_phapkhi.lua](../src/2_nguoi_choi/6_phapkhi.lua)
+[5_trangbi.lua](../src/2_nguoi_choi/5_trangbi.lua) ·
+[6_phapkhi.lua](../src/2_nguoi_choi/6_phapkhi.lua) — code chạy được, thẻ vẫn
+hiện, nhưng `TRANGBI_LOCKED` và `PHAPKHI_LOCKED` đều `true`.
 
-Ngân sách ×967 từng đủ cả bốn nguồn (×985 trên giấy), nhưng Pháp Khí đã bị xoá
-nội dung 2026-09-16 nên **hiện chỉ còn ×392**. 230 điểm Ngộ Tính dư phải trả lại
-×2.5 đó khi thiết kế lại. Kèm theo là hai quyết định:
+**Vì sao khoá, và vì sao mở lại không đơn giản là đặt `false`:**
+
+| | Vướng cái gì |
+|---|---|
+| **Trang Bị** | Giá `147 × 1.134ⁿ` suy từ thu nhập **mũ** cũ. Với 10 000 Linh Khí cả ván thì trọn 60 lần nâng tốn **974 606** — mua được 18/60. Mà Tu Vi đã ăn 9 500/10 000, nên thực tế chỉ còn 500 → **2 lần nâng cả ván** |
+| **Pháp Khí** | Chưa có nội dung. Ngân sách dành sẵn **190 Gỗ** (260 kiếm được − 70 kỹ năng tiêu) |
+
+**Và câu hỏi đã đổi.** Trước: "có đủ ×8 và ×2.5 cho hợp đồng ×967 không". Giờ:
+**"cho vượt lên bao nhiêu là vừa"** — vì Tu Vi một mình đã bám đúng quái
+([ADR 0020](05-quyet-dinh/0020-duong-cong-quai-bam-theo-tu-vi.md)).
+
+> ⚠ **Đá Huyền Thiết đang dồn vô ích.** Cơ Duyên rơi 10 đá mỗi lượt, cả ván
+> **1 400**, mà ô tiêu duy nhất là Trang Bị. Càng để lâu càng giống Tinh Thạch —
+> một con số chỉ tăng chứ không bao giờ dùng được. **Mở Trang Bị là việc gấp
+> nhất trong bước này.**
+
+Hai quyết định kèm theo:
 
 - **Ba đồng tiền, mỗi đồng một loại quái** —
-  [ADR 0015](05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md). `LINHCAN_STEP`
-  đổi 1.215 → 1.17 vì ngân sách chuyển từ bản 3 nguồn sang bản 4 nguồn.
+  [ADR 0015](05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md)
 - **Bảng phím R có hai kiểu thân** —
-  [ADR 0016](05-quyet-dinh/0016-bang-phim-e-hai-kieu-than.md).
+  [ADR 0016](05-quyet-dinh/0016-bang-phim-e-hai-kieu-than.md)
+
+---
+
+## ✅ Bước 7c — Shop, Cơ Duyên, dùng đồ
+
+**Đã cài 2026-09-17 — chưa chơi thử.**
+
+| Hệ | Mã | Làm gì |
+|---|---|---|
+| **Shop** (thẻ V) | [8_shop.lua](../src/2_nguoi_choi/8_shop.lua) | Hệ duy nhất tiêu **Vàng**, duy nhất bán đồ tiêu hao. Gộp lọ cùng loại vào một ô nên không đầy túi sau sáu lần mua |
+| **Cơ Duyên** | [10_quay.lua](../src/2_nguoi_choi/10_quay.lua) · [5_quayframe.lua](../src/4_giao_dien/5_quayframe.lua) | Khung ba cột riêng, mở ngay khi tinh anh/boss chết. Chọn 1 trong 3: đá · chỉ số · vàng |
+| **Dùng đồ** | [9_dungdo.lua](../src/2_nguoi_choi/9_dungdo.lua) | Hàng số trên cạnh Esc, **thêm** vào numpad chứ không thay |
+
+Chi tiết: [quay-thuong.md](02-he-thong/quay-thuong.md) ·
+[kinh-te.md](02-he-thong/kinh-te.md).
 
 ---
 

@@ -48,12 +48,19 @@
 > - **Tu Vi** **phẳng 500 mỗi lần**, 19 lần = `9,500`. Số cũ `439 × 1.412` cho
 >   tổng `747,839` — tính cho thu nhập mũ, với thu nhập phẳng thì bậc cuối
 >   `218,519` là không bao giờ với tới.
-> - **Kỹ Năng** `3` Gỗ mỗi lần *(mở khoá và đôn bậc như nhau)*, trọn bảy =
->   `210`. Giá `1` thì chỉ tốn `70/300`: max hết quanh wave 70 rồi 150 wave sau
->   Gỗ thành vô nghĩa.
-> - **Shop** lọ máu `40`, lọ mana `30` vàng. Thu 50 vàng/wave nên giá đặt quanh
->   mức **một lọ một wave** — mỗi wave là một lựa chọn nhỏ thay vì một phép cộng
->   dồn.
+> - **Kỹ Năng** `1` Gỗ mỗi lần *(mở khoá và đôn bậc như nhau)*, trọn bảy = `70`
+>   trên `260` cả ván. Đề xuất `3`/`210` đã bị bác — chủ dự án chốt `1`. Hệ quả
+>   đã biết và đã chấp nhận: **max hết ở stage 27**, rồi 73 stage cuối Gỗ chỉ
+>   tăng chứ không tiêu được, cho tới khi Pháp Khí mở lại.
+> - **Shop** lọ máu và lọ mana đều `10` vàng, Ankh Hồi Sinh `500`. Đề xuất
+>   `40`/`30` đã bị bác — chủ dự án chốt `10`, tức **năm lọ một wave** nếu tiêu
+>   hết. Ankh đặt cao hơn hai bậc vì nó mua thứ khác hẳn: không phải một lần hồi
+>   máu, mà một lần **không chết**.
+> - **Đá Huyền Thiết** `25` vàng *(2026-09-17)* — món duy nhất trong shop
+>   **không phải item**: nó cộng thẳng vào bộ đếm, không chiếm ô túi. Vai của
+>   nó là **gỡ khi đen**, không phải đường leo chính: thẻ 1 Cơ Duyên cho 3 đá
+>   miễn phí, còn mua bằng vàng thì luôn lỗ hơn — chỉ được cái **chủ động**.
+>   Đây cũng là đối thủ đầu tiên của Vàng ngoài lọ thuốc.
 
 
 > **Trạng thái:** Đã cài — **chưa chơi thử**

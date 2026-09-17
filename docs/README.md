@@ -96,6 +96,7 @@ docs/
      kinh-te.md          Hai đồng tiền, ngân sách ×967, bảng giá bốn hệ
      bang-nhan-vat.md    Bảng phím R: Kỹ Năng / Trang Bị / Tu Vi / Pháp Khí
      quay-thuong.md      Cơ Duyên: khung ba cột -- đá / chỉ số / vàng
+     trang-bi-kiem.md    Kiếm tiến hoá 100 bậc, trần là Tu Vi
      dot-quai.md         100 đợt quái: cấu trúc, thành phần, nhịp, tu chính
      boss.md             20 boss cuối cảnh giới
      phan-vung.md        25 block: vai trò từng ô, và vì sao
@@ -133,6 +134,9 @@ docs/
      0017-ten-vung-la-vi-tri-vai-tro-o-cfg.md
      0018-nghi-giua-hai-canh-gioi.md
      0019-moi-vung-mot-co-che-co-op.md
+     0020-duong-cong-quai-bam-theo-tu-vi.md
+     0021-trang-bi-la-mot-mon-tien-hoa.md
+     0022-tien-thi-phang-suc-manh-thi-leo.md
   06-object-editor/
      sua-va-clone-ability.md  Đọc/ghi war3map.w3a bằng script, mã trường đã đo
      import-model.md         Import model/texture bằng script, bẫy World Editor giữ bộ nhớ

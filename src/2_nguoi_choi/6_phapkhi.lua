@@ -2,10 +2,11 @@
 --  6_phapkhi.lua  --  Mua MOT lan, khong co cap
 --
 --  BANG DANG RONG (CFG.PHAPKHI = {}) -- 2026-09-16. Nam mon cu da xoa:
---  chung mua bang Tinh Thach, con he nay gio tra bang NGO TINH.
+--  chung mua bang Tinh Thach, mot dong tien gio da xoa han. He nay
+--  tra bang GO.
 --
---  NGAN SACH DANH SAN: ca van kiem 300 Ngo Tinh, ky nang tieu 70, nen
---  con 230 diem cho day. Do la rang buoc khi thiet ke lai.
+--  NGAN SACH DANH SAN: ca van kiem 260 Go, ky nang tieu 70, nen con
+--  190 diem cho day. Do la rang buoc khi thiet ke lai.
 --
 --  Code chay duoc voi bang rong: the hien mot dong "chua co gi", khong
 --  mua duoc gi, va moi hieu ung tra ve false -- nen 2_wave.lua goi
@@ -61,7 +62,7 @@ local function buy(pid, i)
   if not API.spendGo(pid, mon.gia) then
     API.msg(pid, CFG.C_RED .. API.t("no_go") .. CFG.C_END ..
       API.t("need_have", API.num(mon.gia), API.num(API.getGo(pid))) ..
-      CFG.C_GREY .. " " .. API.t("ngo_note") .. CFG.C_END)
+      CFG.C_GREY .. " " .. API.t("go_note") .. CFG.C_END)
     API.panelRefresh(pid)
     return
   end

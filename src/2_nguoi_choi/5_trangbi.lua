@@ -5,12 +5,13 @@
 --  nay tranh nhau mot cai vi nen moi wave nguoi choi phai tra loi mot
 --  cau that: dot pha, hay nang do?
 --
---  Hai he con lai khong tranh vi do. Ky Nang an Ngo Tinh (tinh anh),
---  Phap Khi an Tinh Thach (boss) -- chung bi chan boi NOI DUNG chu
+--  Hai he con lai khong tranh vi do. Ca Ky Nang lan Phap Khi an GO
+--  (tinh anh 2, boss 5) -- chung bi chan boi NOI DUNG chu
 --  khong boi tien. Xem docs/02-he-thong/kinh-te.md
 --
 --  O bat dau o CAP 1, nang 9 lan len cap 10. Sau o day cap:
---    (1.04^9)^6 = x8.3 sat thuong -- dung phan x8 cua ngan sach x967.
+--    (1.04^9)^6 = x8.3 sat thuong. Con so nay tung la "phan x8 cua
+--    ngan sach x967"; ngan sach do da bo -- xem CFG.TRANGBI_COST_BASE.
 --
 --  Nho: goi ham cua file khac phai qua API.
 -- ============================================================
@@ -52,7 +53,7 @@ end
 --
 -- Linh Can da cong chi so roi. Neu Trang Bi cung cong chi so thi hai he
 -- chong len nhau va khong con tach duoc phan nao do he nao -- ma ngan
--- sach x967 thi doi tung phan phai do duoc rieng.
+-- sach chung thi doi tung phan phai do duoc rieng.
 --
 -- File nay KHONG tu ghi len unit. API.heroRecompute trong
 -- 7_hieuung.lua la cho duy nhat ghi, va no doc multOf() qua

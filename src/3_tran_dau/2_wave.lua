@@ -1,10 +1,10 @@
 -- ============================================================
---  2_wave.lua  --  220 stage
+--  2_wave.lua  --  100 stage
 --
 --  Luat: docs/02-he-thong/dot-quai.md
 --  Duong cong: docs/03-du-lieu/duong-cong-suc-manh.md
 --
---  MOT bien stage duy nhat, 1..220. Canh gioi va tang deu SUY RA tu no
+--  MOT bien stage duy nhat, 1..100. Canh gioi va tang deu SUY RA tu no
 --  -- giu hai bien song song la chung se lech nhau.
 --
 --  Nho: goi ham cua file khac phai qua API.
@@ -420,7 +420,7 @@ local function rewardAll(stage, kind)
   -- Ba loai quai, ba dong tien. So PHANG, khong theo stage:
   --
   --   linh thuong -> 1 Linh Khi + 1 Vang   (nhip giay)
-  --   tinh anh    -> 1 Go                  (nhip wave)
+  --   tinh anh    -> 2 Go                  (nhip wave)
   --   boss        -> 5 Go                  (nhip canh gioi)
   --
   -- Moi loai quai mo khoa dung mot he, nen ba he bi chan boi ba loai
@@ -468,7 +468,7 @@ local function rewardAll(stage, kind)
   if go > 0 then API.panelRefreshAll() end
 
   if kind == "boss" then
-    API.msg(nil, CFG.C_JADE .. API.t("boss_down", realmName(realm), tt) .. CFG.C_END)
+    API.msg(nil, CFG.C_JADE .. API.t("boss_down", realmName(realm), go) .. CFG.C_END)
   end
 end
 
