@@ -634,15 +634,132 @@ CFG.ARMOR_DR_PER_POINT  = 0.06   -- cong thuc giap cua Warcraft III
 CFG.ELITE_EHP = 10.0
 CFG.ELITE_DMG = 2.5
 CFG.ELITE_SCALE = 3.2   -- gap doi 1.6 cu: tinh anh phai nhin ra ngay
-CFG.BOSS_EHP  = 80.0
-CFG.BOSS_DMG  = 3.0
 CFG.BOSS_SCALE = 2.2
+
+-- ============================================================
+--  BOSS  --  do theo SUC MANH THAT cua doi, khong theo duong cong
+-- ============================================================
+--
+-- CFG.BOSS_EHP / BOSS_DMG cu (x80 / x3 tren duong cong quai thuong) da
+-- bo. Ly do: duong cong quai thuong khong biet doi hero manh den dau.
+--
+-- LOI DO DUOC, va no khong rieng gi boss: Tu Vi cong deu ca ba chi so,
+-- ma 1 Agi = 1/3 giap. Cuoi van hero co 8,070 giap -> giam 99.79% sat
+-- thuong. Boss danh 2,036 chi con 4 mau. Moi con quai trong map deu vay.
+--
+--   bac  5: giap   106 -> giam 86.5%
+--   bac 10: giap   537 -> giam 97.0%
+--   bac 20: giap 8,070 -> giam 99.79%
+--
+-- Nen boss KHONG dat sat thuong theo mot con so tuyet doi nua. No do
+-- MAU HIEU DUNG cua tung hero (mau / (1 - giam)) roi chia ra, nen don
+-- danh luon an dung mot phan mau that du giap bao nhieu.
+
+-- Boss song duoc bao nhieu giay duoi hoa luc CA DOI.
+CFG.BOSS_GIAY = 40.0
+
+-- Uoc luong sat thuong moi giay cua mot hero = he so x (DMG_BASE + chi
+-- so cao nhat).
+--
+-- 1.0 vi do duoc: 1 Str = 1 sat thuong don danh, va don thuong ~1.6
+-- giay mot nhat -- cong voi ky nang thi tong xap xi dung bang chi so.
+CFG.BOSS_DPS_HE_SO = 1.0
+
+-- Boss ha mot hero dung yen trong bao nhieu don.
+CFG.BOSS_SO_DON = 12.0
+
+-- Duoi bao nhieu % mau thi boss CUONG: sat thuong x he so, danh nhanh
+-- hon. Giai doan hai cua tran, de tran boss co nhip chu khong phai mot
+-- thanh mau dai.
+CFG.BOSS_CUONG_NGUONG = 0.30
+CFG.BOSS_CUONG_DMG    = 1.60
+
+-- ---------- Ky nang boss ----------
+-- Viet bang Lua, khong phai ability Object Editor: ta khong mo duoc
+-- World Editor tu day, va viet bang Lua thi so lieu bam duoc vao chinh
+-- phep do suc manh cua doi o tren.
+CFG.BOSS_SKILL_CD    = 9.0     -- giay giua hai lan ra don
+CFG.BOSS_SKILL_TAM   = 420.0   -- ban kinh don chan dia
+CFG.BOSS_SKILL_HESO  = 2.5     -- sat thuong = he so x mot don thuong
+CFG.BOSS_HUT_MAU     = 0.25    -- hut lai % sat thuong gay ra
+
+-- ---------- HAI MUOI BOSS, moi canh gioi mot con ----------
+--
+-- Boss phai la HERO va KHONG BAY.
+--
+-- Quai thuong dung CFG.MOB_UNIT, ma coi 4 la Frost Wyrm -- BIET BAY,
+-- va khong phai hero. Boss dung bang rieng nay.
+--
+-- Ma nao sai, biet bay, hoac khong phai hero thi startBoss() BAO RO
+-- luc VAO MAP -- khong doi den canh gioi 16 moi phat hien.
+--
+-- 'co' = danh sach co che. Moi co che mot ham trong 3_boss.lua; con so
+-- di kem nam ngay trong bang nay de doc mot cho la thay het.
+--
+--   chandia    don AoE quanh boss
+--   hutmau     hut lai % sat thuong gay ra
+--   cuong      duoi nguong mau -> sat thuong x he so
+--   xegiap     moi don danh TRU GIAP vinh vien cua muc tieu
+--   trieuhoi   goi thuoc ha
+--   lao        lao toi hero XA NHAT
+--   khien      dinh ky tao khien hap thu
+--   phandon    phan lai % sat thuong nhan vao
+--
+-- xegiap la co che tra loi cho mot loi do duoc: cuoi van hero co 8,070
+-- giap, giam 99.79% sat thuong. Boss xe giap thi tran cang keo dai hero
+-- cang de vo -- nguoc han nhip thong thuong.
+--
+-- Moi con mot file mo ta rieng: docs/02-he-thong/boss/NN-<ten>.md
+CFG.BOSSES = {
+  { r = 1,  ten = "Thi Giai Lao To",    en = "Corpse-Shed Elder",   unit = id('Hmkg'), co = { "chandia" } },
+  { r = 2,  ten = "Dan Khi Chan Nhan",  en = "Qi-Gathering Adept",  unit = id('Hpal'), co = { "chandia", "khien" } },
+  { r = 3,  ten = "Truc Co Thach Linh", en = "Foundation Stonesoul",unit = id('Ucrl'), co = { "chandia", "phandon" } },
+  { r = 4,  ten = "Kim Dan Ma Quan",    en = "Golden Core Warlord", unit = id('Obla'), co = { "lao", "cuong" } },
+  { r = 5,  ten = "Nguyen Anh Quy Mau", en = "Nascent Soul Matron", unit = id('Udre'), co = { "hutmau", "trieuhoi" } },
+
+  { r = 6,  ten = "Hoa Than Vo Tuong",  en = "Spirit-Sever Formless",unit = id('Ewar'), co = { "lao", "xegiap" } },
+  { r = 7,  ten = "Luyen Hu Dao Nhan",  en = "Void-Refiner",        unit = id('Hamg'), co = { "khien", "trieuhoi" } },
+  { r = 8,  ten = "Hop The Cuong Ma",   en = "Body-Integration Fiend",unit = id('Otch'), co = { "chandia", "cuong" } },
+  { r = 9,  ten = "Dai Thua Ton Gia",   en = "Great Ascension Arhat",unit = id('Ekee'), co = { "trieuhoi", "phandon" } },
+  { r = 10, ten = "Do Kiep Loi Chu",    en = "Tribulation Thunderlord",unit = id('Ofar'), co = { "chandia", "lao", "cuong" } },
+
+  { r = 11, ten = "Chan Tien Kiem Khach",en = "True Immortal Swordsman",unit = id('Edem'), co = { "lao", "hutmau" } },
+  { r = 12, ten = "Thien Tien Tinh Quan",en = "Heavenly Star Marshal",unit = id('Emoo'), co = { "khien", "xegiap" } },
+  { r = 13, ten = "Kim Tien Bat Hoai",  en = "Golden Immortal Adamant",unit = id('Hpal'), co = { "phandon", "khien" } },
+  { r = 14, ten = "Thai At Cuu Chuyen", en = "Taiyi Ninefold",      unit = id('Ulic'), co = { "trieuhoi", "chandia" } },
+  { r = 15, ten = "Dai La Thien Ma",    en = "Great Luo Demon",     unit = id('Udea'), co = { "hutmau", "cuong", "xegiap" } },
+
+  { r = 16, ten = "Tien De Kim Than",   en = "Immortal Emperor",    unit = id('Hblm'), co = { "chandia", "khien", "cuong" } },
+  { r = 17, ten = "Thanh Nhan Vo Nga",  en = "Selfless Saint",      unit = id('Oshd'), co = { "phandon", "hutmau" } },
+  { r = 18, ten = "Dao To Huyen Vi",    en = "Dao Ancestor",        unit = id('Nbrn'), co = { "xegiap", "trieuhoi", "lao" } },
+  { r = 19, ten = "Hon Don Than Ma",    en = "Primordial God-Fiend", unit = id('Nfir'), co = { "chandia", "phandon", "cuong" } },
+  { r = 20, ten = "Sang The Than",      en = "World Creator",       unit = id('Npbm'), co = { "chandia", "lao", "xegiap", "cuong" } },
+}
+
+-- Con so dung chung cho tung co che.
+CFG.BOSS_CO = {
+  chandia  = { cd = 9.0,  tam = 420.0, heSo = 2.5 },
+  hutmau   = { ti = 0.25 },
+  cuong    = { nguong = 0.30, dmg = 1.60 },
+  xegiap   = { moiDon = 0.02 },   -- tru 2% giap HIEN CO moi don
+  trieuhoi = { cd = 20.0, so = 4 },
+  lao      = { cd = 11.0, heSo = 3.0 },
+  khien    = { cd = 15.0, ti = 0.12 },  -- khien = 12% mau toi da
+  phandon  = { ti = 0.15 },
+}
+
+-- Bang cu, giu lai cho 3_boss.lua lui ve khi CFG.BOSSES thieu mot bac.
+CFG.BOSS_UNIT = {
+  id('Hmkg'), id('Obla'), id('Udre'), id('Ucrl'),
+}
 
 -- ---------- Theo so nguoi choi (ADR 0009) ----------
 -- Phai < 1.0: bang 1.0 la phat nguoi choi vi ru duoc ban.
 CFG.SCALE_EHP_PER_PLAYER      = 0.60
 CFG.SCALE_DMG_PER_PLAYER      = 0.15   -- nho, vi sat thuong da tu loang
-CFG.SCALE_BOSS_EHP_PER_PLAYER = 0.85   -- cao hon: boss mot than, don ha hieu qua hon
+-- KHONG con dung: boss do suc manh that cua doi, ma phep do do da cong
+-- dps cua TUNG hero roi. Nhan them theo so nguoi la dem hai lan.
+-- (CFG.SCALE_BOSS_EHP_PER_PLAYER da bo.)
 CFG.SCALE_RECOUNT_EACH_WAVE   = true
 
 -- ---------- Mau linh theo coi ----------

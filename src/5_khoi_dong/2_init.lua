@@ -136,6 +136,7 @@ local function bootstrap()
 
   API.startSkillFx()
   API.startFct()
+  API.startBoss()
   API.startWaves()
   API.startHeroFrame()
   API.startSkillFrame()

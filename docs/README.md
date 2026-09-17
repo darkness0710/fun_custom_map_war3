@@ -99,6 +99,7 @@ docs/
      trang-bi-kiem.md    Kiếm tiến hoá 100 bậc, trần là Tu Vi
      dot-quai.md         100 đợt quái: cấu trúc, thành phần, nhịp, tu chính
      boss.md             20 boss cuối cảnh giới
+     boss/              20 bản thiết kế boss, mỗi cảnh giới một con
      phan-vung.md        25 block: vai trò từng ô, và vì sao
   03-du-lieu/
      bang-can-bang.md    Khoá CFG -> ý nghĩa -> ràng buộc

@@ -192,11 +192,15 @@ local function sendToHouse(u)
 end
 
 -- kind: "mob" | "elite" | "boss"
-local function spawnOne(stage, realm, kind)
+-- ex/ey: sinh o DUNG cho do thay vi o cua vao. Boss dung de goi thuoc
+-- ha quanh minh, va thuoc ha phai di qua day de cung duong cong, cung
+-- tien thuong, va cung duoc dem vao S.alive.
+local function spawnOne(stage, realm, kind, ex, ey)
   local uid = CFG.MOB_UNIT[realmCoi(realm)]
   if uid == nil then return nil end
 
   local x, y = spawnPoint()
+  if ex ~= nil and ey ~= nil then x, y = ex, ey end
   local face = API.angleXY(x, y, S.houseX or x, S.houseY or y)
   local u = CreateUnit(S.enemy, uid, x, y, face)
   if u == nil then
@@ -214,14 +218,6 @@ local function spawnOne(stage, realm, kind)
     dmg = dmg * CFG.ELITE_DMG
     SetUnitScale(u, CFG.ELITE_SCALE, CFG.ELITE_SCALE, CFG.ELITE_SCALE)
     SetUnitVertexColor(u, 255, 210, 120, 255)
-  elseif kind == "boss" then
-    -- Boss dung he so rieng: mot than, dong nguoi don ha hieu qua hon.
-    ehp = ehpOf(stage, realm) * CFG.BOSS_EHP
-        * (1 + CFG.SCALE_BOSS_EHP_PER_PLAYER * (P - 1))
-    dmg = dmgOf(stage, realm) * CFG.BOSS_DMG
-        * (1 + CFG.SCALE_DMG_PER_PLAYER * (P - 1))
-    SetUnitScale(u, CFG.BOSS_SCALE, CFG.BOSS_SCALE, CFG.BOSS_SCALE)
-    SetUnitVertexColor(u, 255, 120, 120, 255)
   end
 
   applyStats(u, ehp, dmg, armor)
@@ -299,9 +295,20 @@ local function spawnStage(stage)
   rescaleHouse(stage, realm)
 
   if isBoss then
-    spawnOne(stage, realm, "boss")
+    -- Boss KHONG di qua spawnOne: no khong lay chi so tu duong cong ma
+    -- DO suc manh that cua doi. Xem 3_boss.lua.
+    local x, y = spawnPoint()
+    local face = API.angleXY(x, y, S.houseX or x, S.houseY or y)
+    local u = API.bossSpawn and API.bossSpawn(stage, realm, x, y, face) or nil
+    if u ~= nil then
+      S.mobs[u] = "boss"
+      S.mobStage[u] = stage
+      S.alive = S.alive + 1
+      sendToHouse(u)
+    else
+      S.wave.spawnFail = (S.wave.spawnFail or 0) + 1
+    end
     API.msg(nil, CFG.C_RED .. API.t("boss_coming", realmName(realm)) .. CFG.C_END)
-    API.msg(nil, "   " .. CFG.C_JADE .. mobName(stage, "boss") .. CFG.C_END)
   else
     for _ = 1, CFG.WAVE_MOB_COUNT do spawnOne(stage, realm, "mob") end
     for _ = 1, CFG.WAVE_ELITE_COUNT do spawnOne(stage, realm, "elite") end
@@ -385,6 +392,9 @@ local function tick()
   for u, _ in pairs(S.mobs) do
     if u ~= nil and API.alive(u) then sendToHouse(u) end
   end
+  -- Boss dung chung nhip nay chu khong nuoi dong ho rieng: mot nhip thi
+  -- khong co chuyen hai dong ho troi lech nhau.
+  if API.bossTick ~= nil then API.bossTick() end
 end
 
 -- Dua dong quai ke tiep ve NGAY. Goi tu lenh -next, tu luc moi nguoi
@@ -607,6 +617,11 @@ API.ehpOf          = ehpOf
 API.dmgOf          = dmgOf
 API.armorOf        = armorOf
 API.mobName        = mobName
+API.realmCoi       = realmCoi
+-- Boss goi de sinh thuoc ha quanh minh, tai mot toa do cu the.
+API.waveSpawnAt    = function(stage, realm, x, y)
+  return spawnOne(stage, realm, "mob", x, y)
+end
 API.waveNow        = waveNow
 API.waveWaiting    = function() return S.waitNext end
 API.waveReadyCheck = readyCheck

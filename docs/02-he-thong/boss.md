@@ -1,5 +1,25 @@
 # Hệ thống: Boss cuối cảnh giới
 
+> ## Viết lại toàn bộ — 2026-09-17
+>
+> **Boss là hero, không bay, và không lấy chỉ số từ đường cong quái.**
+>
+> | | Cũ | Nay |
+> |---|---|---|
+> | Loại unit | `CFG.MOB_UNIT` — cõi 4 là Frost Wyrm, **biết bay**, không phải hero | 20 hero đi bộ, mỗi cảnh giới một con |
+> | Chỉ số | `×80` EHP / `×3` sát thương trên đường cong quái | **Đo đội** lúc xuất hiện |
+> | Kỹ năng | không có | 8 cơ chế, mỗi con 1–4 |
+>
+> **Lỗi đã đo, và nó không riêng gì boss:** Tu Vi cộng đều cả ba chỉ số, mà
+> `1 Agi = 1/3 giáp`. Cuối ván hero có **8,070 giáp** → giảm **99.79%** sát
+> thương. Boss đánh 2,036 chỉ còn **4 máu**. Mọi con quái trong map đều vậy.
+>
+> Nên boss tính theo **máu hiệu dụng** `máu / (1 − giảm)`, và đòn của nó luôn
+> hạ một hero đứng yên trong 12 đòn dù giáp bao nhiêu.
+>
+> Hai mươi bản thiết kế: **[danh sách](boss/README.md)** — mỗi con một file.
+
+
 > **Trạng thái:** Khung đã cài — **thân boss chưa có**
 > **Cập nhật:** 2026-09-16
 > **Code:** [2_wave.lua](../../src/3_tran_dau/2_wave.lua)

@@ -360,6 +360,7 @@ local function startSkillFx()
 end
 
 API.heroBaseCapture  = baseCapture
+API.heroPidCua       = heroPid
 API.heroRecompute    = recompute
 API.heroRecomputeAll = recomputeAll
 API.skillFxRecompute = recomputeAll   -- ten cu, giu cho cho goi san co
