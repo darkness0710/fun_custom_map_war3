@@ -30,16 +30,47 @@ local function rankName(r)
   return API.pick(CFG.REALMS[r])
 end
 
-local function powerAt(r) return CFG.LINHCAN_STEP ^ (r - 1) end
-
--- GIAI NGUOC, khong nhan thang. Sat thuong hero = sat thuong nen + chi
--- so, nen nhan thang chi so len x1.17 moi bac chi cho x10.4 sat thuong
--- sau 20 bac -- thieu mot nua. Cong thuc nay bu lai phan nen.
-local function statAt(r)
-  local b = CFG.LINHCAN_DMG_BASE
-  return (b + CFG.LINHCAN_STAT_BASE) * powerAt(r) - b
+-- CONG THEM, khong nhan. Moi lan dot pha cong mot cuc chi so, va cuc do
+-- gap doi moi bac: +50, +100, +200, ...
+--
+-- Ban truoc nhan ca chi so len LINHCAN_STEP^(r-1) roi giai nguoc de bu
+-- phan sat thuong nen. Bo vi mot ly do giao dien chu khong phai toan:
+-- nguoi choi khong doc duoc "x1.17", ho doc duoc "+50 chi so". Con so
+-- cong them la thu nhin thay ngay tren bang hero sau khi bam.
+--
+-- statBonusAt(r) = tong cong don sau (r-1) lan dot pha
+--                = GAIN x (STEP^(r-1) - 1) / (STEP - 1)
+local function statBonusAt(r)
+  local g, s = CFG.LINHCAN_STAT_GAIN, CFG.LINHCAN_STAT_STEP
+  if r <= 1 then return 0.0 end
+  if s == 1.0 then return g * (r - 1) end     -- tranh chia cho 0
+  return g * (s ^ (r - 1) - 1) / (s - 1)
 end
 
+local function statAt(r)
+  return CFG.LINHCAN_STAT_BASE + statBonusAt(r)
+end
+
+-- He so suc manh HIEN RA cho nguoi choi. Suy TU chi so chu khong phai
+-- mot duong cong rieng: sat thuong = heSo x (DMG_BASE + chi so), nen
+-- day dung la ti le sat thuong giua bac r va bac 1. Ban truoc no la mot
+-- hang so rieng (LINHCAN_STEP) va co the noi khac voi chi so that.
+local function powerAt(r)
+  local b = CFG.LINHCAN_DMG_BASE
+  return (b + statAt(r)) / (b + statAt(1))
+end
+
+-- He so suy ra thanh chu. "x2.85" doc duoc, nhung bac 20 la
+-- x970,903 -- in no bang %.2f ra "x970903.00", dai va thua hai chu so
+-- le khong ai can.
+local function powerStr(r)
+  local p = powerAt(r)
+  if p < 1000.0 then return string.format("x%.2f", p) end
+  return "x" .. API.num(math.floor(p + 0.5))
+end
+
+-- PHANG: CFG.LINHCAN_COST_STEP = 1.0 nen moi bac deu 500. Van giu cong
+-- thuc mu de doi lai duong cong chi bang mot so.
 local function costOf(r)
   return math.floor(CFG.LINHCAN_COST_BASE * CFG.LINHCAN_COST_STEP ^ (r - 1) + 0.5)
 end
@@ -56,7 +87,7 @@ end
 local function statBonus(pid)
   local d = S.p[pid]
   if d == nil then return 0 end
-  return math.floor(statAt(d.linhCan) - statAt(1) + 0.5)
+  return math.floor(statBonusAt(d.linhCan) + 0.5)
 end
 
 -- ---------- Noi dung the ----------
@@ -76,7 +107,7 @@ local function tabInfo(pid)
 
   if cur >= top then
     out.dong = {
-      { API.t("lc_power"), string.format("x%.2f", powerAt(cur)), "" },
+      { API.t("lc_power"), powerStr(cur), "" },
       { API.t("lc_stat"),
         "+" .. API.num(statAt(cur) - CFG.LINHCAN_STAT_BASE), "" },
     }
@@ -87,8 +118,7 @@ local function tabInfo(pid)
   local gia = costOf(cur)
   out.dong = {
     { API.t("lc_power"),
-      string.format("x%.2f", powerAt(cur)),
-      string.format("x%.2f", powerAt(cur + 1)) },
+      powerStr(cur), powerStr(cur + 1) },
     { API.t("lc_stat"),
       "+" .. API.num(statAt(cur)     - CFG.LINHCAN_STAT_BASE),
       "+" .. API.num(statAt(cur + 1) - CFG.LINHCAN_STAT_BASE) },
@@ -119,7 +149,7 @@ local function setRank(pid, newR, dev)
 
   if dev then
     API.msg(pid, CFG.C_GREY .. "[dev] Linh Can -> " .. rankName(newR) ..
-      " (bac " .. newR .. ", x" .. string.format("%.2f", powerAt(newR)) .. ")" .. CFG.C_END)
+      " (bac " .. newR .. ", " .. powerStr(newR) .. ")" .. CFG.C_END)
   end
 end
 
@@ -145,7 +175,7 @@ local function breakthrough(pid)
   API.msg(nil, API.t("lc_broke",
     CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END,
     CFG.C_JADE .. rankName(r + 1) .. CFG.C_END) ..
-    " (x" .. string.format("%.2f", powerAt(r + 1)) .. ")")
+    " (" .. powerStr(r + 1) .. ")")
 
   if d.hero ~= nil then
     API.fx([[Abilities\Spells\Human\Resurrect\ResurrectTarget.mdl]],

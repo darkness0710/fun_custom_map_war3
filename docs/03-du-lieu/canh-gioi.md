@@ -9,6 +9,41 @@ Bảng tra. Đây là dữ liệu tham chiếu, không phải luật — luật 
 [02-he-thong/dot-quai.md](../02-he-thong/dot-quai.md).
 
 
+
+## Đột phá cộng bao nhiêu chỉ số
+
+Mỗi lần đột phá **cộng thêm** một cục, và cục đó **gấp đôi** mỗi bậc
+(`LINHCAN_STAT_GAIN = 50`, `LINHCAN_STAT_STEP = 2.0`):
+
+| Bậc | Cộng lần này | Cộng dồn | Hệ số | Chưởng bậc 10 | EHP quái đầu cảnh giới | Phát |
+|---|---|---|---|---|---|---|
+| 1 | — | 0 | ×1.00 | 47 | 120 | 2.5 |
+| 2 | +50 | 50 | ×2.85 | 135 | 249 | 1.8 |
+| 3 | +100 | 150 | ×6.56 | 311 | 518 | 1.7 |
+| 4 | +200 | 350 | ×13.96 | 662 | 1,076 | 1.6 |
+| 5 | +400 | 750 | ×28.78 | 1,364 | 2,234 | 1.6 |
+| 10 | +12,800 | 25,550 | ×947 | 44,905 | 86,420 | 1.9 |
+| 15 | +409,600 | 819,150 | ×30,340 | 1,438,223 | 3,342,536 | 2.3 |
+| 20 | +13,107,200 | **26,214,350** | ×970,903 | 46,024,403 | 129,282,152 | 2.8 |
+
+Cột cuối là thứ giữ cả bảng lại với nhau: **một con quái luôn tốn 1.6–2.8 phát
+Chưởng**, từ wave 1 tới stage 100. Con số tuyệt đối phình ra hàng chục triệu
+nhưng *cảm giác chơi* đứng yên.
+
+**Cộng thêm, không phải nhân.** Bản trước nhân chỉ số lên `1.17^(bậc−1)` rồi giải
+ngược để bù phần sát thương nền. Bỏ vì một lý do giao diện chứ không phải toán:
+người chơi không đọc được "×1.17", họ đọc được "**+50 chỉ số**" — con số nhìn
+thấy ngay trên bảng hero sau khi bấm.
+
+> **26 triệu là hệ quả của việc gấp đôi 19 lần, không phải lỗi.** Đổi
+> `LINHCAN_STAT_STEP` là đổi cả họ: `2.0` → 26,214,350 · `1.7` → 1,707,589 ·
+> `1.5` → 221,584. Đổi nó thì **phải** tính lại `CFG.MOB_EHP_REALM_STEP` theo
+> (`1.7` ứng với `1.65`), nếu không quái và hero rời nhau ngay.
+
+`powerAt()` giờ **suy ra từ** chỉ số chứ không còn là một đường cong riêng — sát
+thương `= hệ số × (DMG_BASE + chỉ số)`, nên hệ số hiện ra đúng bằng tỉ lệ sát
+thương thật. Trước đây nó là hằng số riêng và có thể nói khác chỉ số thật.
+
 ## Bốn tầng trong một cảnh giới
 
 `CFG.TIER_NAMES` — tầng có **tên**, không đánh số:

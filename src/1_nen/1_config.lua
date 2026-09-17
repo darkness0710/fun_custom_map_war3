@@ -590,7 +590,17 @@ CFG.WAVE_TICK = 2.0
 -- cam giac danh nhau nao o nhung wave dau.
 CFG.MOB_EHP_BASE       = 120.0
 CFG.MOB_EHP_GROWTH     = 1.018   -- moi stage. Rat nhay: mu 219
-CFG.MOB_EHP_REALM_STEP = 1.22    -- moi canh gioi. Mu 19
+-- 1.22 -> 1.90. Buoc nay phai di doi voi CFG.LINHCAN_STAT_STEP.
+--
+-- Tinh nguoc tu mot rang buoc duy nhat: giu ti le "ba phat Chuong mot
+-- con" tu wave 1 den stage cuoi.
+--   bac 20, ky nang bac 10 -> Chuong = 1.756 x (17 + 26,214,350)
+--                                    = 46,024,403
+--   quai stage 100 phai co EHP = 3 x do = 138,073,209
+--   138,073,209 / (120 x 1.018^99) = 1.90^19
+--
+-- Doi LINHCAN_STAT_STEP thi tinh lai so nay: step 1.7 -> REALM_STEP 1.65.
+CFG.MOB_EHP_REALM_STEP = 1.90    -- moi canh gioi. Mu 19
 
 CFG.MOB_DMG_BASE       = 6.0
 CFG.MOB_DMG_GROWTH     = 1.016
@@ -651,18 +661,24 @@ CFG.HOUSE_REGEN_PER_WAVE = 0.20
 -- 1,880,187 Linh Khi. Bo han. Gio moi con tra dung mot so co dinh, va
 -- so do khong doi theo stage:
 --
---   quai thuong  1 Linh Khi + 1 Vang
---   tinh anh     2 Go
---   boss         5 Go
+--   quai thuong    1 Linh Khi + 1 Vang
+--   tinh anh      50 Linh Khi + 2 Go
+--   boss         100 Linh Khi + 5 Go
 --
--- Ca van (80 stage thuong x 50 con, 80 tinh anh, 20 boss):
---   Linh Khi 4,000  |  Vang 4,000  |  Go 260
+-- So Linh Khi chon de MOT CANH GIOI kiem dung MOT lan dot pha:
+--   1 wave      = 50 quai x1 + 1 tinh anh x50 = 100
+--   1 canh gioi = 4 wave (400) + boss (100)   = 500
+--   1 dot pha                                 = 500  <- phang
+--
+-- Ca van: Linh Khi 10,000 | Vang 4,000 | Go 260
 --
 -- Doi lai: gia cua moi he cung phai phang theo, khong con duong cong mu
 -- nao bam theo thu nhap duoc nua. Do la ly do LINHCAN_COST_STEP tut tu
 -- 1.412 xuong 1.08.
 CFG.THUONG_MOB_LINHKHI = 1
 CFG.THUONG_MOB_VANG    = 1
+CFG.THUONG_ELITE_LINHKHI = 50
+CFG.THUONG_BOSS_LINHKHI  = 100
 CFG.THUONG_ELITE_GO    = 2
 CFG.THUONG_BOSS_GO     = 5
 
@@ -984,21 +1000,40 @@ CFG.SKILL_MANA_STEP = 1.05   -- x1.55 sau 9 lan nang
 -- Tuc hai con so deu tung dung, chi la voi hai ban ngan sach khac nhau.
 -- KHONG duoc tron: doi mot cai o day thi phai kiem lai TICH cua ca bon.
 -- Xem ADR 0015 va docs/02-he-thong/kinh-te.md.
-CFG.LINHCAN_STEP = 1.17
+-- ---------- Chi so moi lan dot pha ----------
+--
+-- Moi lan dot pha cong THEM, va so cong them GAP DOI moi bac:
+--   Pham Nhan -> Luyen Khi   +50
+--   Luyen Khi -> Truc Co     +100
+--   Truc Co   -> Kim Dan     +200
+--   ...
+--   bac 19 -> 20             +6,553,600
+--
+-- Cong don het 19 bac: 50 x (2^19 - 1) = 26,214,350 chi so.
+--
+-- CON SO NAY RAT LON, va do la HE QUA CUA VIEC GAP DOI 19 LAN chu khong
+-- phai loi. Doi CFG.LINHCAN_STAT_STEP la doi ca ho:
+--   2.0 -> 26,214,350   (dang dung)
+--   1.7 ->  1,707,589
+--   1.5 ->    221,584
+-- Doi no thi PHAI doi CFG.MOB_EHP_REALM_STEP theo -- xem chu thich o do.
+CFG.LINHCAN_STAT_GAIN = 50.0   -- cong them o lan dot pha DAU TIEN
+CFG.LINHCAN_STAT_STEP = 2.0    -- moi lan sau gap doi lan truoc
 
 -- Gia dot pha bac r = BASE x STEP^(r-1).
 -- 1.412 = 1.0319^11 = thu nhap tron mot canh gioi, nen gia luon dang
 -- dung 7,1 wave o MOI bac. Xem kinh-te.md.
--- Tinh nguoc tu thu nhap: 4,000 Linh Khi ca van, 50 moi wave thuong,
--- 80 wave thuong. 19 lan dot pha, ngan sach 90% = 3,607:
---   bac 1->2    87        bac 10->11   174
---   bac 5->6   118        bac 19->20   348
--- Du tien cho bac cuoi vao khoang wave 72 tren 80.
+-- PHANG: 500 moi lan, moi bac nhu nhau (STEP = 1.0).
 --
--- 220 -> 87 vi so wave tut tu 200 xuong 80 (TIERS_PER_REALM 10 -> 4).
--- Giu 220 thi tron bo tieu 9,118 tren 4,000 kiem duoc -- hon gap doi.
-CFG.LINHCAN_COST_BASE = 87.0
-CFG.LINHCAN_COST_STEP = 1.08
+-- Con so nay khong suy ra tu duong cong nao -- no la mot GIAO KEO don:
+-- mot canh gioi kiem dung 500 Linh Khi, va mot lan dot pha ton dung
+-- 500. Don sach mot canh gioi = len duoc mot bac, khong hon khong kem.
+--
+-- Nguoi choi khong phai tinh gi ca: het canh gioi thi bam dot pha.
+-- 19 lan x 500 = 9,500 tren 10,000 kiem duoc -- 500 du ra la dem cho
+-- nguoi bo lo vai con.
+CFG.LINHCAN_COST_BASE = 500.0
+CFG.LINHCAN_COST_STEP = 1.0
 
 -- Hai so de GIAI NGUOC ra chi so can dat.
 --

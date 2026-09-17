@@ -9,17 +9,28 @@
 >
 > | Loại quái | Rơi ra | Số con cả ván | Tổng |
 > |---|---|---|---|
-> | lính thường | 1 Linh Khí + 1 Vàng | 10,000 | 10,000 + 10,000 |
-> | tinh anh | 1 Gỗ | 200 | 200 |
-> | boss | 5 Gỗ | 20 | 100 |
+> | lính thường | 1 Linh Khí + 1 Vàng | 4,000 | 4,000 LK + 4,000 vàng |
+> | tinh anh | **50 Linh Khí** + 2 Gỗ | 80 | 4,000 LK + 160 Gỗ |
+> | boss | **100 Linh Khí** + 5 Gỗ | 20 | 2,000 LK + 100 Gỗ |
+>
+> **Số Linh Khí chọn để một cảnh giới kiếm đúng một lần đột phá:**
+>
+> ```
+> 1 wave      = 50 quái ×1 + 1 tinh anh ×50 = 100
+> 1 cảnh giới = 4 wave (400) + boss (100)   = 500
+> 1 đột phá                                 = 500   <- phẳng
+> ```
+>
+> Dọn sạch một cảnh giới = lên được một bậc, không hơn không kém. Người chơi
+> không phải tính gì: hết cảnh giới thì bấm đột phá.
 >
 > **Ba đồng tiền, ba hệ, ba nhịp:**
 >
 > | Tiền | Ở đâu | Nhịp | Tiêu vào | Ngân sách |
 > |---|---|---|---|---|
-> | **Linh Khí** | biến riêng, hiện ở bảng R | giây | Linh Căn | 9,118 / 10,000 = **91%** |
-> | **Vàng** | thanh tài nguyên | giây | Shop | ~8,000 / 10,000 nếu mua đều |
-> | **Gỗ** | thanh tài nguyên | wave / cảnh giới | Kỹ Năng | 210 / 300 = **70%** |
+> | **Linh Khí** | biến riêng, hiện ở bảng | cảnh giới | Linh Căn | 9,500 / 10,000 = **95%** |
+> | **Vàng** | thanh tài nguyên | giây | Shop | 4,000 |
+> | **Gỗ** | thanh tài nguyên | wave / cảnh giới | Kỹ Năng | 70 / 260 |
 >
 > Linh Khí rời thanh tài nguyên vì thanh đó chỉ có **hai** ô mà giờ có **ba**
 > đồng tiền. Vàng và Gỗ được ưu tiên vì chúng là thứ tiêu liên tục; Linh Khí
@@ -34,7 +45,7 @@
 > con số chỉ tăng chứ không bao giờ dùng được thì tệ hơn là không có.
 >
 > Giá suy ngược từ thu nhập phẳng:
-> - **Linh Căn** `87 × 1.08^(bậc−1)`, 19 lần = `3,607`. Số cũ `439 × 1.412` cho
+> - **Linh Căn** **phẳng 500 mỗi lần**, 19 lần = `9,500`. Số cũ `439 × 1.412` cho
 >   tổng `747,839` — tính cho thu nhập mũ, với thu nhập phẳng thì bậc cuối
 >   `218,519` là không bao giờ với tới.
 > - **Kỹ Năng** `3` Gỗ mỗi lần *(mở khoá và đôn bậc như nhau)*, trọn bảy =

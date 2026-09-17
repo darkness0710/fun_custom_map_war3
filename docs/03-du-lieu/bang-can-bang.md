@@ -177,7 +177,7 @@ Chi tiết: [02-he-thong/kinh-te.md](../02-he-thong/kinh-te.md) ·
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
 | `LINHCAN_STEP` | Nhân sức mạnh mỗi bậc | `1.215`, **không** phải 1.17. Với 1.17 thì 19 bước chỉ cho ×19.7, nhân trang bị ×12 và kỹ năng ×2 là ×474 — bằng 49 % mức hợp đồng đòi |
-| `LINHCAN_COST_BASE` `LINHCAN_COST_STEP` | Giá đột phá bậc `r` = `BASE × STEP^(r−1)` | `87 × 1.08`. Suy ngược từ thu nhập **phẳng**: 19 lần = 3,607 trên 4,000 kiếm được cả ván |
+| `LINHCAN_COST_BASE` `LINHCAN_COST_STEP` | Giá đột phá bậc `r` = `BASE × STEP^(r−1)` | `500 × 1.0` — **phẳng**. Không suy từ đường cong nào, nó là một giao kèo đơn: dọn sạch một cảnh giới = lên một bậc |
 | `LINHCAN_DMG_BASE` `LINHCAN_STAT_BASE` | Hai số để **giải ngược** ra chỉ số cần đạt | Nhân thẳng chỉ số lên mỗi bậc là **sai**: sát thương hero = nền + chỉ số, phần nền làm loãng nhân số. Đổi hai số này cho khớp hero thật trong Object Editor |
 | `LINHCAN_STAT_MODE` | `"all"` hay `"primary"` | `"all"` phục vụ nhiều hợp đồng cùng lúc (Str→máu, Int→mana) nhưng Agi cho **tốc đánh** — đó là DPS ngoài ngân sách ×967. Đổi sang `"primary"` nếu đo thấy hero mạnh vượt đường cong |
 
@@ -266,11 +266,14 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | `TRACE` `TRACE_FILE` | `true` | Ghi vết khởi động ra file. Game sập thì mọi dòng chat đều mất — đây là cách duy nhất biết nó chết ở bước nào |
 | `REVEAL_MAP` | `true` | Mở toàn bộ sương mù — **luật của map**, không phải công tắc dev |
 | `THUONG_MOB_LINHKHI` `THUONG_MOB_VANG` | `1` `1` | Lính thường rơi ra. **Phẳng**, không theo stage |
+| `THUONG_ELITE_LINHKHI` `THUONG_BOSS_LINHKHI` | `50` `100` | Chọn để 1 cảnh giới kiếm **đúng 500** = 1 lần đột phá |
+| `LINHCAN_STAT_GAIN` `LINHCAN_STAT_STEP` | `50` `2.0` | Đột phá cộng `+50`, rồi **gấp đôi** mỗi bậc. Cộng dồn 19 bậc = `26,214,350` |
 | `THUONG_ELITE_GO` `THUONG_BOSS_GO` | `2` `5` | Nguồn Gỗ duy nhất. Cả ván `80×2 + 20×5 = 260` |
 | `SKILL_GO_UNLOCK` `SKILL_GO_UP` | `1` `1` | 70 giao dịch = 70 Gỗ trên 260 kiếm được |
 | `GO_START` | `3` | Đủ mở **một** kỹ năng ngay giây đầu |
 | `TRANGBI_LOCKED` `PHAPKHI_LOCKED` | `true` | Tạm khoá. Mở lại phải chọn lại đồng tiền — Linh Khí đã bị Linh Căn ăn 91% |
 | `MOB_EHP_BASE` | `120` | Đo từ "Chưởng phát đầu mất 1/3 máu ở wave 1": `1.32 × (17+13) × 3 = 119` |
+| `MOB_EHP_REALM_STEP` | `1.90` | **Phải đi đôi với `LINHCAN_STAT_STEP`.** Tính ngược từ ràng buộc "ba phát Chưởng một con" ở stage cuối. Đổi một cái là phải tính lại cái kia |
 | `PANEL_W` | `0.68` | Năm thẻ. Ở `0.56` thì nhãn `IV. Treasures` tràn sang `V. Shop` |
 | `SKILL_TAT_GOC` `_INT` | *(bảng)* | Tắt hiệu ứng gốc của ability bản sao. Xem [ability-ban-sao.md](ability-ban-sao.md) |
 | `SKILL_CHO_GOC` | *(bảng)* | Mượn trường gốc làm **vật mang** cho giáp, thay vì tắt rồi tự cộng |

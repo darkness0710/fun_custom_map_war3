@@ -397,8 +397,10 @@ local function rewardAll(stage, kind)
   -- Xem docs/02-he-thong/kinh-te.md
   local lk, vang, go = 0, 0, 0
   if kind == "boss" then
+    lk = CFG.THUONG_BOSS_LINHKHI
     go = CFG.THUONG_BOSS_GO
   elseif kind == "elite" then
+    lk = CFG.THUONG_ELITE_LINHKHI
     go = CFG.THUONG_ELITE_GO
   else
     lk   = CFG.THUONG_MOB_LINHKHI
@@ -418,9 +420,10 @@ local function rewardAll(stage, kind)
       end
     end
   end
-  -- Ve lai bang khi mot dong tien DOI BAC: Go nhay tung diem mot nen
-  -- moi diem deu dang ke. Linh Khi va Vang nhay 1 moi con, ve lai moi
-  -- con la ve lai 50 lan mot wave -- de nhip refresh cua bang lo.
+  -- Ve lai bang khi mot dong tien nhay MOT CUC LON: Go tung diem mot,
+  -- va Linh Khi cua tinh anh/boss (50/100) -- moi cai deu dang ke. Quai
+  -- thuong nhay 1 moi con, ve lai moi con la 50 lan mot wave, de nhip
+  -- refresh cua bang lo.
   if go > 0 then API.panelRefreshAll() end
 
   if kind == "boss" then
