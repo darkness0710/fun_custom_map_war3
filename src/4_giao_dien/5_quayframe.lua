@@ -23,12 +23,22 @@ local HEAD_H = 0.030    -- dong tieu de
 local COT_H  = 0.185    -- cao mot cot
 local ICON_H = 0.052
 
+-- Le trong THAT = le + vien trang tri cua backdrop.
+--
+-- EscMenuBackdrop ve mot duong vien go day an vao mep trong. Dat tieu de
+-- o dung PAD la no nam DE LEN vien do -- dung loi ma bang nhan vat
+-- (CFG.PANEL_BORDER) va the chon hero (CFG.CARD_BORDER) da dinh, moi
+-- cai mot lan.
+local function P()
+  return PAD + (CFG.PANEL_BORDER or 0.0)
+end
+
 local function cotW()
-  return (W - 2 * PAD - 2 * GAP) / 3
+  return (W - 2 * P() - 2 * GAP) / 3
 end
 
 local function khungH()
-  return PAD + HEAD_H + GAP + COT_H + PAD
+  return P() + HEAD_H + GAP + COT_H + P()
 end
 
 local function stateOf(pid)
@@ -78,14 +88,14 @@ local function build(pid)
     return t
   end
 
-  st.tieuDe = chu("QuayTitle", bg, PAD, PAD, W - 2 * PAD,
+  st.tieuDe = chu("QuayTitle", bg, P(), P(), W - 2 * P(),
                   CFG.PANEL_SCALE_HEAD, true)
 
   local cw   = cotW()
-  local topY = PAD + HEAD_H + GAP
+  local topY = P() + HEAD_H + GAP
 
   for i = 1, 3 do
-    local x = PAD + (i - 1) * (cw + GAP)
+    local x = P() + (i - 1) * (cw + GAP)
     local c = {}
 
     -- CA COT la mot nut. Bam dau trong cot cung duoc, khong phai ngam

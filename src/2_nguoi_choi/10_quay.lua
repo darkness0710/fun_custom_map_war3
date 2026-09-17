@@ -108,11 +108,57 @@ local function moTa(the)
   return "+" .. API.num(the.so) .. " " .. API.t("cur_vang")
 end
 
+-- Icon KHONG go duong dan tay nua.
+--
+-- Da doan sai ba lan: BTNRingViolet (o xanh la), BTNStrength (o xanh
+-- la), BTNGoldmine (ra cai NHA chu khong phai dong tien). Duong dan
+-- texture khong liet ke duoc tu ngoai -- game dong goi bang CASC.
+--
+-- Nen DOC tu chinh doi tuong cua game, giong cach 8_shop.lua lam:
+--   BlzGetAbilityIcon(id)  icon that cua mot ability
+--   BlzGetItemIconPath(it) icon that cua mot item vua tao
+--
+-- Gia tri ban dau chi la duong LUI: chung deu la duong dan DA CHUNG
+-- MINH la ve ra hinh (dang dung o the Trang Bi), nen sai lam thi ra
+-- icon khong hop nghia chu KHONG BAO GIO ra o xanh la nua.
 local ICON = {
   da    = [[ReplaceableTextures\CommandButtons\BTNStaffOfSanctuary.blp]],
-  chiso = [[ReplaceableTextures\CommandButtons\BTNStrength.blp]],
-  vang  = [[ReplaceableTextures\CommandButtons\BTNGoldmine.blp]],
+  chiso = [[ReplaceableTextures\CommandButtons\BTNSteelMelee.blp]],
+  vang  = [[ReplaceableTextures\CommandButtons\BTNTalisman.blp]],
 }
+
+-- Do icon that luc vao map. Moi muc: { khoa, ma item de thu, ability
+-- de lui ve }.
+local function probeIcons()
+  -- 1. Chi so: lay tu chinh ability Luyen The (A004). Chac chan co --
+  --    no dang ve ra hinh o the Ky Nang.
+  if BlzGetAbilityIcon ~= nil then
+    local p = BlzGetAbilityIcon(FourCC("A004"))
+    if p ~= nil and p ~= "" then ICON.chiso = p end
+  end
+
+  -- 2. Vang va da: thu tao item roi doc icon that cua no.
+  --    CreateItem tra nil khi ma khong ton tai -> giu duong lui va GHI
+  --    VET, khong nuot im.
+  if CreateItem ~= nil and BlzGetItemIconPath ~= nil then
+    local thu = { { "vang", "gold" }, { "da", "ingt" } }
+    for i = 1, #thu do
+      local khoa, ma = thu[i][1], thu[i][2]
+      local it = CreateItem(FourCC(ma), 0.0, 0.0)
+      if it == nil then
+        API.trace("quay: khong co item '" .. ma .. "', giu icon lui cho " .. khoa)
+      else
+        local p = BlzGetItemIconPath(it)
+        if p ~= nil and p ~= "" then ICON[khoa] = p end
+        RemoveItem(it)
+      end
+    end
+  end
+
+  for k, v in pairs(ICON) do
+    API.trace("quay: icon " .. k .. " = " .. tostring(v))
+  end
+end
 
 -- ---------- Giao dien ----------
 --
@@ -135,6 +181,7 @@ local function soLuot(pid)
 end
 
 local function startQuay()
+  probeIcons()
   API.syncOn(CFG.OP_QUAY, nhan)
   API.trace("quay: san sang")
 end
