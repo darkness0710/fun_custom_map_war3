@@ -330,7 +330,7 @@ local function registerEvents()
       if raw:match("^%s*%-da") ~= nil then
         n = n or 100
         local d = S.p[pid]
-        if d ~= nil then d.da = (d.da or 0) + n end
+        if d ~= nil then API.addDa(pid, n) end
         API.msg(pid, CFG.C_GREY .. "[dev] +" .. n .. " da." .. CFG.C_END)
         API.panelRefresh(pid)
         return

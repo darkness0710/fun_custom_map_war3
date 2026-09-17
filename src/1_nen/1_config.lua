@@ -71,6 +71,7 @@ CFG.OP_PK_BUY = 8   -- arg = so thu tu phap khi trong CFG.PHAPKHI
 CFG.OP_SHOP   = 9   -- arg = so thu tu mon trong CFG.SHOP
 CFG.OP_ITEM   = 10  -- arg = o tui 0..5, dung do bang phim so
 CFG.OP_QUAY   = 11  -- arg = so thu tu the 1..3 trong luot quay
+CFG.OP_TB_TIEN = 12 -- arg = so thu tu mon trong CFG.TRANGBI (Tien Giai)
 -- Opcode KHONG bi chan o mot chu so: unpackMsg dung math.floor(v/10^7)
 -- nen op 10, 11... van giai duoc. Thu bi chan la arg (< 10^5) va seq
 -- (< 100). Xem src/1_nen/3_sync.lua.
@@ -1116,76 +1117,77 @@ CFG.LINHCAN_STAT_MODE = "all"
 
 
 -- ============================================================
---  TRANG BI  --  6 o, moi o 10 cap
---  docs/02-he-thong/kinh-te.md
+--  TRANG BI  --  6 mon, moi mon tien hoa 100 bac
+--  docs/02-he-thong/trang-bi-kiem.md  ·  ADR 0021
 --
---  Mua bang LINH KHI, cung vi voi Linh Can -- co y. Do la lua chon
---  chinh cua moi wave: dot pha hay nang do. Hai he kia (Ky Nang, Phap
---  Khi) khong tranh vi nay, chung bi chan boi NOI DUNG chu khong boi
---  tien -- xem CFG.THUONG_ELITE_GO va CFG.THUONG_BOSS_GO.
+--  Moi mon di 20 canh gioi x 5 cap. TRAN la TU VI cua nguoi choi:
+--  mon do khong bao gio vuot qua canh gioi ma nguoi choi dang o.
+--
+--  VI SAO CO TRAN. Sau ADR 0020, EHP quai dinh nghia bang he so Tu Vi
+--  nen Tu Vi triet tieu voi quai, va MOI nguon khac la phan VUOT LEN
+--  khong co can tren. He 6 o cu cong x8.3 sat thuong ma khong gi chan
+--  -- do la ly do no phai khoa. Khoa theo canh gioi cho phan vuot len
+--  mot can tren, va can do bam DUNG bien ma quai cung bam.
+--
+--  CHI SO CON RONG -- 2026-09-17. Khung tien hoa chay day du (ten, cap,
+--  xac suat, Tien Giai, tran Tu Vi) nhung chua mon nao cong gi ca. Do
+--  la CO Y: chu du an mo cau truc truoc, chot chi so sau.
 -- ============================================================
 
--- Sau o. Ten la huong vi; TAC DUNG cua ca sau giong nhau: +4% sat
--- thuong moi cap.
+-- Sau mon. Ten va icon la thu duy nhat phan biet chung luc nay.
 --
--- Vi sao ca sau o cung mot tac dung: ngan sach Trang Bi tung la x8 SAT
--- THUONG, ma x8 do chinh la (1.04^9)^6 -- chia ba o sang mau/giap thi
--- chi con x2.9.
+-- ICON: chi dung sau duong dan DA CHUNG MINH ve ra hinh -- doan mot
+-- duong dan sai thi ra o XANH LA (loi ma BTNRingViolet da dinh), ma
+-- game dong goi bang CASC nen khong liet ke duoc tu ngoai.
 --
--- LAP LUAN DO DA MAT NEN tu khi MOB_EHP_THEO_LINHCAN bat: khong con
--- tich bon he nao phai dat x948 ca. Gio Trang Bi la phan VUOT LEN
--- thuan, nen cau hoi khong con la "co du x8 khong" ma la "cho vuot
--- len bao nhieu la vua". Giu nguyen sau o giong nhau cho toi khi tra
--- loi duoc cau do -- dung sua mot minh cho nay.
+-- KHIEN dang muon tam icon Talisman vi trong sau duong dan da chung
+-- minh khong co cai nao la khien. Sua trong World Editor -> Object
+-- Editor -> mot item bat ky -> Art - Icon, chep duong dan that vao day.
 CFG.TRANGBI = {
-  { ten = "Vu Khi",       en = "Weapon",   icon = [[ReplaceableTextures\CommandButtons\BTNSteelMelee.blp]] },
-  { ten = "Ho Giap",      en = "Armor",    icon = [[ReplaceableTextures\CommandButtons\BTNSteelArmor.blp]] },
-  { ten = "Chien Ngoa",   en = "Boots",    icon = [[ReplaceableTextures\CommandButtons\BTNBootsOfSpeed.blp]] },
-  { ten = "Ngoc Boi",     en = "Pendant",  icon = [[ReplaceableTextures\CommandButtons\BTNPendantOfEnergy.blp]] },
-  { ten = "Ho Than Phu",  en = "Talisman", icon = [[ReplaceableTextures\CommandButtons\BTNTalisman.blp]] },
-  -- BTNRingViolet.blp KHONG co trong ban 1.31.1 -- do duoc: o icon ra
-  -- mot o XANH LA, do la mau Warcraft ve khi thieu texture. Doi sang
-  -- BTNRingSkull (icon cua Ring of Protection). Neu van xanh la thi van
-  -- la duong dan sai: mo World Editor -> Object Editor -> mot item bat
-  -- ky -> Art - Icon, chep duong dan that vao day. Khong doan them lan
-  -- nua -- game dong goi bang CASC nen khong liet ke duoc tu ngoai.
-  { ten = "Tru Vat Gioi", en = "Ring",     icon = [[ReplaceableTextures\CommandButtons\BTNRingSkull.blp]] },
+  { ten = "Kiem",       en = "Sword",    icon = [[ReplaceableTextures\CommandButtons\BTNSteelMelee.blp]] },
+  { ten = "Giap",       en = "Armor",    icon = [[ReplaceableTextures\CommandButtons\BTNSteelArmor.blp]] },
+  { ten = "Khien",      en = "Shield",   icon = [[ReplaceableTextures\CommandButtons\BTNTalisman.blp]] },
+  { ten = "Giay",       en = "Boots",    icon = [[ReplaceableTextures\CommandButtons\BTNBootsOfSpeed.blp]] },
+  { ten = "Day Chuyen", en = "Necklace", icon = [[ReplaceableTextures\CommandButtons\BTNPendantOfEnergy.blp]] },
+  { ten = "Nhan",       en = "Ring",     icon = [[ReplaceableTextures\CommandButtons\BTNRingSkull.blp]] },
 }
 
--- KHOA TAM THOI. The van hien du sau o, moi o ghi 0/0 va khong co nut
--- -- de nguoi choi thay he nay ton tai va dang dong, khac han mot the
--- trong khien ho tuong giao dien hong.
---
--- Mo lai = dat false VA chon lai dong tien cho no: truoc day no tieu
--- Linh Khi, ma Linh Khi gio chi con 10,000 ca van va Linh Can da an
--- 91%. Xem docs/02-he-thong/kinh-te.md
-CFG.TRANGBI_LOCKED = true
+-- Nam cap trong MOT canh gioi. So phan tu PHAI bang #CFG.TRANGBI_XS.
+-- Cung hinh dang voi CFG.TIER_NAMES cua he dot quai.
+CFG.TRANGBI_CAP = {
+  { ten = "So Cap",     en = "Basic" },
+  { ten = "Trung Cap",  en = "Fine" },
+  { ten = "Cao Cap",    en = "Superior" },
+  { ten = "Thuong Cap", en = "Exalted" },
+  { ten = "Hoan Hao",   en = "Perfect" },
+}
 
-CFG.TRANGBI_MAX_LEVEL = 10
-CFG.TRANGBI_PCT       = 0.04    -- moi cap +4% sat thuong
+-- Xac suat LEN cap thu i. XS[1] la lan dau (mo khoa mon do), luon 100%.
+--
+-- Ky vong so lan thu de di tron mot canh gioi:
+--   1 + 1/0.75 + 1/0.50 + 1/0.25 + 1/0.15 = 15.0 lan
+--
+-- That bai KHONG mat gi ngoai vien da -- khong tut cap, khong vo mon.
+CFG.TRANGBI_XS = { 1.00, 0.75, 0.50, 0.25, 0.15 }
 
--- Gia theo TONG SO LAN da nang cua ca sau o, khong theo cap cua rieng
--- mot o. Cung nguyen tac voi ky nang truoc day: don het vao mot o khong
--- re hon rai deu, nen nguoi choi chon theo loi choi chu khong theo phep
--- tinh.
+-- Da moi lan thu nang cap. Phang, moi bac nhu nhau.
+CFG.TRANGBI_GIA = 1
+
+-- ---------- Tien Giai ----------
 --
--- CA HAI SO DUOI DAY DA CHET, va phai tinh lai truoc khi bo
--- CFG.TRANGBI_LOCKED. Chung duoc suy ra tu thu nhap MU cu
--- (60 x 1.0319^stage, tong 1,880,187 Linh Khi ca van):
+-- Den "Hoan Hao" roi thi khong nang cap duoc nua; phai TIEN GIAI de
+-- sang canh gioi sau. Ton 10 da, va CHAC CHAN 100% -- no la mot CUA,
+-- khong phai mot canh bac chong len canh bac.
 --
---   1.134 = 1.0319^4.07 -- thu nhap cua 4,07 stage thoi do.
---   BASE 147            -- 52% cua ngan sach thoi do.
+-- Tien Giai dua thang toi "So Cap" cua canh gioi moi: goi luon lan len
+-- So Cap (von 100%) vao day, de khong co mot cu bam chac chan thua.
 --
--- Thu nhap gio PHANG va ca van chi co 10,000 Linh Khi, ma:
---   tron 60 lan nang  = 974,606 Linh Khi   (gap 97 lan so kiem duoc)
---   lan nang thu 54   = 115,295 Linh Khi   (mot lan)
---   10,000 mua duoc   = 18/60 lan
---   500 du sau Tu Vi  =  2/60 lan
---
--- Tuc mo khoa ngay bay gio thi he nay gan nhu khong dung duoc. Chon
--- lai dong tien VA duong cong cung luc -- xem docs/02-he-thong/kinh-te.md.
-CFG.TRANGBI_COST_BASE = 147.0
-CFG.TRANGBI_COST_STEP = 1.134
+-- DIEU KIEN: Tu Vi cua nguoi choi phai DA toi canh gioi dich. Day la
+-- cho cai tran that su co hieu luc.
+CFG.TRANGBI_TIEN_GIAI = 10
+
+-- Trang Bi khong con khoa. (CFG.TRANGBI_LOCKED, _MAX_LEVEL, _PCT,
+-- _COST_BASE, _COST_STEP cua he 6 o x 10 cap da bo cung he do.)
 
 -- ============================================================
 --  PHAP KHI  --  5 mon, mua MOT lan, khong co cap

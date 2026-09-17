@@ -32,7 +32,8 @@ thiết kế, và là chỗ mọi con số quy về —
 | **Cửa hàng** | [8_shop.lua](../src/2_nguoi_choi/8_shop.lua) | Hệ duy nhất tiêu **Vàng**, và duy nhất bán đồ tiêu hao. Gộp lọ cùng loại vào một ô |
 | **Cơ Duyên** | [10_quay.lua](../src/2_nguoi_choi/10_quay.lua) · [5_quayframe.lua](../src/4_giao_dien/5_quayframe.lua) | Khung ba cột riêng, mở ngay khi tinh anh/boss chết. Chọn 1 trong 3 |
 | **Dùng đồ bằng hàng số trên** | [9_dungdo.lua](../src/2_nguoi_choi/9_dungdo.lua) | Thêm vào numpad sẵn có, không thay |
-| **Trang Bị · Pháp Khí** | [5_trangbi.lua](../src/2_nguoi_choi/5_trangbi.lua) · [6_phapkhi.lua](../src/2_nguoi_choi/6_phapkhi.lua) | ⏸ **đang khoá** (`TRANGBI_LOCKED` `PHAPKHI_LOCKED`) — thẻ vẫn hiện để người chơi biết hệ tồn tại |
+| **Trang Bị** | [5_trangbi.lua](../src/2_nguoi_choi/5_trangbi.lua) | 6 món × 100 bậc, trần là Tu Vi. Khung chạy đủ, **chỉ số còn rỗng** — [trang-bi-kiem.md](02-he-thong/trang-bi-kiem.md) |
+| **Pháp Khí** | [6_phapkhi.lua](../src/2_nguoi_choi/6_phapkhi.lua) | ⏸ **đang khoá** (`PHAPKHI_LOCKED`) — thẻ vẫn hiện để người chơi biết hệ tồn tại |
 | Bảng nhân vật (phím **E**) | [1_panel.lua](../src/4_giao_dien/1_panel.lua) | 4 thẻ, hai kiểu thân bảng |
 | Chữ bay | [4_fct.lua](../src/4_giao_dien/4_fct.lua) | Cộng dồn sát thương trước khi vẽ |
 | Lưới 25 block, 4+4 dòng sông | [4_geometry.lua](../src/1_nen/4_geometry.lua) | Có vùng thật `Blk01..Blk25` trong World Editor; địa hình chưa vẽ |
@@ -81,7 +82,7 @@ quái; mọi nguồn khác là phần **vượt lên thuần**:
 | Tu Vi | ×1.00 so với quái | Linh Khí | Đã cài — triệt tiêu theo định nghĩa |
 | Cơ Duyên | **+40%** chỉ số cả ván | *(rơi ra)* | Đã cài |
 | Kỹ Năng | bậc 1→10 | Gỗ | Đã cài và **đã có hiệu lực** |
-| Trang Bị | ×8.3 nếu mở lại | Linh Khí | ⏸ **khoá** — giá đã chết, xem dưới |
+| Trang Bị | **chưa có** | Đá Huyền Thiết | Khung đã cài, chỉ số còn rỗng |
 | Pháp Khí | chưa có nội dung | Gỗ | ⏸ **khoá** — 190 Gỗ dành sẵn |
 
 Điều kiện duy nhất: người chơi phải lên **đúng một bậc mỗi cảnh giới**. Đó là

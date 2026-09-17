@@ -260,12 +260,11 @@ local function refresh(pid)
   end
 
   if st.money ~= nil then
-    local d = S.p[pid]
     local tien = {
       { API.t("panel_linhkhi"), API.getLinhKhi(pid),  CFG.C_JADE },
       { API.t("panel_vang"),    API.getVang(pid),     CFG.C_GOLD },
       { API.t("panel_go"),      API.getGo(pid),       CFG.C_GOLD },
-      { API.t("panel_da"),      (d and d.da) or 0,    CFG.C_GREY },
+      { API.t("panel_da"),      API.getDa(pid),       CFG.C_GREY },
     }
     for i = 1, #tien do
       local m = st.money[i]

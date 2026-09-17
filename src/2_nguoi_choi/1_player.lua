@@ -20,8 +20,8 @@ local function initPlayers()
                    linhKhi = 0, linhKhiTotal = 0,
                    linhCan = 1, fctGold = 0,
 
-                   tb = {},       -- [so thu tu o trang bi] = cap
-                   tbUps = 0,     -- tong so lan da nang, de tra gia
+                   da = 0,        -- Da Huyen Thiet
+                   tb = {},       -- [so thu tu mon] = { canh, cap }
                    pk = {} }      -- [ma phap khi] = true
       S.pids[#S.pids + 1] = pid
     end
@@ -279,6 +279,34 @@ local function spendVang(pid, amount)
   return true
 end
 
+-- ---------- Da Huyen Thiet ----------
+--
+-- KHONG nam tren thanh tai nguyen: thanh do chi co HAI o (vang, go)
+-- ma map co ba dong tien cong them da. Nen da song trong S.p[pid].da
+-- va hien o bang phim ESC, giong Linh Khi.
+--
+-- Truoc 2026-09-17 ba cho tu cong thang vao d.da. Gom lai mot cua de
+-- them cho tieu khong phai nho sua may noi.
+local function addDa(pid, amount)
+  if amount == nil or amount == 0 then return end
+  local d = S.p[pid]
+  if d == nil then return end
+  local moi = (d.da or 0) + amount
+  if moi < 0 then moi = 0 end
+  d.da = moi
+end
+
+local function getDa(pid)
+  local d = S.p[pid]
+  return (d ~= nil) and (d.da or 0) or 0
+end
+
+local function spendDa(pid, amount)
+  if getDa(pid) < amount then return false end
+  addDa(pid, -amount)
+  return true
+end
+
 -- ---------- Go (thanh tai nguyen) ----------
 local function addGo(pid, amount)
   if amount == nil or amount == 0 then return end
@@ -313,6 +341,9 @@ API.spendLinhKhi     = spendLinhKhi
 API.addVang          = addVang
 API.getVang          = getVang
 API.spendVang        = spendVang
+API.addDa            = addDa
+API.getDa            = getDa
+API.spendDa          = spendDa
 API.addGo            = addGo
 API.getGo            = getGo
 API.spendGo          = spendGo

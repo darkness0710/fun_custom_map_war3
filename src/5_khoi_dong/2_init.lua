@@ -127,7 +127,7 @@ local function bootstrap()
   -- docs/02-he-thong/kinh-te.md
   API.startLinhCan()   -- I.   Linh Khi
   API.startSkills()    -- II.  Go
-  API.startTrangBi()   -- III. (tam khoa)
+  API.startTrangBi()   -- III. Da Huyen Thiet
   API.startPhapKhi()   -- IV.  (tam khoa)
   API.startShop()      -- V.   Vang
   API.startQuay()      -- Co Duyen (khung rieng, khong phai the)
