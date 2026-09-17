@@ -279,6 +279,11 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | `PANEL_W` | `0.68` | Năm thẻ. Ở `0.56` thì nhãn `IV. Treasures` tràn sang `V. Shop` |
 | `SKILL_TAT_GOC` `_INT` | *(bảng)* | Tắt hiệu ứng gốc của ability bản sao. Xem [ability-ban-sao.md](ability-ban-sao.md) |
 | `SKILL_CHO_GOC` | *(bảng)* | Mượn trường gốc làm **vật mang** cho giáp, thay vì tắt rồi tự cộng |
+| `QUAY_ELITE` `QUAY_BOSS` | `1` `3` | Lượt quay. 7/cảnh giới, 140 cả ván. `5`/`10` cho 600 lượt = 30 phút ngồi chọn menu |
+| `QUAY_GIA_TRI` | `2.2` | Giá trị một thẻ ở bậc 1. Nhân theo **chính** `LINHCAN_STAT_STEP` nên quay tự bám Tu Vi |
+| `QUAY_DA` | `10` | Thẻ 1, **phẳng** — giá nâng Trang Bị sẽ cố định theo lượng đá. Cả ván 1,400 đá |
+| `QUAY_VANG_MOI_DIEM` | `12` | Thẻ 3. Cảnh giới 1: 7 lượt cho 185 vàng, quái cho 200 — ngang nhau |
+| `PANEL_W` | `0.74` | Sáu thẻ. Thẻ thứ **bảy** phải rút ngắn nhãn, không nới khung được nữa |
 | `HOUSE_FROZEN` | `true` | Chốt Nhà Chính tại chỗ. `HOUSE_UNIT` là `Hmkg` — unit hero **có chân** thuộc slot máy, nên AI mặc định của Warcraft cho nó đi lang thang |
 | `WAVE_ONLY_WHEN_CLEAR` | `true` | Đợt mới chỉ ra khi đợt cũ đã dọn sạch. Tắt thì đồng hồ `WAVE_TIME` lại chồng đợt lên nhau |
 

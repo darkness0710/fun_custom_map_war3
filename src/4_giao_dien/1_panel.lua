@@ -260,10 +260,12 @@ local function refresh(pid)
   end
 
   if st.money ~= nil then
+    local d = S.p[pid]
     local tien = {
-      { API.t("panel_linhkhi"), API.getLinhKhi(pid), CFG.C_JADE },
-      { API.t("panel_vang"),    API.getVang(pid),    CFG.C_GOLD },
-      { API.t("panel_go"),      API.getGo(pid),      CFG.C_GOLD },
+      { API.t("panel_linhkhi"), API.getLinhKhi(pid),  CFG.C_JADE },
+      { API.t("panel_vang"),    API.getVang(pid),     CFG.C_GOLD },
+      { API.t("panel_go"),      API.getGo(pid),       CFG.C_GOLD },
+      { API.t("panel_da"),      (d and d.da) or 0,    CFG.C_GREY },
     }
     for i = 1, #tien do
       local m = st.money[i]
@@ -429,9 +431,10 @@ local function build(pid)
   -- Chu thich KHONG dat duoc o hang the: nam nut da chia kin be ngang
   -- roi, dat o goc phai la de thang len "V. Shop".
   local hintW  = (W - 2 * P) * 0.22
-  local colW   = (W - 2 * P - hintW) / 3
+  local SO_TIEN = 4
+  local colW   = (W - 2 * P - hintW) / SO_TIEN
   st.money = {}
-  for i = 1, 3 do
+  for i = 1, SO_TIEN do
     local x = P + (i - 1) * colW
     st.money[i] = {
       nhan = text("CharMoneyL" .. i, st.panel, x, moneyY, colW * 0.58,

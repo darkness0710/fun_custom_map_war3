@@ -279,11 +279,16 @@ local function recompute(pid)
   local sk, lv = skillByFx(pid, "stat")
   local pct = (sk ~= nil) and API.skillPct(sk, lv) or 0.0
 
+  -- Chi so tu QUAY cong vao truoc khi nhan %: mot cong thuc duy nhat,
+  -- khong phai nho thu tu.
+  local q = d.quayChiSo or {}
+  local qs, qa, qi = q.str or 0, q.agi or 0, q.int or 0
+
   if CFG.LINHCAN_STAT_MODE == "primary" then
     -- Cong vao chi so cao nhat cua NEN, khong phai cua hien tai -- chi
     -- so hien tai doi theo chinh phep cong nay thi no se nhay qua nhay
     -- lai giua hai chi so.
-    local s, a, i = n.str, n.agi, n.int
+    local s, a, i = n.str + qs, n.agi + qa, n.int + qi
     if s >= a and s >= i then s = s + lc
     elseif a >= i then a = a + lc
     else i = i + lc end
@@ -291,10 +296,21 @@ local function recompute(pid)
     SetHeroAgi(h, math.floor(a * (1 + pct) + 0.5), true)
     SetHeroInt(h, math.floor(i * (1 + pct) + 0.5), true)
   else
-    SetHeroStr(h, math.floor((n.str + lc) * (1 + pct) + 0.5), true)
-    SetHeroAgi(h, math.floor((n.agi + lc) * (1 + pct) + 0.5), true)
-    SetHeroInt(h, math.floor((n.int + lc) * (1 + pct) + 0.5), true)
+    SetHeroStr(h, math.floor((n.str + qs + lc) * (1 + pct) + 0.5), true)
+    SetHeroAgi(h, math.floor((n.agi + qa + lc) * (1 + pct) + 0.5), true)
+    SetHeroInt(h, math.floor((n.int + qi + lc) * (1 + pct) + 0.5), true)
   end
+
+  -- ---------- Mau / mana toi da: KHONG dong vao ----------
+  --
+  -- The 3 cua he quay tung dinh cong mau/mana toi da. Bo, vi ban 1.31.1
+  -- KHONG phoi ra truong nao cong THEM mau toi da ("-nat ilf": co
+  -- STRENGTH_BONUS_ISTR, DEFENSE_BONUS_IDEF, nhung khong co MAX LIFE).
+  -- Chi con BlzSetUnitMaxHP, ma ham do GHI DE -- dung cai da dong bang
+  -- giap suot may ngay.
+  --
+  -- The 3 gio ra VANG. Mau/mana van hoan toan cua engine, suy tu Str va
+  -- Int nhu Warcraft van lam.
 
   -- ---------- Sat thuong va giap: DE WARCRAFT TU TINH ----------
   --

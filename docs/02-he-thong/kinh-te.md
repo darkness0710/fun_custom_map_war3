@@ -84,6 +84,20 @@ Trang này trả lời câu hỏi mà
 mạnh người chơi đến từ đâu, và mua bằng gì.**
 
 
+## Thẻ VI — Quay thưởng
+
+Nguồn thứ hai của **Vàng** và nguồn duy nhất của **Đá Huyền Thiết**. Chi tiết ở
+[quay-thuong.md](quay-thuong.md).
+
+| | |
+|---|---|
+| Lượt | tinh anh 1, boss 3 → 7/cảnh giới, 140 cả ván |
+| Vàng từ quay | cảnh giới 1: 185 *(quái cho 200)*; cảnh giới 20: 27,016 |
+| Đá | 10/lượt phẳng, cả ván tối đa 1,400 |
+
+Vàng từ quay **bám theo bậc**, vàng từ quái thì **phẳng** — nên nửa sau ván quay
+áp đảo. Thêm món vào shop thì giá phải leo theo bậc.
+
 ## Thẻ V — Shop
 
 Hệ **duy nhất** tiêu Vàng, và hệ duy nhất bán đồ **tiêu hao**. Ba thẻ kia bán thứ

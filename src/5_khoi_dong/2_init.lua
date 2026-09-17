@@ -130,6 +130,7 @@ local function bootstrap()
   API.startTrangBi()   -- III. (tam khoa)
   API.startPhapKhi()   -- IV.  (tam khoa)
   API.startShop()      -- V.   Vang
+  API.startQuay()      -- VI.  Luot quay
   API.startDungDo()
   API.startPanel()
 

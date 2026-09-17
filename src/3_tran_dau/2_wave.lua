@@ -428,13 +428,15 @@ local function rewardAll(stage, kind)
   --   Linh Khi -> Linh Can   Vang -> Shop   Go -> Ky Nang
   --
   -- Xem docs/02-he-thong/kinh-te.md
-  local lk, vang, go = 0, 0, 0
+  local lk, vang, go, quay = 0, 0, 0, 0
   if kind == "boss" then
-    lk = CFG.THUONG_BOSS_LINHKHI
-    go = CFG.THUONG_BOSS_GO
+    lk   = CFG.THUONG_BOSS_LINHKHI
+    go   = CFG.THUONG_BOSS_GO
+    quay = CFG.QUAY_BOSS
   elseif kind == "elite" then
-    lk = CFG.THUONG_ELITE_LINHKHI
-    go = CFG.THUONG_ELITE_GO
+    lk   = CFG.THUONG_ELITE_LINHKHI
+    go   = CFG.THUONG_ELITE_GO
+    quay = CFG.QUAY_ELITE
   else
     lk   = CFG.THUONG_MOB_LINHKHI
     vang = CFG.THUONG_MOB_VANG
@@ -445,6 +447,12 @@ local function rewardAll(stage, kind)
     if S.p[pid] ~= nil and S.p[pid].active then
       if lk > 0 then API.addLinhKhi(pid, lk) end
       if vang > 0 then API.addVang(pid, vang) end
+      -- Them luot quay CHAY TREN MOI MAY (ham nay di tu su kien quai
+      -- chet), va no rut luon ba the -- do la cho duy nhat duoc goi
+      -- GetRandomInt cho he quay. Xem dau 10_quay.lua.
+      if quay > 0 and API.quayThemLuot ~= nil then
+        API.quayThemLuot(pid, quay)
+      end
       if go > 0 then
         local n = go
         if kind == "elite" and API.phapKhiCo ~= nil

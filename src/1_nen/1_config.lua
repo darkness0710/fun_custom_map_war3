@@ -70,6 +70,7 @@ CFG.OP_TB_UP  = 7   -- arg = so thu tu o trang bi trong CFG.TRANGBI
 CFG.OP_PK_BUY = 8   -- arg = so thu tu phap khi trong CFG.PHAPKHI
 CFG.OP_SHOP   = 9   -- arg = so thu tu mon trong CFG.SHOP
 CFG.OP_ITEM   = 10  -- arg = o tui 0..5, dung do bang phim so
+CFG.OP_QUAY   = 11  -- arg = so thu tu the 1..3 trong luot quay
 -- Opcode KHONG bi chan o mot chu so: unpackMsg dung math.floor(v/10^7)
 -- nen op 10, 11... van giai duoc. Thu bi chan la arg (< 10^5) va seq
 -- (< 100). Xem src/1_nen/3_sync.lua.
@@ -1196,6 +1197,71 @@ CFG.PHAPKHI = {}
 -- (CFG.PHAPKHI_LIVE da bo: khong file nao doc no.)
 
 
+-- ---------- Quay thuong: the VI ----------
+--
+-- Giet tinh anh duoc 1 luot, boss 3 luot -- 7 luot mot canh gioi, 140
+-- ca van. Moi luot mo ba the, chon MOT.
+--
+-- VI SAO 1/3 CHU KHONG PHAI 5/10. Voi 5/10 thi ca van 600 luot: 30 phut
+-- ngoi chon menu, va moi luot chi dang +-1 chi so o canh gioi dau, +-7
+-- o canh gioi 10 -- khong ai cam thay gi. It ma dam hon nhieu ma nhat.
+CFG.QUAY_ELITE = 1
+CFG.QUAY_BOSS  = 3
+
+-- Gia tri MOT the o bac 1. Cac bac sau nhan theo CHINH
+-- CFG.LINHCAN_STAT_STEP, nen quay tu bam theo Tu Vi: doi duong cong Tu
+-- Vi thi quay tu co theo, khong phai chinh lai o day.
+--
+-- 2.2 chon de 7 luot mot canh gioi dang gia ~31% mot lan dot pha, va ca
+-- van (140 luot) cong ~9,700 chi so = 40% cua Tu Vi.
+CFG.QUAY_GIA_TRI = 2.2
+
+-- Dai ngau nhien quanh gia tri do: 0.7 .. 1.3 lan.
+CFG.QUAY_DAI_MIN = 0.70
+CFG.QUAY_DAI_MAX = 1.30
+
+-- The 3: VANG, khong phai mau/mana.
+--
+-- Ban dau the 3 dinh cong mau/mana toi da. Bo vi mot ly do ky thuat
+-- CHAC CHAN chu khong phai so thich: ban 1.31.1 KHONG phoi ra truong
+-- nao cong them mau toi da (do bang "-nat ilf": co
+-- ABILITY_ILF_STRENGTH_BONUS_ISTR va DEFENSE_BONUS_IDEF, nhung khong co
+-- cai nao cho MAX LIFE). Chi con BlzSetUnitMaxHP, ma ham do GHI DE --
+-- dung cai da dong bang giap suot may ngay.
+--
+-- Vang thi la bo dem cong thuan, khong ai so huu, va no chay thang vao
+-- shop -- them mon moi vao shop la the 3 tu co gia tri.
+--
+-- 12 chon de o canh gioi dau, 7 luot cho 185 vang, con quai cho 200 --
+-- hai nguon ngang nhau. Ve sau quay vuot len (canh gioi 20: mot the =
+-- 3,859 vang) vi no bam theo bac con quai thi phang.
+--
+-- HE QUA phai nho khi them mon vao shop: gia mon PHAI leo theo bac,
+-- neu khong nua sau van vang thanh vo nghia. Lo thuoc 10 vang la do
+-- co tinh -- no la do tieu hao vat, khong phai thu de danh.
+CFG.QUAY_VANG_MOI_DIEM = 12
+
+-- The 1: da Huyen Thiet, PHANG 10, khong nhan theo bac.
+--
+-- Phang vi gia nang Trang Bi se co dinh theo luong da -- chu du an chot.
+-- Ca van neu luon chon the 1: 140 x 10 = 1,400 da, va do la ngan sach
+-- tron de thiet ke Trang Bi quanh no.
+--
+-- CANH BAO: Trang Bi dang KHOA (CFG.TRANGBI_LOCKED), nen tu gio den luc
+-- mo lai, da chi tang chu khong tieu duoc -- dung cai bay da giet Tinh
+-- Thach. Mo Trang Bi cang som cang tot.
+CFG.QUAY_DA = 10
+
+-- The 2 cong vao MOT chi so ngau nhien trong ba.
+--
+-- Biet truoc: sat thuong ky nang an theo chi so CAO NHAT, ma Hart co Str
+-- cao nhat va Tu Vi cong deu ca ba -- nen Str luon dan dau. Trung Agi
+-- hay Int thi KHONG tang sat thuong ky nang, chi duoc giap/toc danh hoac
+-- mana.
+--
+-- Giu nguyen, khong bu he so: canh bac co chu dich -- chu du an chot.
+CFG.QUAY_CHISO = { "str", "agi", "int" }
+
 -- ---------- Shop: the V ----------
 --
 -- He DUY NHAT tieu VANG, va la he duy nhat ban do TIEU HAO. Ba he kia
@@ -1428,14 +1494,19 @@ CFG.PANEL_X = 0.40
 -- Nut da doi len dinh khung, va tam khung nang len de hang muc cuoi
 -- cung cung thoat khoi dai do.
 CFG.PANEL_Y = 0.33
--- 0.68 chu khong phai 0.56: them the V. Shop la nam the chia nhau be
--- ngang, moi the con (0.56 - 0.048 - 4x0.006)/5 = 0.0976 thay vi
--- 0.1235. Nhan the la TEXT khong dat kich thuoc nen no TRAN sang nut
--- ben canh chu khong bi cat -- "IV. Treasures" se de len "V. Shop".
+-- 0.56 -> 0.68 -> 0.74, moi lan them mot the.
 --
--- 0.68 tra moi the ve dung 0.1216, gan y het be ngang cu voi bon the.
--- Khung rong 0.68 dat giua man hinh rong 0.8 thi tran 0.06 moi ben.
-CFG.PANEL_W = 0.68
+-- Nhan the la TEXT khong dat kich thuoc nen no TRAN sang nut ben canh
+-- chu khong bi cat: the qua hep thi "IV. Treasures" de len "V. Shop".
+--
+-- Be ngang mot the = (W - 2xPAD - (n-1)xGAP) / n:
+--   4 the o 0.56 -> 0.1235   (goc)
+--   6 the o 0.68 -> 0.1003   (hep hon goc 19%)
+--   6 the o 0.74 -> 0.1103
+--
+-- Khung 0.74 giua man hinh 0.8 thi con tran 0.03 moi ben -- gan het co,
+-- nen the THU BAY se phai rut ngan nhan chu khong noi khung duoc nua.
+CFG.PANEL_W = 0.74
 
 -- Hinh hoc mot DONG kieu "list" (Ky Nang, Trang Bi, Phap Khi).
 --
