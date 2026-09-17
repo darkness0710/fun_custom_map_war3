@@ -704,8 +704,8 @@ CFG.SKILL_MAX_LEVEL  = 10
 -- CHI tat cai ma Lua da tu lam thay:
 --   A001 sat thuong  -> fxLine
 --   A002 hoi mau     -> fxHeal
---   A003 giap aura   -> auraGiap() trong heroRecompute
---   A007 giap buff   -> buffGiap() trong heroRecompute
+-- (A003 va A007 KHONG con o day: giap cua chung chuyen sang
+--  CFG.SKILL_CHO_GOC -- ghi so vao truong goc thay vi tat.)
 --
 -- CHUA tat duoc, van con cong chong:
 --   A005 Chem Lan   -- "-nat spell" chua ra ten hang: ma goc ACce khop
@@ -717,10 +717,38 @@ CFG.SKILL_MAX_LEVEL  = 10
 CFG.SKILL_TAT_GOC = {
   [id('A001')] = { "ABILITY_RLF_DAMAGE_OSH1", "ABILITY_RLF_MAXIMUM_DAMAGE_OSH2" },
   [id('A002')] = { "ABILITY_RLF_AMOUNT_HEALED_DAMAGED_HHB1" },
-  [id('A003')] = { "ABILITY_RLF_ARMOR_BONUS_HAD1" },
   [id('A007')] = { "ABILITY_RLF_DAMAGE_BONUS_HAV3",
-                   "ABILITY_RLF_DEFENSE_BONUS_HAV1",
                    "ABILITY_RLF_MAGIC_DAMAGE_REDUCTION_HAV4" },
+}
+
+-- ---------- Truong goc dung lam VAT MANG ----------
+--
+-- Nguoc voi SKILL_TAT_GOC: thay vi tat hieu ung goc roi tu cong bang
+-- Lua, GHI THANG so can bang cua ta vao truong cua ability, roi de
+-- Warcraft cong.
+--
+-- VI SAO PHAI DOI. Warcraft khong co native "cong them giap" --
+-- BlzSetUnitArmor dat GIAP TONG. Nen de Hieu Lenh cong +3 giap, code
+-- buoc phai so huu ca cong thuc giap:
+--
+--   BlzSetUnitArmor(h, n.giap + auraGiap() + buffGiap(pid))
+--
+-- ma n.giap la BlzGetUnitArmor() CHUP LUC TAO HERO -- tuc giap tong hoi
+-- Agi con bang 5. Tu do tro di, phan Agi dong gop bi dong bang trong con
+-- so do: Agi len 511 ma giap van bang 2.
+--
+-- Hai ky nang can cong giap CHINH LA hai ability von cong giap
+-- (Devotion Aura, Avatar). Ghi so vao truong cua chung thi Warcraft tu
+-- cong, va ta xoa duoc han dong BlzSetUnitArmor -- chi so chay lai binh
+-- thuong nhu moi map Warcraft khac.
+--
+-- Khong phai ta can tinh THEM, ma la ta can THOI SO HUU.
+--
+--   nguon = "giap"     -> giapAt(sk, lv), duong cong giap cua bang
+--   nguon = "buffgiap" -> CFG.FX_BUFF_ARMOR theo bac
+CFG.SKILL_CHO_GOC = {
+  [id('A003')] = { truong = "ABILITY_RLF_ARMOR_BONUS_HAD1",   nguon = "giap" },
+  [id('A007')] = { truong = "ABILITY_RLF_DEFENSE_BONUS_HAV1", nguon = "buffgiap" },
 }
 
 -- Cung viec, nhung truong SO NGUYEN -- phai goi

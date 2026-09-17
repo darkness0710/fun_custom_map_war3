@@ -88,10 +88,9 @@ vĩnh viễn; thẻ này bán một lần dùng.
 không trông chờ Warcraft tự gộp: tự gộp hay không là thuộc tính của từng item
 trong Object Editor, mà đây là item có sẵn của game nên ta không nắm quyền đó.
 
-> ⚠ **Chưa đo xong:** một lần dùng có trừ **một lượt** hay mất **cả ô**. Dữ liệu
-> hiện có nghiêng về mất cả ô — nếu đúng thì mua 10 lượt chỉ dùng được 1, và
-> `SHOP_STACK_MAX` phải về `1` cho lọ thuốc, hoặc phải tự tạo item riêng thay vì
-> mượn `phea`/`pman`.
+**Đã đo trong game (2026-09-17): gộp 10 lượt vào một ô, dùng một lần trừ đúng
+một lượt.** Lọ mượn của game (`phea`/`pman`) vẫn tôn trọng số lượt ta nạp, nên
+không cần tự tạo item riêng.
 
 Mã item và icon **đo lúc vào map**: `startShop()` tạo thử từng món rồi xoá.
 `CreateItem` trả `nil` là báo đỏ ngay, không đợi tới lúc ai đó bỏ 500 vàng ra mới

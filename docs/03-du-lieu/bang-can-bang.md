@@ -273,6 +273,8 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | `TRANGBI_LOCKED` `PHAPKHI_LOCKED` | `true` | Tạm khoá. Mở lại phải chọn lại đồng tiền — Linh Khí đã bị Linh Căn ăn 91% |
 | `MOB_EHP_BASE` | `120` | Đo từ "Chưởng phát đầu mất 1/3 máu ở wave 1": `1.32 × (17+13) × 3 = 119` |
 | `PANEL_W` | `0.68` | Năm thẻ. Ở `0.56` thì nhãn `IV. Treasures` tràn sang `V. Shop` |
+| `SKILL_TAT_GOC` `_INT` | *(bảng)* | Tắt hiệu ứng gốc của ability bản sao. Xem [ability-ban-sao.md](ability-ban-sao.md) |
+| `SKILL_CHO_GOC` | *(bảng)* | Mượn trường gốc làm **vật mang** cho giáp, thay vì tắt rồi tự cộng |
 | `HOUSE_FROZEN` | `true` | Chốt Nhà Chính tại chỗ. `HOUSE_UNIT` là `Hmkg` — unit hero **có chân** thuộc slot máy, nên AI mặc định của Warcraft cho nó đi lang thang |
 | `WAVE_ONLY_WHEN_CLEAR` | `true` | Đợt mới chỉ ra khi đợt cũ đã dọn sạch. Tắt thì đồng hồ `WAVE_TIME` lại chồng đợt lên nhau |
 

@@ -147,29 +147,21 @@ local function fxHeal(pid, u, sk, lv)
   API.fx(CFG.FX_HIT_HEAL, GetUnitX(t), GetUnitY(t))
 end
 
--- "buff": tu tang giap trong CFG.FX_BUFF_TIME giay.
+-- "buff" KHONG con ham Lua nao.
 --
--- KHONG cong giap vao roi tru ra. Chi dat mot co (fxBuffLv) roi goi
--- recompute; ham do tu cong buffGiap() vao. Het gio thi xoa co va goi
--- lai. Khong co phep tru nao, nen khong co gi de lech.
+-- Bat Hoai la ban sao cua Avatar, va Avatar tu co buff co thoi luong.
+-- Giap cua no lay tu ABILITY_RLF_DEFENSE_BONUS_HAV1 -- truong ma
+-- applyLevel() ghi so can bang cua ta vao (CFG.SKILL_CHO_GOC). Nen
+-- khong con gi de lam bang Lua: bam la Warcraft lo het.
 --
--- Bo phan cong mau toi da cua ban cu: mau toi da cua hero SUY RA tu Suc
--- manh, ma Linh Can doi Suc manh luc nao cung duoc -- cong roi tru mot
--- con so tuyet doi tren dai luong tu no thay doi la sai chac chan.
-local function fxBuff(pid, u, sk, lv)
-  local d = S.p[pid]
-  if d.fxBuffLv ~= nil then return end    -- dang bat roi, khong chong
-  d.fxBuffLv = lv
-  API.heroRecompute(pid)
-  API.fx(CFG.FX_HIT_BUFF, GetUnitX(u), GetUnitY(u))
+-- Thoi luong gio la thoi luong goc cua Avatar, khong phai
+-- CFG.FX_BUFF_TIME. Muon doi thi dat truong 'adur'/'ahdu' trong
+-- war3map.w3a.
+--
+-- HAV2 (mau toi da) van chay: ban 1.31.1 khong phoi ra hang so nao cho
+-- no nen khong tat duoc -- xem chu thich o CFG.SKILL_TAT_GOC.
 
-  API.after(CFG.FX_BUFF_TIME, function()
-    d.fxBuffLv = nil
-    API.heroRecompute(pid)
-  end)
-end
-
-local FX_CAST = { line = fxLine, heal = fxHeal, buff = fxBuff }
+local FX_CAST = { line = fxLine, heal = fxHeal }
 
 local function onSpell()
   local u = GetTriggerUnit()
@@ -262,33 +254,17 @@ local function baseCapture(pid)
   }
 end
 
--- Giap cong them tu aura "Hieu Lenh" cua CA DOI.
+-- Giap cua Hieu Lenh va Bat Hoai khong con tinh o file nay.
 --
--- Khong theo ban kinh: ba nguoi trong map nay gan nhu luon dung chung
--- mot cho, nen ban kinh khong tao ra quyet dinh nao -- ma do ban kinh
--- thi phai quet dinh ky, va moi lan quet lai phai ghi lai giap.
+-- Hai ham cu -- auraGiap() va buffGiap() -- da xoa. Chung ton tai de
+-- cong giap vao BlzSetUnitArmor, ma dong do chinh la thu dong bang phan
+-- chi so. Gio giap nam trong truong cua chinh hai ability do
+-- (CFG.SKILL_CHO_GOC) va Warcraft cong.
 --
--- Lay cai MANH NHAT trong doi, khong cong don -- dung nhu aura cua
--- Warcraft.
-local function auraGiap()
-  local best = 0.0
-  for i = 1, #S.pids do
-    local sk, lv = skillByFx(S.pids[i], "aura")
-    if sk ~= nil and sk.giap ~= nil then
-      local g = API.skillGiap(sk, lv)
-      if g > best then best = g end
-    end
-  end
-  return best
-end
-
--- Giap cua "Bat Hoai" khi dang bat. Khong bat thi bang 0 -- khong co gi
--- de tru ra ca.
-local function buffGiap(pid)
-  local d = S.p[pid]
-  if d == nil or d.fxBuffLv == nil then return 0.0 end
-  return CFG.FX_BUFF_ARMOR * (1 + 0.1 * (d.fxBuffLv - 1))
-end
+-- DOI HANH VI: aura cua Warcraft co BAN KINH, ban Lua cu thi khong --
+-- no cong cho ca doi du dung dau tren map. Map nay ba nguoi gan nhu
+-- luon dung chung mot cho nen khac biet nho, nhung day la thu can nhin
+-- lai neu doi hinh tach xa nhau.
 
 local function recompute(pid)
   local d = S.p[pid]
@@ -320,15 +296,22 @@ local function recompute(pid)
     SetHeroInt(h, math.floor((n.int + lc) * (1 + pct) + 0.5), true)
   end
 
-  -- ---------- Sat thuong nen ----------
-  if BlzSetUnitBaseDamage ~= nil then
-    BlzSetUnitBaseDamage(h, math.floor(n.dmg * API.trangBiMult(pid) + 0.5), 0)
-  end
-
-  -- ---------- Giap ----------
-  if BlzSetUnitArmor ~= nil then
-    BlzSetUnitArmor(h, n.giap + auraGiap() + buffGiap(pid))
-  end
+  -- ---------- Sat thuong va giap: DE WARCRAFT TU TINH ----------
+  --
+  -- Ham nay KHONG con ghi BlzSetUnitBaseDamage hay BlzSetUnitArmor.
+  --
+  -- Ban truoc ghi ca hai, va do la ly do chi so len ma don thuong voi
+  -- giap dung yen: n.giap la BlzGetUnitArmor() chup luc TAO HERO (giap
+  -- tong hoi Agi con bang 5), nen moi lan tinh lai deu dong bang phan
+  -- Agi vao con so do. Agi 511 ma giap van bang 2.
+  --
+  -- Phan cong them cua Hieu Lenh va Bat Hoai gio nam trong CHINH TRUONG
+  -- cua hai ability do (CFG.SKILL_CHO_GOC), nen Warcraft cong -- khong
+  -- con ai phai so huu cong thuc giap nua.
+  --
+  -- Sat thuong thi khong can vat mang: Trang Bi dang khoa nen
+  -- trangBiMult luon 1.0, tuc dong cu ghi lai dung con so no vua doc.
+  -- Mo Trang Bi lai thi phai chon vat mang cho no, dung ghi de o day.
 end
 
 -- Aura cham toi NGUOI KHAC, nen doi bac cua mot nguoi la ca doi phai

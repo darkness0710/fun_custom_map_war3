@@ -166,6 +166,28 @@ local function applyLevel(pid, sk, level)
   tat(CFG.SKILL_TAT_GOC,     BlzSetAbilityRealLevelField)
   tat(CFG.SKILL_TAT_GOC_INT, BlzSetAbilityIntegerLevelField)
 
+  -- GHI so can bang vao truong goc, de Warcraft tu cong. Xem
+  -- CFG.SKILL_CHO_GOC -- day la duong thay cho BlzSetUnitArmor, thu da
+  -- dong bang phan chi so vao giap.
+  local cho = CFG.SKILL_CHO_GOC and CFG.SKILL_CHO_GOC[sk.id] or nil
+  if cho ~= nil and ab ~= nil and BlzSetAbilityRealLevelField ~= nil then
+    local F = _G[cho.truong]
+    if F == nil then
+      API.trace("skill: KHONG co hang so " .. cho.truong ..
+                " -- " .. API.idToStr(sk.id) .. " khong cong duoc giap")
+    else
+      for lv = 1, tran do
+        local v = 0.0
+        if cho.nguon == "giap" then
+          v = giapAt(sk, lv)
+        elseif cho.nguon == "buffgiap" then
+          v = CFG.FX_BUFF_ARMOR * (1 + 0.1 * (lv - 1))
+        end
+        BlzSetAbilityRealLevelField(ab, F, lv - 1, v)
+      end
+    end
+  end
+
   for lv = 1, tran do
     if BlzSetUnitAbilityManaCost ~= nil and sk.mana ~= nil then
       BlzSetUnitAbilityManaCost(d.hero, sk.id, lv - 1, manaAt(sk, lv))
