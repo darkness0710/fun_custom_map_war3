@@ -276,8 +276,12 @@ local function recompute(pid)
   -- ---------- Chi so ----------
   -- nen + Linh Can, roi nhan % cua bi dong "stat" (Luyen The).
   local lc = API.linhCanStatBonus(pid)
+  -- Luyen The cong PHANG, khong nhan phan tram -- xem CFG.SKILLS A004.
   local sk, lv = skillByFx(pid, "stat")
-  local pct = (sk ~= nil) and API.skillPct(sk, lv) or 0.0
+  local them = 0.0
+  if sk ~= nil and API.skillChiSo ~= nil then
+    them = API.skillChiSo(sk, lv, API.linhCanRank and API.linhCanRank(pid) or 1)
+  end
 
   -- Chi so tu QUAY cong vao truoc khi nhan %: mot cong thuc duy nhat,
   -- khong phai nho thu tu.
@@ -288,17 +292,17 @@ local function recompute(pid)
     -- Cong vao chi so cao nhat cua NEN, khong phai cua hien tai -- chi
     -- so hien tai doi theo chinh phep cong nay thi no se nhay qua nhay
     -- lai giua hai chi so.
-    local s, a, i = n.str + qs, n.agi + qa, n.int + qi
+    local s, a, i = n.str + qs + them, n.agi + qa + them, n.int + qi + them
     if s >= a and s >= i then s = s + lc
     elseif a >= i then a = a + lc
     else i = i + lc end
-    SetHeroStr(h, math.floor(s * (1 + pct) + 0.5), true)
-    SetHeroAgi(h, math.floor(a * (1 + pct) + 0.5), true)
-    SetHeroInt(h, math.floor(i * (1 + pct) + 0.5), true)
+    SetHeroStr(h, math.floor(s + 0.5), true)
+    SetHeroAgi(h, math.floor(a + 0.5), true)
+    SetHeroInt(h, math.floor(i + 0.5), true)
   else
-    SetHeroStr(h, math.floor((n.str + qs + lc) * (1 + pct) + 0.5), true)
-    SetHeroAgi(h, math.floor((n.agi + qa + lc) * (1 + pct) + 0.5), true)
-    SetHeroInt(h, math.floor((n.int + qi + lc) * (1 + pct) + 0.5), true)
+    SetHeroStr(h, math.floor(n.str + qs + lc + them + 0.5), true)
+    SetHeroAgi(h, math.floor(n.agi + qa + lc + them + 0.5), true)
+    SetHeroInt(h, math.floor(n.int + qi + lc + them + 0.5), true)
   end
 
   -- ---------- Mau / mana toi da: KHONG dong vao ----------

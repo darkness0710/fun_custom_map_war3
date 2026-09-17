@@ -41,7 +41,7 @@ Chọn Hvwd hoặc Hkal thì thẻ Kỹ Năng trong bảng phím R hiện đúng
 | **(3,1)** | **Bất Hoại** *(Indestructible)* | chủ động · tự buff | **+30 giáp**, 12 giây · 60.0s · 60 mana | 40.0s · 93 mana |
 | **(0,2)** | **Chém Lan** *(Cleaving Blow)* | bị động · trên mỗi đòn | 20% văng sang bên | **40%** |
 | **(1,2)** | **Hiệu Lệnh** *(Rallying Order)* | bị động · aura đồng đội | **+3 giáp** *(phẳng)* | **+6 giáp** |
-| **(2,2)** | **Luyện Thể** *(Body Forging)* | bị động · chỉ số | +12% cả ba chỉ số | +24% |
+| **(2,2)** | **Luyện Thể** *(Body Forging)* | bị động · chỉ số | **+4 phẳng** cả ba chỉ số *(×bậc Tu Vi)* | **+8** |
 | **(3,2)** | **Da Sắt** *(Ironhide)* | bị động · giảm sát thương | −5% *(trần 10%)* | **−10%** — chạm trần |
 
 **Không cái nào phát sẵn** *(`CFG.SKILL_START_COUNT = 0`)*, nhưng hero **cầm sẵn

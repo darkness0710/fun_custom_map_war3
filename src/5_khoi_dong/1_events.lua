@@ -285,6 +285,59 @@ local function registerEvents()
     end)
   end
 
+  -- Ba lenh dev de thu he QUAY ma khong phai cay quai.
+  --
+  -- "-don"     giet sach quai dang song. Day la cai dang gia nhat: no
+  --            di qua DUNG duong that -- su kien chet -> rewardAll ->
+  --            cong tien + luot quay -> wave sau ra. Thu bang -quay thi
+  --            chi thu duoc cai bang, con -don thu ca day chuyen.
+  -- "-quay N"  cong thang N luot quay.
+  -- "-da N"    cong thang N da Huyen Thiet.
+  if CFG.DEV_COMMANDS then
+    local tDev = CreateTrigger()
+    for i = 1, #S.pids do
+      TriggerRegisterPlayerChatEvent(tDev, Player(S.pids[i]), "-don", false)
+      TriggerRegisterPlayerChatEvent(tDev, Player(S.pids[i]), "-quay", false)
+      TriggerRegisterPlayerChatEvent(tDev, Player(S.pids[i]), "-da", false)
+    end
+    TriggerAddAction(tDev, function()
+      local pid = GetPlayerId(GetTriggerPlayer())
+      local raw = GetEventPlayerChatString() or ""
+      local n   = tonumber(raw:match("(%d+)"))
+
+      if raw:match("^%s*%-don") ~= nil then
+        -- Gom ra danh sach TRUOC khi giet: onMobDeath xoa khoi S.mobs
+        -- ngay giua chung, ma sua mot bang dang duyet bang pairs() la
+        -- hanh vi khong xac dinh trong Lua.
+        local ds = {}
+        for u, _ in pairs(S.mobs) do ds[#ds + 1] = u end
+        local d = 0
+        for i2 = 1, #ds do
+          if API.alive(ds[i2]) then KillUnit(ds[i2]); d = d + 1 end
+        end
+        API.msg(pid, CFG.C_GREY .. "[dev] da giet " .. d .. " con." .. CFG.C_END)
+        return
+      end
+
+      if raw:match("^%s*%-quay") ~= nil then
+        n = n or 10
+        if API.quayThemLuot ~= nil then API.quayThemLuot(pid, n) end
+        API.msg(pid, CFG.C_GREY .. "[dev] +" .. n .. " luot quay." .. CFG.C_END)
+        API.panelRefresh(pid)
+        return
+      end
+
+      if raw:match("^%s*%-da") ~= nil then
+        n = n or 100
+        local d = S.p[pid]
+        if d ~= nil then d.da = (d.da or 0) + n end
+        API.msg(pid, CFG.C_GREY .. "[dev] +" .. n .. " da." .. CFG.C_END)
+        API.panelRefresh(pid)
+        return
+      end
+    end)
+  end
+
   -- "-vung" in ban do phan vung 25 block va ping minimap theo mau.
   --
   -- Luon dang ky, khong theo DEV_COMMANDS: chua he nao gan vao block,

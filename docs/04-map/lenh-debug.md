@@ -76,6 +76,9 @@ Cần `CFG.DEV_COMMANDS = true`.
 | `-spawn` | Tạo thẳng một `H001` bằng `CreateUnit`, cạnh hero | để so với unit đặt sẵn |
 | `-nat` | Bản Warcraft này có native nào | |
 | `-nat <chữ>` | Liệt kê **mọi** hằng số toàn cục có tên chứa `<chữ>` — `UNIT_RF_*`, `ABILITY_ILF_*`… Màn hình cắt ở `NAT_FIELD_MAX`, **file vết ghi đủ**, chia 6 tên mỗi dòng vì `Preload()` tự cắt chuỗi dài | |
+| `-don` | **Giết sạch quái đang sống.** Đi qua đúng đường thật: sự kiện chết → `rewardAll` → tiền + lượt quay → wave sau ra. Thử cả dây chuyền, không chỉ cái bảng | dev |
+| `-quay <n>` | Cộng thẳng `n` lượt quay *(mặc định 10)* | dev |
+| `-da <n>` | Cộng thẳng `n` Đá Huyền Thiết *(mặc định 100)* | dev |
 | `-nat stat` | **Đo** một điểm chỉ số đổi ra bao nhiêu máu / mana / giáp. Tức thì, cộng 100 điểm rồi chia 100 để sai số làm tròn không nuốt kết quả. Trả chỉ số về qua `heroRecompute` | |
 | `-nat spell` | Tra hằng số theo **ability gốc** của từng kỹ năng — dùng để tắt hiệu ứng gốc của ability bản sao | |
 | `-reg` / `-reg mana` | **Đo** hồi máu / hồi mana thật. Thêm số để đổi giây (`-reg mana 3`). Tự báo đỏ nếu bể đầy giữa chừng — xem [hoi-mau-hoi-mana.md](../03-du-lieu/hoi-mau-hoi-mana.md) | dev |

@@ -241,6 +241,40 @@ mở khoá ảnh hưởng thật đến đợt đầu — xem bảng kỹ năng,
 > Bảy ô command card **đã đo** và vừa khít bảy kỹ năng — sơ đồ ở
 > [thiet-ke-hero.md](../02-he-thong/thiet-ke-hero.md). Đo lại bằng `-nat card`.
 
+## Luyện Thể: vì sao bỏ phần trăm
+
+**Phần trăm của chỉ số không dùng được**, vì chỉ số đổi **×2,421** suốt ván.
+
+Bản cũ `+12%` đo được: bậc Tu Vi 1 cộng **+2**, bậc 20 cộng **+5,810** *(79% một
+lần đột phá)*. Không phải yếu — mà **lệch thời điểm**: vô hình đúng lúc phải bỏ
+Gỗ ra mua, rồi mạnh lên miễn phí khi đã không cần.
+
+Gốc rễ: nâng skill từ bậc 1 lên 10 chỉ đưa `12% → 24%`, tức **×2**, trong khi chỉ
+số nền đổi ×2,421. Nên sức mạnh của skill do **Tu Vi** quyết định chứ không phải
+do **bậc skill** — người chơi bỏ 10 Gỗ ra mà gần như không thấy gì.
+
+```
+bonus = chiso × SKILL_PASSIVE_STEP^(bậc skill−1) × LINHCAN_STAT_STEP^(bậc Tu Vi−1)
+      = 4 × 1.0801^(lv−1) × 1.30^(rank−1)
+```
+
+| Bậc Tu Vi | skill bậc 1 | skill bậc 10 | so với một lần đột phá |
+|---|---|---|---|
+| 1 | +4 | +8 | 16% |
+| 5 | +11 | +23 | 16% |
+| 10 | +42 | +85 | 16% |
+| 20 | +585 | +1,170 | 16% |
+
+Hai trục đều có nghĩa: **bậc skill** đổi ×2 *(trả Gỗ thì thấy được)*, **bậc Tu
+Vi** giữ nó không bị bỏ lại. Tỉ lệ so với một lần đột phá **đứng yên 16%**.
+
+Dùng **chính** `LINHCAN_STAT_STEP` như hệ quay, nên đổi đường cong Tu Vi thì cả
+ba hệ tự co theo.
+
+> **Đá Sắt và Chém Lan không dính lỗi này.** Chúng là phần trăm của *sát thương*
+> — đại lượng tự tỉ lệ theo chỉ số — nên chúng giữ nguyên `pct`. Chỉ Luyện Thể
+> sai vì nó là phần trăm của **chỉ số**, mà chỉ số mới là thứ phình ×2,421.
+
 ## Số gốc cho 7 kỹ năng của Hart
 
 Sát thương và hồi máu tính theo **hệ số × (17 + chỉ số cao nhất của hero)**.
@@ -251,7 +285,7 @@ Bị động tính theo **phần trăm**. Cả hai đều tự bám theo Tu Vi.
 | Chưởng | chủ động | ×1,32 · hồi 8,0s | ×1,76 · hồi 5,3s |
 | Hộ Thể | chủ động | ×2,20 · hồi 10,0s | ×2,93 · hồi 6,7s |
 | Hiệu Lệnh | aura | 15% giáp | 30% giáp |
-| Luyện Thể | bị động | 12% chỉ số | 24% chỉ số |
+| Luyện Thể | bị động | +4 chỉ số *(phẳng, ×bậc Tu Vi)* | +8 |
 | Chém Lan | bị động | 20% văng | 40% văng |
 | Da Sắt | bị động | 5% giảm | 10% giảm |
 | Bất Hoại | chủ động | hồi 60s | hồi 40s |

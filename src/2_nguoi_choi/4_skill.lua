@@ -104,6 +104,14 @@ local function giapAt(sk, level)
   return (sk.giap or 0) * CFG.SKILL_PASSIVE_STEP ^ (level - 1)
 end
 
+-- Chi so PHANG cua bi dong "stat" (Luyen The). Bam theo CA hai truc:
+-- bac ky nang va bac Tu Vi. Xem chu thich o CFG.SKILLS A004.
+local function chiSoAt(sk, level, rank)
+  if sk == nil or sk.chiso == nil then return 0.0 end
+  return sk.chiso * CFG.SKILL_PASSIVE_STEP ^ (level - 1)
+                  * CFG.LINHCAN_STAT_STEP ^ ((rank or 1) - 1)
+end
+
 local function manaAt(sk, level)
   if sk.mana == nil or sk.mana <= 0 then return 0 end
   return math.floor(sk.mana * CFG.SKILL_MANA_STEP ^ (level - 1) + 0.5)
@@ -273,7 +281,10 @@ end
 
 -- ---------- The "Ky Nang" trong bang phim E ----------
 
-local function fmt(sk, level)
+local function fmt(sk, level, rank)
+  if sk.chiso ~= nil then
+    return "+" .. API.num(math.floor(chiSoAt(sk, level, rank) + 0.5))
+  end
   if sk.giap ~= nil then
     return "+" .. string.format("%.0f", giapAt(sk, level))
   end
@@ -295,7 +306,7 @@ end
 
 -- Mot dong mo ta: hieu luc, roi hoi chieu / mana neu co.
 local function subOf(pid, sk, lv)
-  local s = fmt(sk, lv)
+  local s = fmt(sk, lv, API.linhCanRank and API.linhCanRank(pid) or 1)
   if sk.heSo ~= nil and sk.heSo > 0 then
     -- Ghi ro dang an theo chi so nao. Cong thuc lay chi so CAO NHAT, ma
     -- nguoi choi khong co cach nao biet do la cai nao neu khong noi.
@@ -430,6 +441,7 @@ API.skillDamage  = skillDamage
 API.skillHeSo    = heSoAt
 API.skillCd      = cdAt
 API.skillPct     = pctAt
+API.skillChiSo   = chiSoAt
 API.skillGiap    = giapAt
 API.skillMana    = manaAt
 API.skillTopStat = topStat

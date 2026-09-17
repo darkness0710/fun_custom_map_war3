@@ -837,7 +837,8 @@ CFG.SKILL_TAT_GOC_INT = {
 CFG.SKILL_START_COUNT = 0
 
 -- Go cam san luc vao map. Du dung MOT ky nang.
-CFG.GO_START = 1
+-- 2 go: du mo MOT ky nang sat thuong VA Luyen The ngay giay dau.
+CFG.GO_START = 2
 
 -- ---------- Bay ky nang cua tung hero ----------
 --
@@ -899,7 +900,25 @@ CFG.SKILLS[id('H001')] = {
   { id = id('A003'), goc = "AHad", ten = "Hieu Lenh", en = "Rallying Order", loai = "aura",    giap = 3.0, fx = "aura",
     mota = "Ca doi duoc %s giap.",
     mota_en = "The whole party gains %s armor." },
-  { id = id('A004'), goc = "Aamk", ten = "Luyen The", en = "Body Forging",   loai = "bidong",  pct = 0.12, fx = "stat",
+  -- 'chiso' chu khong phai 'pct': cong PHANG, khong phai phan tram.
+  --
+  -- Ban cu la "+12% ca ba chi so". Do duoc: bac Tu Vi 1 no cong +2, bac
+  -- 20 cong +5,810. Khong phai yeu, ma LECH THOI DIEM -- vo hinh dung
+  -- luc phai bo Go ra mua, roi manh len mien phi khi da khong can.
+  --
+  -- Nguyen nhan: 12% la phan tram cua mot dai luong doi x2,421 suot van.
+  -- Nang skill tu bac 1 len 10 chi dua 12% -> 24%, tuc x2 -- nen suc
+  -- manh cua skill do TU VI quyet dinh, khong phai do bac skill. Nguoi
+  -- choi bo 10 Go ra ma gan nhu khong thay gi.
+  --
+  -- Gio: chiso x SKILL_PASSIVE_STEP^(bac skill-1) x LINHCAN_STAT_STEP^(bac Tu Vi-1)
+  -- Hai truc deu co nghia: bac skill doi x2 (tra Go thi thay duoc), bac
+  -- Tu Vi giu no khong bi bo lai. Ti le so voi mot lan dot pha dung yen
+  -- o 16% moi bac.
+  --
+  -- Dung CHINH LINHCAN_STAT_STEP nhu he quay, nen doi duong cong Tu Vi
+  -- thi ca ba he tu co theo.
+  { id = id('A004'), goc = "Aamk", ten = "Luyen The", en = "Body Forging",   loai = "bidong",  chiso = 4.0, fx = "stat",
     mota = "+%s ca ba chi so.",
     mota_en = "+%s to all three attributes." },
   { id = id('A006'), goc = "Aamk", ten = "Da Sat", en = "Ironhide",          loai = "bidong",  pct = 0.05, fx = "reduce",
