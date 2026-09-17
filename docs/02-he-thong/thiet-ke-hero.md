@@ -188,7 +188,7 @@ cộng buff**, nên lúc buff hết trừ ra không khớp:
 | Nâng Hiệu Lệnh bậc 2 | 29.05 | 38.24 |
 | Bất Hoại hết | **9.05** ✗ *(đúng ra 5.81)* | **8.24** ✓ |
 
-Và nó **cộng dồn mỗi lần lặp** — chơi 220 đợt thì hero thành bất tử vì một lỗi số
+Và nó **cộng dồn mỗi lần lặp** — chơi 100 đợt thì hero thành bất tử vì một lỗi số
 học.
 
 ### Hai thay đổi đi kèm
@@ -216,7 +216,7 @@ Khi thiết kế lại, ba điều đã học được từ Hart đáng mang the
 |---|---|
 | **Vỏ sinh được bằng script** | `w3skill.py` tự lo tên, ô, tooltip 10 bậc từ `CFG.SKILLS`. Việc còn lại chỉ là nhân bản ability trong Object Editor |
 | **Cái gì không scale thì đừng bắt nó scale** | Làm chậm, choáng, thời lượng buff — để nguyên số gốc của Warcraft thì không cần mã trường chưa ai đo |
-| **Hồi máu nên tính theo % máu đã mất** | Máu hero tăng ×279 qua 220 stage; hồi một số cố định là vô nghĩa ở cảnh giới 15 |
+| **Hồi máu nên tính theo % máu đã mất** | Máu hero tăng ×279 qua 100 stage; hồi một số cố định là vô nghĩa ở cảnh giới 15 |
 
 ---
 

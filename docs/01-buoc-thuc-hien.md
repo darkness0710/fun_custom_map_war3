@@ -75,7 +75,7 @@ giây nào**. Ba chỗ dễ sai nhất, theo thứ tự:
    số đó, mà chưa ai đo.
 3. **`MOB_EHP_BASE`** — nút chỉnh độ khó tổng thể.
 
-Cách đo: dùng `-wave N` nhảy tới stage 1, 55, 110, 165, 220, bấm giờ xem hạ một
+Cách đo: dùng `-wave N` nhảy tới stage 1, 25, 50, 75, 100, bấm giờ xem hạ một
 đợt mất bao lâu, rồi so với `WAVE_TIME`. Lệch là **công thức sai — đừng chỉnh số
 để che**.
 
@@ -142,8 +142,8 @@ bản. Chủ dự án dừng để nghĩ.
 
 ## ⬜ Bước 8 — Tu chính
 
-10 tầng của một cảnh giới hiện **giống hệt nhau** — chỉ số chỉ nhích ×1.174 suốt
-10 tầng. Bảng tu chính ở
+4 tầng của một cảnh giới hiện **giống hệt nhau** — chỉ số chỉ nhích ×1.054 suốt
+4 tầng. Bảng tu chính ở
 [02-he-thong/dot-quai.md](02-he-thong/dot-quai.md#tu-chính) còn là phác thảo,
 chưa có số và chưa có khoá `CFG` nào.
 

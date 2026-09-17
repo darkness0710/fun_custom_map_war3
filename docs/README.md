@@ -58,7 +58,7 @@ src/
      7_hieuung.lua     hiệu ứng kỹ năng thật: sát thương, bị động, aura
   3_tran_dau/
      1_house.lua       nhà chính, chết là thua
-     2_wave.lua        220 stage, sinh quái, tiền thưởng
+     2_wave.lua        100 stage, sinh quái, tiền thưởng
   4_giao_dien/
      1_panel.lua       bảng phím R, bốn thẻ
      2_heroframe.lua   thẻ chọn hero
@@ -95,12 +95,12 @@ docs/
      ngon-ngu.md         Hai thứ tiếng, build --lang en|vi, tên quái
      kinh-te.md          Hai đồng tiền, ngân sách ×967, bảng giá bốn hệ
      bang-nhan-vat.md    Bảng phím R: Kỹ Năng / Trang Bị / Linh Căn / Pháp Khí
-     dot-quai.md         220 đợt quái: cấu trúc, thành phần, nhịp, tu chính
+     dot-quai.md         100 đợt quái: cấu trúc, thành phần, nhịp, tu chính
      boss.md             20 boss cuối cảnh giới
      phan-vung.md        25 block: vai trò từng ô, và vì sao
   03-du-lieu/
      bang-can-bang.md    Khoá CFG -> ý nghĩa -> ràng buộc
-     canh-gioi.md        Bảng 20 cảnh giới, chỉ số hoá stage 1..220
+     canh-gioi.md        Bảng 20 cảnh giới, chỉ số hoá stage 1..100
      duong-cong-suc-manh.md  Công thức chỉ số địch + hợp đồng người chơi
      curve.py            Sinh lại bảng tra trong file trên
      nang-cap-ky-nang.md Đường cong giá và sức mạnh 10 bậc kỹ năng

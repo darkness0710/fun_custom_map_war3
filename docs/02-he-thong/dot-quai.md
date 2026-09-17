@@ -14,16 +14,16 @@
 
 ## Nó là gì
 
-220 stage. Phe địch tu từ Phàm Nhân lên Sáng Thế Thần, mỗi cảnh giới 10 tầng rồi
+100 stage. Phe địch tu từ Phàm Nhân lên Sáng Thế Thần, mỗi cảnh giới 4 tầng rồi
 một lần độ kiếp. Người chơi chặn ở từng tầng, và chặn hẳn ở mỗi lần độ kiếp.
 
 ## Luật
 
-**L1. Một biến `stage` duy nhất, 1…220.**
+**L1. Một biến `stage` duy nhất, 1…100.**
 Cảnh giới và tầng đều **suy ra** từ nó. Giữ hai biến song song là chúng sẽ lệch
 nhau. Công thức ở [canh-gioi.md](../03-du-lieu/canh-gioi.md).
 
-**L2. Một cảnh giới là 11 stage: 10 tầng + 1 boss.**
+**L2. Một cảnh giới là 5 stage: 4 tầng + 1 boss.**
 Số 11 là `TIERS_PER_REALM + 1`, không hard-code ở đâu cả.
 
 **L3. Thành phần wave cố định: 50 lính + 1 tinh anh.**
@@ -41,13 +41,19 @@ trên map đã quá `WAVE_MAX_ALIVE` con thì **hoãn** wave mới thay vì ch�
 Đỉnh điểm dự kiến ~300 unit. Warcraft III chịu được, nhưng không có trần thì một
 lần vỡ trận sẽ kéo theo dây chuyền và không bao giờ gỡ lại được.
 
+**L2b. Tầng có TÊN, không đánh số.**
+`CFG.TIER_NAMES` — **Sơ Kì · Trung Kì · Hậu Kì · Viên Mãn**. "Trúc Cơ Sơ Kì" đọc
+ra nghĩa ngay; "Trúc Cơ Tầng 3" thì phải nhớ tầng 3 trên tổng bao nhiêu. Bảng
+thiếu phần tử thì `tierLabel()` lui về đánh số — đổi `TIERS_PER_REALM` mà quên
+thêm tên thì vẫn chạy, chỉ là tên xấu.
+
 **L6. Tầng đổi *tu chính*, không đổi chỉ số.**
-Trong một cảnh giới, chỉ số chỉ nhích ×1.174 suốt 10 tầng — gần như không cảm
-thấy. Thứ làm tầng 7 khác tầng 2 là **tu chính**, xem phần dưới.
+Trong một cảnh giới, chỉ số chỉ nhích ×1.054 suốt 4 tầng — gần như không cảm
+thấy. Thứ làm Hậu Kì khác Sơ Kì là **tu chính**, xem phần dưới.
 
 ## Nhịp
 
-**Một cảnh giới = 10 tầng có đồng hồ, rồi hai lần dừng hẳn** —
+**Một cảnh giới = 4 tầng có đồng hồ, rồi hai lần dừng hẳn** —
 [ADR 0018](../05-quyet-dinh/0018-nghi-giua-hai-canh-gioi.md):
 
 ```
@@ -111,7 +117,7 @@ chơi điều khiển, gõ `-next` ngay là mất 0 giây.
 ## Tu chính
 
 Mỗi tầng trong cảnh giới gắn một **tu chính** — một sửa đổi nhỏ lên cả wave. Đây
-là thứ làm 10 tầng khác nhau, vì chỉ số thì gần như đứng yên (L6).
+là thứ làm 4 tầng khác nhau, vì chỉ số thì gần như đứng yên (L6).
 
 | Tầng | Tu chính | Ảnh hưởng lối chơi |
 |---|---|---|
@@ -188,12 +194,12 @@ Mỗi con mang tên **cảnh giới + tầng + loại**, đặt bằng `BlzSetUn
 Dòng báo đợt kể ra cả hai loại, bằng đúng cái tên đang nằm trên con quái:
 
 ```
-[12/220] Luyen Khi Tang 1
+[7/100] Luyen Khi Trung Ki
    50 x Luyen Khi Tang 1 - Tan Tu   +   1 x Luyen Khi Tang 1 - Tinh Anh
 ```
 
 Tầng nằm trong tên vì quái **dồn lại qua nhiều wave** — đo được: ở stage 6 vẫn
-còn 174 con sống. Không có tầng thì cả 11 stage của một cảnh giới trùng tên nhau,
+còn 174 con sống. Không có tầng thì cả 5 stage của một cảnh giới trùng tên nhau,
 nhìn vào không phân biệt được thế hệ nào với thế hệ nào, mà chúng trả giá thưởng
 khác nhau (`S.mobStage` trả theo stage lúc **sinh**). Bảng chuỗi đầy đủ:
 [ngon-ngu.md](ngon-ngu.md).
@@ -207,8 +213,8 @@ Ghoul, Abomination, Frost Wyrm — một mẫu cho mỗi cõi. Bản thiết k�
 Nhà chính **nhận sát thương bình thường, chết là thua**. Không đếm mạng, không
 lọt-trừ-mạng — [ADR 0011](../05-quyet-dinh/0011-nha-chinh-dem-mang.md) **đã bị lật**.
 
-Máu nhà không cố định được: sát thương địch tăng ×279 qua 220 stage, nên 1 000
-máu ở stage 220 chết trong dưới một giây. Thay vào đó máu tính lại **mỗi wave**:
+Máu nhà không cố định được: sát thương địch tăng ×279 qua 100 stage, nên 1 000
+máu ở stage 100 chết trong dưới một giây. Thay vào đó máu tính lại **mỗi wave**:
 
 ```
 máu tối đa = HOUSE_HP_HITS × sát thương một con lính ở stage đó
@@ -240,8 +246,8 @@ lọt bao nhiêu cũng không sao).
 - **Chưa chơi thử một giây nào.** Ba chỗ dễ sai nhất: DPS thật của hero ở
   stage 1, thời gian quái đi bộ tới nhà, và `MOB_EHP_BASE`.
 - **Tu chính chưa cài.** Bảng ở trên còn là phác thảo: chưa có số, chưa có khoá
-  `MODIFIERS` nào trong `CFG`. Hiện 10 tầng của một cảnh giới **chỉ khác nhau ở
-  chỉ số** — mà chỉ số chỉ nhích ×1.174 suốt 10 tầng, nên trên thực tế chúng
+  `MODIFIERS` nào trong `CFG`. Hiện 4 tầng của một cảnh giới **chỉ khác nhau ở
+  chỉ số** — mà chỉ số chỉ nhích ×1.054 suốt 4 tầng, nên trên thực tế chúng
   giống hệt nhau. Theo chính L6 thì đây là khoảng trống lớn nhất còn lại của hệ
   này: tầng đáng ra phải đổi *cách chơi*, hiện chỉ đổi *cái tên*.
 - **6 mẫu lính chưa có** — `MOB_UNIT` mới là 4 unit gốc WC3 làm placeholder.

@@ -1,5 +1,10 @@
 # 0018 — Đồng hồ dừng hẳn ở hai mốc mỗi cảnh giới
 
+> **Số trong tài liệu này tính cho 220 stage** *(10 tầng + boss mỗi cảnh giới)*.
+> Từ 2026-09-17 còn **100 stage** *(4 tầng + boss)*, và thu nhập đã thành phẳng.
+> Lập luận giữ nguyên; con số thì tra [bang-can-bang.md](../03-du-lieu/bang-can-bang.md).
+
+
 > **Trạng thái:** Đã chốt
 > **Ngày:** 2026-09-16
 
@@ -30,7 +35,7 @@ WAVE_TIME[cõi]  >  quãng đường/tốc độ  +  thời gian giết hết m�
 
 Cõi 3 cũng vi phạm (cần ≥38s, đang đặt 36).
 
-**Hai: 220 đợt là một dòng chảy phẳng, không có nhịp.** Không có mở, không có
+**Hai: 100 đợt là một dòng chảy phẳng, không có nhịp.** Không có mở, không có
 kết, không có chỗ thở. Và vì frame **không dừng game**, mở bảng phím R để mua sắm
 nghĩa là đứng chịu đòn — nên việc tiêu tiền không có chỗ của nó trong cả ván.
 
@@ -83,7 +88,7 @@ thời gian đánh. Muốn có chỗ thở thì phải gần hơn, hoặc tăng 
 
 | | |
 |---|---|
-| Cũ — 220 stage × `WAVE_TIME` | **118 phút** |
+| Cũ — 100 stage × `WAVE_TIME` | **118 phút** |
 | Mới — 200 đợt thường | 121 phút |
 | Mới — 20 boss (~40s, không đồng hồ) | 13 phút |
 | Mới — 40 cửa sổ nghỉ | 0 nếu gõ `-next` ngay |

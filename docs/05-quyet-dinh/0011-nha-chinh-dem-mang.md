@@ -1,5 +1,10 @@
 # 0011 — Nhà chính đếm mạng thay vì đếm máu
 
+> **Số trong tài liệu này tính cho 220 stage** *(10 tầng + boss mỗi cảnh giới)*.
+> Từ 2026-09-17 còn **100 stage** *(4 tầng + boss)*, và thu nhập đã thành phẳng.
+> Lập luận giữ nguyên; con số thì tra [bang-can-bang.md](../03-du-lieu/bang-can-bang.md).
+
+
 > **Trạng thái:** ĐÃ BỊ LẬT — 2026-09-15
 >
 > Đề xuất "nhà đếm mạng" **không được chọn**. Chủ dự án quyết: nhà nhận sát thương
@@ -7,7 +12,7 @@
 > một-mạng đã gỡ khỏi code.
 >
 > Phần phân tích bên dưới giữ lại vì nó nêu đúng một vấn đề thật: **sát thương địch
-> tăng ×279 qua 220 stage**, nên máu nhà cố định là vô nghĩa. Cách giải hiện tại:
+> tăng ×279 qua 100 stage**, nên máu nhà cố định là vô nghĩa. Cách giải hiện tại:
 > `CFG.HOUSE_HP_HITS` — máu nhà = số đòn chịu được × sát thương một con lính ở
 > stage đó, tính lại mỗi wave. Tỉ lệ sống sót giữ nguyên suốt ván, và chỉ còn **một**
 > con số chỉnh độ khoan dung.
@@ -25,7 +30,7 @@ Nhà chính hiện có `HOUSE_HP = 1000` và chết là thua (L4 trong
 [nha-chinh.md](../02-he-thong/nha-chinh.md)). Cấu hình đó ra đời khi map chưa có
 quái.
 
-Giờ có 220 wave, và sát thương lính tăng ×279 từ stage 1 tới stage 220 — từ 6 lên
+Giờ có 100 wave, và sát thương lính tăng ×279 từ stage 1 tới stage 100 — từ 6 lên
 1 645 mỗi đòn ([duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md)).
 Một cái nhà 1 000 máu:
 
@@ -102,10 +107,10 @@ engine — hoãn bằng `API.after(0.0, ...)`,
 [ADR 0005](0005-hoan-thao-tac-quay-hang.md).
 
 **`HOUSE_LIVES = 20` là con số chưa có căn cứ.** Nó nói "được phép lọt 20 lính
-trong cả 220 wave", tức khoảng 0.09 con mỗi wave. Có thể quá chặt. Phải chơi thử
+trong cả 100 wave", tức khoảng 0.09 con mỗi wave. Có thể quá chặt. Phải chơi thử
 mới biết, và đây là số nên chỉnh sớm.
 
-**Cân nhắc cho hồi mạng.** 220 wave mà chỉ có 20 mạng, không hồi, thì một đoạn
+**Cân nhắc cho hồi mạng.** 100 wave mà chỉ có 20 mạng, không hồi, thì một đoạn
 xui ở cảnh giới 5 sẽ giết ván game ở cảnh giới 18 — người chơi mang theo một lỗi
 đã phạm từ hai tiếng trước. Hạ boss hồi 1 mạng là đủ để sửa chuyện đó, và nó cho
 boss một phần thưởng mà [boss.md](../02-he-thong/boss.md) đang thiếu.

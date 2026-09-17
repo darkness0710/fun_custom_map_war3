@@ -6,10 +6,10 @@
 ## Map này là gì
 
 Ba người chơi giữ một **Nhà Chính**. Phe địch tu tiên qua **20 cảnh giới**, mỗi
-cảnh giới 10 tầng rồi một lần độ kiếp — tổng **220 đợt**. Nhà chết là thua; hạ
-được boss đợt 220 là thắng.
+cảnh giới 4 tầng rồi một lần độ kiếp — tổng **100 đợt**. Nhà chết là thua; hạ
+được boss đợt 100 là thắng.
 
-Hero **không lên cấp**. Toàn bộ sức mạnh người chơi tăng lên trong 220 đợt phải
+Hero **không lên cấp**. Toàn bộ sức mạnh người chơi tăng lên trong 100 đợt phải
 đến từ bốn hệ nâng cấp mua bằng hai đồng tiền. Đó là ràng buộc trung tâm của cả
 thiết kế, và là chỗ mọi con số quy về —
 [duong-cong-suc-manh.md](03-du-lieu/duong-cong-suc-manh.md).
@@ -25,7 +25,7 @@ thiết kế, và là chỗ mọi con số quy về —
 | Nhà chính, chết là thua | [1_house.lua](../src/3_tran_dau/1_house.lua) | Máu tính lại mỗi đợt theo `HOUSE_HP_HITS` |
 | Chọn hero lúc vào map | [2_heropick.lua](../src/2_nguoi_choi/2_heropick.lua) | 3 hero, mỗi người 1, không ai trùng |
 | Khoá kinh nghiệm & điểm kỹ năng | [1_player.lua](../src/2_nguoi_choi/1_player.lua) | Quét lại toàn map mỗi `HERO_XP_SWEEP` giây |
-| **220 đợt quái** | [2_wave.lua](../src/3_tran_dau/2_wave.lua) | Đường cong chỉ số, tinh anh, boss, tiền thưởng |
+| **100 đợt quái** | [2_wave.lua](../src/3_tran_dau/2_wave.lua) | Đường cong chỉ số, tinh anh, boss, tiền thưởng |
 | **Linh Căn** — tu vi người chơi | [3_linhcan.lua](../src/2_nguoi_choi/3_linhcan.lua) | 20 bậc, ×19.7 — mua bằng **Linh Khí** |
 | **Bảy kỹ năng, 10 bậc** | [4_skill.lua](../src/2_nguoi_choi/4_skill.lua) · [7_hieuung.lua](../src/2_nguoi_choi/7_hieuung.lua) | ×2.4 — mua bằng **Ngộ Tính**. Sát thương **đã ăn theo chỉ số thật** |
 | **Sáu ô trang bị** | [5_trangbi.lua](../src/2_nguoi_choi/5_trangbi.lua) | ×8.3 — mua bằng **Linh Khí** |
@@ -45,7 +45,7 @@ thiết kế, và là chỗ mọi con số quy về —
 | Ngăn cách | Sông rộng 8 ô (chia hết 212) | `CFG.RIVER_TILES` |
 | Map size | 224 × 224 ô | [04-map/kich-thuoc.md](04-map/kich-thuoc.md) |
 | Địa hình sông | Vẽ tay trong World Editor | [ADR 0004](05-quyet-dinh/0004-song-ve-tay.md) |
-| Tổng đợt | 20 cảnh giới × (10 tầng + 1 boss) = 220 | `CFG.REALMS` `CFG.TIERS_PER_REALM` |
+| Tổng đợt | 20 cảnh giới × (4 tầng + 1 boss) = 100 | `CFG.REALMS` `CFG.TIERS_PER_REALM` |
 | Thành phần một đợt | 50 lính + 1 tinh anh, **cố định** | [ADR 0009](05-quyet-dinh/0009-so-luong-linh-co-dinh.md) |
 | Thua | Nhà chính chết. Không đếm mạng | [ADR 0011](05-quyet-dinh/0011-nha-chinh-dem-mang.md) — đã bị lật |
 | Thưởng | Chia đều cho mọi người, không theo ai kết liễu | [ADR 0013](05-quyet-dinh/0013-thuong-chia-deu-cho-moi-nguoi.md) |
@@ -65,7 +65,7 @@ code**: lối chơi vẫn hoãn có chủ ý,
 
 ## Ngân sách sức mạnh đã đủ — trên giấy
 
-Đường cong địch đòi người chơi mạnh lên **×967** qua 220 đợt. Bốn hệ đã cài đủ:
+Đường cong địch đòi người chơi mạnh lên **×967** qua 100 đợt. Bốn hệ đã cài đủ:
 
 | Nguồn | Nhân | Mua bằng | Trạng thái |
 |---|---|---|---|
@@ -102,8 +102,8 @@ khỏi đây.
 2. **Qua sông bằng gì?** Cầu, cổng, hay phải phá. Chưa có gì.
 3. **Ba người chơi quan hệ thế nào?** Hiện là đồng minh. Muốn tranh chấp block
    thì phải đổi.
-4. **Tu chính** ([dot-quai.md](02-he-thong/dot-quai.md)) chưa cài, nên 10 tầng
-   của một cảnh giới hiện giống hệt nhau — chỉ số chỉ nhích ×1.174 suốt 10 tầng.
+4. **Tu chính** ([dot-quai.md](02-he-thong/dot-quai.md)) chưa cài, nên 4 tầng
+   của một cảnh giới hiện giống hệt nhau — chỉ số chỉ nhích ×1.054 suốt 4 tầng.
    Tầng đáng ra phải đổi *cách chơi*; hiện nó chỉ đổi *cái tên*.
 
 ## Bước kế tiếp

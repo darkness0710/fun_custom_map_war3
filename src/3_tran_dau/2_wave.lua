@@ -34,21 +34,30 @@ local function realmName(realm)
   return API.pick(CFG.REALMS[realm])
 end
 
--- Tang cua mot stage, thanh chu: "Tang 4", "Vien Man", hoac "BOSS".
+-- Tang cua mot stage, thanh chu: "So Ki", "Vien Man", hoac "BOSS".
 --
--- Chu o day di qua API.t chu khong go thang: truoc day stageLabel noi
--- " tang " bang tieng Viet ngay ca khi CFG.LANG = "en", nen ban tieng
--- Anh hien ra "Mortal tang 4".
+-- Bon tang co TEN rieng (CFG.TIER_NAMES) chu khong danh so: "Truc Co So
+-- Ki" doc ra nghia ngay, con "Truc Co Tang 3" thi phai nho tang 3 tren
+-- tong bao nhieu.
+--
+-- Lui ve danh so neu bang ten thieu phan tu -- doi TIERS_PER_REALM ma
+-- quen them ten thi van chay, chi la ten xau, chu khong no loi.
+--
+-- Chu o day di qua API.t/API.pick chu khong go thang: truoc day
+-- stageLabel noi " tang " bang tieng Viet ngay ca khi CFG.LANG = "en",
+-- nen ban tieng Anh hien ra "Mortal tang 4".
 local function tierLabel(stage)
   local _, tier, isBoss = decode(stage)
   if isBoss then return API.t("stage_boss") end
+  local ten = CFG.TIER_NAMES and CFG.TIER_NAMES[tier] or nil
+  if ten ~= nil then return API.pick(ten) end
   if tier >= CFG.TIERS_PER_REALM then return API.t("tier_full") end
   return API.t("tier_word") .. " " .. tier
 end
 
 -- Ten quai = canh gioi + TANG + hau to theo loai.
 --
--- Co TANG trong ten vi khong co no thi ca 11 stage cua mot canh gioi ra
+-- Co TANG trong ten vi khong co no thi ca 5 stage cua mot canh gioi ra
 -- cung mot cai ten. Ma quai don lai qua nhieu wave (do duoc: stage 6
 -- con 174 con song), nen tren map luc nao cung co vai the he cung luc
 -- -- nhin vao mot con khong biet no thuoc dot nao, cung khong biet no
@@ -56,8 +65,8 @@ end
 --
 -- Boss khong can tang: no la lan do kiep DUY NHAT cua canh gioi do.
 --
--- 20 canh gioi x 11 stage x 2 loai + 20 boss = 460 ten, sinh ra tu
--- 20 ten canh gioi + 5 chuoi -- khong phai 460 unit type.
+-- 20 canh gioi x 4 tang x 2 loai + 20 boss = 180 ten, sinh ra tu 20 ten
+-- canh gioi + 4 ten tang + 3 hau to -- khong phai 180 unit type.
 --
 -- BlzSetUnitName doi ten TUNG con luc chay, nen doi tieng khong phai
 -- dung toi Object Editor. Thieu native thi quai giu ten goc cua mau

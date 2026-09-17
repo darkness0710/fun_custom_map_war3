@@ -1,5 +1,25 @@
 # Đường cong sức mạnh
 
+> ## Hết hiệu lực một phần — 2026-09-17
+>
+> Tài liệu này dựng trên **220 stage** và **thu nhập luỹ thừa ×967**. Cả hai đã
+> đổi:
+>
+> | | Cũ | Nay |
+> |---|---|---|
+> | Tổng stage | 220 *(10 tầng + boss)* | **100** *(4 tầng + boss)* |
+> | Thu nhập | `60 × 1.0319^(stage−1)`, cộng dồn 1,880,187 | **phẳng** — 1 Linh Khí/con, cả ván 4,000 |
+> | EHP quái cả ván | `1.018^219 × 1.22^19` = **×2 176** | `1.018^99 × 1.22^19` = **×256** |
+>
+> Sức mạnh hero cả ván vẫn ×26 *(Linh Căn ×19.7 × kỹ năng ×1.33)*. Nên chênh lệch
+> quái/hero tụt từ **×83** xuống **×10** — vẫn lệch, nhưng không còn là bất khả.
+> Đây là lý do **chưa động vào `MOB_EHP_GROWTH`**: giữ nguyên hệ số thì chính
+> việc rút stage đã kéo đường cong lại gần. Chỗ này phải đo khi chơi thử.
+>
+> Phần **hình dạng** đường cong bên dưới vẫn đúng; phần **con số tuyệt đối** thì
+> không. Ngân sách đang chạy nằm ở [kinh-te.md](../02-he-thong/kinh-te.md).
+
+
 > **Trạng thái:** Nháp — công thức đã chốt, **con số chờ chơi thử**
 > **Cập nhật:** 2026-09-15
 > **Khoá CFG:** `MOB_EHP_*` `MOB_DMG_*` `MOB_ARMOR_*` `SCALE_*` `BOSS_*`
@@ -21,7 +41,7 @@ buộc bất thường làm chuyện đó khó hơn bình thường:
 > **Hero không lên cấp.** `CFG.LOCK_HERO_XP = true` —
 > [khoa-hero.md](../02-he-thong/khoa-hero.md).
 
-Nghĩa là toàn bộ sức mạnh người chơi tăng lên trong 220 stage phải đến từ **thứ
+Nghĩa là toàn bộ sức mạnh người chơi tăng lên trong 100 stage phải đến từ **thứ
 chưa tồn tại**: trang bị, tu vi, nâng cấp. Nên trang này làm hai việc:
 
 1. Định nghĩa đường cong **địch** — phần chốt được ngay.
@@ -43,7 +63,7 @@ Giáp (r)    = MOB_ARMOR_BASE + MOB_ARMOR_PER_REALM    × (r-1)
 
 Giá trị đang đề xuất:
 
-| | Base | Growth (mỗi stage) | Realm step (mỗi cảnh giới) | Tổng sau 220 stage |
+| | Base | Growth (mỗi stage) | Realm step (mỗi cảnh giới) | Tổng sau 100 stage |
 |---|---|---|---|---|
 | EHP | 20 | 1.018 | 1.22 | **×2 176** |
 | Dmg | 6 | 1.016 | 1.12 | **×279** |
@@ -118,7 +138,7 @@ ba một hero — họ mạnh hơn thế: AoE chồng lên nhau, buff dùng chun
 mục tiêu, và một người đỡ đòn cho hai người kia đánh. Nhân đủ ×3 là phạt người
 chơi vì rủ được bạn.
 
-| P | Nhân EHP | Tổng DPS đội cần (stage 220) | Mỗi hero |
+| P | Nhân EHP | Tổng DPS đội cần (stage 100) | Mỗi hero |
 |---|---|---|---|
 | 1 | ×1.0 | 58 019 | 58 019 |
 | 2 | ×1.6 | 92 830 | 46 415 |
@@ -187,7 +207,7 @@ người.
 | 17 | Thánh Nhân | 177–187 | 11 127 | 13 066 | 6 666 | 16 | 693 | 130 655 | 1 064 055 | 2 113 | 17 421 |
 | 18 | Đạo Tổ | 188–198 | 16 519 | 19 396 | 9 602 | 17 | 925 | 193 960 | 1 579 608 | 2 819 | 25 861 |
 | 19 | Hỗn Độn Thần | 199–209 | 24 523 | 28 794 | 13 843 | 18 | 1 233 | 287 937 | 2 344 956 | 3 759 | 38 392 |
-| 20 | Sáng Thế Thần | 210–220 | 36 404 | 42 745 | 19 974 | 19 | 1 645 | 427 447 | 3 481 129 | 5 013 | 56 993 |
+| 20 | Sáng Thế Thần | 210–100 | 36 404 | 42 745 | 19 974 | 19 | 1 645 | 427 447 | 3 481 129 | 5 013 | 56 993 |
 
 Cột **DPS đội cần** = `60 × EHP viên mãn / WAVE_TIME`. Đây là con số phải nhìn:
 nó là hợp đồng, không phải kết quả.
@@ -228,7 +248,7 @@ cõi mới.
 Bốn cách xử lý, không loại trừ nhau:
 
 **1. Gọi sớm (`WAVE_AUTO_NEXT` + lệnh `-next`, đã cài).** Dọn sạch là vào đợt sau
-ngay, không chờ hết đồng hồ. Giữ nguyên 220 stage và thưởng cho người chơi giỏi.
+ngay, không chờ hết đồng hồ. Giữ nguyên 100 stage và thưởng cho người chơi giỏi.
 Nên làm dù chọn thêm cách nào.
 
 > Cơ chế này **từng nằm đó mà không dùng được**: `WAVE_TIME` cõi 1 là 20s trong
@@ -241,7 +261,7 @@ cảnh giới và 20 boss, mất một nửa số tầng. Nếu buộc phải c�
 tầng trong một cảnh giới chỉ chênh nhau 17 % chỉ số, 5 tầng không mất gì nhiều.
 
 **3. Cho lưu tiến độ.** Sinh mã chơi tiếp (`-save` / `-load`). Chấp nhận 2 giờ,
-chia làm hai buổi. Nhiều việc, nhưng là cách duy nhất giữ trọn 220 stage.
+chia làm hai buổi. Nhiều việc, nhưng là cách duy nhất giữ trọn 100 stage.
 
 **4. Chế độ ngắn.** Lệnh lúc bắt đầu ván, chọn chơi 20 cảnh giới × 5 tầng hay
 × 10 tầng. Một cờ trong `CFG`, và hai chế độ dùng chung một đường cong nếu công
@@ -255,7 +275,7 @@ thức tính theo *tỉ lệ hoàn thành* thay vì theo stage tuyệt đối.
 
 Từ bảng tra, để wave luôn hạ kịp giờ:
 
-| | Stage 1 | Stage 220 | Phải tăng |
+| | Stage 1 | Stage 100 | Phải tăng |
 |---|---|---|---|
 | DPS mỗi hero | ~60 | ~58 000 | **×967** |
 | EHP mỗi hero | ~600 | ~167 000 | **×279** |

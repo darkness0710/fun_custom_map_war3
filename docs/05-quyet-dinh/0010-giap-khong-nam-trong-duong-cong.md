@@ -1,11 +1,16 @@
 # 0010 — Đường cong sinh ra EHP, giáp chỉ là cách chia lại
 
+> **Số trong tài liệu này tính cho 220 stage** *(10 tầng + boss mỗi cảnh giới)*.
+> Từ 2026-09-17 còn **100 stage** *(4 tầng + boss)*, và thu nhập đã thành phẳng.
+> Lập luận giữ nguyên; con số thì tra [bang-can-bang.md](../03-du-lieu/bang-can-bang.md).
+
+
 > **Trạng thái:** Đã chốt
 > **Ngày:** 2026-09-15
 
 ## Bối cảnh
 
-Quái cần ba chỉ số tăng theo 220 stage: máu, giáp, sát thương. Cách làm hiển
+Quái cần ba chỉ số tăng theo 100 stage: máu, giáp, sát thương. Cách làm hiển
 nhiên là cho mỗi chỉ số một đường cong riêng — máu nhân mỗi wave, giáp cộng mỗi
 cảnh giới.
 

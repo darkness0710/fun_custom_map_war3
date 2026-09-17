@@ -66,7 +66,7 @@ Cần `CFG.DEV_COMMANDS = true`.
 
 | Lệnh | Làm gì | Ví dụ |
 |---|---|---|
-| `-wave <số>` | Nhảy thẳng tới stage 1–220 | `-wave 110` → boss Độ Kiếp |
+| `-wave <số>` | Nhảy thẳng tới stage 1–100 | `-wave 110` → boss Độ Kiếp |
 | `-lk <số>` | Thêm **Linh Khí** *(biến riêng, hiện ở bảng)* | `-lk 5000` |
 | `-vang <số>` | Thêm **Vàng** *(thanh tài nguyên)* | `-vang 5000` |
 | `-go <số>` | Thêm **Gỗ** *(thanh tài nguyên)* | `-go 100` |
@@ -86,7 +86,7 @@ hai tiếng. Mọi thứ về cân bằng đều kiểm bằng lệnh này.
 ### Ba bài kiểm hay dùng
 
 ```
--wave 1     rồi   -wave 110   rồi   -wave 220
+-wave 1     rồi   -wave 50    rồi   -wave 100
 ```
 Xem đường cong chỉ số có đúng không. Đối chiếu với bảng tra trong
 [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md).

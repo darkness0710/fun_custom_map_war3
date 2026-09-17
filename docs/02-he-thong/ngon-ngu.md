@@ -79,12 +79,12 @@ Luyen Khi Vien Man - Tan Tu     Qi Refining Perfection - Cultivator
 Luyen Khi - Ma Ton              Qi Refining - Lord
 ```
 
-20 cảnh giới × 11 stage × 2 loại + 20 boss = **460 tên, sinh ra từ 20 tên cảnh
+20 cảnh giới × 5 stage × 2 loại + 20 boss = **460 tên, sinh ra từ 20 tên cảnh
 giới + 5 chuỗi.**
 
 ### Vì sao tầng phải nằm trong tên
 
-Không có tầng thì cả 11 stage của một cảnh giới ra **cùng một cái tên**. Mà quái
+Không có tầng thì cả 5 stage của một cảnh giới ra **cùng một cái tên**. Mà quái
 dồn lại qua nhiều wave — đo được: ở stage 6 vẫn còn 174 con sống — nên trên map
 lúc nào cũng có vài thế hệ cùng lúc. Nhìn một con không biết nó thuộc đợt nào,
 cũng không biết nó đang trả giá thưởng của stage nào
@@ -98,7 +98,7 @@ Một wave có hai loại quái, nên dòng báo phải kể ra cả hai — b�
 đang nằm trên con quái**, để đối chiếu được cái nhìn thấy với cái vừa đọc:
 
 ```
-[12/220] Luyen Khi Tang 1
+[7/100] Luyen Khi Trung Ki
    50 x Luyen Khi Tang 1 - Tan Tu   +   1 x Luyen Khi Tang 1 - Tinh Anh
 ```
 

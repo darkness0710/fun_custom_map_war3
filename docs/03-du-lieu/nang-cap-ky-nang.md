@@ -15,7 +15,7 @@
 > gì tới chuyện trả bằng đồng tiền nào.
 
 10 bậc mỗi skill, 7 skill mỗi hero. Bậc 1 được phát sẵn khi chọn skill, nên mỗi
-skill có **9 lần nâng** — cả hero là 63 lần, trải 220 stage.
+skill có **9 lần nâng** — cả hero là 63 lần, trải 100 stage.
 
 ## Ngân sách: ×2, và ×2 đó là TÍCH của mọi nút chỉnh
 
@@ -85,7 +85,7 @@ Hệ quả là một câu so sánh người chơi đọc được:
 | 5→6: 9 770 | bậc 10→11: 9 794 | 1,00 |
 | 9→10: 153 219 | bậc 18→19: 154 758 | 0,99 |
 
-Tỉ lệ nằm trong 0,99–1,01 **suốt 220 stage**. Lựa chọn luôn là: *một cảnh giới
+Tỉ lệ nằm trong 0,99–1,01 **suốt 100 stage**. Lựa chọn luôn là: *một cảnh giới
 tu vi, hay một vòng nâng cho cả bảy kỹ năng.* Không phải hai đường cong rời rạc.
 
 ## Nhịp

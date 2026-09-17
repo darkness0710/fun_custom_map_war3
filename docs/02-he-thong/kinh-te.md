@@ -34,7 +34,7 @@
 > con số chỉ tăng chứ không bao giờ dùng được thì tệ hơn là không có.
 >
 > Giá suy ngược từ thu nhập phẳng:
-> - **Linh Căn** `220 × 1.08^(bậc−1)`, 19 lần = `9,118`. Số cũ `439 × 1.412` cho
+> - **Linh Căn** `87 × 1.08^(bậc−1)`, 19 lần = `3,607`. Số cũ `439 × 1.412` cho
 >   tổng `747,839` — tính cho thu nhập mũ, với thu nhập phẳng thì bậc cuối
 >   `218,519` là không bao giờ với tới.
 > - **Kỹ Năng** `3` Gỗ mỗi lần *(mở khoá và đôn bậc như nhau)*, trọn bảy =
@@ -162,7 +162,7 @@ năng: 1 điểm; nâng một bậc: 1 điểm.
 Giá phẳng nên người chơi **không phải tính toán gì cả** — chỉ phải chọn **thứ
 tự**: mở cái nào trước, dồn bậc cái nào.
 
-> **Bảy kỹ năng max xong vào khoảng stage 51 / 220** — mỗi cảnh giới kiếm 15 điểm,
+> **Bảy kỹ năng max xong vào khoảng stage 44 / 100** — mỗi cảnh giới kiếm 15 điểm,
 > 70 điểm là gần 5 cảnh giới. Tức Kỹ Năng thôi là hệ tiến triển từ **23% ván đầu**.
 > Đó chính là lý do 230 điểm còn lại phải có chỗ tiêu.
 
@@ -221,7 +221,7 @@ LINHKHI_GROWTH = 967^(1/219) ≈ 1.0319
 | 55 | 326 |
 | 110 | 1 836 |
 | 165 | 10 323 |
-| 220 | 58 019 |
+| 100 | 58 019 |
 
 **Tổng cả ván: ~1 875 000 Linh Khí.** Đây là ngân sách. Mọi giá trong map chia
 nhau con số này.
@@ -247,7 +247,7 @@ Cả ba đồng tiền đều giữ khoảng dư này: Ngộ Tính tiêu 94%, Ti
 ## Bảng giá
 
 Hai hệ tiêu Linh Khí dùng một nguyên tắc: **giá bám theo thu nhập**. Giá tăng cùng nhịp với
-Linh Khí rơi ra, nên "một lần nâng cấp đáng mấy wave" là **hằng số suốt 220 stage**.
+Linh Khí rơi ra, nên "một lần nâng cấp đáng mấy wave" là **hằng số suốt 100 stage**.
 
 Đây là tính chất quan trọng nhất của bảng giá. Không có nó thì hoặc đầu game nghèo
 kiết xác, hoặc cuối game tiền thừa mứa không biết tiêu.
@@ -267,7 +267,7 @@ gia(bac r) = 439 × 1.412^(r-1)
 | 19 → 20 | 219 374 | 7,1 |
 
 Hằng số 7,1 không phải trùng hợp — `1.412 = 1.0319^11`, tức giá tăng đúng bằng
-thu nhập của 11 stage (một cảnh giới). Đột phá mỗi cảnh giới một lần, và lúc nào
+thu nhập của 5 stage (một cảnh giới). Đột phá mỗi cảnh giới một lần, và lúc nào
 cũng phải để dành ~7 wave.
 
 ### Trang Bị — 6 ô × 9 lần nâng
@@ -286,7 +286,7 @@ gia(lan thu k) = TRANGBI_COST_BASE × TRANGBI_COST_STEP^(k-1)
 
 Mỗi cấp +4% sát thương. Sáu ô đầy cấp 10 = `(1.04⁹)⁶ ≈ ×8.3`.
 
-`1.134 = 1.0319^4.07` — 54 lần nâng trải đều 220 stage thì mỗi lần cách nhau
+`1.134 = 1.0319^4.07` — 54 lần nâng trải đều 100 stage thì mỗi lần cách nhau
 4,07 stage, nên "một lần nâng đồ đáng mấy wave" là hằng số suốt ván. Cùng nguyên
 tắc với 7,1 wave của Linh Căn.
 

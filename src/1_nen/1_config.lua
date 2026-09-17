@@ -467,8 +467,24 @@ CFG.REALMS = {
 }
 
 -- Doi so nay la doi tong so stage. Moi cong thuc suy ra tu no, khong
--- hard-code so 11 o dau ca.
-CFG.TIERS_PER_REALM = 10
+-- hard-code so 5 o dau ca.
+--
+-- 10 -> 4 (2026-09-17). Mot canh gioi gio la 4 wave + 1 boss = 5 stage,
+-- ca van 20 x 5 = 100 stage thay vi 220.
+--
+-- Bon tang co TEN rieng chu khong danh so, xem CFG.TIER_NAMES: "Truc Co
+-- So Ki" doc ra nghia ngay, con "Truc Co Tang 3" thi phai nho tang 3
+-- tren tong bao nhieu.
+CFG.TIERS_PER_REALM = 4
+
+-- Ten bon tang trong mot canh gioi. So phan tu PHAI bang
+-- TIERS_PER_REALM -- wave.lua lui ve danh so neu thieu.
+CFG.TIER_NAMES = {
+  { ten = "So Ki",    en = "Early" },
+  { ten = "Trung Ki", en = "Middle" },
+  { ten = "Hau Ki",   en = "Late" },
+  { ten = "Vien Man", en = "Perfection" },
+}
 
 -- CFG.TIER_VIEN_MAN da chuyen sang 6_lang.lua, khoa "tier_full". Ten
 -- tang cuoi la CHU HIEN THI chu khong phai tham so, ma chu hien thi
@@ -636,18 +652,18 @@ CFG.HOUSE_REGEN_PER_WAVE = 0.20
 -- so do khong doi theo stage:
 --
 --   quai thuong  1 Linh Khi + 1 Vang
---   tinh anh     1 Go
+--   tinh anh     2 Go
 --   boss         5 Go
 --
--- Ca van (200 stage thuong x 50 con, 200 tinh anh, 20 boss):
---   Linh Khi 10,000  |  Vang 10,000  |  Go 300
+-- Ca van (80 stage thuong x 50 con, 80 tinh anh, 20 boss):
+--   Linh Khi 4,000  |  Vang 4,000  |  Go 260
 --
 -- Doi lai: gia cua moi he cung phai phang theo, khong con duong cong mu
 -- nao bam theo thu nhap duoc nua. Do la ly do LINHCAN_COST_STEP tut tu
 -- 1.412 xuong 1.08.
 CFG.THUONG_MOB_LINHKHI = 1
 CFG.THUONG_MOB_VANG    = 1
-CFG.THUONG_ELITE_GO    = 1
+CFG.THUONG_ELITE_GO    = 2
 CFG.THUONG_BOSS_GO     = 5
 
 -- Khong co cong tac "chia theo nguoi ket lieu". Da do: cach do lam ba
@@ -672,7 +688,7 @@ CFG.THUONG_BOSS_GO     = 5
 -- gi ca, chi phai chon THU TU -- mo cai nao truoc, don bac cai nao.
 --
 -- Tong chi de mo va max tron bay ky nang:
---   7 x (1 mo khoa + 9 lan nang) = 70 go, tren 300 go ca van.
+--   7 x (1 mo khoa + 9 lan nang) = 70 go, tren 260 go ca van.
 -- Ky nang tra bang GO. Go chi roi tu tinh anh (1) va boss (5), ca van
 -- duoc 300 -- nen no bi chan boi "da giet du tinh anh chua", khong phai
 -- "da gom du tien chua".
@@ -973,16 +989,15 @@ CFG.LINHCAN_STEP = 1.17
 -- Gia dot pha bac r = BASE x STEP^(r-1).
 -- 1.412 = 1.0319^11 = thu nhap tron mot canh gioi, nen gia luon dang
 -- dung 7,1 wave o MOI bac. Xem kinh-te.md.
--- Tinh nguoc tu thu nhap: 10,000 Linh Khi ca van, 50 moi wave thuong.
--- 19 lan dot pha, ngan sach 91% = 9,118:
---   bac 1->2   220        bac 10->11   440
---   bac 5->6   299        bac 19->20   879
--- Du tien cho bac cuoi vao khoang wave 182 tren 200 -- Linh Khi con
--- dang gia toi gan cuoi van.
+-- Tinh nguoc tu thu nhap: 4,000 Linh Khi ca van, 50 moi wave thuong,
+-- 80 wave thuong. 19 lan dot pha, ngan sach 90% = 3,607:
+--   bac 1->2    87        bac 10->11   174
+--   bac 5->6   118        bac 19->20   348
+-- Du tien cho bac cuoi vao khoang wave 72 tren 80.
 --
--- So cu (439 / 1.412) tinh cho thu nhap mu ca van 1,880,187; voi thu
--- nhap phang thi bac 19->20 gia 218,519 la khong bao gio voi toi.
-CFG.LINHCAN_COST_BASE = 220.0
+-- 220 -> 87 vi so wave tut tu 200 xuong 80 (TIERS_PER_REALM 10 -> 4).
+-- Giu 220 thi tron bo tieu 9,118 tren 4,000 kiem duoc -- hon gap doi.
+CFG.LINHCAN_COST_BASE = 87.0
 CFG.LINHCAN_COST_STEP = 1.08
 
 -- Hai so de GIAI NGUOC ra chi so can dat.

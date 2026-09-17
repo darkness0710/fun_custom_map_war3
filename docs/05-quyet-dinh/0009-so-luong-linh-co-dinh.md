@@ -1,5 +1,10 @@
 # 0009 — Số lượng lính cố định, chỉ nhân chỉ số theo số người chơi
 
+> **Số trong tài liệu này tính cho 220 stage** *(10 tầng + boss mỗi cảnh giới)*.
+> Từ 2026-09-17 còn **100 stage** *(4 tầng + boss)*, và thu nhập đã thành phẳng.
+> Lập luận giữ nguyên; con số thì tra [bang-can-bang.md](../03-du-lieu/bang-can-bang.md).
+
+
 > **Trạng thái:** Đã chốt
 > **Ngày:** 2026-09-15
 
@@ -9,7 +14,7 @@ Map chơi 1–3 người. Wave phải nặng hơn khi đông người, nhẹ hơ
 mình — nếu không thì solo là bất khả thi, hoặc ba người là dạo chơi.
 
 Thiết kế wave đặt `WAVE_MOB_COUNT = 50` lính và 1 tinh anh mỗi đợt, chạy suốt
-220 stage ([dot-quai.md](../02-he-thong/dot-quai.md)). Câu hỏi: 50 đó là tổng,
+100 stage ([dot-quai.md](../02-he-thong/dot-quai.md)). Câu hỏi: 50 đó là tổng,
 hay 50 mỗi người?
 
 ## Quyết định

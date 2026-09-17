@@ -117,7 +117,7 @@ Chi tiết: [02-he-thong/dot-quai.md](../02-he-thong/dot-quai.md) ·
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
 | `REALMS` | Bảng 20 cảnh giới `{ ten, en, coi }` | Đúng 20 dòng, đúng thứ tự. `ten` (vi) **không dấu** — font WC3 thiếu glyph tiếng Việt. `coi` 1–4 quyết định mẫu lính và `WAVE_TIME` |
-| `TIERS_PER_REALM` | Tầng mỗi cảnh giới | `10`. Tổng stage = `20 × (TIERS_PER_REALM + 1)` = 220. Không hard-code số 11 ở đâu cả |
+| `TIERS_PER_REALM` | Tầng mỗi cảnh giới | `4`, mỗi tầng một tên trong `TIER_NAMES` *(Sơ Kì → Viên Mãn)*. Tổng stage = `20 × (TIERS_PER_REALM + 1)` = 100. Không hard-code số 5 ở đâu cả |
 | `WAVE_MOB_COUNT` `WAVE_ELITE_COUNT` | Lính / tinh anh mỗi wave | **Không** nhân theo số người chơi — [ADR 0009](../05-quyet-dinh/0009-so-luong-linh-co-dinh.md) |
 | `WAVE_TIME` | Giây mỗi wave, tra theo **cõi** | **Ràng buộc cứng: `> quãng đường/tốc độ + thời gian dọn một đợt`.** Thiếu là map không bao giờ sạch và cả `WAVE_AUTO_NEXT` lẫn `-next` chết. Bị chặn dưới bởi **tốc độ mẫu lính**, nên cõi dễ có thể cần nhiều giây hơn cõi khó |
 | `WAVE_REST` | Dừng hẳn đồng hồ sau tầng 10 và sau boss | `true`. Hai cửa sổ nghỉ mỗi cảnh giới — chỗ duy nhất mua sắm mà không phải đứng chịu đòn. [ADR 0018](../05-quyet-dinh/0018-nghi-giua-hai-canh-gioi.md) |
@@ -132,7 +132,7 @@ Chi tiết: [02-he-thong/dot-quai.md](../02-he-thong/dot-quai.md) ·
 | `BOSS_EHP` `BOSS_DMG` `BOSS_SCALE` | Boss | Xem [boss.md](../02-he-thong/boss.md) |
 | `TINHTHACH_BOSS_BASE` `TINHTHACH_BOSS_STEP` | Tinh Thạch rơi ra ở cảnh giới `r` | `BASE + STEP × (r−1)`. Nguồn Tinh Thạch duy nhất của cả ván |
 | `MOB_ARCHETYPES` | 6 mẫu lính | **(chưa có)** `Σ(tỉ lệ)` = 1.0 và `Σ(tỉ lệ × EHP mult)` ∈ [0.95, 1.05] |
-| `MODIFIERS` `TIER_MODIFIERS` | Tu chính, và tầng nào bật mấy cái | **(chưa có)** Cố định theo stage, **không random**. Thiếu nó thì 10 tầng của một cảnh giới giống hệt nhau |
+| `MODIFIERS` `TIER_MODIFIERS` | Tu chính, và tầng nào bật mấy cái | **(chưa có)** Cố định theo stage, **không random**. Thiếu nó thì 4 tầng của một cảnh giới giống hệt nhau |
 | `WAVE_BOSS_TIME_MULT` | Stage boss dài gấp mấy lần | **(chưa có)** Boss cần ~1.33 × `WAVE_TIME` |
 | `WAVE_SPAWN_BATCH` `WAVE_SPAWN_TICK` | Sinh rải thế nào | **(chưa có)** Hiện sinh cả 50 con trong một lượt |
 | `BOSS_CC_RESIST` `BOSS_PHASES` `BOSS_ENRAGE_*` `BOSS_ARMOR_BONUS` `BOSSES` | Thân boss | **(chưa có)** — [boss.md](../02-he-thong/boss.md) |
@@ -177,7 +177,7 @@ Chi tiết: [02-he-thong/kinh-te.md](../02-he-thong/kinh-te.md) ·
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
 | `LINHCAN_STEP` | Nhân sức mạnh mỗi bậc | `1.215`, **không** phải 1.17. Với 1.17 thì 19 bước chỉ cho ×19.7, nhân trang bị ×12 và kỹ năng ×2 là ×474 — bằng 49 % mức hợp đồng đòi |
-| `LINHCAN_COST_BASE` `LINHCAN_COST_STEP` | Giá đột phá bậc `r` = `BASE × STEP^(r−1)` | `STEP = 1.412 = LINHKHI_GROWTH^11` = thu nhập trọn một cảnh giới, nên giá **luôn** đáng 7,1 wave ở mọi bậc |
+| `LINHCAN_COST_BASE` `LINHCAN_COST_STEP` | Giá đột phá bậc `r` = `BASE × STEP^(r−1)` | `87 × 1.08`. Suy ngược từ thu nhập **phẳng**: 19 lần = 3,607 trên 4,000 kiếm được cả ván |
 | `LINHCAN_DMG_BASE` `LINHCAN_STAT_BASE` | Hai số để **giải ngược** ra chỉ số cần đạt | Nhân thẳng chỉ số lên mỗi bậc là **sai**: sát thương hero = nền + chỉ số, phần nền làm loãng nhân số. Đổi hai số này cho khớp hero thật trong Object Editor |
 | `LINHCAN_STAT_MODE` | `"all"` hay `"primary"` | `"all"` phục vụ nhiều hợp đồng cùng lúc (Str→máu, Int→mana) nhưng Agi cho **tốc đánh** — đó là DPS ngoài ngân sách ×967. Đổi sang `"primary"` nếu đo thấy hero mạnh vượt đường cong |
 
@@ -208,7 +208,7 @@ Chi tiết: [02-he-thong/kinh-te.md](../02-he-thong/kinh-te.md) ·
 | `TRANGBI` | Sáu ô `{ ten, en, icon }` | Tên chỉ là hương vị — **cả sáu có cùng tác dụng** |
 | `TRANGBI_PCT` | Mỗi cấp cộng bao nhiêu | `+4%` sát thương. Sáu ô đầy cấp = `(1.04⁹)⁶ = ×8.3`, đúng phần ×8 của ngân sách. **Chia ba ô sang máu/giáp thì tích bốn hệ tụt đi hơn một nửa** — phải suy lại cả ngân sách trước |
 | `TRANGBI_MAX_LEVEL` | `10` | Ô bắt đầu ở cấp **1**, nâng 9 lần |
-| `TRANGBI_COST_BASE` `TRANGBI_COST_STEP` | Giá theo **tổng số lần đã nâng của cả sáu ô** | `STEP = 1.134 = LINHKHI_GROWTH^4.07`. 54 lần nâng trải đều 220 stage → mỗi lần cách 4,07 stage, nên "một lần nâng đáng mấy wave" là hằng số. `BASE = 147` vì Kỹ Năng đã rời khỏi ví Linh Khí |
+| `TRANGBI_COST_BASE` `TRANGBI_COST_STEP` | Giá theo **tổng số lần đã nâng của cả sáu ô** | `STEP = 1.134 = LINHKHI_GROWTH^4.07`. 54 lần nâng trải đều 100 stage → mỗi lần cách 4,07 stage, nên "một lần nâng đáng mấy wave" là hằng số. `BASE = 147` vì Kỹ Năng đã rời khỏi ví Linh Khí |
 
 Cộng vào **sát thương nền**, không cộng chỉ số — Linh Căn đã cộng chỉ số rồi, và
 ngân sách ×967 đòi đo được riêng phần của từng hệ.
@@ -266,9 +266,8 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | `TRACE` `TRACE_FILE` | `true` | Ghi vết khởi động ra file. Game sập thì mọi dòng chat đều mất — đây là cách duy nhất biết nó chết ở bước nào |
 | `REVEAL_MAP` | `true` | Mở toàn bộ sương mù — **luật của map**, không phải công tắc dev |
 | `THUONG_MOB_LINHKHI` `THUONG_MOB_VANG` | `1` `1` | Lính thường rơi ra. **Phẳng**, không theo stage |
-| `THUONG_ELITE_GO` `THUONG_BOSS_GO` | `1` `5` | Nguồn Gỗ duy nhất |
-| `LINHCAN_COST_BASE` `_STEP` | `220` `1.08` | 19 lần = 9,118 = 91% của 10,000 Linh Khí |
-| `SKILL_GO_UNLOCK` `SKILL_GO_UP` | `3` `3` | 70 giao dịch × 3 = 210 = 70% của 300 Gỗ |
+| `THUONG_ELITE_GO` `THUONG_BOSS_GO` | `2` `5` | Nguồn Gỗ duy nhất. Cả ván `80×2 + 20×5 = 260` |
+| `SKILL_GO_UNLOCK` `SKILL_GO_UP` | `1` `1` | 70 giao dịch = 70 Gỗ trên 260 kiếm được |
 | `GO_START` | `3` | Đủ mở **một** kỹ năng ngay giây đầu |
 | `TRANGBI_LOCKED` `PHAPKHI_LOCKED` | `true` | Tạm khoá. Mở lại phải chọn lại đồng tiền — Linh Khí đã bị Linh Căn ăn 91% |
 | `MOB_EHP_BASE` | `120` | Đo từ "Chưởng phát đầu mất 1/3 máu ở wave 1": `1.32 × (17+13) × 3 = 119` |
@@ -288,8 +287,8 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 
 ## Chưa có khoá nào cho
 
-**Tu chính (`MODIFIERS`).** Thiếu nó thì 10 tầng của một cảnh giới giống hệt
-nhau, vì chỉ số chỉ nhích ×1.174 suốt 10 tầng.
+**Tu chính (`MODIFIERS`).** Thiếu nó thì 4 tầng của một cảnh giới giống hệt
+nhau, vì chỉ số chỉ nhích ×1.054 suốt 4 tầng.
 
 **Object data** (unit, ability, doodad). Hệ đợt quái cần 24 unit type lính +
 20 boss; hiện `MOB_UNIT` là 4 unit gốc WC3. Khi thêm, tạo

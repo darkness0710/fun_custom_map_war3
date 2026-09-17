@@ -7,7 +7,7 @@
 
 > **Đã cài tới đâu.** Stage `11 × r` sinh đúng một con, chỉ số theo `BOSS_EHP` /
 > `BOSS_DMG`, to hơn và đỏ hơn, tên `"<cảnh giới> - Ma Ton"`, hạ xong rơi Tinh
-> Thạch và cả đội cùng nhận. Hạ boss stage 220 là thắng.
+> Thạch và cả đội cùng nhận. Hạ boss stage 100 là thắng.
 >
 > **Chưa có gì của L4–L6**: kháng khống chế, đổi giai đoạn, phát điên. Cũng chưa
 > có 20 unit type riêng — boss hiện dùng chung mẫu lính của cõi đó, phóng to
@@ -21,7 +21,7 @@
 Hai mươi nút thắt. Phe địch tu tới **viên mãn** một cảnh giới rồi mới độ kiếp
 sang cảnh giới sau — và người chơi phải chặn bằng được ở đúng khoảnh khắc đó.
 
-Boss là chỗ duy nhất trong cả 220 stage mà nhịp game đổi hẳn: không còn 50 con
+Boss là chỗ duy nhất trong cả 100 stage mà nhịp game đổi hẳn: không còn 50 con
 chạy vào, chỉ còn một thân. Mọi kỹ năng AoE trở nên vô dụng, mọi kỹ năng đơn mục
 tiêu bỗng đáng giá. Đó là mục đích — nó ép người chơi xây một bộ kỹ năng không
 chỉ biết dọn đám đông.
@@ -75,7 +75,7 @@ Không trừ mạng — không có cơ chế mạng nào cả
 nhà bằng sát thương thường, mà `BOSS_DMG` = 3 lần lính thì nhà cạn máu trong
 khoảng `HOUSE_HP_HITS / 3` đòn. Trên thực tế là hết.
 
-**L8. Hạ boss stage 220 là thắng.**
+**L8. Hạ boss stage 100 là thắng.**
 Điều kiện thắng duy nhất của map.
 
 ## Hai mươi con boss
@@ -160,7 +160,7 @@ chân dung riêng) thì phải làm lại y hệt những xử lý đó.
 - Thanh máu boss.
 - Chuyện gì xảy ra nếu cả đội chết lúc đang đánh boss. Hiện chưa có hồi sinh
   hero.
-- Màn kết sau khi hạ boss stage 220. Hiện chỉ có một dòng `win_final` rồi
+- Màn kết sau khi hạ boss stage 100. Hiện chỉ có một dòng `win_final` rồi
   `CustomVictoryBJ`.
 
 Phần thưởng thì **đã có**: `TINHTHACH_BOSS_BASE + STEP × (r−1)`, chia đều cho cả
