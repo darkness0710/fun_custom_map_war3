@@ -108,7 +108,7 @@ def parse_skills(src, hero):
             m = re.search(r'\b%s\s*=\s*"((?:[^"\\]|\\.)*)"' % k, body)
             if m:
                 d[k] = m.group(1)
-        for k in ("heSo", "pct", "giap", "cd", "mana"):
+        for k in ("heSo", "pct", "giap", "chiso", "cd", "mana"):
             m = re.search(r"\b%s\s*=\s*([0-9.]+)" % k, body)
             if m:
                 d[k] = float(m.group(1))
@@ -142,12 +142,19 @@ class Curve(object):
         return int(m * self.mana ** (lv - 1) + 0.5) if m else 0
 
     def fmt(self, sk, lv):
-        """Giong ham fmt() trong 4_skill.lua -- mot nguon, mot cach hien."""
-        if sk.get("giap") is not None:
+        if sk.get("chiso"):
+            return "+%d" % round(self.chiso(sk, lv))
+        if sk.get("giap"):
             return "+%.0f" % self.giapAt(sk, lv)
         if sk.get("loai") in ("aura", "bidong"):
             return "%.0f%%" % (self.pct(sk, lv) * 100)
         return "x%.2f" % self.heSo(sk, lv)
+
+    def chiso(self, sk, lv):
+        # Chi phan theo BAC KY NANG. Phan nhan theo bac Tu Vi khong dua
+        # vao duoc: tooltip la chuoi TINH, sinh mot lan luc dong goi, con
+        # bac Tu Vi thi doi luc chay. Bang phim ESC hien so THAT.
+        return sk["chiso"] * self.passive ** (lv - 1)
 
 
 def ten_of(sk, lang):

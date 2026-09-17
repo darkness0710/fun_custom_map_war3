@@ -718,6 +718,9 @@ local function bindEsc()
   TriggerAddAction(t, function()
     local pid = GetPlayerId(GetTriggerPlayer())
     if khoa[pid] then return end
+    -- Khung Co Duyen dang mo thi ESC khong dong no, va cung khong mo
+    -- bang nhan vat de len tren. Phai chon mot the moi di tiep.
+    if API.quayFrameDangMo ~= nil and API.quayFrameDangMo(pid) then return end
     khoa[pid] = true
     API.after(CFG.PANEL_ESC_KHOA or 0.25, function() khoa[pid] = nil end)
 

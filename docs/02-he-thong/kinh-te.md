@@ -84,7 +84,7 @@ Trang này trả lời câu hỏi mà
 mạnh người chơi đến từ đâu, và mua bằng gì.**
 
 
-## Thẻ VI — Quay thưởng
+## Cơ Duyên — khung ba cột
 
 Nguồn thứ hai của **Vàng** và nguồn duy nhất của **Đá Huyền Thiết**. Chi tiết ở
 [quay-thuong.md](quay-thuong.md).

@@ -1,8 +1,25 @@
-# Quay thưởng — thẻ VI
+# Cơ Duyên — khung ba cột
 
 > **Khoá CFG:** `QUAY_ELITE` `QUAY_BOSS` `QUAY_GIA_TRI` `QUAY_DAI_MIN/MAX`
-> `QUAY_DA` `QUAY_VANG_MOI_DIEM` `QUAY_CHISO`
-> **Mã:** [10_quay.lua](../../src/2_nguoi_choi/10_quay.lua)
+> `QUAY_DA` `QUAY_VANG_MOI_DIEM` `QUAY_CHISO` `QUAY_X/Y`
+> **Mã:** [10_quay.lua](../../src/2_nguoi_choi/10_quay.lua) *(số liệu)* ·
+> [5_quayframe.lua](../../src/4_giao_dien/5_quayframe.lua) *(giao diện)*
+
+**Không phải một thẻ trong bảng.** Khung riêng, **ba cột dọc**, mở **ngay** khi
+tinh anh hoặc boss chết — kiểu chọn lõi của TFT. Cả cột là một nút: bấm đâu trong
+cột cũng được.
+
+**ESC không đóng khung này.** Phải chọn một thẻ mới đi tiếp. `bindEsc()` trong
+[1_panel.lua](../../src/4_giao_dien/1_panel.lua) hỏi `API.quayFrameDangMo(pid)`
+trước khi làm gì — khung đang mở thì ESC vừa không đóng nó, vừa không mở bảng
+nhân vật đè lên.
+
+Khung `0.46 × 0.261`, tâm `(0.40, 0.36)` → trải từ `y=0.229` đến `0.490`, thoát
+cả thanh giao diện đáy (~0.12) lẫn mép trên.
+
+> Khung **không sinh ngẫu nhiên**. Thẻ đã được rút ở `10_quay.lua`, từ sự kiện
+> quái chết, trên **mọi** máy; ở đây chỉ vẽ lại thứ đã có. Xem mục cuối tài liệu
+> này về lý do.
 
 Hạ **tinh anh** được 1 lượt, **boss** được 3 lượt. Mỗi lượt mở **ba thẻ**, chọn
 **một**.

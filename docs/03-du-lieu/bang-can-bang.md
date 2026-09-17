@@ -283,7 +283,8 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | `QUAY_GIA_TRI` | `2.2` | Giá trị một thẻ ở bậc 1. Nhân theo **chính** `LINHCAN_STAT_STEP` nên quay tự bám Tu Vi |
 | `QUAY_DA` | `10` | Thẻ 1, **phẳng** — giá nâng Trang Bị sẽ cố định theo lượng đá. Cả ván 1,400 đá |
 | `QUAY_VANG_MOI_DIEM` | `12` | Thẻ 3. Cảnh giới 1: 7 lượt cho 185 vàng, quái cho 200 — ngang nhau |
-| `PANEL_W` | `0.74` | Sáu thẻ. Thẻ thứ **bảy** phải rút ngắn nhãn, không nới khung được nữa |
+| `PANEL_W` | `0.74` | Năm thẻ *(Cơ Duyên đã tách thành khung riêng)*. Thẻ thứ **bảy** sẽ phải rút ngắn nhãn — khung 0.74 giữa màn hình 0.8 chỉ còn tràn 0.03 |
+| `QUAY_X` `QUAY_Y` | `0.40` `0.36` | Tâm khung Cơ Duyên. Cao hơn tâm màn hình để không đè thanh giao diện đáy |
 | `HOUSE_FROZEN` | `true` | Chốt Nhà Chính tại chỗ. `HOUSE_UNIT` là `Hmkg` — unit hero **có chân** thuộc slot máy, nên AI mặc định của Warcraft cho nó đi lang thang |
 | `WAVE_ONLY_WHEN_CLEAR` | `true` | Đợt mới chỉ ra khi đợt cũ đã dọn sạch. Tắt thì đồng hồ `WAVE_TIME` lại chồng đợt lên nhau |
 

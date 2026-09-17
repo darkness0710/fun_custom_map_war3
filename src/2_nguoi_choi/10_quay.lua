@@ -52,8 +52,10 @@ local function themLuot(pid, n)
   local d = S.p[pid]
   if d == nil or n == nil or n <= 0 then return end
   d.luotQuay = (d.luotQuay or 0) + n
-  -- Chua co the nao thi rut ngay, de mo bang la thay lien.
+  -- Chua co the nao thi rut ngay.
   if d.quay == nil then rutThe(pid) end
+  -- Mo khung NGAY. Day la cho duy nhat khung tu bat len.
+  if API.quayFrameShow ~= nil then API.quayFrameShow(pid) end
 end
 
 -- ---------- Nhan the ----------
@@ -84,7 +86,13 @@ local function nhan(pid, i)
   API.msg(pid, API.t("quay_nhan", CFG.C_JADE .. API.quayMoTa(the) .. CFG.C_END))
 
   d.luotQuay = d.luotQuay - 1
-  if d.luotQuay > 0 then rutThe(pid) else d.quay = nil end
+  if d.luotQuay > 0 then
+    rutThe(pid)
+    if API.quayFrameRefresh ~= nil then API.quayFrameRefresh(pid) end
+  else
+    d.quay = nil
+    if API.quayFrameHide ~= nil then API.quayFrameHide(pid) end
+  end
   API.panelRefresh(pid)
 end
 
@@ -106,46 +114,36 @@ local ICON = {
   vang  = [[ReplaceableTextures\CommandButtons\BTNGoldmine.blp]],
 }
 
--- ---------- The trong bang ----------
+-- ---------- Giao dien ----------
+--
+-- KHONG con la mot the trong bang. Khung rieng, ba cot doc, mo NGAY khi
+-- tinh anh/boss chet -- xem 4_giao_dien/5_quayframe.lua.
 
-local function tabItems(pid)
+local function conLuot(pid)
   local d = S.p[pid]
-  if d == nil or d.quay == nil or (d.luotQuay or 0) <= 0 then return {} end
-
-  local out = {}
-  for i = 1, #d.quay do
-    local the = d.quay[i]
-    out[i] = {
-      icon      = ICON[the.loai],
-      ten       = moTa(the),
-      mota      = API.t("quay_con", API.num(d.luotQuay)),
-      nut       = API.t("quay_chon"),
-      batNut    = true,
-    }
-  end
-  return out
+  return d ~= nil and (d.luotQuay or 0) > 0 and d.quay ~= nil
 end
 
-local function tabItemAction(pid, i)
+local function theCua(pid)
   local d = S.p[pid]
-  if d == nil or d.quay == nil or d.quay[i] == nil then return end
-  API.syncSend(pid, CFG.OP_QUAY, i)
+  return (d ~= nil) and d.quay or nil
+end
+
+local function soLuot(pid)
+  local d = S.p[pid]
+  return (d ~= nil) and (d.luotQuay or 0) or 0
 end
 
 local function startQuay()
-  API.panelAddTab({
-    ten        = API.t("panel_quay"),
-    kind       = "list",
-    soMuc      = 3,
-    items      = tabItems,
-    itemAction = tabItemAction,
-    trong      = API.t("quay_het"),
-  })
   API.syncOn(CFG.OP_QUAY, nhan)
-  API.trace("quay: the san sang")
+  API.trace("quay: san sang")
 end
 
 API.quayThemLuot = themLuot
 API.quayMoTa     = moTa
 API.quayNhan     = nhan
+API.quayConLuot  = conLuot
+API.quayThe      = theCua
+API.quaySoLuot   = soLuot
+API.quayIcon     = function(loai) return ICON[loai] end
 API.startQuay    = startQuay

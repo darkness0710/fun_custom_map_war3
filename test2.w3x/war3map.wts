@@ -92,13 +92,13 @@ Gives a % reduce dame
 }
 
 STRING 1000
-// Abilities: A005 (Cleaving Blow), Name (Name)
+// [w3skill.py]
 {
 Cleaving Blow
 }
 
 STRING 1001
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Attacks splash 20% damage to nearby targets.
 
@@ -106,13 +106,13 @@ Level 1/10
 }
 
 STRING 1002
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Cleaving Blow
 }
 
 STRING 1003
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Attacks splash 22% damage to nearby targets.
 
@@ -120,13 +120,13 @@ Level 2/10
 }
 
 STRING 1004
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Cleaving Blow
 }
 
 STRING 1005
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Attacks splash 23% damage to nearby targets.
 
@@ -134,13 +134,13 @@ Level 3/10
 }
 
 STRING 1006
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Cleaving Blow
 }
 
 STRING 1007
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Attacks splash 25% damage to nearby targets.
 
@@ -148,13 +148,13 @@ Level 4/10
 }
 
 STRING 1008
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Cleaving Blow
 }
 
 STRING 1009
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Attacks splash 27% damage to nearby targets.
 
@@ -162,13 +162,13 @@ Level 5/10
 }
 
 STRING 1010
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Cleaving Blow
 }
 
 STRING 1011
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Attacks splash 29% damage to nearby targets.
 
@@ -176,13 +176,13 @@ Level 6/10
 }
 
 STRING 1012
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Cleaving Blow
 }
 
 STRING 1013
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Attacks splash 32% damage to nearby targets.
 
@@ -190,13 +190,13 @@ Level 7/10
 }
 
 STRING 1014
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Cleaving Blow
 }
 
 STRING 1015
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Attacks splash 34% damage to nearby targets.
 
@@ -204,13 +204,13 @@ Level 8/10
 }
 
 STRING 1016
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Cleaving Blow
 }
 
 STRING 1017
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Attacks splash 37% damage to nearby targets.
 
@@ -218,13 +218,13 @@ Level 9/10
 }
 
 STRING 1018
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Cleaving Blow
 }
 
 STRING 1019
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Attacks splash 40% damage to nearby targets.
 
@@ -232,185 +232,185 @@ Level 10/10
 }
 
 STRING 1020
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Cleaving Blow
 }
 
 STRING 1021
-// Abilities: A001 (Palm Strike), Name (Name)
+// [w3skill.py]
 {
 Palm Strike
 }
 
 STRING 1022
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Deals x1.32 damage in a line.
 
 Level 1/10
 Scales with your highest attribute.
-cd 8.0s   mana 25
+cd 8.0s   mana 50
 }
 
 STRING 1023
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Palm Strike [|cffffcc00Q|r]
 }
 
 STRING 1024
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Deals x1.36 damage in a line.
 
 Level 2/10
 Scales with your highest attribute.
-cd 7.6s   mana 26
+cd 7.6s   mana 53
 }
 
 STRING 1025
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Palm Strike [|cffffcc00Q|r]
 }
 
 STRING 1026
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Deals x1.41 damage in a line.
 
 Level 3/10
 Scales with your highest attribute.
-cd 7.3s   mana 28
+cd 7.3s   mana 55
 }
 
 STRING 1027
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Palm Strike [|cffffcc00Q|r]
 }
 
 STRING 1028
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Deals x1.45 damage in a line.
 
 Level 4/10
 Scales with your highest attribute.
-cd 7.0s   mana 29
+cd 7.0s   mana 58
 }
 
 STRING 1029
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Palm Strike [|cffffcc00Q|r]
 }
 
 STRING 1030
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Deals x1.50 damage in a line.
 
 Level 5/10
 Scales with your highest attribute.
-cd 6.7s   mana 30
+cd 6.7s   mana 61
 }
 
 STRING 1031
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Palm Strike [|cffffcc00Q|r]
 }
 
 STRING 1032
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Deals x1.55 damage in a line.
 
 Level 6/10
 Scales with your highest attribute.
-cd 6.4s   mana 32
+cd 6.4s   mana 64
 }
 
 STRING 1033
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Palm Strike [|cffffcc00Q|r]
 }
 
 STRING 1034
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Deals x1.60 damage in a line.
 
 Level 7/10
 Scales with your highest attribute.
-cd 6.1s   mana 34
+cd 6.1s   mana 67
 }
 
 STRING 1035
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Palm Strike [|cffffcc00Q|r]
 }
 
 STRING 1036
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Deals x1.65 damage in a line.
 
 Level 8/10
 Scales with your highest attribute.
-cd 5.8s   mana 35
+cd 5.8s   mana 70
 }
 
 STRING 1037
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Palm Strike [|cffffcc00Q|r]
 }
 
 STRING 1038
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Deals x1.70 damage in a line.
 
 Level 9/10
 Scales with your highest attribute.
-cd 5.6s   mana 37
+cd 5.6s   mana 74
 }
 
 STRING 1039
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Palm Strike [|cffffcc00Q|r]
 }
 
 STRING 1040
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Deals x1.76 damage in a line.
 
 Level 10/10
 Scales with your highest attribute.
-cd 5.3s   mana 39
+cd 5.3s   mana 78
 }
 
 STRING 1041
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Palm Strike [|cffffcc00Q|r]
 }
 
 STRING 1042
-// Abilities: A002 (Guarding Light), Name (Name)
+// [w3skill.py]
 {
 Guarding Light
 }
 
 STRING 1043
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Heals x2.20 to yourself or an ally.
 
@@ -420,13 +420,13 @@ cd 10.0s   mana 30
 }
 
 STRING 1044
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Guarding Light [|cffffcc00W|r]
 }
 
 STRING 1045
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Heals x2.27 to yourself or an ally.
 
@@ -436,13 +436,13 @@ cd 9.6s   mana 32
 }
 
 STRING 1046
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Guarding Light [|cffffcc00W|r]
 }
 
 STRING 1047
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Heals x2.34 to yourself or an ally.
 
@@ -452,13 +452,13 @@ cd 9.1s   mana 33
 }
 
 STRING 1048
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Guarding Light [|cffffcc00W|r]
 }
 
 STRING 1049
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Heals x2.42 to yourself or an ally.
 
@@ -468,13 +468,13 @@ cd 8.7s   mana 35
 }
 
 STRING 1050
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Guarding Light [|cffffcc00W|r]
 }
 
 STRING 1051
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Heals x2.50 to yourself or an ally.
 
@@ -484,13 +484,13 @@ cd 8.4s   mana 36
 }
 
 STRING 1052
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Guarding Light [|cffffcc00W|r]
 }
 
 STRING 1053
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Heals x2.58 to yourself or an ally.
 
@@ -500,13 +500,13 @@ cd 8.0s   mana 38
 }
 
 STRING 1054
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Guarding Light [|cffffcc00W|r]
 }
 
 STRING 1055
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Heals x2.66 to yourself or an ally.
 
@@ -516,13 +516,13 @@ cd 7.6s   mana 40
 }
 
 STRING 1056
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Guarding Light [|cffffcc00W|r]
 }
 
 STRING 1057
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Heals x2.75 to yourself or an ally.
 
@@ -532,13 +532,13 @@ cd 7.3s   mana 42
 }
 
 STRING 1058
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Guarding Light [|cffffcc00W|r]
 }
 
 STRING 1059
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Heals x2.83 to yourself or an ally.
 
@@ -548,13 +548,13 @@ cd 7.0s   mana 44
 }
 
 STRING 1060
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Guarding Light [|cffffcc00W|r]
 }
 
 STRING 1061
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Heals x2.93 to yourself or an ally.
 
@@ -564,19 +564,19 @@ cd 6.7s   mana 47
 }
 
 STRING 1062
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Guarding Light [|cffffcc00W|r]
 }
 
 STRING 1063
-// Abilities: A003 (Rallying Order), Name (Name)
+// [w3skill.py]
 {
 Rallying Order
 }
 
 STRING 1064
-// Abilities: A003 (Rallying Order), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 The whole party gains +3 armor.
 
@@ -584,13 +584,13 @@ Level 1/10
 }
 
 STRING 1065
-// Abilities: A003 (Rallying Order), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Rallying Order
 }
 
 STRING 1066
-// Abilities: A003 (Rallying Order), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 The whole party gains +3 armor.
 
@@ -598,13 +598,13 @@ Level 2/10
 }
 
 STRING 1067
-// Abilities: A003 (Rallying Order), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Rallying Order
 }
 
 STRING 1068
-// Abilities: A003 (Rallying Order), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 The whole party gains +3 armor.
 
@@ -612,13 +612,13 @@ Level 3/10
 }
 
 STRING 1069
-// Abilities: A003 (Rallying Order), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Rallying Order
 }
 
 STRING 1070
-// Abilities: A003 (Rallying Order), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 The whole party gains +4 armor.
 
@@ -626,13 +626,13 @@ Level 4/10
 }
 
 STRING 1071
-// Abilities: A003 (Rallying Order), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Rallying Order
 }
 
 STRING 1072
-// Abilities: A003 (Rallying Order), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 The whole party gains +4 armor.
 
@@ -640,13 +640,13 @@ Level 5/10
 }
 
 STRING 1073
-// Abilities: A003 (Rallying Order), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Rallying Order
 }
 
 STRING 1074
-// Abilities: A003 (Rallying Order), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 The whole party gains +4 armor.
 
@@ -654,13 +654,13 @@ Level 6/10
 }
 
 STRING 1075
-// Abilities: A003 (Rallying Order), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Rallying Order
 }
 
 STRING 1076
-// Abilities: A003 (Rallying Order), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 The whole party gains +5 armor.
 
@@ -668,13 +668,13 @@ Level 7/10
 }
 
 STRING 1077
-// Abilities: A003 (Rallying Order), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Rallying Order
 }
 
 STRING 1078
-// Abilities: A003 (Rallying Order), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 The whole party gains +5 armor.
 
@@ -682,13 +682,13 @@ Level 8/10
 }
 
 STRING 1079
-// Abilities: A003 (Rallying Order), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Rallying Order
 }
 
 STRING 1080
-// Abilities: A003 (Rallying Order), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 The whole party gains +6 armor.
 
@@ -696,13 +696,13 @@ Level 9/10
 }
 
 STRING 1081
-// Abilities: A003 (Rallying Order), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Rallying Order
 }
 
 STRING 1082
-// Abilities: A003 (Rallying Order), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 The whole party gains +6 armor.
 
@@ -710,165 +710,165 @@ Level 10/10
 }
 
 STRING 1083
-// Abilities: A003 (Rallying Order), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Rallying Order
 }
 
 STRING 1084
-// Abilities: A004 (Body Forging), Name (Name)
+// [w3skill.py]
 {
 Body Forging
 }
 
 STRING 1085
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+12% to all three attributes.
++4 to all three attributes, scaled by Cultivation rank.
 
 Level 1/10
 }
 
 STRING 1086
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Body Forging
 }
 
 STRING 1087
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+13% to all three attributes.
++4 to all three attributes, scaled by Cultivation rank.
 
 Level 2/10
 }
 
 STRING 1088
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Body Forging
 }
 
 STRING 1089
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+14% to all three attributes.
++5 to all three attributes, scaled by Cultivation rank.
 
 Level 3/10
 }
 
 STRING 1090
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Body Forging
 }
 
 STRING 1091
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+15% to all three attributes.
++5 to all three attributes, scaled by Cultivation rank.
 
 Level 4/10
 }
 
 STRING 1092
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Body Forging
 }
 
 STRING 1093
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+16% to all three attributes.
++5 to all three attributes, scaled by Cultivation rank.
 
 Level 5/10
 }
 
 STRING 1094
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Body Forging
 }
 
 STRING 1095
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+18% to all three attributes.
++6 to all three attributes, scaled by Cultivation rank.
 
 Level 6/10
 }
 
 STRING 1096
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Body Forging
 }
 
 STRING 1097
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+19% to all three attributes.
++6 to all three attributes, scaled by Cultivation rank.
 
 Level 7/10
 }
 
 STRING 1098
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Body Forging
 }
 
 STRING 1099
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+21% to all three attributes.
++7 to all three attributes, scaled by Cultivation rank.
 
 Level 8/10
 }
 
 STRING 1100
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Body Forging
 }
 
 STRING 1101
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+22% to all three attributes.
++7 to all three attributes, scaled by Cultivation rank.
 
 Level 9/10
 }
 
 STRING 1102
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Body Forging
 }
 
 STRING 1103
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+24% to all three attributes.
++8 to all three attributes, scaled by Cultivation rank.
 
 Level 10/10
 }
 
 STRING 1104
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Body Forging
 }
 
 STRING 1105
-// Abilities: A006 (Ironhide), Name (Name)
+// [w3skill.py]
 {
 Ironhide
 }
 
 STRING 1106
-// Abilities: A006 (Ironhide), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Reduces incoming damage by 5%. Hard cap 10%.
 
@@ -876,13 +876,13 @@ Level 1/10
 }
 
 STRING 1107
-// Abilities: A006 (Ironhide), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ironhide
 }
 
 STRING 1108
-// Abilities: A006 (Ironhide), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Reduces incoming damage by 5%. Hard cap 10%.
 
@@ -890,13 +890,13 @@ Level 2/10
 }
 
 STRING 1109
-// Abilities: A006 (Ironhide), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ironhide
 }
 
 STRING 1110
-// Abilities: A006 (Ironhide), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Reduces incoming damage by 6%. Hard cap 10%.
 
@@ -904,13 +904,13 @@ Level 3/10
 }
 
 STRING 1111
-// Abilities: A006 (Ironhide), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ironhide
 }
 
 STRING 1112
-// Abilities: A006 (Ironhide), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Reduces incoming damage by 6%. Hard cap 10%.
 
@@ -918,13 +918,13 @@ Level 4/10
 }
 
 STRING 1113
-// Abilities: A006 (Ironhide), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ironhide
 }
 
 STRING 1114
-// Abilities: A006 (Ironhide), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Reduces incoming damage by 7%. Hard cap 10%.
 
@@ -932,13 +932,13 @@ Level 5/10
 }
 
 STRING 1115
-// Abilities: A006 (Ironhide), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ironhide
 }
 
 STRING 1116
-// Abilities: A006 (Ironhide), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Reduces incoming damage by 7%. Hard cap 10%.
 
@@ -946,13 +946,13 @@ Level 6/10
 }
 
 STRING 1117
-// Abilities: A006 (Ironhide), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ironhide
 }
 
 STRING 1118
-// Abilities: A006 (Ironhide), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Reduces incoming damage by 8%. Hard cap 10%.
 
@@ -960,13 +960,13 @@ Level 7/10
 }
 
 STRING 1119
-// Abilities: A006 (Ironhide), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ironhide
 }
 
 STRING 1120
-// Abilities: A006 (Ironhide), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Reduces incoming damage by 9%. Hard cap 10%.
 
@@ -974,13 +974,13 @@ Level 8/10
 }
 
 STRING 1121
-// Abilities: A006 (Ironhide), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ironhide
 }
 
 STRING 1122
-// Abilities: A006 (Ironhide), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Reduces incoming damage by 9%. Hard cap 10%.
 
@@ -988,13 +988,13 @@ Level 9/10
 }
 
 STRING 1123
-// Abilities: A006 (Ironhide), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ironhide
 }
 
 STRING 1124
-// Abilities: A006 (Ironhide), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Reduces incoming damage by 10%. Hard cap 10%.
 
@@ -1002,19 +1002,19 @@ Level 10/10
 }
 
 STRING 1125
-// Abilities: A006 (Ironhide), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ironhide
 }
 
 STRING 1126
-// Abilities: A007 (Indestructible), Name (Name)
+// [w3skill.py]
 {
 Indestructible
 }
 
 STRING 1127
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Greatly raises armor for a short time.
 
@@ -1023,13 +1023,13 @@ cd 60.0s   mana 60
 }
 
 STRING 1128
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Indestructible [|cffffcc00E|r]
 }
 
 STRING 1129
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Greatly raises armor for a short time.
 
@@ -1038,13 +1038,13 @@ cd 57.4s   mana 63
 }
 
 STRING 1130
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Indestructible [|cffffcc00E|r]
 }
 
 STRING 1131
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Greatly raises armor for a short time.
 
@@ -1053,13 +1053,13 @@ cd 54.8s   mana 66
 }
 
 STRING 1132
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Indestructible [|cffffcc00E|r]
 }
 
 STRING 1133
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Greatly raises armor for a short time.
 
@@ -1068,13 +1068,13 @@ cd 52.4s   mana 69
 }
 
 STRING 1134
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Indestructible [|cffffcc00E|r]
 }
 
 STRING 1135
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Greatly raises armor for a short time.
 
@@ -1083,13 +1083,13 @@ cd 50.1s   mana 73
 }
 
 STRING 1136
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Indestructible [|cffffcc00E|r]
 }
 
 STRING 1137
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Greatly raises armor for a short time.
 
@@ -1098,13 +1098,13 @@ cd 47.9s   mana 77
 }
 
 STRING 1138
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Indestructible [|cffffcc00E|r]
 }
 
 STRING 1139
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Greatly raises armor for a short time.
 
@@ -1113,13 +1113,13 @@ cd 45.8s   mana 80
 }
 
 STRING 1140
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Indestructible [|cffffcc00E|r]
 }
 
 STRING 1141
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Greatly raises armor for a short time.
 
@@ -1128,13 +1128,13 @@ cd 43.8s   mana 84
 }
 
 STRING 1142
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Indestructible [|cffffcc00E|r]
 }
 
 STRING 1143
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Greatly raises armor for a short time.
 
@@ -1143,13 +1143,13 @@ cd 41.9s   mana 89
 }
 
 STRING 1144
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Indestructible [|cffffcc00E|r]
 }
 
 STRING 1145
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Greatly raises armor for a short time.
 
@@ -1158,26 +1158,7 @@ cd 40.0s   mana 93
 }
 
 STRING 1146
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Indestructible [|cffffcc00E|r]
 }
-
-STRING 1147
-// Abilities: A001 (Palm Strike), Hotkey (Hotkey - Normal)
-{
-Q
-}
-
-STRING 1148
-// Abilities: A002 (Guarding Light), Hotkey (Hotkey - Normal)
-{
-W
-}
-
-STRING 1149
-// Abilities: A007 (Indestructible), Hotkey (Hotkey - Normal)
-{
-E
-}
-

@@ -130,7 +130,7 @@ local function bootstrap()
   API.startTrangBi()   -- III. (tam khoa)
   API.startPhapKhi()   -- IV.  (tam khoa)
   API.startShop()      -- V.   Vang
-  API.startQuay()      -- VI.  Luot quay
+  API.startQuay()      -- Co Duyen (khung rieng, khong phai the)
   API.startDungDo()
   API.startPanel()
 
@@ -139,6 +139,7 @@ local function bootstrap()
   API.startWaves()
   API.startHeroFrame()
   API.startSkillFrame()
+  API.startQuayFrame()
   API.startSkillPicking()
   API.startPicking()
   API.trace("startPicking: tra ve")

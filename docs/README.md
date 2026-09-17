@@ -95,7 +95,7 @@ docs/
      ngon-ngu.md         Hai thứ tiếng, build --lang en|vi, tên quái
      kinh-te.md          Hai đồng tiền, ngân sách ×967, bảng giá bốn hệ
      bang-nhan-vat.md    Bảng phím R: Kỹ Năng / Trang Bị / Tu Vi / Pháp Khí
-     quay-thuong.md      Thẻ VI: ba thẻ, một lượt -- đá / chỉ số / vàng
+     quay-thuong.md      Cơ Duyên: khung ba cột -- đá / chỉ số / vàng
      dot-quai.md         100 đợt quái: cấu trúc, thành phần, nhịp, tu chính
      boss.md             20 boss cuối cảnh giới
      phan-vung.md        25 block: vai trò từng ô, và vì sao

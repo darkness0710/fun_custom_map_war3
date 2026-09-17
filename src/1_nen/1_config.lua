@@ -919,8 +919,8 @@ CFG.SKILLS[id('H001')] = {
   -- Dung CHINH LINHCAN_STAT_STEP nhu he quay, nen doi duong cong Tu Vi
   -- thi ca ba he tu co theo.
   { id = id('A004'), goc = "Aamk", ten = "Luyen The", en = "Body Forging",   loai = "bidong",  chiso = 4.0, fx = "stat",
-    mota = "+%s ca ba chi so.",
-    mota_en = "+%s to all three attributes." },
+    mota = "%s ca ba chi so, nhan them theo bac Tu Vi.",
+    mota_en = "%s to all three attributes, scaled by Cultivation rank." },
   { id = id('A006'), goc = "Aamk", ten = "Da Sat", en = "Ironhide",          loai = "bidong",  pct = 0.05, fx = "reduce",
     mota = "Giam %s sat thuong nhan vao. Tran cung 10%%.",
     mota_en = "Reduces incoming damage by %s. Hard cap 10%%." },
@@ -1224,6 +1224,11 @@ CFG.PHAPKHI = {}
 -- VI SAO 1/3 CHU KHONG PHAI 5/10. Voi 5/10 thi ca van 600 luot: 30 phut
 -- ngoi chon menu, va moi luot chi dang +-1 chi so o canh gioi dau, +-7
 -- o canh gioi 10 -- khong ai cam thay gi. It ma dam hon nhieu ma nhat.
+-- Vi tri khung Co Duyen (tam khung). Dat cao hon tam man hinh mot chut
+-- de khong de len thanh giao dien duoi.
+CFG.QUAY_X = 0.40
+CFG.QUAY_Y = 0.36
+
 CFG.QUAY_ELITE = 1
 CFG.QUAY_BOSS  = 3
 
@@ -1520,8 +1525,12 @@ CFG.PANEL_Y = 0.33
 --
 -- Be ngang mot the = (W - 2xPAD - (n-1)xGAP) / n:
 --   4 the o 0.56 -> 0.1235   (goc)
+--   5 the o 0.74 -> 0.1353   (hien tai)
 --   6 the o 0.68 -> 0.1003   (hep hon goc 19%)
---   6 the o 0.74 -> 0.1103
+--
+-- Tung len 0.74 luc co sau the. Co Duyen sau do tach ra thanh khung
+-- rieng nen chi con nam, va 0.74 gio rong rai -- giu nguyen de con cho
+-- cho he sau.
 --
 -- Khung 0.74 giua man hinh 0.8 thi con tran 0.03 moi ben -- gan het co,
 -- nen the THU BAY se phai rut ngan nhan chu khong noi khung duoc nua.
