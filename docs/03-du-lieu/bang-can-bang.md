@@ -267,13 +267,15 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | `REVEAL_MAP` | `true` | Mở toàn bộ sương mù — **luật của map**, không phải công tắc dev |
 | `THUONG_MOB_LINHKHI` `THUONG_MOB_VANG` | `1` `1` | Lính thường rơi ra. **Phẳng**, không theo stage |
 | `THUONG_ELITE_LINHKHI` `THUONG_BOSS_LINHKHI` | `50` `100` | Chọn để 1 cảnh giới kiếm **đúng 500** = 1 lần đột phá |
-| `LINHCAN_STAT_GAIN` `LINHCAN_STAT_STEP` | `50` `2.0` | Đột phá cộng `+50`, rồi **gấp đôi** mỗi bậc. Cộng dồn 19 bậc = `26,214,350` |
+| `LINHCAN_STAT_GAIN` `LINHCAN_STAT_STEP` | `50` `1.30` | Đột phá cộng `+50`, cục sau ×1.30 cục trước. Cộng dồn 19 bậc = `24,209`. Gấp đôi (`2.0`) cho ra 26 **triệu** — vỡ map, và **không** mạnh hơn về cảm giác |
 | `THUONG_ELITE_GO` `THUONG_BOSS_GO` | `2` `5` | Nguồn Gỗ duy nhất. Cả ván `80×2 + 20×5 = 260` |
 | `SKILL_GO_UNLOCK` `SKILL_GO_UP` | `1` `1` | 70 giao dịch = 70 Gỗ trên 260 kiếm được |
 | `GO_START` | `3` | Đủ mở **một** kỹ năng ngay giây đầu |
 | `TRANGBI_LOCKED` `PHAPKHI_LOCKED` | `true` | Tạm khoá. Mở lại phải chọn lại đồng tiền — Linh Khí đã bị Linh Căn ăn 91% |
 | `MOB_EHP_BASE` | `120` | Đo từ "Chưởng phát đầu mất 1/3 máu ở wave 1": `1.32 × (17+13) × 3 = 119` |
-| `MOB_EHP_REALM_STEP` | `1.90` | **Phải đi đôi với `LINHCAN_STAT_STEP`.** Tính ngược từ ràng buộc "ba phát Chưởng một con" ở stage cuối. Đổi một cái là phải tính lại cái kia |
+| `MOB_EHP_THEO_LINHCAN` | `true` | Quái **bám theo** đường cong Linh Căn thay vì có đường cong riêng. Hệ số triệt tiêu ở cả hai vế nên tỉ lệ "mấy phát một con" phẳng theo định nghĩa — đổi `LINHCAN_STAT_STEP` không phải chỉnh gì thêm |
+| `MOB_DMG_THEO_MU` | `0.85` | Mũ của hệ số dùng cho **sát thương** quái. `< 1` = quái độc chậm hơn hero khoẻ lên |
+| `MOB_EHP_REALM_STEP` | `1.22` | Chỉ còn dùng khi `MOB_EHP_THEO_LINHCAN = false` |
 | `PANEL_W` | `0.68` | Năm thẻ. Ở `0.56` thì nhãn `IV. Treasures` tràn sang `V. Shop` |
 | `SKILL_TAT_GOC` `_INT` | *(bảng)* | Tắt hiệu ứng gốc của ability bản sao. Xem [ability-ban-sao.md](ability-ban-sao.md) |
 | `SKILL_CHO_GOC` | *(bảng)* | Mượn trường gốc làm **vật mang** cho giáp, thay vì tắt rồi tự cộng |

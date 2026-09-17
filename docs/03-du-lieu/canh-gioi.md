@@ -12,37 +12,68 @@ Bảng tra. Đây là dữ liệu tham chiếu, không phải luật — luật 
 
 ## Đột phá cộng bao nhiêu chỉ số
 
-Mỗi lần đột phá **cộng thêm** một cục, và cục đó **gấp đôi** mỗi bậc
-(`LINHCAN_STAT_GAIN = 50`, `LINHCAN_STAT_STEP = 2.0`):
+Mỗi lần đột phá **cộng thêm** một cục, cục sau lớn hơn cục trước `×1.30`
+(`LINHCAN_STAT_GAIN = 50`, `LINHCAN_STAT_STEP = 1.30`):
 
-| Bậc | Cộng lần này | Cộng dồn | Hệ số | Chưởng bậc 10 | EHP quái đầu cảnh giới | Phát |
-|---|---|---|---|---|---|---|
-| 1 | — | 0 | ×1.00 | 47 | 120 | 2.5 |
-| 2 | +50 | 50 | ×2.85 | 135 | 249 | 1.8 |
-| 3 | +100 | 150 | ×6.56 | 311 | 518 | 1.7 |
-| 4 | +200 | 350 | ×13.96 | 662 | 1,076 | 1.6 |
-| 5 | +400 | 750 | ×28.78 | 1,364 | 2,234 | 1.6 |
-| 10 | +12,800 | 25,550 | ×947 | 44,905 | 86,420 | 1.9 |
-| 15 | +409,600 | 819,150 | ×30,340 | 1,438,223 | 3,342,536 | 2.3 |
-| 20 | +13,107,200 | **26,214,350** | ×970,903 | 46,024,403 | 129,282,152 | 2.8 |
+| Bậc | Cộng lần này | Chỉ số | Hệ số | Chưởng bậc 10 | EHP quái | **Phát** | Sát thương quái |
+|---|---|---|---|---|---|---|---|
+| 1 | — | 10 | ×1 | 47 | 127 | **2.7** | 6 |
+| 2 | +50 | 60 | ×3 | 135 | 361 | **2.7** | 15 |
+| 3 | +65 | 125 | ×5 | 249 | 666 | **2.7** | 26 |
+| 5 | +110 | 319 | ×12 | 591 | 1,577 | **2.7** | 54 |
+| 10 | +408 | 1,611 | ×60 | 2,858 | 7,632 | **2.7** | 205 |
+| 15 | +1,514 | 6,406 | ×238 | 11,276 | 30,114 | **2.7** | 659 |
+| 20 | +5,623 | **24,209** | ×897 | 42,533 | 113,589 | **2.7** | 2,036 |
 
-Cột cuối là thứ giữ cả bảng lại với nhau: **một con quái luôn tốn 1.6–2.8 phát
-Chưởng**, từ wave 1 tới stage 100. Con số tuyệt đối phình ra hàng chục triệu
-nhưng *cảm giác chơi* đứng yên.
+### Vì sao cột "Phát" đứng yên
 
-**Cộng thêm, không phải nhân.** Bản trước nhân chỉ số lên `1.17^(bậc−1)` rồi giải
-ngược để bù phần sát thương nền. Bỏ vì một lý do giao diện chứ không phải toán:
-người chơi không đọc được "×1.17", họ đọc được "**+50 chỉ số**" — con số nhìn
-thấy ngay trên bảng hero sau khi bấm.
+**Quái bám theo chính đường cong Linh Căn**, không có đường cong riêng
+(`CFG.MOB_EHP_THEO_LINHCAN`):
 
-> **26 triệu là hệ quả của việc gấp đôi 19 lần, không phải lỗi.** Đổi
-> `LINHCAN_STAT_STEP` là đổi cả họ: `2.0` → 26,214,350 · `1.7` → 1,707,589 ·
-> `1.5` → 221,584. Đổi nó thì **phải** tính lại `CFG.MOB_EHP_REALM_STEP` theo
-> (`1.7` ứng với `1.65`), nếu không quái và hero rời nhau ngay.
+```
+EHP quái = MOB_EHP_BASE × (hệ số Linh Căn của cảnh giới) × MOB_EHP_GROWTH^(tầng−1)
+```
 
-`powerAt()` giờ **suy ra từ** chỉ số chứ không còn là một đường cong riêng — sát
-thương `= hệ số × (DMG_BASE + chỉ số)`, nên hệ số hiện ra đúng bằng tỉ lệ sát
-thương thật. Trước đây nó là hằng số riêng và có thể nói khác chỉ số thật.
+Cả hai vế đều mang cùng thừa số hệ số Linh Căn nên nó **triệt tiêu** — tỉ lệ
+"mấy phát một con" phẳng theo *định nghĩa*, không phải nhờ chỉnh số.
+
+Hợp đồng ngầm: người chơi lên **đúng một bậc mỗi cảnh giới** — và đó chính là
+giao kèo `500 Linh Khí/cảnh giới = 500 một lần đột phá`.
+
+> **Bản trước sai ở đâu.** Quái nhân đều `MOB_EHP_REALM_STEP` mỗi cảnh giới, còn
+> hero thì **không nhảy đều**: lần đột phá đầu ×2.85 *(vì +50 trên nền 10)*, rồi
+> tụt dần về ×1.30. Một bên đều, một bên không — nên hero vượt lên đầu ván
+> *(bậc 4-5 giết quái **một phát**)* rồi tụt lại ở cuối *(2.8 phát)*. Chọn hằng
+> số nào cũng không sửa được, vì hai đường cong khác **hình** chứ không chỉ khác
+> độ dốc.
+
+Mũ của `MOB_EHP_GROWTH` là **(tầng − 1)**, không phải (stage − 1): phần tăng
+trưởng theo cảnh giới đã nằm trong hệ số rồi, đếm hai lần là nhân đôi độ dốc.
+
+Sát thương quái dùng cùng hệ số nhưng **mũ `0.85`** (`MOB_DMG_THEO_MU`) — quái
+độc chậm hơn hero khoẻ lên một chút, cố ý, để người chơi thấy mình đang đẩy lên
+chứ không giậm chân.
+
+### Chọn `LINHCAN_STAT_STEP`
+
+Gấp đôi (`2.0`) đúng 19 lần cho ra **26 triệu** chỉ số và **138 triệu** máu quái
+— vỡ map.
+
+Và gấp đôi **không** làm cảm giác mạnh hơn: thứ người chơi cảm nhận là **tỉ lệ**
+nhảy lên của tổng chỉ số, mà tỉ lệ đó bằng đúng `STEP` ở mọi bước dù `STEP` là
+bao nhiêu. Chọn `2.0` hay `1.30` thì mỗi lần đột phá đều "mạnh lên một mức như
+nhau"; chỉ khác con số cuối ván.
+
+Nên chọn `STEP` theo ràng buộc **duy nhất** còn lại: số phải đọc được.
+
+| STEP | Chỉ số cuối | EHP quái cuối |
+|---|---|---|
+| `1.25` | 13,688 | 64,259 |
+| **`1.30`** | **24,209** | **113,589** |
+| `1.45` | 129,234 | 606,000 |
+| `2.00` | 26,214,350 | 138,073,209 |
+
+Đổi `STEP` **không** phải chỉnh gì thêm — quái tự bám theo.
 
 ## Bốn tầng trong một cảnh giới
 

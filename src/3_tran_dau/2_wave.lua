@@ -96,13 +96,46 @@ end
 
 -- ---------- Duong cong ----------
 
+-- He so Linh Can cua mot BAC, tinh thang tu bang chi so.
+--
+-- Goi qua API vi statAt nam trong 3_linhcan.lua. Tra ve 1.0 neu he do
+-- chua san sang -- quai van sinh duoc, chi la khong bam theo.
+local function lcPower(rank)
+  if API.linhCanStatAt == nil then return 1.0 end
+  local b = CFG.LINHCAN_DMG_BASE
+  return (b + API.linhCanStatAt(rank)) / (b + API.linhCanStatAt(1))
+end
+
+-- EHP quai BAM THEO duong cong Linh Can -- xem CFG.MOB_EHP_THEO_LINHCAN.
+--
+-- Ca hai ve deu co cung thua so he so Linh Can nen no triet tieu, va ti
+-- le "may phat mot con" phang theo dinh nghia. Mu cua MOB_EHP_GROWTH la
+-- (TANG - 1), khong phai (stage - 1): phan tang truong theo canh gioi
+-- da nam trong he so roi, dem hai lan la nhan doi do doc.
 local function ehpOf(stage, realm)
+  if CFG.MOB_EHP_THEO_LINHCAN then
+    local _, tier = decode(stage)
+    return CFG.MOB_EHP_BASE * lcPower(realm)
+         * CFG.MOB_EHP_GROWTH ^ (tier - 1)
+  end
   return CFG.MOB_EHP_BASE
        * CFG.MOB_EHP_GROWTH ^ (stage - 1)
        * CFG.MOB_EHP_REALM_STEP ^ (realm - 1)
 end
 
+-- Sat thuong quai cung bam theo, nhung DOC HON: mau toi da cua hero len
+-- theo Suc Manh, tuc len theo dung he so do. Giu nguyen duong cong cu
+-- thi cuoi van quai go khong not hero.
+--
+-- MOB_DMG_THEO_MU < 1 nen quai doc cham hon hero khoe len mot chut --
+-- co y, de nguoi choi thay minh cung day len chu khong dam chan tai cho.
 local function dmgOf(stage, realm)
+  if CFG.MOB_EHP_THEO_LINHCAN then
+    local _, tier = decode(stage)
+    return CFG.MOB_DMG_BASE
+         * lcPower(realm) ^ (CFG.MOB_DMG_THEO_MU or 1.0)
+         * CFG.MOB_DMG_GROWTH ^ (tier - 1)
+  end
   return CFG.MOB_DMG_BASE
        * CFG.MOB_DMG_GROWTH ^ (stage - 1)
        * CFG.MOB_DMG_REALM_STEP ^ (realm - 1)
