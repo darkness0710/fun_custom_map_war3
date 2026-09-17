@@ -468,11 +468,65 @@ local function spells(pid)
     "   Day du nam trong DarknessTrace.txt." .. CFG.C_END)
 end
 
+-- ---------- Mot diem chi so doi ra bao nhieu ----------
+--
+-- Can cho he QUAY: the 2 cong chi so, the 3 cong mau/mana. Muon hai the
+-- dang gia NGANG NHAU thi phai biet ti gia -- va ti gia do la hang so
+-- gameplay cua Warcraft, khong nam trong map nay (khong co
+-- war3mapMisc.txt nen dung mac dinh).
+--
+-- Tri nho noi 1 Str = 25 mau va 1 Int = 15 mana. Do di, dung tin --
+-- cung ly do da phai do 0.05 hoi mau/Str bang "-reg".
+--
+-- Do TUC THI, khong can dong ho: cong 100 diem, doc lai, chia 100.
+-- Cong 100 chu khong phai 1 de sai so lam tron khong nuot mat ket qua.
+local DO_BUOC = 100
+
+local function chiSo(pid)
+  local d = S.p[pid]
+  local h = d and d.hero or nil
+  if h == nil then
+    API.msg(pid, CFG.C_RED .. "Chua co hero -- pick hero roi go lai." .. CFG.C_END)
+    return
+  end
+
+  API.msg(pid, CFG.C_GOLD .. "=== Mot diem chi so doi ra gi ===" .. CFG.C_END)
+
+  local function do1(ten, getf, setf, docf, donVi)
+    if getf == nil or setf == nil then return end
+    local goc = getf(h, false)
+    local v0  = docf(h)
+    setf(h, goc + DO_BUOC, true)
+    local v1 = docf(h)
+    setf(h, goc, true)
+    API.msg(pid, "   " .. ten .. " +" .. DO_BUOC .. " -> " .. donVi .. " +" ..
+            string.format("%.1f", v1 - v0) .. CFG.C_END ..
+            CFG.C_GOLD .. "   => 1 " .. ten .. " = " ..
+            string.format("%.3f", (v1 - v0) / DO_BUOC) .. " " .. donVi .. CFG.C_END)
+    API.trace("chiso: 1 " .. ten .. " = " .. ((v1 - v0) / DO_BUOC) .. " " .. donVi)
+  end
+
+  do1("Str", GetHeroStr, SetHeroStr,
+      function(u) return GetUnitState(u, UNIT_STATE_MAX_LIFE) end, "mau")
+  do1("Int", GetHeroInt, SetHeroInt,
+      function(u) return GetUnitState(u, UNIT_STATE_MAX_MANA) end, "mana")
+  if BlzGetUnitArmor ~= nil then
+    do1("Agi", GetHeroAgi, SetHeroAgi,
+        function(u) return BlzGetUnitArmor(u) end, "giap")
+  end
+
+  -- Tra chi so ve dung duong ma du an dung, khong tu dat lai bang tay:
+  -- heroRecompute la CHO DUY NHAT duoc ghi chi so hero.
+  if API.heroRecompute ~= nil then API.heroRecompute(pid) end
+  API.msg(pid, CFG.C_GREY .. "   Da tra chi so ve nhu cu." .. CFG.C_END)
+end
+
 local function onChat(pid, raw)
   -- "-nat card" -> in o command card that cua hero dang cam
   if raw ~= nil then
     if raw:match("^%s*%-nat%s+card%s*$") ~= nil then return card(pid) end
     if raw:match("^%s*%-nat%s+spell%s*$") ~= nil then return spells(pid) end
+    if raw:match("^%s*%-nat%s+stat%s*$") ~= nil then return chiSo(pid) end
     -- "-nat dam" -> liet ke hang so ability co ten chua "dam"
     local loc = raw:match("^%s*%-nat%s+(%S+)")
     if loc ~= nil then return fields(pid, loc) end
@@ -489,5 +543,6 @@ API.nativeChat   = onChat
 API.nativeFields = fields
 API.nativeCard   = card
 API.nativeSpells = spells
+API.nativeChiSo  = chiSo
 API.nativeRegen  = regen
 API.startNatives = startNatives
