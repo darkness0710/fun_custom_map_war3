@@ -9,7 +9,7 @@
 Linh Khí trước đây **chỉ vào người kết liễu**. Tinh Thạch từ boss thì đã chia đều
 sẵn — hai đường khác nhau cho cùng một việc.
 
-Nhưng giá thì **từng người tự trả nguyên giá**: đột phá Linh Căn là của riêng
+Nhưng giá thì **từng người tự trả nguyên giá**: đột phá Tu Vi là của riêng
 người đó, nâng kỹ năng cũng vậy. Còn độ khó lại tăng theo số người
 (`SCALE_EHP_PER_PLAYER = 0.60` → EHP lính ×2,2 khi ba người).
 

@@ -5,7 +5,7 @@
 
 ## Bối cảnh
 
-Bốn hệ nâng cấp, mà **ba hệ cùng rút một cái ví**: Linh Căn, Kỹ Năng và Trang Bị
+Bốn hệ nâng cấp, mà **ba hệ cùng rút một cái ví**: Tu Vi, Kỹ Năng và Trang Bị
 đều mua bằng Linh Khí. Tinh Thạch chỉ dùng cho Pháp Khí — hệ duy nhất chưa cài.
 
 Hệ quả: người chơi chỉ phải trả lời **đúng một câu hỏi** suốt cả ván — "đã gom đủ
@@ -28,17 +28,17 @@ dùng tới:
 
 | Đồng tiền | Rơi từ | Cả ván | Mua | Hiện ở |
 |---|---|---|---|---|
-| **Linh Khí** | lính thường | ~1 880 000 | Linh Căn, Trang Bị | thanh vàng |
+| **Linh Khí** | lính thường | ~1 880 000 | Tu Vi, Trang Bị | thanh vàng |
 | **Ngộ Tính** | **tinh anh** | 300 | Kỹ Năng | bảng phím R |
 | **Tinh Thạch** | boss | 1 150 | Pháp Khí | thanh gỗ |
 
 Mỗi hệ nâng cấp giờ trả lời được bằng **một câu**:
 
-- Linh Căn, Trang Bị — *"giết quái, gom tiền"*
+- Tu Vi, Trang Bị — *"giết quái, gom tiền"*
 - Kỹ Năng — *"giết tinh anh"*
 - Pháp Khí — *"hạ boss"*
 
-**Linh Căn và Trang Bị cố ý dùng chung ví.** Đó không phải thiếu sót — đó là lựa
+**Tu Vi và Trang Bị cố ý dùng chung ví.** Đó không phải thiếu sót — đó là lựa
 chọn chính của mỗi wave: đột phá, hay nâng đồ? Hai hệ kia không tranh ví đó;
 chúng bị chặn bởi **nội dung** chứ không bởi tiền, nên không thể cày tiền để bỏ
 qua chúng.
@@ -56,7 +56,7 @@ Nhờ vậy **bỏ hẳn được một đường cong phải cân bằng** (`SK
 `CFG.LINHCAN_STEP` đổi **1.215 → 1.17**, và `CFG.TRANGBI_COST_BASE` là 147 chứ
 không phải 86.
 
-| | Linh Căn | Trang Bị | Kỹ Năng | Pháp Khí | Tích |
+| | Tu Vi | Trang Bị | Kỹ Năng | Pháp Khí | Tích |
 |---|---|---|---|---|---|
 | Bản cũ (3 nguồn) | ×40.5 | ×12 | ×2 | — | ×971 |
 | **Bản này (4 nguồn)** | **×19.7** | **×8** | **×2.4** | **×2.5** | **×985** |
@@ -74,7 +74,7 @@ Hai bản đều tự nhất quán; cái sai là **trộn**. Trước quyết đ
 bản 3 nguồn trong khi `kinh-te.md` mô tả bản 4 nguồn, nên xây Trang Bị theo tài
 liệu sẽ cho ×1942 — người chơi mạnh gấp đôi mức đường cong địch đòi.
 
-Chia Linh Khí sau khi Kỹ Năng rời khỏi ví: **Linh Căn 40%, Trang Bị 52%, dư 8%.**
+Chia Linh Khí sau khi Kỹ Năng rời khỏi ví: **Tu Vi 40%, Trang Bị 52%, dư 8%.**
 
 ## Phương án đã loại
 
@@ -84,7 +84,7 @@ ba hệ là trang trí.
 
 **Bốn đồng tiền, mỗi hệ một đồng.** Đối xứng đẹp, nhưng không có loại quái thứ tư
 để gắn vào — phải bịa ra một cơ chế rơi mới, và Warcraft cũng hết chỗ hiển thị.
-Quan trọng hơn: nó **xoá mất sự cạnh tranh**. Linh Căn và Trang Bị dùng chung ví
+Quan trọng hơn: nó **xoá mất sự cạnh tranh**. Tu Vi và Trang Bị dùng chung ví
 là thứ duy nhất tạo ra một lựa chọn thật mỗi wave.
 
 **Kỹ Năng trả bằng Linh Khí *và* Ngộ Tính.** Giữ được đường cong giá cũ (và tính
@@ -98,7 +98,7 @@ một kiểu quyết định khác hẳn: không để dành được nhiều, k
 
 ## Cái mất
 
-**Mất tính chất "nâng cả 7 kỹ năng một bậc ≈ một lần đột phá Linh Căn".** Nó đến
+**Mất tính chất "nâng cả 7 kỹ năng một bậc ≈ một lần đột phá Tu Vi".** Nó đến
 từ `SKILL_COST_STEP = 1.99 ≈ 1.412²` và là một thiết kế có chủ ý, đọc được.
 
 Chấp nhận mất, vì tính chất đó chỉ có nghĩa khi hai hệ tiêu **cùng một đồng

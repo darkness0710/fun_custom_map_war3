@@ -167,7 +167,7 @@ hero. Mọi hệ chỉ **khai báo nó đóng góp bao nhiêu**; recompute cộn
 một lần.
 
 ```
-chỉ số      nền + Linh Căn, rồi nhân % của bị động "stat"
+chỉ số      nền + Tu Vi, rồi nhân % của bị động "stat"
 sát thương  nền × Trang Bị
 giáp        nền + aura "Hiệu Lệnh" + buff "Bất Hoại"
 ```
@@ -199,7 +199,7 @@ học.
 tức **+18% → +36%** máu hiệu dụng.
 
 **Bất Hoại bỏ phần cộng máu tối đa**, bù bằng giáp (20 → 30). Lý do: máu tối đa
-của hero **suy ra từ Sức mạnh**, mà Linh Căn đổi Sức mạnh lúc nào cũng được —
+của hero **suy ra từ Sức mạnh**, mà Tu Vi đổi Sức mạnh lúc nào cũng được —
 cộng rồi trừ một con số tuyệt đối trên đại lượng tự nó thay đổi là sai chắc chắn.
 Giáp thì suy ra được từ nền nên không bao giờ lệch.
 

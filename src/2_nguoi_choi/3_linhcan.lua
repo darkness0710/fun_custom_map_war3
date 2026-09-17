@@ -1,4 +1,14 @@
 -- ============================================================
+--  LECH TEN, CO Y: file/bien ten "linhcan", nhan hien ra "Tu Vi".
+--
+--  "Linh Can" la TU CHAT bam sinh -- thu khong doi duoc. He nay thi
+--  nguoc lai: no la bac tu luyen, len tung nac theo canh gioi. Dung tu
+--  "Tu Vi" moi dung nghia, nen NHAN da doi (T.panel_root).
+--
+--  Dinh danh trong code van la linhCan / LINHCAN_* / 3_linhcan.lua:
+--  doi ca ho la sua ~50 cho o 7 file ma khong doi mot hanh vi nao. Doi
+--  rieng nhan thi re, va cho lech duy nhat nam o day, co ghi lai.
+-- ============================================================
 --  3_linhcan.lua  --  Linh Can (tu vi cua nguoi choi)
 --
 --  Nguon suc manh LON NHAT: x20 trong hop dong x967

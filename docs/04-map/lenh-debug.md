@@ -47,7 +47,7 @@ Không phụ thuộc công tắc nào. Đây là lối chơi, không phải debu
 |---|---|
 | `E` | Mở bảng nhân vật (4 thẻ) |
 | `-c` | Như phím R — đường lui nếu phím không gán được |
-| `-lc` | Mở thẳng thẻ Linh Căn |
+| `-lc` | Mở thẳng thẻ Tu Vi |
 | `-lc up` | Đột phá một bậc, không cần mở bảng |
 | `-sync` | Đường đồng bộ nào đang chạy, native nào có, ping có về không |
 | `-vung` | Bản đồ vai trò 25 block + ping minimap theo màu. Báo đỏ nếu thiếu vùng `Blk..` |
@@ -70,7 +70,7 @@ Cần `CFG.DEV_COMMANDS = true`.
 | `-lk <số>` | Thêm **Linh Khí** *(biến riêng, hiện ở bảng)* | `-lk 5000` |
 | `-vang <số>` | Thêm **Vàng** *(thanh tài nguyên)* | `-vang 5000` |
 | `-go <số>` | Thêm **Gỗ** *(thanh tài nguyên)* | `-go 100` |
-| `-lc <số>` | Nhảy tới bậc Linh Căn 1–20 | `-lc 15` → Đại La |
+| `-lc <số>` | Nhảy tới bậc Tu Vi 1–20 | `-lc 15` → Đại La |
 | `-sp` | Phát 1 điểm kỹ năng, hoặc mở bảng chọn kỹ năng tuỳ `CFG.SKILL_MODE` | |
 | `-next` | Gọi đợt kế tiếp — **chỉ khi đã dọn sạch** quái trên map | |
 | `-spawn` | Tạo thẳng một `H001` bằng `CreateUnit`, cạnh hero | để so với unit đặt sẵn |

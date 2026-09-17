@@ -169,7 +169,7 @@ Chi tiết: [02-he-thong/kinh-te.md](../02-he-thong/kinh-te.md).
 > mọi người chơi đang sống. Đã đo: chia theo kết liễu làm ba người chơi mỗi
 > người thiếu 41 % số tiền cần — [ADR 0013](../05-quyet-dinh/0013-thuong-chia-deu-cho-moi-nguoi.md).
 
-## Linh Căn (tu vi người chơi)
+## Tu Vi (tu vi người chơi)
 
 Chi tiết: [02-he-thong/kinh-te.md](../02-he-thong/kinh-te.md) ·
 [duong-cong-suc-manh.md](duong-cong-suc-manh.md).
@@ -195,7 +195,7 @@ Chi tiết: [nang-cap-ky-nang.md](nang-cap-ky-nang.md) ·
 | `SKILL_START_COUNT` | Bao nhiêu kỹ năng phát sẵn | `0` — command card trống khi vào map |
 | `NGOTINH_START` | Ngộ Tính cầm sẵn lúc vào map | `1` — vừa đủ mở **một** kỹ năng ngay giây đầu. Đó là quyết định đầu tiên của ván |
 | `SKILL_DMG_STEP` `SKILL_CD_STEP` `SKILL_PASSIVE_STEP` | Sức mạnh mỗi bậc | Ngân sách cả hệ là ×2, và ×2 đó là **tích** của mọi nút chỉnh: chủ động ×1.33 sát thương × 1.5 tần suất; bị động ăn trọn ×2 vì không có hồi chiêu |
-| `SKILL_MANA_STEP` | Mana mỗi bậc | Tăng **chậm hơn** bộ mana (Linh Căn cộng cả Int). Chủ ý: đầu ván mana là ràng buộc thật, cuối ván không còn |
+| `SKILL_MANA_STEP` | Mana mỗi bậc | Tăng **chậm hơn** bộ mana (Tu Vi cộng cả Int). Chủ ý: đầu ván mana là ràng buộc thật, cuối ván không còn |
 | `SKILL_DATA_LIVE` | Số liệu đã có hiệu lực chưa | `false` — bảng ghi rõ "đây là thiết kế". Hiện số dep mà sai; bật khi bộ sinh đã ghi vào `war3map.w3a` |
 
 ## Trang Bị
@@ -210,7 +210,7 @@ Chi tiết: [02-he-thong/kinh-te.md](../02-he-thong/kinh-te.md) ·
 | `TRANGBI_MAX_LEVEL` | `10` | Ô bắt đầu ở cấp **1**, nâng 9 lần |
 | `TRANGBI_COST_BASE` `TRANGBI_COST_STEP` | Giá theo **tổng số lần đã nâng của cả sáu ô** | `STEP = 1.134 = LINHKHI_GROWTH^4.07`. 54 lần nâng trải đều 100 stage → mỗi lần cách 4,07 stage, nên "một lần nâng đáng mấy wave" là hằng số. `BASE = 147` vì Kỹ Năng đã rời khỏi ví Linh Khí |
 
-Cộng vào **sát thương nền**, không cộng chỉ số — Linh Căn đã cộng chỉ số rồi, và
+Cộng vào **sát thương nền**, không cộng chỉ số — Tu Vi đã cộng chỉ số rồi, và
 ngân sách ×967 đòi đo được riêng phần của từng hệ.
 
 ## Pháp Khí
@@ -271,9 +271,9 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | `THUONG_ELITE_GO` `THUONG_BOSS_GO` | `2` `5` | Nguồn Gỗ duy nhất. Cả ván `80×2 + 20×5 = 260` |
 | `SKILL_GO_UNLOCK` `SKILL_GO_UP` | `1` `1` | 70 giao dịch = 70 Gỗ trên 260 kiếm được |
 | `GO_START` | `3` | Đủ mở **một** kỹ năng ngay giây đầu |
-| `TRANGBI_LOCKED` `PHAPKHI_LOCKED` | `true` | Tạm khoá. Mở lại phải chọn lại đồng tiền — Linh Khí đã bị Linh Căn ăn 91% |
+| `TRANGBI_LOCKED` `PHAPKHI_LOCKED` | `true` | Tạm khoá. Mở lại phải chọn lại đồng tiền — Linh Khí đã bị Tu Vi ăn 91% |
 | `MOB_EHP_BASE` | `120` | Đo từ "Chưởng phát đầu mất 1/3 máu ở wave 1": `1.32 × (17+13) × 3 = 119` |
-| `MOB_EHP_THEO_LINHCAN` | `true` | Quái **bám theo** đường cong Linh Căn thay vì có đường cong riêng. Hệ số triệt tiêu ở cả hai vế nên tỉ lệ "mấy phát một con" phẳng theo định nghĩa — đổi `LINHCAN_STAT_STEP` không phải chỉnh gì thêm |
+| `MOB_EHP_THEO_LINHCAN` | `true` | Quái **bám theo** đường cong Tu Vi thay vì có đường cong riêng. Hệ số triệt tiêu ở cả hai vế nên tỉ lệ "mấy phát một con" phẳng theo định nghĩa — đổi `LINHCAN_STAT_STEP` không phải chỉnh gì thêm |
 | `MOB_DMG_THEO_MU` | `0.85` | Mũ của hệ số dùng cho **sát thương** quái. `< 1` = quái độc chậm hơn hero khoẻ lên |
 | `MOB_EHP_REALM_STEP` | `1.22` | Chỉ còn dùng khi `MOB_EHP_THEO_LINHCAN = false` |
 | `PANEL_W` | `0.68` | Năm thẻ. Ở `0.56` thì nhãn `IV. Treasures` tràn sang `V. Shop` |

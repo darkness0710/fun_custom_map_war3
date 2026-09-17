@@ -11,7 +11,7 @@
 > | Thu nhập | `60 × 1.0319^(stage−1)`, cộng dồn 1,880,187 | **phẳng** — 1 Linh Khí/con, cả ván 4,000 |
 > | EHP quái cả ván | `1.018^219 × 1.22^19` = **×2 176** | `1.018^99 × 1.22^19` = **×256** |
 >
-> Sức mạnh hero cả ván vẫn ×26 *(Linh Căn ×19.7 × kỹ năng ×1.33)*. Nên chênh lệch
+> Sức mạnh hero cả ván vẫn ×26 *(Tu Vi ×19.7 × kỹ năng ×1.33)*. Nên chênh lệch
 > quái/hero tụt từ **×83** xuống **×10** — vẫn lệch, nhưng không còn là bất khả.
 > Đây là lý do **chưa động vào `MOB_EHP_GROWTH`**: giữ nguyên hệ số thì chính
 > việc rút stage đã kéo đường cong lại gần. Chỗ này phải đo khi chơi thử.
@@ -326,13 +326,13 @@ trên là **bản cũ**; bản đang chạy là:
 
 | Nguồn | Nhân | Mua bằng | Trạng thái |
 |---|---|---|---|
-| Linh Căn | ×19.7 | Linh Khí | **Đã cài** — [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua), `LINHCAN_STEP = 1.17` |
+| Tu Vi | ×19.7 | Linh Khí | **Đã cài** — [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua), `LINHCAN_STEP = 1.17` |
 | Trang Bị | ×8.3 | Linh Khí | **Đã cài** — [5_trangbi.lua](../../src/2_nguoi_choi/5_trangbi.lua), 6 ô × 10 cấp |
 | Kỹ Năng | ×2.4 | **Ngộ Tính** | **Đã cài** — [4_skill.lua](../../src/2_nguoi_choi/4_skill.lua), nhưng số liệu chưa có hiệu lực (`SKILL_DATA_LIVE = false`) |
 | Pháp Khí | ×2.5 | **Tinh Thạch** | **Đã cài** — [6_phapkhi.lua](../../src/2_nguoi_choi/6_phapkhi.lua), 5 món |
 | | **×392 / ×967** | | ⚠ thiếu ×2.5 vì Pháp Khí rỗng |
 
-**Hai bản không trộn được.** Linh Căn ×40.5 của bản cũ nhân với Trang Bị ×8 của
+**Hai bản không trộn được.** Tu Vi ×40.5 của bản cũ nhân với Trang Bị ×8 của
 bản mới cho ×1 942 — gấp đôi hợp đồng.
 
 ## Chưa làm

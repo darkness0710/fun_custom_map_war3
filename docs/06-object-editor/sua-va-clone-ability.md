@@ -203,7 +203,7 @@ vòng ghi–đọc.
 > [7_hieuung.lua](../../src/2_nguoi_choi/7_hieuung.lua) không sửa trường sát
 > thương của ability — nó bắt `EVENT_PLAYER_UNIT_SPELL_EFFECT` rồi **tự gọi**
 > `UnitDamageTarget`. Sát thương gốc của Warcraft vẫn còn, nhưng ở bậc 10 với
-> Linh Căn bậc 20 thì nó là sai số làm tròn.
+> Tu Vi bậc 20 thì nó là sai số làm tròn.
 >
 > Đo được mã trường vẫn có ích (đổi tooltip trong game, đỡ một sự kiện), nhưng
 > nó không còn là đường duy nhất.

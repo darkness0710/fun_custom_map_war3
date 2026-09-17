@@ -172,7 +172,7 @@ chạm vào tổng sát thương.**
 Chia kênh thì bốn nguồn thành **trung bình cộng**, không phải **tích**. Đòn đánh
 riêng lẻ ×400, skill riêng lẻ ×120 — cả hai đều xa ×967.
 
-Cho skill ăn theo chỉ số là cách kéo Linh Căn (×20) vào kênh skill. Trang Bị cũng
+Cho skill ăn theo chỉ số là cách kéo Tu Vi (×20) vào kênh skill. Trang Bị cũng
 phải cộng chỉ số hoặc cộng % sát thương toàn cục chứ đừng chỉ cộng sát thương đòn
 đánh.
 
@@ -211,11 +211,11 @@ function API.skillDamage(u, heSo, cap)
 end
 ```
 
-`GetHeroStr(u, true)` lấy **cả bonus**, nên nó tự bao gồm Linh Căn và Trang Bị —
+`GetHeroStr(u, true)` lấy **cả bonus**, nên nó tự bao gồm Tu Vi và Trang Bị —
 đó chính là chỗ tích số được khôi phục.
 
 **Dùng "cao nhất" chứ không dùng chỉ số chính** là lựa chọn đúng cho map này:
-Linh Căn cộng đều cả ba chỉ số, nên "cao nhất" luôn là chỉ số hero khởi đầu mạnh
+Tu Vi cộng đều cả ba chỉ số, nên "cao nhất" luôn là chỉ số hero khởi đầu mạnh
 nhất. Nó ổn định, và nếu sau này Trang Bị cộng lệch một chỉ số thì người chơi có
 thêm một quyết định xây dựng.
 

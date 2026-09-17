@@ -32,7 +32,7 @@ cách cho chữ click-through, tức chữa phần *bấm* chứ không chữa p
 
 Nhưng gốc rễ không phải kích thước. Bốn hệ không cùng hình dạng:
 
-- **Linh Căn** là một cái thang có **đúng một hành động**. Bảng tính hiện 7 dòng
+- **Tu Vi** là một cái thang có **đúng một hành động**. Bảng tính hiện 7 dòng
   mà 6 dòng không bấm được.
 - **Kỹ Năng, Trang Bị, Pháp Khí** là danh sách 7 / 6 / 5 món độc lập.
 
@@ -76,7 +76,7 @@ thứ người chơi cần để biết phải để dành bao nhiêu.
 ## Phương án đã loại
 
 **Chỉ chỉnh cỡ, giữ bảng tính.** Rẻ và ít rủi ro. Loại vì nó không chạm tới
-nguyên nhân: Linh Căn vẫn hiện 6 dòng không bấm được, và Kỹ Năng vẫn là 5 cột
+nguyên nhân: Tu Vi vẫn hiện 6 dòng không bấm được, và Kỹ Năng vẫn là 5 cột
 chật. Phóng to một bố cục sai thì được một bố cục sai lớn hơn.
 
 **Mỗi thẻ tự vẽ thân của mình.** Linh hoạt nhất. Loại vì bốn thẻ sẽ lệch nhau về

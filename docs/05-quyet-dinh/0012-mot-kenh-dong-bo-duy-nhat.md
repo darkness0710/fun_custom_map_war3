@@ -34,7 +34,7 @@ nhịp. Đổi trạng thái game ngay trong sự kiện đó thì máy ấy đi
 
 Ba giao diện frame ([bảng kỹ năng](../../src/4_giao_dien/3_skillframe.lua),
 [thẻ chọn hero](../../src/4_giao_dien/2_heroframe.lua),
-[Linh Căn](../../src/2_nguoi_choi/3_linhcan.lua)) mỗi file tự dò native, tự quyết định có đồng bộ hay không, tự lùi về chế độ chạy thẳng
+[Tu Vi](../../src/2_nguoi_choi/3_linhcan.lua)) mỗi file tự dò native, tự quyết định có đồng bộ hay không, tự lùi về chế độ chạy thẳng
 khi thiếu. **Ba câu trả lời khác nhau cho cùng một câu hỏi.**
 
 Và cả ba đều trả lời sai, vì cùng một lý do: cả ba dò

@@ -10,6 +10,12 @@ Bảng tra. Đây là dữ liệu tham chiếu, không phải luật — luật 
 
 
 
+> **Tên hiển thị là "Tu Vi", định danh trong code vẫn là `linhcan`.** Lệch có ý:
+> *Linh Căn* là **tư chất bẩm sinh** — thứ không đổi được. Hệ này thì ngược lại,
+> nó là **bậc tu luyện**, lên từng nấc theo cảnh giới. Đổi cả họ định danh là sửa
+> ~50 chỗ ở 7 file mà không đổi một hành vi nào, nên chỉ đổi nhãn; chỗ lệch duy
+> nhất ghi ở đầu [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua).
+
 ## Đột phá cộng bao nhiêu chỉ số
 
 Mỗi lần đột phá **cộng thêm** một cục, cục sau lớn hơn cục trước `×1.30`
@@ -27,14 +33,14 @@ Mỗi lần đột phá **cộng thêm** một cục, cục sau lớn hơn cục
 
 ### Vì sao cột "Phát" đứng yên
 
-**Quái bám theo chính đường cong Linh Căn**, không có đường cong riêng
+**Quái bám theo chính đường cong Tu Vi**, không có đường cong riêng
 (`CFG.MOB_EHP_THEO_LINHCAN`):
 
 ```
-EHP quái = MOB_EHP_BASE × (hệ số Linh Căn của cảnh giới) × MOB_EHP_GROWTH^(tầng−1)
+EHP quái = MOB_EHP_BASE × (hệ số Tu Vi của cảnh giới) × MOB_EHP_GROWTH^(tầng−1)
 ```
 
-Cả hai vế đều mang cùng thừa số hệ số Linh Căn nên nó **triệt tiêu** — tỉ lệ
+Cả hai vế đều mang cùng thừa số hệ số Tu Vi nên nó **triệt tiêu** — tỉ lệ
 "mấy phát một con" phẳng theo *định nghĩa*, không phải nhờ chỉnh số.
 
 Hợp đồng ngầm: người chơi lên **đúng một bậc mỗi cảnh giới** — và đó chính là

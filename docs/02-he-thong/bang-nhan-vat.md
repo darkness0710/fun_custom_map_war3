@@ -56,7 +56,7 @@ Bấm **E** mở một bảng frame che giữa màn hình, có bốn thẻ:
 
 ```
 ┌──────────────────────────────────────────────┐
-│  [Kỹ Năng] [Trang Bị] [Linh Căn] [Pháp Khí]  │
+│  [Kỹ Năng] [Trang Bị] [Tu Vi] [Pháp Khí]  │
 ├──────────────────────────────────────────────┤
 │                                              │
 │              nội dung thẻ đang mở            │
@@ -77,13 +77,13 @@ Mỗi thẻ là một nguồn sức mạnh trong ngân sách ×967 —
 
 | Thẻ | Nhân | Mua bằng | Cấu trúc |
 |---|---|---|---|
-| **Linh Căn** | ×19.7 | **Linh Khí** | 20 bậc tu vi, ×1.17/bậc | `focus` |
+| **Tu Vi** | ×19.7 | **Linh Khí** | 20 bậc tu vi, ×1.17/bậc | `focus` |
 | **Kỹ Năng** | ×2.4 | **Ngộ Tính** | 7 kỹ năng × 10 cấp, +10%/cấp | `list` |
 | **Trang Bị** | ×8.3 | **Linh Khí** | 6 ô × 10 cấp, +4%/cấp | `list` |
 | **Pháp Khí** | ×2.5 | **Tinh Thạch** | 5 món, mua một lần | `list` |
 
 Ba đồng tiền, ba loại quái —
-[ADR 0015](../05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md). Linh Căn và Trang
+[ADR 0015](../05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md). Tu Vi và Trang
 Bị cố ý dùng chung ví; đó là lựa chọn chính mỗi wave.
 
 ## Hai kiểu thân bảng
@@ -91,7 +91,7 @@ Bị cố ý dùng chung ví; đó là lựa chọn chính mỗi wave.
 Bốn hệ không cùng hình dạng, nên bảng có hai kiểu thân chứ không một —
 [ADR 0016](../05-quyet-dinh/0016-bang-phim-e-hai-kieu-than.md).
 
-**`kind = "focus"`** — một thẻ lớn, **một** hành động. Dùng cho Linh Căn, vì
+**`kind = "focus"`** — một thẻ lớn, **một** hành động. Dùng cho Tu Vi, vì
 trong 20 bậc chỉ có đúng bậc kế tiếp là mua được.
 
 ```lua
@@ -116,7 +116,7 @@ Thêm một hệ mới = trả về một danh sách mục. Không phải dựng
 
 Thiết kế xong không có nghĩa là cài cùng lúc. Thứ tự đề xuất:
 
-1. **Linh Căn** — một danh sách 20 bậc, một nút đột phá, một con số nhân. Đơn giản
+1. **Tu Vi** — một danh sách 20 bậc, một nút đột phá, một con số nhân. Đơn giản
    nhất về giao diện mà lại là ×20, tức **nguồn sức mạnh lớn nhất**. Làm trước thì
    đường cong địch có đối trọng ngay.
 2. **Kỹ Năng** — đã có 21 kỹ năng thiết kế sẵn
@@ -127,7 +127,7 @@ Thiết kế xong không có nghĩa là cài cùng lúc. Thứ tự đề xuất
 Một thẻ mở ra trống rỗng tệ hơn là chưa có thẻ đó. Chỉ thêm tab khi nội dung của
 nó đã chạy được.
 
-## Thẻ Linh Căn — **đã cài**
+## Thẻ Tu Vi — **đã cài**
 
 > Code: [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua). Mở bằng `-lc`.
 > Không vẽ được frame thì tự lùi về thông báo chữ, và `-lc up` đột phá

@@ -55,7 +55,7 @@ Hai câu hỏi từng chặn bước này **đã quyết**:
 
 - Nhà chính đếm máu hay đếm mạng → **đếm máu**, [ADR 0011](05-quyet-dinh/0011-nha-chinh-dem-mang.md)
   bị lật.
-- Sức mạnh người chơi tăng bằng gì → Linh Căn + Kỹ năng đã cài; Trang bị và
+- Sức mạnh người chơi tăng bằng gì → Tu Vi + Kỹ năng đã cài; Trang bị và
   Pháp Khí thì chưa (xem Bước 7).
 
 **Chưa làm trong bước này:** tu chính (`MODIFIERS`), 24 mẫu lính, thân boss.

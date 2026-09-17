@@ -28,7 +28,7 @@
 >
 > | Tiền | Ở đâu | Nhịp | Tiêu vào | Ngân sách |
 > |---|---|---|---|---|
-> | **Linh Khí** | biến riêng, hiện ở bảng | cảnh giới | Linh Căn | 9,500 / 10,000 = **95%** |
+> | **Linh Khí** | biến riêng, hiện ở bảng | cảnh giới | Tu Vi | 9,500 / 10,000 = **95%** |
 > | **Vàng** | thanh tài nguyên | giây | Shop | 4,000 |
 > | **Gỗ** | thanh tài nguyên | wave / cảnh giới | Kỹ Năng | 70 / 260 |
 >
@@ -45,7 +45,7 @@
 > con số chỉ tăng chứ không bao giờ dùng được thì tệ hơn là không có.
 >
 > Giá suy ngược từ thu nhập phẳng:
-> - **Linh Căn** **phẳng 500 mỗi lần**, 19 lần = `9,500`. Số cũ `439 × 1.412` cho
+> - **Tu Vi** **phẳng 500 mỗi lần**, 19 lần = `9,500`. Số cũ `439 × 1.412` cho
 >   tổng `747,839` — tính cho thu nhập mũ, với thu nhập phẳng thì bậc cuối
 >   `218,519` là không bao giờ với tới.
 > - **Kỹ Năng** `3` Gỗ mỗi lần *(mở khoá và đôn bậc như nhau)*, trọn bảy =
@@ -140,7 +140,7 @@ khung hình; `UnitUseItem` thì đổi trạng thái ván đấu, gọi thẳng 
 
 | | Rơi từ | Cả ván | Mua gì | Nhịp | Hiện ở |
 |---|---|---|---|---|---|
-| **Linh Khí** *(vàng)* | lính thường | ~1 880 000 | Linh Căn, Trang Bị | giây | thanh vàng |
+| **Linh Khí** *(vàng)* | lính thường | ~1 880 000 | Tu Vi, Trang Bị | giây | thanh vàng |
 | **Ngộ Tính** | **tinh anh + boss** | 300 | **Kỹ Năng · Pháp Khí** | wave | bảng phím R |
 | **Tinh Thạch** *(gỗ)* | boss | 1 150 | ⚠ **không gì cả** | cảnh giới | thanh gỗ |
 
@@ -150,12 +150,12 @@ Ba loại quái đã có sẵn ba **nhịp** khác hẳn nhau — 11 000 con lí
 
 | Hệ | Cần gì để nâng |
 |---|---|
-| Linh Căn | *giết quái, gom tiền* |
+| Tu Vi | *giết quái, gom tiền* |
 | Trang Bị | *giết quái, gom tiền* |
 | Kỹ Năng | *giết tinh anh và boss* |
 | Pháp Khí | *giết tinh anh và boss* — cùng ví với Kỹ Năng |
 
-**Linh Căn và Trang Bị cố ý dùng chung ví.** Đó là lựa chọn chính của mỗi wave:
+**Tu Vi và Trang Bị cố ý dùng chung ví.** Đó là lựa chọn chính của mỗi wave:
 đột phá, hay nâng đồ? Hai hệ kia không tranh ví đó — chúng bị chặn bởi **nội
 dung** chứ không bởi tiền, nên không cày tiền để bỏ qua được.
 
@@ -198,7 +198,7 @@ thông báo ta vẫn gọi đúng tên, vài phút sau không ai để ý nữa.
 
 | Hệ | Nhân | Cấu trúc |
 |---|---|---|
-| **Linh Căn** — tu vi của người chơi | **×20** | 20 bậc, mỗi bậc ×1.17 |
+| **Tu Vi** — tu vi của người chơi | **×20** | 20 bậc, mỗi bậc ×1.17 |
 | **Trang Bị** | **×8** | 6 ô, mỗi ô 10 cấp, mỗi cấp +4% |
 | **Kỹ Năng** | **×2.4** | 7 kỹ năng × 10 cấp, mỗi cấp +10% |
 | **Pháp Khí** | **×2.5** | 5 món, mỗi món ×1.2 |
@@ -212,7 +212,7 @@ là tích lệch hơn gấp đôi.
 > 1.215) và `CFG.TRANGBI_COST_BASE = 147` (không phải 86) đều thuộc bản này.
 >
 > Bản cũ chia **ba** nguồn: tu vi ×40.5, trang bị ×12, kỹ năng ×2 = ×971. Cũng
-> đúng — nhưng **không trộn được**. Trộn Linh Căn ×40.5 của bản cũ với Trang Bị
+> đúng — nhưng **không trộn được**. Trộn Tu Vi ×40.5 của bản cũ với Trang Bị
 > ×8 của bản này cho ×1 942, gấp đôi hợp đồng.
 > [ADR 0015](../05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md)
 
@@ -243,11 +243,11 @@ con lính — đủ để đáng đi giết riêng, không đủ để bỏ mặ
 ### Chia ngân sách
 
 Chỉ **hai** hệ tiêu Linh Khí — Kỹ Năng và Pháp Khí đều tiêu Ngộ Tính, nên phần
-Linh Khí còn lại dồn hết cho Linh Căn và Trang Bị.
+Linh Khí còn lại dồn hết cho Tu Vi và Trang Bị.
 
 | Hệ | Tỉ lệ | Linh Khí (đo được) |
 |---|---|---|
-| Linh Căn | 40% | 747 839 |
+| Tu Vi | 40% | 747 839 |
 | Trang Bị | 52% | 974 605 |
 | Không tiêu hết | 8% | 157 743 |
 
@@ -263,7 +263,7 @@ Linh Khí rơi ra, nên "một lần nâng cấp đáng mấy wave" là **hằng
 Đây là tính chất quan trọng nhất của bảng giá. Không có nó thì hoặc đầu game nghèo
 kiết xác, hoặc cuối game tiền thừa mứa không biết tiêu.
 
-### Linh Căn — 19 lần đột phá
+### Tu Vi — 19 lần đột phá
 
 ```
 gia(bac r) = 439 × 1.412^(r-1)
@@ -299,7 +299,7 @@ Mỗi cấp +4% sát thương. Sáu ô đầy cấp 10 = `(1.04⁹)⁶ ≈ ×8.3
 
 `1.134 = 1.0319^4.07` — 54 lần nâng trải đều 100 stage thì mỗi lần cách nhau
 4,07 stage, nên "một lần nâng đồ đáng mấy wave" là hằng số suốt ván. Cùng nguyên
-tắc với 7,1 wave của Linh Căn.
+tắc với 7,1 wave của Tu Vi.
 
 > **Sáu ô có tác dụng giống hệt nhau (+4% sát thương).** Không phải quên làm cho
 > đa dạng: ngân sách Trang Bị là ×8 **sát thương**, mà ×8 đó chính là
@@ -382,7 +382,7 @@ Chỉ số thì đã có ba hệ kia lo rồi.
 - **Linh Khí riêng từng người hay quỹ chung.** Riêng thì mỗi người tự quyết build;
   chung thì buộc phải bàn nhau. Hai cảm giác chơi rất khác — và nó đổi cả cách
   thiết kế [bảng nhân vật](bang-nhan-vat.md).
-- Linh Căn lên bằng gì: tự động theo cảnh giới địch, hay phải gom Linh Khí đột
+- Tu Vi lên bằng gì: tự động theo cảnh giới địch, hay phải gom Linh Khí đột
   phá. Bảng giá ở trên giả định **phải gom** — chọn tự động thì bỏ 40% ngân sách
   và ba hệ kia phải gánh lại.
 - Chết có mất Linh Khí không.

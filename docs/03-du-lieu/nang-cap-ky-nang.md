@@ -20,7 +20,7 @@ skill có **9 lần nâng** — cả hero là 63 lần, trải 100 stage.
 ## Ngân sách: ×2, và ×2 đó là TÍCH của mọi nút chỉnh
 
 Từ [đường cong sức mạnh](duong-cong-suc-manh.md): cả hệ nâng cấp kỹ năng được
-**×2** trong tổng ×967. Linh Căn ×40, trang bị ×12.
+**×2** trong tổng ×967. Tu Vi ×40, trang bị ×12.
 
 Sai lầm dễ mắc: cho sát thương ×2 **rồi** giảm hồi chiêu 60s→33s. Hồi chiêu ngắn
 đi nghĩa là đánh được nhiều lần hơn — đó cũng là sức mạnh. Làm vậy là ×3,6, vượt
@@ -65,21 +65,21 @@ bac           gia     cong don    cd 60s    he so  bi dong     tich
 
 ## Vì sao bước giá từng là 1,99 — và vì sao nó không còn
 
-Linh Căn có 20 bậc, kỹ năng có 10 — mỗi bậc kỹ năng trải **2 cảnh giới**. Nên
-bước giá kỹ năng = bước giá Linh Căn bình phương: 1,412² = 1,99. Nhờ đó "nâng cả
-7 skill một bậc" luôn xấp xỉ "một lần đột phá Linh Căn" cùng thời điểm.
+Tu Vi có 20 bậc, kỹ năng có 10 — mỗi bậc kỹ năng trải **2 cảnh giới**. Nên
+bước giá kỹ năng = bước giá Tu Vi bình phương: 1,412² = 1,99. Nhờ đó "nâng cả
+7 skill một bậc" luôn xấp xỉ "một lần đột phá Tu Vi" cùng thời điểm.
 
 **Tính chất đó đã mất**, và mất có chủ ý. Nó chỉ có nghĩa khi hai hệ tiêu **cùng
 một đồng tiền** — so 89 Linh Khí với 439 Linh Khí thì được, so 2 Ngộ Tính với
 439 Linh Khí thì không so được.
 
-Đổi lại: Linh Căn và Kỹ Năng không còn tranh nhau một cái ví, nên mỗi hệ có một
+Đổi lại: Tu Vi và Kỹ Năng không còn tranh nhau một cái ví, nên mỗi hệ có một
 câu trả lời riêng cho "cần gì để nâng".
 [ADR 0015](../05-quyet-dinh/0015-ba-dong-tien-ba-loai-quai.md)
 
 Hệ quả là một câu so sánh người chơi đọc được:
 
-| Nâng cả 7 skill một bậc | Đột phá Linh Căn cùng lúc | Tỉ lệ |
+| Nâng cả 7 skill một bậc | Đột phá Tu Vi cùng lúc | Tỉ lệ |
 |---|---|---|
 | 1→2: 623 | bậc 2→3: 620 | 1,01 |
 | 5→6: 9 770 | bậc 10→11: 9 794 | 1,00 |
@@ -99,13 +99,13 @@ Nếu dồn toàn bộ Linh Khí vào kỹ năng (không đột phá lần nào)
 | 8 | 120 |
 | 10 | 163 |
 
-Đó là **cận trên của tốc độ**. Thực tế còn phải chia với Linh Căn nên chậm hơn.
+Đó là **cận trên của tốc độ**. Thực tế còn phải chia với Tu Vi nên chậm hơn.
 Tổng hai khoản = 56% thu nhập cả ván, còn dư 44% — chưa chặt, còn chỗ cho các
 nguồn tiêu sau này.
 
 ## Lỗi kinh tế đã sửa cùng lúc
 
-Tiền thưởng trước đây **chỉ vào người kết liễu**. Nhưng giá Linh Căn và giá nâng
+Tiền thưởng trước đây **chỉ vào người kết liễu**. Nhưng giá Tu Vi và giá nâng
 kỹ năng thì **từng người tự trả nguyên giá**, còn độ khó lại tăng theo số người
 (EHP lính ×2,2 khi ba người).
 
@@ -123,15 +123,15 @@ nhất. Kinh tế mỗi người giống hệt solo:
 ## Cái bẫy: giáp không chịu quy tắc ×2
 
 Warcraft tính EHP từ giáp theo `1 + 0,06 × giáp`. Cộng thêm giáp thì đóng góp
-của nó tăng tuyến tính — nhưng **giáp bản thân hero cũng tăng**, vì Linh Căn cho
+của nó tăng tuyến tính — nhưng **giáp bản thân hero cũng tăng**, vì Tu Vi cho
 +770 mỗi chỉ số ở bậc 20, và Agility sinh giáp.
 
 Đo với aura +15 (bậc 1) và +30 (bậc 10):
 
 | | Giáp bản thân | Aura +15 | Aura +30 |
 |---|---|---|---|
-| Linh Căn bậc 1 | 8 | **+61% EHP** | **+122% EHP** |
-| Linh Căn bậc 20 | ~115 | +11% EHP | +23% EHP |
+| Tu Vi bậc 1 | 8 | **+61% EHP** | **+122% EHP** |
+| Tu Vi bậc 20 | ~115 | +11% EHP | +23% EHP |
 
 Đóng góp của aura vẫn ×2 đúng ngân sách. Nhưng so với tổng EHP thì nó **teo từ
 +122% xuống +23%** — cuối game aura gần như vô nghĩa. Đúng bài học
@@ -139,7 +139,7 @@ của nó tăng tuyến tính — nhưng **giáp bản thân hero cũng tăng**,
 chỗ khác.
 
 **Cách chữa:** aura cộng **phần trăm giáp của chính hero** thay vì cộng số cố
-định, viết bằng Lua (`BlzSetUnitArmor`). Lúc đó nó tự bám theo Linh Căn. Cần
+định, viết bằng Lua (`BlzSetUnitArmor`). Lúc đó nó tự bám theo Tu Vi. Cần
 kiểm `BlzSetUnitArmor` có trên bản này không — gõ `-nat` trong game.
 
 > Đây là ví dụ rõ nhất cho việc **khi nào nên fake skill bằng Lua**: không phải
@@ -162,13 +162,13 @@ kiểm `BlzSetUnitArmor` có trên bản này không — gõ `-nat` trong game.
 
 ### Cộng thẳng thì chết, phần trăm thì sống
 
-Đây là lằn ranh quan trọng nhất của cả bảng. Linh Căn cộng **+770 mỗi chỉ số** ở
-bậc 20. Mọi kỹ năng cộng một lượng **cố định** vào thứ Linh Căn cũng cộng vào đều
+Đây là lằn ranh quan trọng nhất của cả bảng. Tu Vi cộng **+770 mỗi chỉ số** ở
+bậc 20. Mọi kỹ năng cộng một lượng **cố định** vào thứ Tu Vi cũng cộng vào đều
 bị nuốt.
 
 `A004` cộng +20 (bậc 1) → +40 (bậc 10), tính theo % chỉ số hero:
 
-| Linh Căn | Chỉ số hero | A004 bậc 1 | A004 bậc 10 |
+| Tu Vi | Chỉ số hero | A004 bậc 1 | A004 bậc 10 |
 |---|---|---|---|
 | bậc 1 | 40 | +50% | **+100%** |
 | bậc 10 | 164 | +12% | +24% |
@@ -244,7 +244,7 @@ mở khoá ảnh hưởng thật đến đợt đầu — xem bảng kỹ năng,
 ## Số gốc cho 7 kỹ năng của Hart
 
 Sát thương và hồi máu tính theo **hệ số × (17 + chỉ số cao nhất của hero)**.
-Bị động tính theo **phần trăm**. Cả hai đều tự bám theo Linh Căn.
+Bị động tính theo **phần trăm**. Cả hai đều tự bám theo Tu Vi.
 
 | Kỹ năng | Loại | Bậc 1 | Bậc 10 |
 |---|---|---|---|
@@ -267,11 +267,11 @@ Dam Dat phai bu        : 35,7 EHP/giay
 he so = 35,7 x 8,0 / (8 con x 27) = 1,32
 ```
 
-Kiểm ngược ở cuối game (Linh Căn bậc 20, kỹ năng bậc 10, ×12 trang bị):
+Kiểm ngược ở cuối game (Tu Vi bậc 20, kỹ năng bậc 10, ×12 trang bị):
 **51 595** so với **58 019 cần** — đạt 89%. Nằm trong sai số của ba giả định chưa
 đo: tốc độ đánh 2,0s, Chưởng trúng 8 con, Chém Lan có 4 con đứng gần.
 
-## Lỗ hổng đã vá: Linh Căn thiếu một nửa
+## Lỗ hổng đã vá: Tu Vi thiếu một nửa
 
 Phát hiện khi đi gán số gốc. `CFG.LINHCAN_STEP` đang là **1,17**:
 

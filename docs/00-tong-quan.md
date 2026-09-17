@@ -26,7 +26,7 @@ thiết kế, và là chỗ mọi con số quy về —
 | Chọn hero lúc vào map | [2_heropick.lua](../src/2_nguoi_choi/2_heropick.lua) | 3 hero, mỗi người 1, không ai trùng |
 | Khoá kinh nghiệm & điểm kỹ năng | [1_player.lua](../src/2_nguoi_choi/1_player.lua) | Quét lại toàn map mỗi `HERO_XP_SWEEP` giây |
 | **100 đợt quái** | [2_wave.lua](../src/3_tran_dau/2_wave.lua) | Đường cong chỉ số, tinh anh, boss, tiền thưởng |
-| **Linh Căn** — tu vi người chơi | [3_linhcan.lua](../src/2_nguoi_choi/3_linhcan.lua) | 20 bậc, ×19.7 — mua bằng **Linh Khí** |
+| **Tu Vi** — tu vi người chơi | [3_linhcan.lua](../src/2_nguoi_choi/3_linhcan.lua) | 20 bậc, ×19.7 — mua bằng **Linh Khí** |
 | **Bảy kỹ năng, 10 bậc** | [4_skill.lua](../src/2_nguoi_choi/4_skill.lua) · [7_hieuung.lua](../src/2_nguoi_choi/7_hieuung.lua) | ×2.4 — mua bằng **Ngộ Tính**. Sát thương **đã ăn theo chỉ số thật** |
 | **Sáu ô trang bị** | [5_trangbi.lua](../src/2_nguoi_choi/5_trangbi.lua) | ×8.3 — mua bằng **Linh Khí** |
 | **Năm pháp khí** | [6_phapkhi.lua](../src/2_nguoi_choi/6_phapkhi.lua) | ×2.5 — mua bằng **Tinh Thạch** (boss) |
@@ -69,7 +69,7 @@ code**: lối chơi vẫn hoãn có chủ ý,
 
 | Nguồn | Nhân | Mua bằng | Trạng thái |
 |---|---|---|---|
-| Linh Căn | ×19.7 | Linh Khí | Đã cài |
+| Tu Vi | ×19.7 | Linh Khí | Đã cài |
 | Trang Bị | ×8.3 | Linh Khí | Đã cài |
 | Kỹ Năng | ×2.4 | Ngộ Tính | Đã cài và **đã có hiệu lực** |
 | Pháp Khí | ×2.5 | **Ngộ Tính** | ⚠ **rỗng** — năm món cũ đã xoá 2026-09-16 |
