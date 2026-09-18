@@ -341,6 +341,10 @@ end
 -- Moi dieu kien chan (con quai song, het stage) da kiem o waveNow/callState
 -- TRUOC khi toi day.
 local function onWaveTimer()
+  -- Co mo o waveNow() ha xuong NGAY DAY: den day dot da that su bat
+  -- dau, khong con gi de tranh nhau nua. Ha truoc ca phep kiem
+  -- S.running, neu khong mot lan tu choi la co ket cung mai mai.
+  S.waveCalling = false
   if not S.running then return end
 
   local nextStage = S.stage + 1
@@ -394,6 +398,18 @@ local function waveNow()
   end
 
   if S.stage + 1 > totalStages() then return false end
+
+  -- KHE 0.02 GIAY. Tu day den luc spawnStage() chay, S.alive van la 0,
+  -- nen phep kiem "con quai song thi thoi" o tren VAN CHO QUA. Bam hai
+  -- cai lien la ra hai dot -- da dinh: 100 con mot luc.
+  --
+  -- Co nay dong khe do lai. No o TRONG waveNow chu khong o giao dien:
+  -- lenh chat -next va nguoi choi thu hai khong di qua giao dien nao.
+  if S.waveCalling then
+    API.trace("waveNow: TU CHOI -- dang goi mot dot roi")
+    return false
+  end
+  S.waveCalling = true
 
   API.trace("waveNow: goi dot " .. (S.stage + 1) ..
             " (cho=" .. tostring(S.waitNext) .. ")")

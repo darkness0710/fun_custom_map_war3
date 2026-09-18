@@ -50,7 +50,7 @@ thì hệ sau xoá hệ trước — đúng cái bẫy mà `API.heroRecompute` t
 [7_effect.lua](../../src/2_player/7_effect.lua) đã dựng ra để tránh cho ba
 chỉ số.
 
-Nên khi làm dây chuyền / nhẫn: mọi nguồn bonus phải đi qua **một** hàm tính lại
+Nên khi làm dây chuyền / áo choàng: mọi nguồn bonus phải đi qua **một** hàm tính lại
 `base + Σ bonus` rồi ghi **một lần**, giống hệt cách `heroRecompute` đang làm.
 
 ## Bẫy khi đo: bể đầy giữa chừng

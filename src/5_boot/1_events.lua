@@ -103,23 +103,18 @@ local function onCultCmd()
   API.cultChat(GetPlayerId(GetTriggerPlayer()), GetEventPlayerChatString())
 end
 
--- Lenh dev cho tien: "-lk 5000" Linh Khi, "-go 300" Go, "-vang 5000" Vang.
--- Khong co no thi muon thu bac Linh Can 15 phai cay 155 wave.
+-- Lenh dev cho tien: "-go 300" Go, "-vang 5000" Vang.
+-- Khong co no thi muon thu bac Tu Vi 15 phai cay 155 wave.
+--
+-- "-lk" DA BO. No lech dung MOT ky tu voi "-lc" (mo the Tu Vi), va hai
+-- lenh do lam hai viec khac han nhau -- go nham la cong tien thay vi mo
+-- bang. Muon Linh Khi thi dung "-debug", no day het ca bon dong tien.
 local function onMoneyCmd()
   local pid = GetPlayerId(GetTriggerPlayer())
   local raw = GetEventPlayerChatString()
   if raw == nil then return end
 
-  local n = tonumber(raw:match("^%s*%-lk%s+(%d+)"))
-  if n ~= nil then
-    API.addQi(pid, n)
-    API.msg(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " linh khi -> " ..
-      API.num(API.getQi(pid)) .. CFG.C_END)
-    API.panelRefresh(pid)
-    return
-  end
-
-  n = tonumber(raw:match("^%s*%-go%s+(%d+)"))
+  local n = tonumber(raw:match("^%s*%-go%s+(%d+)"))
   if n ~= nil then
     API.addLumber(pid, n)
     API.msg(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " go -> " ..
@@ -137,7 +132,50 @@ local function onMoneyCmd()
     return
   end
 
-  API.msg(pid, CFG.C_RED .. "Dung: -lk <so> | -go <so> | -vang <so>" .. CFG.C_END)
+  API.msg(pid, CFG.C_RED .. "Dung: -go <so> | -vang <so>" .. CFG.C_END)
+end
+
+
+-- "-debug": day CA BON dong tien len CFG.DEBUG_MONEY.
+--
+-- Chi chay khi CFG.DEBUG bat -- KHAC voi nhom lenh dev o tren (chung
+-- theo CFG.DEV_COMMANDS). Hai cong tac tach nhau la co y: tat bao cao
+-- chi tiet van go duoc lenh dev, va nguoc lai. Lenh nay dua het tien
+-- cho nguoi choi nen no thuoc ve cong tac "dang soi ky", khong phai
+-- cong tac "dang go lenh".
+local function onDebugCmd()
+  local pid = GetPlayerId(GetTriggerPlayer())
+
+  -- Khop chat: "-debug" hoac "-debug   ", KHONG an "-debugxyz".
+  local raw = GetEventPlayerChatString()
+  if raw == nil or raw:match("^%s*%-debug%s*$") == nil then return end
+
+  -- Cong tac tat thi NOI RA. Khong lam gi ma cung khong bao la kieu
+  -- hong te nhat: nguoi go tuong lenh hong, di sua nham cho khac.
+  if not CFG.DEBUG then
+    API.msg(pid, CFG.C_RED .. "-debug can CFG.DEBUG = true" .. CFG.C_END ..
+      CFG.C_GREY .. "  (sua o dau src/1_core/1_config.lua roi chay lai build.py)"
+      .. CFG.C_END)
+    API.trace("-debug: TU CHOI -- CFG.DEBUG = false")
+    return
+  end
+
+  local n = CFG.DEBUG_MONEY or 999999
+
+  API.addQi(pid, n)
+  API.addGold(pid, n)
+  API.addLumber(pid, n)
+  if API.addIron ~= nil then API.addIron(pid, n) end
+
+  API.msg(pid, CFG.C_GOLD .. "[debug] +" .. API.num(n) ..
+    " moi loai" .. CFG.C_END .. CFG.C_GREY ..
+    "  (Linh Khi " .. API.num(API.getQi(pid)) ..
+    " | Vang " .. API.num(API.getGold(pid)) ..
+    " | Go " .. API.num(API.getLumber(pid)) ..
+    " | Da " .. API.num((API.getIron ~= nil) and API.getIron(pid) or 0) ..
+    ")" .. CFG.C_END)
+  API.panelRefresh(pid)
+  API.trace("debug: pid " .. pid .. " +" .. n .. " ca bon dong tien")
 end
 
 local function registerEvents()
@@ -152,6 +190,18 @@ local function registerEvents()
                                      EVENT_PLAYER_UNIT_SELECTED, nil)
     end
     TriggerAddAction(tSelect, onSelect)
+  end
+
+  -- Nha chinh la hero, ma hero Warcraft co san sau o tui: keo mot binh
+  -- mau tha vao no la binh do bien mat vao tui nha chinh. Tra ngay ra
+  -- dat -- xem onHousePickup() trong 3_battle/1_house.lua.
+  if EVENT_PLAYER_UNIT_PICKUP_ITEM ~= nil and API.onHousePickup ~= nil then
+    local tPickup = CreateTrigger()
+    TriggerRegisterAnyUnitEventBJ(tPickup, EVENT_PLAYER_UNIT_PICKUP_ITEM)
+    TriggerAddAction(tPickup, API.onHousePickup)
+  else
+    API.trace("house: KHONG co EVENT_PLAYER_UNIT_PICKUP_ITEM -- " ..
+              "nha chinh van co the nuot do")
   end
 
   if CFG.DEV_COMMANDS then
@@ -172,12 +222,30 @@ local function registerEvents()
   if CFG.DEV_COMMANDS then
     local tMoney = CreateTrigger()
     for i = 1, #S.pids do
-      TriggerRegisterPlayerChatEvent(tMoney, Player(S.pids[i]), "-lk", false)
       TriggerRegisterPlayerChatEvent(tMoney, Player(S.pids[i]), "-go", false)
       TriggerRegisterPlayerChatEvent(tMoney, Player(S.pids[i]), "-vang", false)
     end
     TriggerAddAction(tMoney, onMoneyCmd)
   end
+
+  -- "-debug" theo CFG.DEBUG, khong theo CFG.DEV_COMMANDS.
+  --
+  -- LUON DANG KY, con CHAY hay khong thi hoi CFG.DEBUG o trong ham.
+  --
+  -- Ban truoc boc ca cum trong "if CFG.DEBUG then": cong tac tat thi
+  -- trigger khong ton tai, go lenh ra khong co gi, va khong mot dong
+  -- nao noi vi sao. Dung cai kieu "nuot loi" ma CLAUDE.md cam.
+  --
+  -- Khop TIEN TO chu khong khop chinh xac: "-debug " thua mot dau cach
+  -- van phai an -- bai hoc da ghi san o lenh "-sp". Phan chan
+  -- "-debugxyz" chuyen vao ham, bang mot phep khop chat.
+  local tDebug = CreateTrigger()
+  for i = 1, #S.pids do
+    TriggerRegisterPlayerChatEvent(tDebug, Player(S.pids[i]), "-debug", false)
+  end
+  TriggerAddAction(tDebug, onDebugCmd)
+  API.trace("lenh -debug: " ..
+            (CFG.DEBUG and "BAT" or "TAT (CFG.DEBUG = false)"))
 
   -- Loi choi, khong phai lenh dev -- luon dang ky.
   local tCult = CreateTrigger()
@@ -217,10 +285,93 @@ local function registerEvents()
       -- bao ro ai la nguoi bam.
       local waiting = API.waveWaiting()
       if API.waveNow() then
-        API.msg(nil, CFG.C_GREY .. GetPlayerName(Player(pid)) ..
-          " -> " .. API.t("wave_next") ..
+        -- Dung CHUNG khoa voi nut goi dot trong 6_gameframe.lua: hai
+        -- duong lam cung mot viec thi phai noi cung mot cau.
+        API.msg(nil, CFG.C_GREY ..
+          API.t("wave_called", GetPlayerName(Player(pid))) ..
           (waiting ~= nil and (" (" .. waiting .. ")") or "") .. CFG.C_END)
       end
+    end)
+  end
+
+  -- "-icon <ma>": tao mot item roi in TEN va DUONG DAN ICON THAT cua no.
+  --
+  -- Day la cach duy nhat biet mot duong dan icon co that: game dong goi
+  -- bang CASC nen khong liet ke tu ngoai duoc, ma go nham thi Warcraft
+  -- ve o XANH LA chu khong bao loi. Doan ba lan, sai ba lan.
+  --
+  -- Dung de di tim icon cho CFG.GEAR: "-icon ciri", "-icon hval"...
+  -- thay cai nao hop nghia thi chep duong dan vao bang.
+  if CFG.DEV_COMMANDS then
+    local tIcon = CreateTrigger()
+    for i = 1, #S.pids do
+      TriggerRegisterPlayerChatEvent(tIcon, Player(S.pids[i]), "-icon", false)
+    end
+    TriggerAddAction(tIcon, function()
+      local pid  = GetPlayerId(GetTriggerPlayer())
+      local code = GetEventPlayerChatString():match("^%s*%-icon%s+(%S%S%S%S)")
+      if code == nil then
+        API.msg(pid, CFG.C_RED .. "Dung: -icon <4 ky tu>, vi du -icon bspd"
+          .. CFG.C_END)
+        return
+      end
+      if CreateItem == nil then
+        API.msg(pid, CFG.C_RED .. "-icon: ban nay khong co CreateItem." .. CFG.C_END)
+        return
+      end
+      local it = CreateItem(FourCC(code), 0.0, 0.0)
+      if it == nil then
+        API.msg(pid, CFG.C_RED .. "-icon " .. code .. ": khong co item nay."
+          .. CFG.C_END)
+        API.trace("icon " .. code .. ": KHONG CO")
+        return
+      end
+      local name = (GetItemName ~= nil) and GetItemName(it) or "?"
+      local path = (BlzGetItemIconPath ~= nil) and BlzGetItemIconPath(it) or "?"
+      API.msg(pid, CFG.C_GOLD .. code .. CFG.C_END .. "  " .. name)
+      API.msg(pid, CFG.C_GREY .. "   " .. tostring(path) .. CFG.C_END)
+      API.trace("icon " .. code .. " = " .. name .. " | " .. tostring(path))
+      RemoveItem(it)
+    end)
+  end
+
+  -- "-fx <duong dan>": ve thu mot model ngay duoi chan hero.
+  --
+  -- Model go sai duong dan thi Warcraft KHONG ve gi va KHONG bao loi --
+  -- im hon ca icon, vi icon con ra o xanh la de thay. Khong co cach nao
+  -- BIET mot duong dan model co that ngoai viec ve thu.
+  --
+  --   -fx Abilities\Spells\Human\Avatar\AvatarCaster.mdl
+  --
+  -- Thay hien ra gi thi chep duong dan vao CFG.FX_SLAM_* / FX_HIT_*.
+  if CFG.DEV_COMMANDS then
+    local tFx = CreateTrigger()
+    for i = 1, #S.pids do
+      TriggerRegisterPlayerChatEvent(tFx, Player(S.pids[i]), "-fx", false)
+    end
+    TriggerAddAction(tFx, function()
+      local pid  = GetPlayerId(GetTriggerPlayer())
+      local path = GetEventPlayerChatString():match("^%s*%-fx%s+(.+)$")
+      if path == nil then
+        API.msg(pid, CFG.C_RED ..
+          "Dung: -fx <duong dan .mdl>" .. CFG.C_END)
+        return
+      end
+      path = path:gsub("%s+$", "")
+      local d = S.p[pid]
+      local h = d and d.hero or nil
+      if h == nil then
+        API.msg(pid, CFG.C_RED .. "-fx: ban chua co hero." .. CFG.C_END)
+        return
+      end
+      API.fx(path, GetUnitX(h), GetUnitY(h))
+      -- Khong the biet no CO ve ra hay khong: AddSpecialEffect tra ve
+      -- mot handle du duong dan sai. Nen phai NHIN, va dong nay chi de
+      -- doi chieu xem vua thu cai nao.
+      API.msg(pid, CFG.C_GREY .. "[fx] " .. path ..
+        CFG.C_END .. CFG.C_GOLD .. "  -- nhin xem co gi hien khong" ..
+        CFG.C_END)
+      API.trace("fx thu: " .. path)
     end)
   end
 

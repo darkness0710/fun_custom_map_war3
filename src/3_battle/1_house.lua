@@ -110,8 +110,48 @@ local function createHouse()
     if PauseUnit ~= nil then PauseUnit(S.house, true) end
   end
 
+  -- Go tui do. Xem CFG.HOUSE_REMOVE_ABILITIES.
+  if UnitRemoveAbility ~= nil and CFG.HOUSE_REMOVE_ABILITIES ~= nil then
+    local got = {}
+    for i = 1, #CFG.HOUSE_REMOVE_ABILITIES do
+      local aid = CFG.HOUSE_REMOVE_ABILITIES[i]
+      if UnitRemoveAbility(S.house, aid) then
+        got[#got + 1] = API.idToStr(aid)
+      end
+    end
+    API.trace("house: go ability -- " ..
+              ((#got > 0) and table.concat(got, " ") or "KHONG id nao trung"))
+  end
+
   API.trace("house: XONG")
   return S.house
+end
+
+-- ---------- Nha chinh khong nhan do ----------
+--
+-- Lop thu hai, va la lop CHAC: no khong phu thuoc vao viec doan dung ma
+-- ability tui do. Nha chinh vua nhat duoc mon nao thi tra ngay ra dat.
+--
+-- Tra ra dat chu khong xoa: mon do la cua nguoi choi, ho bo tien mua.
+-- Lam mat no thi cai gia cua mot cu keo nham nang hon han cai loi.
+local function onHousePickup()
+  if S.house == nil then return end
+  if GetTriggerUnit() ~= S.house then return end
+
+  local it = GetManipulatedItem()
+  if it == nil then return end
+
+  -- Dat lai tai cho nha chinh. UnitRemoveItem tra mon ra khoi tui roi
+  -- tha xuong ngay duoi chan unit, nen chi can goi no.
+  if UnitRemoveItem ~= nil then
+    UnitRemoveItem(S.house, it)
+  elseif SetItemPosition ~= nil then
+    SetItemPosition(it, GetUnitX(S.house), GetUnitY(S.house))
+  end
+
+  API.msg(nil, CFG.C_GREY .. API.t("house_no_items") .. CFG.C_END)
+  API.trace("house: tu choi mon " ..
+            ((GetItemName ~= nil) and GetItemName(it) or "?"))
 end
 
 -- Goi tu 08_events khi nha chinh chet. Day la dieu kien thua DUY NHAT.
@@ -180,6 +220,7 @@ end
 API.blockLabel         = blockLabel
 API.createHouse        = createHouse
 API.onHouseDeath       = onHouseDeath
+API.onHousePickup      = onHousePickup
 API.resolveEnemyRegion = resolveEnemyRegion
 API.setHouseHP         = setHouseHP
 API.report             = report

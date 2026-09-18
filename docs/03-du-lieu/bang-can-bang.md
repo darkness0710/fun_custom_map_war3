@@ -211,16 +211,21 @@ Chi tiết: [02-he-thong/kinh-te.md](../02-he-thong/kinh-te.md) ·
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-| `GEAR` | Bảy món `{ vi, en, role, icon }` | `role` là thứ code đọc để biết cộng gì. **Mỗi món một vai, không món nào trùng** |
+| `GEAR` | Tám món `{ key, vi, en, role, probe, icon }` | `role` là thứ code đọc để biết cộng gì. **Mỗi món một vai, không món nào trùng**. `key` là tên thư mục icon — **tiếng Anh**, vì nó thành đường dẫn thật trong map |
 | `GEAR_CAP` | 5 tên cấp | Cùng dạng `TIER_NAMES`. Số phần tử **phải bằng** `#GEAR_ODDS` |
-| `GEAR_ODDS` | `{1.00, .75, .50, .25, .15}` | Kỳ vọng 15 lần thử trọn một cảnh giới. Thất bại **chỉ mất viên đá** |
+| `GEAR_ODDS` | `{1.00, .75, .50, .25, .15}` | Kỳ vọng 15 lần thử trọn một cảnh giới. Thất bại **chỉ mất viên đá**. Người chơi bấm **một** lần, code quay hết — [ADR 0027](../05-quyet-dinh/0027-luyen-trang-bi-gop-mot-cu-bam.md) |
 | `GEAR_PRICE` `GEAR_DISMANTLE` | `1` `10` đá | Luyện phẳng; Tiến Giai là một **cửa** 100%, không phải canh bạc chồng canh bạc |
 | `GEAR_STAT_BASE` | `1.5` | Điểm cho **một bậc ở cảnh giới 1**. Các cảnh giới sau nhân theo **chính** `CULT_STAT_STEP`. Chọn để một món đi trọn 100 bậc = **4 726 điểm = 19.5% Tu Vi** — [ADR 0024](../05-quyet-dinh/0024-cong-thi-leo-nhan-thi-phang.md) |
 | `GEAR_DMG_MAX` | `0.20` | Kiếm ở bậc 100. **Tuyến tính**, không leo — % đã tự leo sẵn vì nó nhân với phần sức mạnh đang leo ×146 |
-| `GEAR_MITIG_MAX` | `0.25` | Khiên (đòn đánh) và Nhẫn (phép), mỗi món ở bậc 100. Cao hơn `DMG_MAX` vì mỗi món chỉ chạm **một phần** lượng sát thương vào. ⚠ Tỉ lệ 60/40 vật lý/phép là **giả định, chưa đo** |
-| `GEAR_MITIG_CAP` | `0.40` | Trần **cứng** cho tổng phần giảm sát thương. Khiên/Nhẫn và bị động `reduce` **nhân** với nhau chứ không cộng, nên không bao giờ chạm 100% — trần này chặn thêm một lần nữa |
+| `GEAR_MITIG_MAX` | `0.25` | Khiên (đòn đánh) và Áo Choàng (phép), mỗi món ở bậc 100. Cao hơn `DMG_MAX` vì mỗi món chỉ chạm **một phần** lượng sát thương vào. ⚠ Tỉ lệ 60/40 vật lý/phép là **giả định, chưa đo** |
+| `GEAR_LIFESTEAL_MAX` | `0.20` | Nhẫn ở bậc 100: % sát thương gây ra hồi thành máu. Bằng đúng `DMG_MAX` — hai món cùng ăn theo sát thương gây ra nên chung một thang đo |
+| `GEAR_ICON_PATH` | `gear\<key>\NN.blp` | Công thức dựng đường dẫn icon. Thêm cảnh giới = thả ảnh + chạy `w3gear_icons.py`, không sửa Lua |
+| `GEAR_ICON_MAX` | `1` | Cảnh giới cao nhất **đã có ảnh**. Trên mức này thì dùng ảnh của mức này |
+| `GEAR_MITIG_CAP` | `0.40` | Trần **cứng** cho tổng phần giảm sát thương. Khiên/Áo Choàng và bị động `reduce` **nhân** với nhau chứ không cộng, nên không bao giờ chạm 100% — trần này chặn thêm một lần nữa |
 | `GEAR_SLOTS` | `{cột, dòng}` mỗi món | Bố cục lưới ô trong bảng. Bảng chỉ **đọc** — đổi chỗ hai món là sửa một dòng ở đây, không đụng `1_panel.lua`. Lệch số ô/số món thì `API.trace` báo lúc vào map |
-| `GEAR_SILHOUETTE` | `nil` | Hình bóng người ở cột giữa. Phải là đường dẫn **đã import**; gõ đường dẫn chưa có sẽ ra ô **xanh lá**, không phải ô trống |
+| `GEAR_DOLL_COL` | `2` | Cột giữa lưới = lý lịch hero (icon + tên + cảnh giới). `nil` thì bỏ cột đó |
+| `GEAR_DOLL_ICON` | `0.090` | Cạnh ô icon hero, 162px @1080p — phóng 2,5 lần từ 64px. Lấp đầy cột (`0.1375`) là 3,9 lần và nhìn ra bệt |
+| `GEAR_PET_SLOT` | `{2,4}` | Ô Pet: chỗ dành sẵn, vẽ như ô thật nhưng **không có nút**. `nil` thì bỏ |
 
 Cộng vào **sát thương nền**, không cộng chỉ số — Tu Vi đã cộng chỉ số rồi, và
 đổi một hệ thì phần của nó phải đo được riêng.
@@ -282,7 +287,7 @@ món cần bộ bắt sự kiện riêng là một món có thể hỏng âm th�
 > Thẻ đá của Cơ Duyên đã bỏ; đá giờ chỉ mua bằng **vàng ở shop** (giá `10`), và
 > chỉ tiêu vào Trang Bị — đã mở. Một cửa vào, một cửa ra, nên **giá đá là núm
 > duy nhất điều nhịp lên đồ**:
-> cả ván 12 400 vàng → 1 240 đá → **~2.6 trong 7 món**.
+> cả ván 12 400 vàng → 1 240 đá → **~2.6 trong 8 món**.
 > [ADR 0025](../05-quyet-dinh/0025-co-duyen-con-hai-the.md)
 
 ## Đồng bộ nhiều người chơi
@@ -321,7 +326,8 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | Khoá | Hiện tại | Tác dụng |
 |---|---|---|
 | `DEBUG` | `false` | Dòng `[dbg]`, bảng số lưới, ping minimap, báo cáo chi tiết. Lỗi thật (thiếu vùng, tạo unit hỏng) vẫn hiện dù tắt |
-| `DEV_COMMANDS` | `true` | `-sp` `-wave` `-lk` `-tt` `-spawn`. Có **riêng** một cờ để tắt báo cáo mà vẫn gõ lệnh thử được |
+| `DEV_COMMANDS` | `true` | `-sp` `-wave` `-go` `-vang` `-spawn` `-icon`. Có **riêng** một cờ để tắt báo cáo mà vẫn gõ lệnh thử được |
+| `DEBUG_MONEY` | `999999` | Lệnh `-debug` đẩy cả bốn đồng tiền lên số này. Chỉ có khi `CFG.DEBUG` bật |
 | `TRACE` `TRACE_FILE` | `true` | Ghi vết khởi động ra file. Game sập thì mọi dòng chat đều mất — đây là cách duy nhất biết nó chết ở bước nào |
 | `REVEAL_MAP` | `true` | Mở toàn bộ sương mù — **luật của map**, không phải công tắc dev |
 | `REWARD_MOB_QI` `REWARD_MOB_GOLD` | `1` `1` | Lính thường rơi ra. **Phẳng**, không theo stage |

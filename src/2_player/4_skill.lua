@@ -356,6 +356,9 @@ local function tabItems(pid)
       if price ~= nil then
         it.btn    = API.t("btn_unlock") .. "  " .. price .. " " .. API.t("cur_lumber")
         it.btnOn = (lumber >= price)
+        if not it.btnOn then
+          it.btn = it.btn .. API.t("gear_btn_have", API.num(lumber))
+        end
       end
     else
       -- Hien TRAN THAT, khong hien tran thiet ke. Bang bao 10/10 trong
@@ -371,6 +374,9 @@ local function tabItems(pid)
       if price ~= nil then
         it.btn    = API.t("btn_up") .. "  " .. price .. " " .. API.t("cur_lumber")
         it.btnOn = (lumber >= price)
+        if not it.btnOn then
+          it.btn = it.btn .. API.t("gear_btn_have", API.num(lumber))
+        end
       else
         it.status = CFG.C_GREY .. API.t("st_max") .. CFG.C_END
       end

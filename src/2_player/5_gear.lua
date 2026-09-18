@@ -2,7 +2,7 @@
 --  5_gear.lua  --  Sau mon, moi mon tien hoa 100 bac
 --
 --  Moi mon di 20 canh gioi x 5 cap. TRAN la TU VI cua nguoi choi.
---  Luat day du: docs/02-he-thong/trang-bi-kiem.md  ·  ADR 0021
+--  Luat day du: docs/02-he-thong/trang-bi-kiem.md  |  ADR 0021
 --
 --    (0,0)  "Kiem"                      <- tho, chua luyen
 --      LUYEN  1 da, 100%
@@ -16,7 +16,7 @@
 --  BAY MON, MOI MON MOT VAI -- 2026-09-18:
 --    Mu    Int           Day Chuyen  ca ba      Ao   Str
 --    Giay  Agi           Kiem  %sat thuong gay ra (ke ca hoi mau)
---    Khien %giam don danh nhan vao   Nhan  %giam phep nhan vao
+--    Khien %giam don danh nhan vao   Ao Choang %giam phep nhan vao
 --  Bon mon cong diem thi LEO theo Tu Vi, ba mon nhan % thi PHANG.
 --  Xem muc "CHI SO" ben duoi va CFG.GEAR_STAT_BASE.
 --
@@ -61,7 +61,11 @@ local function fullName(pid, i)
   local base = API.pick(item)
   local st = stOf(pid, i)
   if st == nil or st.tier <= 0 then return base end
-  return base .. " " .. tierNameOf(st.tier) .. " - " .. levelNameOf(st.level)
+  -- CANH GIOI DUNG TRUOC: "Pham Nhan Kiem - So Cap", khong phai
+  -- "Kiem Pham Nhan - So Cap". Tieng Viet dat dinh ngu canh gioi len
+  -- dau moi ra ten do tu tien; ban tieng Anh cung dung the ("Mortal
+  -- Sword - Basic").
+  return tierNameOf(st.tier) .. " " .. base .. " - " .. levelNameOf(st.level)
 end
 
 -- ---------- Hoi trang thai ----------
@@ -90,43 +94,148 @@ local function nextOdds(pid, i)
   return CFG.GEAR_ODDS[st.level + 1] or 0.0
 end
 
+-- Chi phi KY VONG tu cap hien tai len Hoan Hao: tong 1/p cua cac cap
+-- con lai. Ghi len nut de nguoi choi biet minh dat bao nhieu TRUOC khi
+-- bam -- mot cu bam gio tieu nhieu vien chu khong mot vien.
+local function expectedCost(pid, i)
+  local st = stOf(pid, i)
+  if st == nil then return 0 end
+  local sum = 0.0
+  for k = st.level + 1, levelMax() do
+    local p = CFG.GEAR_ODDS[k]
+    -- Odds thieu hoac bang 0 la CFG hong, khong phai "kho". Bao ra chu
+    -- khong tra mot con so doan.
+    if p == nil or p <= 0.0 then
+      API.trace("gear: GEAR_ODDS[" .. k .. "] = " .. tostring(p) ..
+                " -- khong tinh duoc chi phi ky vong")
+      return 0
+    end
+    sum = sum + 1.0 / p
+  end
+  return math.floor(sum * CFG.GEAR_PRICE + 0.5)
+end
+
+-- ---------- O tich "luyen gop / luyen le" ----------
+--
+-- CUC BO, khong dong bo, va khong duoc phep dong bo: no chi doi (a) chu
+-- tren nut o may nay va (b) op nao duoc gui di. Ca hai deu la viec cuc
+-- bo -- click frame chi no o may nguoi bam, va ben NHAN op moi la cho
+-- doi trang thai that.
+--
+-- Vi the no khong nam trong S.p: mot truong trong trang thai da dong bo
+-- ma chi dung o mot may la cai bay cho nguoi doc sau.
+local allIn = {}
+
+-- BAT san. Nguoi choi bao moi tay truoc khi bao thieu da, nen gop phai
+-- la mac dinh; tick la de TAT, khong phai de bat.
+local function isAllIn(pid)
+  return allIn[pid] ~= false
+end
+
 -- ---------- Luyen ----------
 -- Chay tren MOI may, tu kenh dong bo.
-
-local function refine(pid, i)
+--
+-- MOT lan bam = luyen LIEN TIEP toi Hoan Hao, hoac toi khi het da.
+--
+-- Vi sao gop chu khong de bam le: bam le KHONG phai mot quyet dinh.
+-- That bai khong phat gi ngoai vien da va ti le thi co dinh -- nen nhin
+-- mot lan that bai khong cho nguoi choi thong tin nao de doi y. 15 lan
+-- bam chi la 15 lan bam. Quyet dinh that la DON DA VAO MON NAO, va cho
+-- do van con nguyen.
+--
+-- Dung o Hoan Hao vi do la ranh gioi CO SAN trong thiet ke: qua no phai
+-- Tien Giai, mot cua 10 da gac boi Tu Vi. Tuc la dung dung cho nguoi
+-- choi buoc phai quyet dinh lai.
+--
+-- Do duoc: 99% so lan bam ton <= 39 vien, trung binh 15 -- tren ngan
+-- sach ~420 vien ca van thi mot cu bam xau nhat an 9%. Co tran, va tran
+-- do la cai canh gioi chu khong phai cai kho da.
+local function refine(pid, i, once)
   local item = CFG.GEAR[i]
   if item == nil then return end
   if not canRefine(pid, i) then return end
 
-  if not API.spendIron(pid, CFG.GEAR_PRICE) then
-    API.msg(pid, CFG.C_RED .. API.t("no_iron") .. CFG.C_END ..
-      API.t("need_have", API.num(CFG.GEAR_PRICE), API.num(API.getIron(pid))))
-    API.panelRefresh(pid)
-    return
+  local st = stOf(pid, i)
+
+  -- Phan hoi nam tren CAI O VUA BAM, khong o con hero.
+  --
+  -- Ban truoc ve mot hieu ung duoi chan hero: luc bam LUYEN mat nguoi
+  -- choi dang o bang, ma con hero thi dang bi chinh cai bang che -- ve
+  -- o do la ve vao cho khong ai nhin.
+  local function flash(kind)
+    if API.panelGearFlash ~= nil then API.panelGearFlash(pid, i, kind) end
   end
 
-  local st = stOf(pid, i)
-  local pct = math.floor(nextOdds(pid, i) * 100.0 + 0.5)
+  local from, tries, spent, poor = st.level, 0, 0, false
+  local lastPct = 0
 
-  -- GetRandomInt o DAY moi dung: ham nay chay tren moi may, cung thu tu.
-  if GetRandomInt(1, 100) <= pct then
-    st.level = st.level + 1
-    if st.tier <= 0 then st.tier = 1 end   -- lan dau: vao canh gioi 1
+  -- Chan vong lap. Da la huu han nen vong nay tu het, nhung mot
+  -- CFG.GEAR_ODDS go sai se bien no thanh cai bom hut sach kho da ma
+  -- khong bao gi. Chan cung, va TRACE khi cham -- khong nuot.
+  local GUARD = 1000
 
-    local name = CFG.C_JADE .. fullName(pid, i) .. CFG.C_END
-    local ai  = CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END
-    -- Bao cho CA DOI khi cham hai cap cuoi: ba nguoi cung leo mot thang
-    -- thi viec so nhau chinh la noi dung. Cap thap thi bao rieng, neu
-    -- khong ca van se co 300 dong khoe cap So Cap.
-    API.msg((st.level >= levelMax() - 1) and nil or pid,
-            API.t("gear_became", ai, name))
-
-    if S.p[pid] ~= nil and S.p[pid].hero ~= nil then
-      API.fx([[Abilities\Spells\Items\AIem\AIemTarget.mdl]],
-             GetUnitX(S.p[pid].hero), GetUnitY(S.p[pid].hero))
+  while canRefine(pid, i) do
+    if tries >= GUARD then
+      API.trace("gear: refine cham tran " .. GUARD .. " lan (pid " .. pid ..
+                ", mon " .. i .. ") -- kiem lai CFG.GEAR_ODDS")
+      break
     end
+    if not API.spendIron(pid, CFG.GEAR_PRICE) then
+      poor = true
+      break
+    end
+    spent = spent + CFG.GEAR_PRICE
+    tries = tries + 1
+
+    -- GetRandomInt o DAY moi dung: ham nay chay tren MOI may, va ca so
+    -- da lan cap deu la trang thai da dong bo -- nen vong lap quay dung
+    -- bay nhieu lan, dung thu tu, o moi may.
+    local pct = math.floor(nextOdds(pid, i) * 100.0 + 0.5)
+    lastPct = pct
+    if GetRandomInt(1, 100) <= pct then
+      st.level = st.level + 1
+      if st.tier <= 0 then st.tier = 1 end   -- lan dau: vao canh gioi 1
+    end
+
+    if once then break end
+  end
+
+  local name = CFG.C_JADE .. fullName(pid, i) .. CFG.C_END
+
+  if tries == 0 then
+    API.msg(pid, CFG.C_RED .. API.t("no_iron") .. CFG.C_END ..
+      API.t("need_have", API.num(CFG.GEAR_PRICE), API.num(API.getIron(pid))))
+    flash("fail")
   else
-    API.msg(pid, CFG.C_RED .. API.t("gear_failed", pct) .. CFG.C_END)
+    local up  = (st.level > from)
+    local top = (st.level >= levelMax())
+    local who = CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END
+
+    if once then
+      -- Bam le: bao y NHU CU -- mot lan quay, mot cau. Doi sang dong
+      -- tong ket o day thi "Luyen 1 lan, ton 1 da" khong noi duoc rang
+      -- no THAT BAI.
+      if up then
+        API.msg(top and nil or pid, API.t("gear_became", who, name))
+      else
+        API.msg(pid, CFG.C_RED .. API.t("gear_failed", lastPct) .. CFG.C_END)
+      end
+    else
+      -- Bam gop: MOT dong tong ket thay cho 15 dong "that bai". Nguoi
+      -- choi can biet CAI GIA da tra, khong can nhat ky tung lan quay.
+      API.msg(pid, API.t("gear_batch", tries, API.num(spent), name))
+      -- Cham Hoan Hao la moc that -- no mo duong Tien Giai. Bao cho CA
+      -- DOI: ba nguoi cung leo mot thang thi viec so nhau chinh la noi
+      -- dung. (Cap thap bao rieng, neu khong ca van se co 300 dong khoe
+      -- cap So Cap.)
+      if top then API.msg(nil, API.t("gear_became", who, name)) end
+    end
+
+    flash((not up) and "fail" or (top and "big" or "ok"))
+
+    if poor then
+      API.msg(pid, CFG.C_RED .. API.t("no_iron") .. CFG.C_END)
+    end
   end
 
   if API.heroRecompute ~= nil then API.heroRecompute(pid) end
@@ -250,7 +359,7 @@ end
 
 -- % sat thuong NHAN VAO duoc giam, theo LOAI don:
 --   Khien ("mitig_phys")  cham don danh
---   Nhan  ("mitig_magic") cham phep
+--   Ao Choang ("mitig_magic") cham phep
 --
 -- Nguoi goi noi ro dang hoi loai nao. Khong doan tu dau goi: onDamaged
 -- co BlzGetEventDamageType de hoi that.
@@ -262,6 +371,57 @@ local function mitigPctOf(pid, role)
     end
   end
   return out
+end
+
+-- Duong dan icon cua mot mon o canh gioi hien tai.
+--
+-- Dung san theo CFG.GEAR_ICON_PATH chu khong go tung cai: them mot canh
+-- gioi la tha anh vao roi chay w3gear_icons.py, khong sua dong Lua nao.
+--
+-- Chua luyen (tier 0) thi coi nhu canh gioi 1 -- phai co hinh de nguoi
+-- choi biet mon do la gi truoc khi bo da vao.
+--
+-- Vuot qua GEAR_ICON_MAX thi dung anh cua muc cao nhat DA CO. Khong ke
+-- thua thi mon o canh gioi 7 se mat icon, va o trong giua luoi trong
+-- nhu bang hong.
+--
+-- Thieu ca bang duong dan thi lui ve item.icon -- duong do tu item that
+-- luc vao map (probeIcons), da chung minh ve ra hinh.
+local function iconFor(pid, i)
+  local item = CFG.GEAR[i]
+  if item == nil then return nil end
+  if item.key == nil or CFG.GEAR_ICON_PATH == nil then return item.icon end
+  local st = stOf(pid, i)
+  local t  = (st ~= nil and st.tier > 0) and st.tier or 1
+  local mx = CFG.GEAR_ICON_MAX or 1
+  if t > mx then t = mx end
+  return string.format(CFG.GEAR_ICON_PATH, item.key, t)
+end
+
+-- Nhan: % sat thuong gay ra hoi thanh mau. Cung khuon voi dmgPctOf.
+local function lifestealPctOf(pid)
+  local out = 0.0
+  for i = 1, itemCount() do
+    if CFG.GEAR[i].role == "lifesteal" then
+      out = out + pctOf(pid, i, CFG.GEAR_LIFESTEAL_MAX)
+    end
+  end
+  return out
+end
+
+-- Hoi mau cho hero theo sat thuong VUA GAY RA. Goi tu hai duong danh:
+-- don thuong (onDamaged) va sat thuong ky nang (hit). Khong co Nhan thi
+-- tra ve ngay, khong dung toi GetUnitState.
+local function lifestealHeal(pid, amount)
+  if amount == nil or amount <= 0.0 then return end
+  local pct = lifestealPctOf(pid)
+  if pct <= 0.0 then return end
+  local d = S.p[pid]
+  local h = d and d.hero or nil
+  if h == nil or not API.alive(h) then return end
+  local hp = GetUnitState(h, UNIT_STATE_LIFE) + amount * pct
+  local mx = GetUnitState(h, UNIT_STATE_MAX_LIFE)
+  SetUnitState(h, UNIT_STATE_LIFE, (hp > mx) and mx or hp)
 end
 
 -- Chu mo ta phan mon nay DANG cong, de len the trong bang. Khong co no
@@ -276,6 +436,9 @@ local function bonusLabel(pid, i)
   if role == "dmgpct" then
     return API.t("gear_bonus_dmg",
       string.format("%.1f", pctOf(pid, i, CFG.GEAR_DMG_MAX) * 100.0))
+  elseif role == "lifesteal" then
+    return API.t("gear_bonus_lifesteal",
+      string.format("%.1f", pctOf(pid, i, CFG.GEAR_LIFESTEAL_MAX) * 100.0))
   elseif role == "mitig_phys" or role == "mitig_magic" then
     local pct = string.format("%.1f", pctOf(pid, i, CFG.GEAR_MITIG_MAX) * 100.0)
     return API.t((role == "mitig_phys") and "gear_bonus_mitig_phys"
@@ -296,7 +459,7 @@ local function tabItems(pid)
   for i = 1, itemCount() do
     local item = CFG.GEAR[i]
     local st  = stOf(pid, i)
-    local it  = { icon = item.icon, name = fullName(pid, i) }
+    local it  = { icon = iconFor(pid, i), name = fullName(pid, i) }
 
     -- 'short' + 'stat' la cua bang thong ke ben phai luoi; 'status' la
     -- cua kieu than "list" cu. Giu ca hai de doi kieu bay khong phai
@@ -310,15 +473,43 @@ local function tabItems(pid)
       -- nguoi choi bo mot van da ma khong bao gio thay minh mua duoc gi.
       it.status = CFG.C_GREY .. st.level .. "/" .. levelMax() .. CFG.C_END ..
                   "   " .. CFG.C_JADE .. bonusLabel(pid, i) .. CFG.C_END
-      it.short  = API.pick(item) .. " " .. st.tier .. "-" .. st.level
+      -- Bang thong ke ben phai luoi: cot hep nen KHONG nhet ca canh
+      -- gioi vao. Ghi TEN CAP chu khong ghi "1-4" -- con so do khong
+      -- noi len gi, ma nguoi choi thi doc "So Cap / Trung Cap".
+      it.short  = API.pick(item) .. " - " .. levelNameOf(st.level)
       it.stat   = CFG.C_JADE .. bonusLabel(pid, i) .. CFG.C_END
     end
 
     if canRefine(pid, i) then
       local pct = math.floor(nextOdds(pid, i) * 100.0 + 0.5)
-      it.desc   = API.t("gear_up", levelNameOf(st.level + 1), pct)
-      it.btn    = API.t("gear_btn_up") .. "  " .. API.num(CFG.GEAR_PRICE)
+      local exp = expectedCost(pid, i)
+      it.desc   = API.t("gear_up", levelNameOf(levelMax()), pct, API.num(exp))
+      -- O LUOI, 'note' chi hien KHI KHONG CO NUT (xem panel.lua:387) --
+      -- nghia la chu giai thich bi chinh cai nut che. Nen NHAN NUT phai
+      -- gom du ba y: lam gi, toi dau, het bao nhieu.
+      --
+      -- Nut rong 0.132 = 238 px, chu co mac dinh ~10,7 px/ky tu -> 22 ky
+      -- tu. "LUYEN Hoan Hao  ~15" = 19. Vua, con du le.
+      -- Nhan nut NOI RA che do dang bat. Do la thu bien o tich tu mot
+      -- che do AN thanh mot che do NHIN THAY DUOC: bat len thi ca tam
+      -- nut cung doi chu, khong phai nho cai tick be ti o giua.
+      if isAllIn(pid) then
+        -- KHONG dung "~". Font cua Warcraft ve dau nga NHAC CAO gan ngang
+        -- dinh chu, nhin ra dau phu cua mot ky tu chu khong ra "khoang
+        -- chung" -- da thu tren man hinh that. Con so dung mot minh, va
+        -- "(co N)" ben canh da noi ro no dem DA.
+        it.btn  = API.t("gear_btn_upto", levelNameOf(levelMax()))
+                  .. "  " .. API.num(exp)
+      else
+        it.btn  = API.t("gear_btn_up") .. "  " .. API.num(CFG.GEAR_PRICE)
+      end
+      -- Chi can MOT vien la bam duoc: no se tieu het cho co roi dung.
+      -- Khoa nut theo 'exp' la khoa theo mot con so DU DOAN -- nguoi
+      -- choi con 8 vien van luyen duoc, khong co ly do chan.
       it.btnOn = (iron >= CFG.GEAR_PRICE)
+      if not it.btnOn then
+        it.btn = it.btn .. API.t("gear_btn_have", API.num(iron))
+      end
 
     elseif st.tier >= tierMax() then
       it.desc   = CFG.C_JADE .. API.t("gear_max") .. CFG.C_END
@@ -328,6 +519,9 @@ local function tabItems(pid)
       it.desc   = API.t("gear_need_iron")
       it.btn    = API.t("gear_btn_dismantle") .. "  " .. API.num(CFG.GEAR_DISMANTLE)
       it.btnOn = (iron >= CFG.GEAR_DISMANTLE)
+      if not it.btnOn then
+        it.btn = it.btn .. API.t("gear_btn_have", API.num(iron))
+      end
 
     else
       -- Hoan Hao roi nhung Tu Vi chua toi. Day la luc cai TRAN hien ra,
@@ -337,6 +531,13 @@ local function tabItems(pid)
       -- dat vua mot o cua luoi. Hai cho hien, mot y.
       it.desc = CFG.C_GREY .. API.t("gear_cap", tierNameOf(st.tier + 1)) .. CFG.C_END
       it.note = API.t("gear_note_cap")
+      -- CO nut, nhung khoa. Truoc day cho nay khong co nut nao ca, nen
+      -- no trong y HET o dang thieu da -- ma hai cai bao nguoi choi lam
+      -- hai viec trai nguoc: thieu da thi di cay, cho Tu Vi thi di dot
+      -- pha. btnWhy = "locked" cho bang ve no khac di.
+      it.btn    = API.t("gear_btn_wait", tierNameOf(st.tier + 1))
+      it.btnOn  = false
+      it.btnWhy = "locked" 
     end
 
     out[i] = it
@@ -348,16 +549,62 @@ end
 -- Giai. Quyet dinh o day la CUC BO nhung an toan, vi trang thai dua vao
 -- (st.cap) da dong bo san -- va ca hai nhanh deu kiem lai dieu kien o
 -- ben nhan.
+-- O tich chi doi CHO NAY: op nao duoc gui. Ben nhan van kiem lai du
+-- dieu kien, nen mot may go trang thai tich cung khong lam gi duoc hon
+-- ngoai viec tu luyen le.
+local function tabToggleText(pid)
+  return isAllIn(pid) and API.t("gear_allin_on") or API.t("gear_allin_off")
+end
+
+local function tabToggleAction(pid)
+  allIn[pid] = not isAllIn(pid)
+end
+
 local function tabItemAction(pid, i)
   if CFG.GEAR[i] == nil then return end
   if canRefine(pid, i) then
-    API.syncSend(pid, CFG.OP_GEAR_UP, i)
+    API.syncSend(pid, isAllIn(pid) and CFG.OP_GEAR_UP
+                                    or CFG.OP_GEAR_UP_ONE, i)
   elseif canEvolve(pid, i) then
     API.syncSend(pid, CFG.OP_GEAR_DISMANTLE, i)
   end
 end
 
+-- Doc icon THAT tu item cua game. Cung cach probeItems() cua 8_shop.lua
+-- va probeIcons() cua 10_fortune.lua -- ba cho cung mot bai hoc.
+local function probeIcons()
+  if CreateItem == nil or BlzGetItemIconPath == nil then
+    API.trace("gear: khong do duoc icon (thieu CreateItem/BlzGetItemIconPath)")
+    return
+  end
+  for i = 1, #CFG.GEAR do
+    local item = CFG.GEAR[i]
+    local hit = nil
+    if item.probe ~= nil then
+      for k = 1, #item.probe do
+        local code = item.probe[k]
+        local it = CreateItem(FourCC(code), 0.0, 0.0)
+        if it ~= nil then
+          local path = BlzGetItemIconPath(it)
+          if path ~= nil and path ~= "" then
+            item.icon = path
+            hit = code
+          end
+          RemoveItem(it)
+        end
+        if hit ~= nil then break end
+      end
+    end
+    if hit ~= nil then
+      API.trace("gear: " .. item.en .. " <- " .. hit .. " (icon " .. item.icon .. ")")
+    else
+      API.trace("gear: " .. item.en .. " GIU DUONG LUI (" .. tostring(item.icon) .. ")")
+    end
+  end
+end
+
 local function startGear()
+  probeIcons()
   -- Kieu "grid": bay o xep quanh cho hinh nguoi, nut Upgrade ngay duoi
   -- moi o, bang thong ke ben phai. Bo cuc o nam trong CFG.GEAR_SLOTS --
   -- bang chi doc, no khong biet mon nao la mon nao.
@@ -368,6 +615,9 @@ local function startGear()
     statHead   = API.t("gear_stat_head"),
     items      = tabItems,
     itemAction = tabItemAction,
+    toggleSlot   = CFG.GEAR_TOGGLE_SLOT,
+    toggleText   = tabToggleText,
+    toggleAction = tabToggleAction,
   })
   -- Lech so o va so mon thi bang se VE THIEU mot mon ma khong bao gi --
   -- dung kieu sai im lang cua ADR 0012. Bat o day, luc vao map.
@@ -378,6 +628,8 @@ local function startGear()
   end
 
   API.syncOn(CFG.OP_GEAR_UP,   refine)
+  API.syncOn(CFG.OP_GEAR_UP_ONE,
+             function(p2, i2) refine(p2, i2, true) end)
   API.syncOn(CFG.OP_GEAR_DISMANTLE, dismantle)
   API.trace("gear: " .. itemCount() .. " mon x " .. tierMax() .. " canh gioi x " ..
             levelMax() .. " cap, the san sang (chi so con rong)")
@@ -389,5 +641,6 @@ API.gearLevel     = function(pid, i) local st = stOf(pid, i); return st and st.l
 API.gearStat    = statOf      -- tra ve str, agi, int
 API.gearDmgPct  = dmgPctOf
 API.gearMitigPct = mitigPctOf  -- (pid, "mitig_phys" | "mitig_magic")
+API.gearLifesteal    = lifestealHeal  -- (pid, sat thuong vua gay ra)
 API.gearBonus   = bonusLabel
 API.startGear   = startGear

@@ -53,7 +53,7 @@ src/
      2_heropick.lua    chọn hero, cây kỹ năng
      3_cultivation.lua tu vi — nguồn sức mạnh lớn nhất (Linh Khí)
      4_skill.lua       bảy kỹ năng, mua bằng Gỗ
-     5_gear.lua        bảy món trang bị 100 bậc, mua bằng Đá Huyền Thiết
+     5_gear.lua        tám món trang bị 100 bậc, mua bằng Đá Huyền Thiết
      6_relic.lua       năm pháp khí — đang khoá
      7_effect.lua      hiệu ứng kỹ năng thật: sát thương, bị động, aura
      8_shop.lua        cửa hàng — hệ duy nhất tiêu Vàng
@@ -103,7 +103,7 @@ docs/
      bang-nhan-vat.md    Bảng phím E: Tu Vi / Kỹ Năng / Trang Bị / Pháp Khí / Cửa Hàng
      quay-thuong.md      Cơ Duyên: hai thẻ -- vàng hoặc chỉ số
      bang-tran-dau.md    Bảng phím R: Tổng Quan + Nhiệm Vụ Phụ, nút gọi đợt
-     trang-bi-kiem.md    Bảy món tiến hoá 100 bậc, mỗi món một vai
+     trang-bi-kiem.md    Tám món tiến hoá 100 bậc, mỗi món một vai
      dot-quai.md         100 đợt quái: cấu trúc, thành phần, nhịp, tu chính
      boss.md             20 boss cuối cảnh giới
      boss/              20 bản thiết kế boss, mỗi cảnh giới một con
@@ -149,6 +149,7 @@ docs/
      0024-cong-thi-leo-nhan-thi-phang.md
      0025-co-duyen-con-hai-the.md
      0026-nhip-van-do-nguoi-choi-goi.md
+     0027-luyen-trang-bi-gop-mot-cu-bam.md
   06-object-editor/
      sua-va-clone-ability.md  Đọc/ghi war3map.w3a bằng script, mã trường đã đo
      import-model.md         Import model/texture bằng script, bẫy World Editor giữ bộ nhớ

@@ -31,7 +31,7 @@ thiết kế, và là chỗ mọi con số quy về —
 | **Cửa hàng** | [8_shop.lua](../src/2_player/8_shop.lua) | Hệ duy nhất tiêu **Vàng**, và duy nhất bán đồ tiêu hao. Gộp lọ cùng loại vào một ô |
 | **Cơ Duyên** | [10_fortune.lua](../src/2_player/10_fortune.lua) · [5_fortuneframe.lua](../src/4_ui/5_fortuneframe.lua) | Khung riêng, mở ngay khi tinh anh/boss chết. **Hai thẻ** — vàng hoặc chỉ số |
 | **Dùng đồ bằng hàng số trên** | [9_useitem.lua](../src/2_player/9_useitem.lua) | Thêm vào numpad sẵn có, không thay |
-| **Trang Bị** | [5_gear.lua](../src/2_player/5_gear.lua) | **7 món × 100 bậc**, trần là Tu Vi. Mỗi món một vai, chỉ số đã chạy. Lưới ô kiểu hình nhân vật — [trang-bi-kiem.md](02-he-thong/trang-bi-kiem.md) |
+| **Trang Bị** | [5_gear.lua](../src/2_player/5_gear.lua) | **8 món × 100 bậc**, trần là Tu Vi. Mỗi món một vai, chỉ số đã chạy. Lưới ô kiểu hình nhân vật — [trang-bi-kiem.md](02-he-thong/trang-bi-kiem.md) |
 | **Pháp Khí** | [6_relic.lua](../src/2_player/6_relic.lua) | ⏸ **đang khoá** (`RELIC_LOCKED`) — thẻ vẫn hiện để người chơi biết hệ tồn tại |
 | Bảng nhân vật (phím **ESC**) | [1_panel.lua](../src/4_ui/1_panel.lua) | 5 thẻ, **ba** kiểu thân bảng: `list` · `focus` · `grid` |
 | **Bảng trận đấu (phím R)** | [6_gameframe.lua](../src/4_ui/6_gameframe.lua) | Tổng Quan + Nhiệm Vụ Phụ. **Nút gọi đợt** thay hẳn đồng hồ — [ADR 0026](05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md) |
@@ -82,7 +82,7 @@ quái; mọi nguồn khác là phần **vượt lên thuần**:
 | Tu Vi | ×1.00 so với quái | Linh Khí | Đã cài — triệt tiêu theo định nghĩa |
 | Cơ Duyên | **+40%** chỉ số cả ván | *(rơi ra)* | Đã cài |
 | Kỹ Năng | bậc 1→10 | Gỗ | Đã cài và **đã có hiệu lực** |
-| Trang Bị | **+20% mỗi món** *(≈17% Tu Vi)* | Đá Huyền Thiết | Đã cài. Tiền chỉ đủ ~2.6 trong 7 món |
+| Trang Bị | **+20% mỗi món** *(≈17% Tu Vi)* | Đá Huyền Thiết | Đã cài. Tiền chỉ đủ ~2.6 trong 8 món |
 | Pháp Khí | chưa có nội dung | Gỗ | ⏸ **khoá** — 190 Gỗ dành sẵn |
 
 Điều kiện duy nhất: người chơi phải lên **đúng một bậc mỗi cảnh giới**. Đó là
@@ -95,7 +95,7 @@ giao kèo `CULT_COST_BASE = 500` phẳng + một cảnh giới kiếm đúng 500
 >   [ADR 0025](05-quyet-dinh/0025-co-duyen-con-hai-the.md).
 > - **Giá Trang Bị** không còn là đường cong mũ. Phẳng `1` đá mỗi lần luyện,
 >   `10` mỗi lần Tiến Giai; một món đi trọn tốn **471 đá**, cả ván mua được
->   **1 240** — tức ~2.6 trong 7 món. Thẻ Trang Bị là một *lựa chọn*, không
+>   **1 240** — tức ~2.6 trong 8 món. Thẻ Trang Bị là một *lựa chọn*, không
 >   phải một thanh tiến độ.
 
 `SKILL_DATA_LIVE` **đã bật** từ 2026-09-16: cả bảy ability có 10 bậc thật, và

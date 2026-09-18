@@ -29,7 +29,11 @@ CFG.VERSION = "0.2.0"
 -- build.py --lang en|vi ghi de len dong nay, nen mot bo nguon xuat ra
 -- duoc hai ban map. Xem src/1_core/6_i18n.lua
 CFG.LANG = "en"
-CFG.DEBUG   = false     -- bat: in so do luoi, ping minimap, bao cao chi tiet
+CFG.DEBUG   = true     -- bat: in so do luoi, ping minimap, bao cao chi tiet
+
+-- Lenh "-debug" day ca bon dong tien len con so nay. Chi co khi
+-- CFG.DEBUG bat. De thu mot he o bac cao ma khong phai cay ca van.
+CFG.DEBUG_MONEY = 999999
 
 -- Lenh chat thu nghiem ("-sp"). Co RIENG mot co, khong di theo DEBUG --
 -- de tat bao cao chi tiet ma van go lenh thu duoc. Tat truoc khi phat hanh.
@@ -73,6 +77,7 @@ CFG.OP_ITEM   = 10  -- arg = o tui 0..5, dung do bang phim so
 CFG.OP_FORTUNE   = 11  -- arg = so thu tu the 1..3 trong luot quay
 CFG.OP_GEAR_DISMANTLE = 12 -- arg = so thu tu mon trong CFG.GEAR (Tien Giai)
 CFG.OP_WAVE_CALL = 13  -- arg = 0. Nut goi dot tren bang tran dau
+CFG.OP_GEAR_UP_ONE = 14 -- arg = so thu tu mon. Luyen DUNG MOT lan
 -- Opcode KHONG bi chan o mot chu so: unpackMsg dung math.floor(v/10^7)
 -- nen op 10, 11... van giai duoc. Thu bi chan la arg (< 10^5) va seq
 -- (< 100). Xem src/1_core/3_sync.lua.
@@ -120,6 +125,19 @@ CFG.RGN_ENEMY  = { "MyEmenyRegion",  "MyEnemyRegion"  }
 -- Mountain King. Day la HERO, khong phai cong trinh -- xem
 -- docs/02-he-thong/nha-chinh.md ve nhung khac biet phai xu ly.
 CFG.HOUSE_UNIT   = id('Hmkg')
+
+-- Nha chinh la HERO, ma hero Warcraft co san SAU O TUI. Nguoi choi keo
+-- mot binh mau tha vao nha chinh la binh do nam trong tui nha chinh --
+-- khong ai lay ra duoc, va khong loi nao bao.
+--
+-- HAI LOP, vi khong lop nao mot minh du chac:
+--
+--   1. Go luon ability tui do. 'AInv' la Inventory (Hero) cua Warcraft,
+--      nhung day la mot ma DOAN chu chua do -- neu ma sai thi
+--      UnitRemoveAbility tra false va file vet ghi ro.
+--   2. Bat su kien nhat do: nha chinh vua nhan mon nao thi TRA NGAY ra
+--      dat. Lop nay khong phu thuoc ma nao ca, nen no la lop chac.
+CFG.HOUSE_REMOVE_ABILITIES = { id('AInv') }
 CFG.HOUSE_NAME   = "Nha Chinh"
 CFG.HOUSE_HP     = 1000
 CFG.HOUSE_FACE   = 270.0
@@ -262,15 +280,21 @@ CFG.HEROES = {
   -- Gach thu ba luon la DIEM YEU -- the nao cung co cai manh, chi diem
   -- yeu moi lam nguoi choi phai nghi xem nen chon con nao.
   { id = id('H001'), name = "Hart", role = "Warrior - Tanker", abilities = {}, skills = nil,
-    icon = [[ReplaceableTextures\CommandButtons\BTNHeroPaladin.blp]],
+    -- Icon TU VE. Nguon: docs/01-tmp/hero/<ma unit>.png
+    -- Sinh bang: python w3gear_icons.py
+    icon = [[hero\H001.blp]],
     desc_vi    = { "Don quai dong", "Chiu don khoe", "Yeu truoc boss" },
     desc_en = { "Clears crowds", "Very tanky", "Weak vs bosses" } },
   { id = id('H002'), name = "Hvwd", role = "Shooter - Carry", abilities = {}, skills = nil,
-    icon = [[ReplaceableTextures\CommandButtons\BTNHeroMoonPriestess.blp]],
+    -- Icon TU VE. Nguon: docs/01-tmp/hero/<ma unit>.png
+    -- Sinh bang: python w3gear_icons.py
+    icon = [[hero\H002.blp]],
     desc_vi    = { "Sat thuong cao nhat", "Danh tu xa", "Rat mong" },
     desc_en = { "Top damage", "Long range", "Very fragile" } },
   { id = id('H003'), name = "Hkal", role = "Mage - Support", abilities = {}, skills = nil,
-    icon = [[ReplaceableTextures\CommandButtons\BTNHeroBloodElfPrince.blp]],
+    -- Icon TU VE. Nguon: docs/01-tmp/hero/<ma unit>.png
+    -- Sinh bang: python w3gear_icons.py
+    icon = [[hero\H003.blp]],
     desc_vi    = { "Hoi mau, tiep suc", "Lam cham quai", "Mot minh thi yeu" },
     desc_en = { "Heals and buffs", "Slows the wave", "Weak alone" } },
 }
@@ -376,20 +400,26 @@ CFG.HERO_PICK_MODE = "frame"
 -- ---------- Bang chon hero ----------
 -- Toa do man hinh: X 0.0..0.8, Y 0.0..0.6.
 --
--- BO CUC MOT COT DOC: moi hero mot dong, rong bang ca bang.
+-- BA COT DOC, moi hero mot cot, va MOT nut SELECT chung o duoi -- cung
+-- khuon voi khung Co Duyen.
 --
--- Truoc day la ba the ngang moi the rong 0.17. Bo vi frame chu cua
--- Warcraft KHONG tu xuong dong, va text frame khong dat kich thuoc thi
--- bi can giua quanh diem neo -- mot dong mo ta dai hon 0.17 la tran ra
--- hai ben va de len chu cua the ben canh. Chu cang dai vung de cang
--- rong, nen loi luc co luc khong.
+-- CHON ROI MOI XAC NHAN. Chon hero la viec khong lam lai duoc
+-- (CFG.HERO_UNIQUE), nen mot cu keo chuot nham khong duoc phep tra gia
+-- bang ca van. Bam mot cot la CHON, doi y thoai mai; bam SELECT moi
+-- that.
 --
--- No con ep 'mota' phai ngan 3-4 tu: mot rang buoc sinh ra tu han che
--- ky thuat chu khong tu thiet ke. Dong rong bang ca bang thi chu luon
--- co cho, va rang buoc do bien mat.
-CFG.CARD_W     = 0.360   -- be ngang vung noi dung = be ngang mot dong
-CFG.CARD_GAP   = 0.005   -- khoang cach hai dong
-CFG.CARD_ICON  = 0.040   -- canh o icon
+-- Ban truoc la mot cot doc, moi hero mot dong rong bang ca bang. Doi
+-- vi trong nhu mot cai menu chu khong nhu mot man chon tuong. Cai gia
+-- phai tra la be ngang mot muc tut tu 0.360 xuong 0.160, nen ba gach mo
+-- ta khong noi lien mot dong duoc nua ma phai MOI GACH MOT DONG -- text
+-- frame cua Warcraft khong tu xuong dong, chu thua la de len cot ben.
+--
+-- Gio 'desc_vi' lai phai ngan 3-4 tu that. Do la rang buoc CO Y doi
+-- lay: bo cuc ba cot doc ke nhau cho so sanh ba hero bang mot cai liec
+-- mat, con mot cot doc thi phai doc tu tren xuong.
+CFG.CARD_W     = 0.540   -- be ngang CA KHUNG (ba cot chia nhau)
+CFG.CARD_GAP   = 0.010   -- khoang cach hai cot
+CFG.CARD_ICON  = 0.056   -- canh o icon, to hon ban mot cot vi co cho
 CFG.CARD_PAD   = 0.010   -- le trong
 -- Vien trang tri cua backdrop an mat mep trong. EscMenuBackdrop co
 -- vien day, va CARD_PAD mot minh khong du -- tieu de leo len dung
@@ -399,10 +429,10 @@ CFG.CARD_LINE  = 0.014   -- khoang cach hai dong chu ben trong mot dong
 CFG.CARD_X     = 0.40    -- tam ngang cua bang
 CFG.CARD_Y     = 0.38    -- tam doc
 
--- CFG.CARD_H va CFG.CARD_TOP da bo. Cao mot dong SUY RA tu co icon va
--- so dong chu (xem rowH trong 2_heroframe.lua) -- de o day thi doi co
--- chu mot cai la chu tro ra ngoai vien, dung loi ma bang phim E da dinh
--- mot lan roi.
+-- CFG.CARD_H va CFG.CARD_TOP da bo. Cao mot cot SUY RA tu co icon va so
+-- dong chu (xem colH trong 2_heroframe.lua) -- de o day thi doi co chu
+-- mot cai la chu tro ra ngoai vien, dung loi ma bang phim E da dinh mot
+-- lan roi.
 
 -- Co chu. 1.0 la co mac dinh cua Warcraft.
 --
@@ -422,7 +452,7 @@ CFG.CARD_SCALE_DESC  = 0.90
 -- Da dung duong nao thi doc o file vet, dong "herocard: nen =".
 CFG.CARD_BACKDROP = { "EscMenuBackdrop", "QuestButtonBaseTemplate" }
 
--- Template nut cho MOT DONG hero.
+-- Template nut cho MOT COT hero.
 --
 -- Dong la hinh rong-va-thap, dung ti le von co cua mot nut tab -- nen
 -- ScoreScreenTabButtonTemplate hop o day. Chinh no keo thanh the vuong
@@ -1108,6 +1138,36 @@ CFG.FX_HIT_BUFF   = [[Abilities\Spells\Human\Avatar\AvatarCaster.mdl]]
 -- ngay tren). Duong dan model KHONG liet ke duoc tu ngoai -- game dong
 -- goi bang CASC -- va go sai thi WC3 im lang khong ve gi, khong bao
 -- loi. Nen tha xau ma chac con hon dep ma trang.
+-- ---------- Luyen Trang Bi: nhay ngay tren O ----------
+--
+-- KHONG ve hieu ung o con hero. Luc bam FORGE mat nguoi choi dang o
+-- BANG, ma con hero thi dang bi chinh cai bang che khuat -- ve o do la
+-- ve vao cho khong ai nhin.
+--
+-- Nen phan hoi nam tren dung cai o vua bam: mot lop mau phu len icon,
+-- nhay may nhip roi tat.
+--
+-- BA muc, vi ba ket qua khac nhau ve GIA TRI chu khong chi ve mau:
+--   OK    len mot cap -- chuyen thuong, ~15 lan moi canh gioi
+--   BIG   cham cap cuoi, mo duong Tien Hoa len canh gioi sau -- dang khoe
+--   FAIL  dot da ma khong duoc gi
+--
+-- MAU: cung thu muc, cung cach danh so voi TeamColor04 va TeamColor27 --
+-- hai duong DA CHUNG MINH ve ra hinh trong du an nay. Bang TeamColor
+-- danh so lien tuc 00..27 nen 00 (do) va 06 (xanh la) gan nhu chac
+-- chan co that. Neu vao game thay KHONG nhay mau gi: doi ca hai ve
+-- CFG.PANEL_BTN_EDGE, luc do mat mau nhung van con nhip nhay.
+CFG.PANEL_FLASH_OK   = [[ReplaceableTextures\TeamColor\TeamColor06]]
+CFG.PANEL_FLASH_FAIL = [[ReplaceableTextures\TeamColor\TeamColor00]]
+
+-- Nhay may nhip, moi nhip bao lau. Mot nhip thi chop mot cai la xong,
+-- khong phan biet duoc -- cung bai hoc voi vong tron bao truoc cua
+-- Chan Dia. FAIL nhay nhieu nhip hon OK: truot thi phai thay ro.
+CFG.PANEL_FLASH_OK_PULSES   = 1
+CFG.PANEL_FLASH_BIG_PULSES  = 3
+CFG.PANEL_FLASH_FAIL_PULSES = 2
+CFG.PANEL_FLASH_STEP        = 0.16   -- giay moi nhip (hien roi tat)
+
 CFG.FX_SLAM_MARK  = [[Abilities\Spells\Human\Avatar\AvatarCaster.mdl]]
 CFG.FX_SLAM_HIT   = [[Abilities\Spells\Orc\Shockwave\ShockwaveMissile.mdl]]
 
@@ -1161,7 +1221,7 @@ CFG.SKILL_MANA_STEP = 1.05   -- x1.55 sau 9 lan nang
 
 -- ============================================================
 --  LINH CAN  --  tu vi cua nguoi choi
---  docs/02-he-thong/kinh-te.md · bang-nhan-vat.md
+--  docs/02-he-thong/kinh-te.md | bang-nhan-vat.md
 --
 --  Nguon suc manh CHINH: EHP quai dinh nghia bang chinh he so cua no
 --  (CFG.MOB_EHP_FOLLOW_CULT), nen mot minh no du bam quai.
@@ -1258,7 +1318,7 @@ CFG.CULT_STAT_MODE = "all"
 
 -- ============================================================
 --  TRANG BI  --  6 mon, moi mon tien hoa 100 bac
---  docs/02-he-thong/trang-bi-kiem.md  ·  ADR 0021
+--  docs/02-he-thong/trang-bi-kiem.md  |  ADR 0021
 --
 --  Moi mon di 20 canh gioi x 5 cap. TRAN la TU VI cua nguoi choi:
 --  mon do khong bao gio vuot qua canh gioi ma nguoi choi dang o.
@@ -1302,21 +1362,48 @@ CFG.CULT_STAT_MODE = "all"
 --
 -- Thu tu bang nay la thu tu hien tren the. Doi thu tu khong sao (hai ben
 -- kenh dong bo doc chung mot bang), nhung doi thi doi mot lan.
+-- 'icon' la duong LUI, 'probe' la cach lay duong THAT.
+--
+-- Duong dan texture khong liet ke duoc tu ngoai (game dong goi bang
+-- CASC), nen go tay la doan -- va du an nay doan sai ba lan lien
+-- (BTNRingViolet, BTNStrength, BTNGoldmine), lan nao cung ra o xanh la.
+--
+-- Item cua game thi DOC duoc: CreateItem roi BlzGetItemIconPath tra ve
+-- duong dan that. probe = danh sach ma item de thu, thu lan luot, cai
+-- dau tien ra icon thi lay.
+--
+-- MA TRONG 'probe' CHUA DUOC XAC MINH -- chung la phong doan co hoc.
+-- File vet ghi ro cai nao trung cai nao truot:
+--     gear: Mu <- ciri (icon ...)      = trung
+--     gear: Mu GIU DUONG LUI           = truot het, van dung 'icon'
+-- Truot thi dung lenh "-icon <ma>" trong game de tim ma khac roi bo
+-- vao day. Truot cung khong hong gi: duong lui deu la duong DA CHUNG
+-- MINH ve ra hinh.
 CFG.GEAR = {
-  { vi = "Mu",         en = "Helm",     role = "int",
+  { key = "helm", vi = "Mu",         en = "Helm",     role = "int",
+    probe = { "ciri", "hval", "hlst", "hbth" },
     icon = [[ReplaceableTextures\CommandButtons\BTNStaffOfSanctuary.blp]] },
-  { vi = "Day Chuyen", en = "Necklace", role = "all",
+  { key = "necklace", vi = "Day Chuyen", en = "Necklace", role = "all",
+    probe = { "nspi", "pnec" },
     icon = [[ReplaceableTextures\CommandButtons\BTNPendantOfEnergy.blp]] },
-  { vi = "Ao",         en = "Robe",     role = "str",
+  { key = "armor", vi = "Ao Giap",    en = "Armor",    role = "str",
+    probe = { "brac", "bgst" },
     icon = [[ReplaceableTextures\CommandButtons\BTNSteelArmor.blp]] },
-  { vi = "Kiem",       en = "Sword",    role = "dmgpct",
+  { key = "sword", vi = "Kiem",       en = "Sword",    role = "dmgpct",
+    probe = { "cnob", "rat9" },
     icon = [[ReplaceableTextures\CommandButtons\BTNSteelMelee.blp]] },
-  { vi = "Khien",      en = "Shield",   role = "mitig_phys",
+  { key = "shield", vi = "Khien",      en = "Shield",   role = "mitig_phys",
+    probe = { "shar", "shtm" },
     icon = [[ReplaceableTextures\CommandButtons\BTNTalisman.blp]] },
-  { vi = "Nhan",       en = "Ring",     role = "mitig_magic",
+  { key = "cloak", vi = "Ao Choang",  en = "Cloak",    role = "mitig_magic",
+    probe = { "rde1", "rde2", "ring" },
     icon = [[ReplaceableTextures\CommandButtons\BTNRingSkull.blp]] },
-  { vi = "Giay",       en = "Boots",    role = "agi",
+  { key = "boots", vi = "Giay",       en = "Boots",    role = "agi",
+    probe = { "bspd", "bgst" },
     icon = [[ReplaceableTextures\CommandButtons\BTNBootsOfSpeed.blp]] },
+  { key = "ring", vi = "Nhan",       en = "Ring",     role = "lifesteal",
+    probe = { "rde1", "rde2", "ciri" },
+    icon = [[ReplaceableTextures\CommandButtons\BTNRingSkull.blp]] },
 }
 
 -- Nam cap trong MOT canh gioi. So phan tu PHAI bang #CFG.GEAR_ODDS.
@@ -1364,20 +1451,109 @@ CFG.GEAR_DISMANTLE = 10
 --        cot1        cot2         cot3
 --   d1   Mu        (hinh bong)   Day Chuyen
 --   d2   Ao          "           Khien
---   d3   Kiem        "           Nhan
+--   d3   Kiem        "           Ao Choang
 --   d4              Giay
 --
 -- Doi cho hai mon thi doi o day, khong phai sua 1_panel.lua -- bang chi
 -- doc bang nay va dem ra so cot/dong lon nhat de biet phai chua bao lon.
+-- Vi tri { cot, dong } cua tung o. THU TU PHAI KHOP CFG.GEAR o tren --
+-- bang o va bang mon ghep voi nhau bang so thu tu, khong bang ten.
+--
+-- BO CUC PAPER-DOLL: ba cot, cot giua la NGUOI, tam mon vay hai ben.
+--
+--        c1          c2             c3
+--   h1  Mu      +-----------+  DayChuyen      dau       | co
+--   h2  AoGiap  |  ly lich  |  AoChoang       than truoc| than sau
+--   h3  Kiem    |   hero    |  Khien          tay phai  | tay trai
+--   h4  Nhan    |  <Pet>    |  Giay           ngon tay  | ban | chan
+--
+-- MOI HANG MOT CAP CO NGHIA, doi xung qua than nguoi. Hang 3 dat nhat:
+-- Kiem voi Khien nam dung hai tay, khong phai xep cho du cho.
+--
+-- VI SAO BA COT chu khong phai nen luoi cho day: cot giua CO LY DO ton
+-- tai (ly lich nhan vat), nen no khong phai lo hong. Bo cot giua di thi
+-- tam mon con lai chi la mot danh sach hai cot -- doc ra thu tu, khong
+-- doc ra co the.
 CFG.GEAR_SLOTS = {
   { 1, 1 },   -- Mu
   { 3, 1 },   -- Day Chuyen
-  { 1, 2 },   -- Ao
+  { 1, 2 },   -- Ao Giap
   { 1, 3 },   -- Kiem
-  { 3, 2 },   -- Khien
-  { 3, 3 },   -- Nhan
-  { 2, 4 },   -- Giay
+  { 3, 3 },   -- Khien
+  { 3, 2 },   -- Ao Choang
+  { 3, 4 },   -- Giay
+  { 1, 4 },   -- Nhan
 }
+
+-- O Pet: CHO DANH SAN, chua co he nao dung toi.
+--
+-- nil = khong ve o nay. Dat { cot, dong } thi luoi chua mot o vien co
+-- chu mo, khong nut -- de nguoi choi biet cho do se co thu gi, chu
+-- khong phai mot lo hong giua bang.
+-- O TICK "luyen gop / luyen le" ngoi o khe NUT cua o Pet -- Pet la o
+-- duy nhat khong co nut nen cho do dang trong. Dat o COT GIUA vi no chi
+-- phoi ca tam nut hai ben: mot cai dieu khien tat ca thi phai ngoi giua
+-- chung, khong phai nep ra ria.
+CFG.GEAR_TOGGLE_SLOT = { 2, 4 }
+
+CFG.GEAR_PET_SLOT = { 2, 4 }
+
+-- Cot giua cua luoi = ly lich hero (icon + ten + canh gioi). nil = bo.
+--
+-- Icon lay tu CFG.HEROES cua chinh nguoi choi do -- khong phai mot bong
+-- nguoi chung chung, va khong ton them anh nao.
+--
+-- GEAR_DOLL_ICON: canh o icon. 0.090 = 162px o 1080p, tuc phong 2.5 lan
+-- tu 64px. Lap day cot (0.1375) se la 3.9 lan va nhin ra be.
+-- ---------- Icon Trang Bi TU VE ----------
+--
+-- Duong dan DUNG SAN theo cong thuc, khong go tung cai:
+--
+--     gear\<key>\<canh gioi 2 chu so>.blp
+--
+-- <key> la truong 'key' cua tung mon o tren -- TIENG ANH, vi no thanh
+-- duong dan that trong map.
+--
+-- THEM CANH GIOI KHONG PHAI SUA CODE: tha anh vao
+-- docs/01-tmp/<thu muc>/NN-*.png roi chay
+--
+--     python w3gear_icons.py
+--
+-- No sinh BLP, chep vao map va dang ky vao war3map.imp. Bang duoi tu
+-- tim thay.
+--
+-- THIEU FILE THI LUI VE icon do tu item (truong 'icon'), khong ra o
+-- xanh la -- xem iconFor() trong 5_gear.lua.
+-- ---------- Anh canh gioi ----------
+--
+-- Cung quy uoc voi CFG.GEAR_ICON_PATH: %02d la so CANH GIOI 1..20, khop
+-- CFG.REALMS theo thu tu. Sinh bang `python w3gear_icons.py` tu
+-- docs/01-tmp/realm/NN-ten.png -- them canh gioi thi tha anh vao do va
+-- nang REALM_ICON_MAX, khong sua mot dong Lua nao.
+--
+-- 256px chu khong 128 nhu icon: no hien o kho ~340 px o 1080p.
+CFG.REALM_ICON_PATH = [[realm\%02d.blp]]
+CFG.REALM_ICON_MAX  = 20
+
+CFG.GEAR_ICON_PATH = [[gear\%s\%02d.blp]]
+
+-- Canh gioi cao nhat DA CO anh. Tren muc nay thi dung anh cua muc nay --
+-- mon o canh gioi 7 ma moi ve toi 5 thi van hien anh 5, khong bi trong.
+--
+-- Ve them canh gioi: tha anh vao docs/01-tmp/<thu muc>/NN-*.png, chay
+-- python w3gear_icons.py, roi nang so nay. Ba buoc, khong sua code.
+--
+-- BUOC BA LA BUOC DE QUEN. So nay tung ket o 5 trong khi trong map da co
+-- 15 muc -- tuc muoi canh gioi deu hien anh cua canh gioi 5, va khong co
+-- gi bao ca: thieu anh thi lui ve anh thap hon chu khong no.
+CFG.GEAR_ICON_MAX = 20
+
+CFG.GEAR_DOLL_COL  = 2
+-- Do duoc tren anh chup: icon 0.090 trong hop 0.1537 x 0.214 chi lap
+-- 25% dien tich -- ba phan tu cai hop la MOT MANG DEN DAC, va no la
+-- vung den to nhat ca bang. 0.130 dua len 51%, chu van con cho cho ten
+-- va canh gioi ben duoi.
+CFG.GEAR_DOLL_ICON = 0.130
 
 -- Hinh bong nguoi o cot giua. nil = de trong (mot o vien rong).
 --
@@ -1425,8 +1601,9 @@ CFG.GEAR_STAT_BASE = 1.5
 -- tren nen 24,198 cua Tu Vi la +19.5% sat thuong. Lam tron len 20%.
 CFG.GEAR_DMG_MAX = 0.20
 
--- Khien va Nhan: % sat thuong NHAN VAO duoc giam, o bac 100. Tuyen tinh.
--- Khien cham DON DANH, Nhan cham PHEP -- moi mon mot nua chien truong.
+-- Khien va Ao Choang: % sat thuong NHAN VAO duoc giam, o bac 100.
+-- Tuyen tinh. Khien cham DON DANH, Ao Choang cham PHEP -- moi mon mot
+-- nua chien truong.
 --
 -- KHONG cong diem giap. Da tinh: de ngang mot mon khac thi chi duoc cong
 -- 2.8 DIEM giap ca van -- tuc 0.03 moi bac, mot con so khong hien thi
@@ -1442,6 +1619,21 @@ CFG.GEAR_DMG_MAX = 0.20
 -- lai sau tran choi thu dau -- bat CFG.TRACE, cong don sat thuong theo
 -- BlzGetEventDamageType roi chia.
 CFG.GEAR_MITIG_MAX = 0.25
+
+-- Nhan: % sat thuong GAY RA hoi thanh mau, o bac 100. Tuyen tinh.
+--
+-- Bang 0.20 cua Kiem, co y. Hai mon deu an theo sat thuong gay ra nen
+-- chung mot thang do; de Nhan cao hon thi no vua manh hon Kiem vua lam
+-- duoc them viec song sot.
+--
+-- Nhan NHAN VOI Kiem chu khong cong: Kiem cong 20% sat thuong, roi Nhan
+-- hut 20% cua con so DA cong. Do la cho hai mon nay di voi nhau, khong
+-- phai trung nhau.
+--
+-- Hut mau KHONG cuu duoc mot don chet ngay -- Chan Dia cua boss an 83%
+-- mau mot phat. No manh o tran keo dai, yeu o don sam set. Bu qua bu
+-- lai voi Khien/Ao Choang, khong dam len nhau.
+CFG.GEAR_LIFESTEAL_MAX = 0.20
 
 -- Tran CUNG cho tong phan giam sat thuong (Khien + bi dong "reduce").
 -- Hai nguon nhan voi nhau chu khong cong, nen khong bao gio toi 100% --
@@ -1567,7 +1759,7 @@ CFG.FORTUNE_GOLD_MAX = 90
 -- duoc ca lo va Ankh. The da la tap con cua the vang, kem dung mot thu
 -- la linh hoat. Hai the trung nhau thi khong con la lua chon.
 --
--- Bo no con duoc mot thu quan trong hon: ca ván chi con MOT duong ra da
+-- Bo no con duoc mot thu quan trong hon: ca van chi con MOT duong ra da
 -- (vang -> shop), nen gia da trong shop tro thanh NUM DUY NHAT dieu nhip
 -- Trang Bi. Truoc do hai nguon da danh nhau, chinh cai nay hong cai kia.
 --
@@ -1907,6 +2099,16 @@ CFG.PANEL_SCALE_HEAD = 1.20
 CFG.PANEL_SCALE_NAME = 1.05
 CFG.PANEL_SCALE_SUB  = 0.85
 
+-- Bang thong ke ben phai luoi Trang Bi: co chu RIENG, nho hon.
+--
+-- Do duoc tu anh chup: chu o co 0.85 ton ~9,1 px moi ky tu. Cho co
+-- 352 px, ma ten dai nhat ("Day Chuyen - Thuong Cap") + gia tri dai
+-- nhat ("+1,575 moi chi so") = 365 px -- KHONG vua du chia cot the nao.
+--
+-- Bang thong ke la chu doc day, nho hon la binh thuong. 0.72 dua tong
+-- ve ~310 px, vua ca hai cot.
+CFG.PANEL_SCALE_STAT = 0.72
+
 -- Nen bang. Cung danh sach voi bang chon hero: template FDF co vien
 -- that, het thi lui ve CFG.FRAME_BG (o mau dac, khong vien).
 CFG.PANEL_BACKDROP = { "EscMenuBackdrop", "QuestButtonBaseTemplate" }
@@ -1925,13 +2127,44 @@ CFG.PANEL_BACKDROP = { "EscMenuBackdrop", "QuestButtonBaseTemplate" }
 -- Bai hoc: mot backdrop dung cho KHUNG khong dung lai duoc cho NUT.
 -- Nen tu ve: hai o mau dac long nhau, o ngoai la vien, o trong la ruot.
 -- O mau dac co lai duoc moi kich thuoc, nen khong the hong kieu (2).
--- Chi dung hai o mau DA THAY VE RA MAU tren anh chup, khong doan thêm
+-- Chi dung hai o mau DA THAY VE RA MAU tren anh chup, khong doan them
 -- so hieu TeamColor nao: 04 la vang (thanh tien do dang dung), 27 la den
 -- (vach ke dong va nen thanh tien do dang dung). Doan sai mot so hieu
 -- thi ra o XANH LA, dung loi ma BTNRingViolet da dinh.
 CFG.PANEL_BTN_EDGE   = [[ReplaceableTextures\TeamColor\TeamColor04]]
 CFG.PANEL_BTN_FILL   = [[ReplaceableTextures\TeamColor\TeamColor27]]
 CFG.PANEL_BTN_BORDER = 0.0016
+
+-- BE DAY VIEN theo trang thai nut -- nhan so cua PANEL_BTN_BORDER.
+--
+-- Day la tin hieu CHINH cho "bam duoc hay khong". Mau chu mot minh thi
+-- qua yeu: xam di vai phan tram do sang, tren nen den, o co chu 0.85 --
+-- phai doc tung nut moi biet. Cau nguoi choi hoi khi liec bang la "cai
+-- nao bam duoc BAY GIO", tuc quet 7 o mot luot, nen tin hieu phai doc
+-- duoc bang mat ngoai vi: hinh khoi, khong phai chu.
+--
+-- Doi BE DAY chu khong doi MAU: doi mau la phai them duong dan texture,
+-- ma doan duong dan texture trong du an nay lan nao cung sai.
+-- MAU RUOT theo trang thai. Tu sinh bang w3blp.py, nguon o
+-- docs/01-tmp/ui/ -- khong doan duong dan texture nao ca.
+--
+-- Vi sao can mau CHU KHONG chi be day vien: be day la tin hieu TUONG
+-- DOI, phai co ca hai trang thai canh nhau moi doc duoc. Luc het tien
+-- thi ca tam nut deu thieu, khong con gi de so. Mau nen doc duoc mot
+-- minh.
+CFG.PANEL_BTN_FILL_POOR   = [[ui\btn_poor.blp]]
+CFG.PANEL_BTN_FILL_LOCKED = [[ui\btn_locked.blp]]
+
+-- Nut cao BTN_H = 0.026, tuc 47 px o 1080p. Vien 3.0 x 0.0016 = 8,6 px
+-- MOI BEN, an mat 37% chieu cao -- nhin ra mot khung vang to hon chinh
+-- cai nut. Da thu, phai bo.
+--
+-- Gio MAU RUOT ganh phan bao trang thai, nen vien khong can het loi:
+--   on/poor  vien mong nhu nhau, khac nhau o mau ruot
+--   locked   khong vien -- phang han, doc ra "chua toi luot"
+CFG.PANEL_BTN_W_ON     = 1.0   -- bam duoc: vien mong, ruot den
+CFG.PANEL_BTN_W_POOR   = 1.0   -- thieu tien: vien mong, ruot do sam
+CFG.PANEL_BTN_W_LOCKED = 0.0   -- chua toi luot: khong vien, ruot xam
 
 -- Thanh tien do cua the kieu "focus". Hai o mau DAC -- va o day thi mot
 -- o mau dac dung la thu can, khac han truong hop dung no lam nen bang.
@@ -1942,4 +2175,13 @@ CFG.PANEL_BAR_FILL = [[ReplaceableTextures\TeamColor\TeamColor04]]
 
 -- Ke vach xen ke cho de doc. Tat neu thay roi mat.
 CFG.PANEL_GRID     = true
-CFG.PANEL_GRID_TEX = [[ReplaceableTextures\TeamColor\TeamColor27]]
+-- Nen o ke: KHONG den dac nua.
+--
+-- TeamColor27 la den tuyet doi. Dung cho vach ke mot dong thi ra VACH
+-- DEN tren nen panel mau lam sam; dung cho hop hinh nguoi (0.1537 x
+-- 0.214) thi ra mot mang den to nhat ca bang. Do duoc tren anh chup:
+-- ba phan tu cai hop la den dac.
+--
+-- (22,42,48) la lam sam, cung ho voi nen panel nen doc ra "o" chu khong
+-- ra "lo thung". O mau tu ve bang w3blp.py -- xem ui_icons().
+CFG.PANEL_GRID_TEX = [[ui\panel_row.blp]]

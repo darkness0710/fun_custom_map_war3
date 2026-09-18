@@ -50,11 +50,33 @@ local LINE   = 0.016    -- khoang cach hai dong chu trong mot muc
 -- neu khong doi the mot cai la khung nhay -- nen lay max voi kieu list.
 local FOCUS_H = 0.200
 
+-- THU TU O DAY LA MOT RANG BUOC, khong phai so thich: nam ham duoi
+-- phai dung TRUOC cellH()/gridH(). Lua khong thay local khai bao sau,
+-- nen mot closure viet truoc se bat ICON/BTN_H thanh BIEN TOAN CUC --
+-- tuc nil -- va no chi no luc CHAY.
+--
+-- Da dinh that: khoi "grid" nhap vao nam tren khoi nay, nen ICON() ben
+-- trong cellH() la nil. Ket qua: build() nem loi giua chung, backdrop
+-- da tao thi dang HIEN, chua kip dat kich thuoc va chua co con nao --
+-- bam ESC ra mot cai hop rong co mac dinh, khong dong duoc, va khong
+-- mot dong bao nao. Loi Lua trong callback cua Warcraft khong in ra dau.
+-- Le trong THAT = le + vien trang tri cua backdrop. Moi thu ben trong
+-- dung con so nay, nen doi backdrop chi phai sua mot cho.
+local function PAD()   return CFG.PANEL_PAD + (CFG.PANEL_BORDER or 0.0) end
+local function ROW()   return CFG.PANEL_ROW end
+local function ICON()  return CFG.PANEL_ICON end
+local function BTN_W() return CFG.PANEL_BTN_W end
+local function BTN_H() return CFG.PANEL_BTN_H end
+
 -- ---------- Than kieu "grid": o trang bi xep quanh hinh nguoi ----------
 --
 -- Doc tu the dang ky (tab.slots), khong go tay: doi CFG.GEAR_SLOTS la
 -- bang tu co theo, y het cach MAX_ITEMS doc so dong tu the dai nhat.
 local GRID_SLOTS = nil
+-- { cot, dong } cua o TICK cua the luoi, hoac nil neu the khong co.
+-- Doc tu the dang ky (tab.toggleSlot) y het GRID_SLOTS -- bang khong go
+-- tay con so nao cua rieng he Trang Bi.
+local GRID_TOGGLE = nil
 local GRID_COLS, GRID_ROWS = 0, 0
 local CELL_GAP = 0.008
 
@@ -66,14 +88,6 @@ local function gridH()
   if GRID_ROWS <= 0 then return 0.0 end
   return GRID_ROWS * rowStep() - CELL_GAP
 end
-
--- Le trong THAT = le + vien trang tri cua backdrop. Moi thu ben trong
--- dung con so nay, nen doi backdrop chi phai sua mot cho.
-local function PAD()   return CFG.PANEL_PAD + (CFG.PANEL_BORDER or 0.0) end
-local function ROW()   return CFG.PANEL_ROW end
-local function ICON()  return CFG.PANEL_ICON end
-local function BTN_W() return CFG.PANEL_BTN_W end
-local function BTN_H() return CFG.PANEL_BTN_H end
 
 -- Bao nhieu dong phai dung san. Tinh tu the dai nhat da dang ky, chu
 -- khong go tay: them mot he 9 muc thi bang tu no rong ra.
@@ -174,12 +188,71 @@ end
 
 -- ---------- Ve lai ----------
 
+local function show(f, on)
+  if f ~= nil then BlzFrameSetVisible(f, on) end
+end
+
 local function setEnabled(f, on)
   if f ~= nil and BlzFrameSetEnable ~= nil then BlzFrameSetEnable(f, on) end
 end
 
-local function show(f, on)
-  if f ~= nil then BlzFrameSetVisible(f, on) end
+-- ---------- Mot nut, ba trang thai ----------
+--
+-- CA BA kieu than (list / focus / grid) deu goi ham nay, nen Tu Vi,
+-- Trang Bi va Ky Nang khong the noi khac nhau duoc.
+--
+-- Trang thai lay tu du lieu cua the:
+--   it.btn == nil          -> khong co nut
+--   it.btnOn ~= false      -> "on"
+--   it.btnWhy == "locked"  -> "locked"   chua toi luot
+--   con lai                -> "poor"     thieu tien
+--
+-- VI SAO TACH "poor" VOI "locked". Hai cai nay bao nguoi choi lam hai
+-- viec TRAI NGUOC: thieu tien thi di cay quai, chua toi luot thi di dot
+-- pha Tu Vi. Cho chung trong giong nhau la bat nguoi choi doan.
+local function applyBtn(w, it)
+  if w == nil or w.btn == nil then return end
+  local has = (it ~= nil and it.btn ~= nil)
+  show(w.btn, has)
+  if not has then return end
+
+  local state = "on"
+  if it.btnOn == false then
+    state = (it.btnWhy == "locked") and "locked" or "poor"
+  end
+
+  -- Chu: mau noi Y NGHIA, be day vien noi BAM DUOC HAY KHONG.
+  local label = it.btn
+  if state == "poor" then
+    label = CFG.C_GREY .. label .. CFG.C_END
+  elseif state == "locked" then
+    label = CFG.C_GOLD .. label .. CFG.C_END
+  end
+  if w.btnTxt ~= nil then BlzFrameSetText(w.btnTxt, label) end
+
+  -- MAU RUOT: tin hieu chinh, doc duoc mot minh khong can so sanh.
+  if w.fill ~= nil and BlzFrameSetTexture ~= nil then
+    local tex = (state == "poor")   and CFG.PANEL_BTN_FILL_POOR
+             or (state == "locked") and CFG.PANEL_BTN_FILL_LOCKED
+             or CFG.PANEL_BTN_FILL
+    if tex ~= nil then BlzFrameSetTexture(w.fill, tex, 0, true) end
+  end
+
+  -- Be day vien = ruot thut vao bao nhieu. Chi con phan biet CO vien
+  -- (on/poor) voi KHONG vien (locked) -- viec noi on khac poor da giao
+  -- han cho mau ruot. Vien day tung la tin hieu chinh, va 8,6 px tren
+  -- nut cao 47 px nhin ra mot cai khung chu khong phai cai nut.
+  if w.fill ~= nil and w.w ~= nil then
+    local d = (CFG.PANEL_BTN_BORDER or 0.0016)
+            * ((state == "on")   and (CFG.PANEL_BTN_W_ON     or 1.0)
+            or (state == "poor") and (CFG.PANEL_BTN_W_POOR   or 1.0)
+            or (CFG.PANEL_BTN_W_LOCKED or 0.0))
+    BlzFrameSetSize(w.fill, w.w - 2 * d, w.h - 2 * d)
+    BlzFrameSetPoint(w.fill, FRAMEPOINT_TOPLEFT, w.btn,
+                     FRAMEPOINT_TOPLEFT, d, -d)
+  end
+
+  setEnabled(w.btn, state == "on")
 end
 
 local function refreshList(st, pid, tab)
@@ -202,17 +275,12 @@ local function refreshList(st, pid, tab)
         BlzFrameSetText(w.name,  CFG.C_GOLD .. (it.name or "?") .. CFG.C_END)
         BlzFrameSetText(w.state, it.status or "")
         BlzFrameSetText(w.sub,   CFG.C_GREY .. (it.desc or "") .. CFG.C_END)
-        if it.btn ~= nil then
-          -- Chu XAM khi khong du tien. Vien va ruot la o mau tu ve nen
-          -- BlzFrameSetEnable khong doi mau chung -- khong lam gi thi
-          -- nut bam duoc va nut mo trong y het nhau.
-          BlzFrameSetText(w.btnTxt, (it.btnOn ~= false) and it.btn
-                                    or (CFG.C_GREY .. it.btn .. CFG.C_END))
-          -- Nut mo di khi khong du tien: van THAY duoc gia, chi khong
-          -- bam duoc. An han nut thi nguoi choi khong biet mon do ton
-          -- bao nhieu de ma de danh.
-          setEnabled(w.btn, it.btnOn ~= false)
-        end
+        -- applyBtn lo het: chu, be day vien, va bat/tat.
+        --
+        -- Nut KHONG bien mat khi thieu tien -- van thay duoc gia, chi
+        -- khong bam duoc. An han thi nguoi choi khong biet mon do ton
+        -- bao nhieu de ma de danh.
+        applyBtn(w, it)
       end
     end
   end
@@ -250,6 +318,28 @@ local function refreshFocus(st, pid, tab)
     end
   end
 
+  -- Dai tranh. The nao KHONG khai bao 'art' thi ca cum an di -- than
+  -- kieu focus dung chung cho moi the, khong rieng Tu Vi.
+  if f.art ~= nil then
+    local art = d.art or {}
+    for i = 1, #f.art do
+      local a, v = f.art[i], art[i]
+      local on = (v ~= nil and v.icon ~= nil)
+      show(a.icon, on)
+      show(a.name, on)
+      if on then
+        BlzFrameSetTexture(a.icon, v.icon, 0, true)
+        BlzFrameSetText(a.name, (v.dim and CFG.C_GREY or CFG.C_JADE)
+                                .. (v.name or "") .. CFG.C_END)
+      end
+    end
+    -- Mui ten chi co nghia khi CO ca hai dau.
+    show(f.artArrow, art[1] ~= nil and art[2] ~= nil)
+    if f.artArrow ~= nil then
+      BlzFrameSetText(f.artArrow, CFG.C_GREY .. "->" .. CFG.C_END)
+    end
+  end
+
   local p = d.progress or 0.0
   if p < 0.0 then p = 0.0 elseif p > 1.0 then p = 1.0 end
   local full = CFG.PANEL_W - 2 * PAD()
@@ -266,9 +356,7 @@ local function refreshFocus(st, pid, tab)
 
   show(f.btn, d.btn ~= nil)
   if d.btn ~= nil then
-    BlzFrameSetText(f.btnTxt, (d.btnOn ~= false) and d.btn
-                              or (CFG.C_GREY .. d.btn .. CFG.C_END))
-    setEnabled(f.btn, d.btnOn ~= false)
+    applyBtn(f, d)
   end
 end
 
@@ -279,8 +367,47 @@ local function refreshGrid(st, pid, tab)
   if g == nil or g.root == nil then return end
   local items = (tab.items and tab.items(pid)) or {}
 
+  -- O Pet luon hien. backdropFrame()/text() tao ra o trang thai AN, nen
+  -- khong bat o day thi no khong bao gio lo mat.
+  show(g.petEdge, true); show(g.petFill, true); show(g.petTxt, true)
+
+  -- Cot giua: icon + ten hero + canh gioi Tu Vi dang o.
+  show(g.doll, true); show(g.dollIcon, true)
+  show(g.dollName, true); show(g.dollRank, true)
+  if g.dollName ~= nil then
+    local d   = S.p[pid]
+    local uid = (d ~= nil and d.hero ~= nil) and GetUnitTypeId(d.hero) or nil
+    local nm  = (uid ~= nil and API.heroNameOf ~= nil)
+                and API.heroNameOf(uid) or "?"
+    BlzFrameSetText(g.dollName, CFG.C_GOLD .. nm .. CFG.C_END)
+
+    -- Canh gioi: doc qua API vi bang REALMS o 1_config, con bac thi o
+    -- 3_cultivation. Thieu mot trong hai thi hien "?" chu khong no.
+    local r  = (API.cultRank ~= nil) and API.cultRank(pid) or 1
+    local rn = (CFG.REALMS ~= nil and CFG.REALMS[r] ~= nil)
+               and API.pick(CFG.REALMS[r]) or "?"
+    BlzFrameSetText(g.dollRank, CFG.C_JADE .. rn .. CFG.C_END)
+
+    if g.dollIcon ~= nil and uid ~= nil and API.heroIndex ~= nil then
+      local hi = API.heroIndex(uid)
+      local hd = (hi ~= nil) and CFG.HEROES[hi] or nil
+      if hd ~= nil and hd.icon ~= nil then
+        BlzFrameSetTexture(g.dollIcon, hd.icon, 0, true)
+      end
+    end
+  end
+
   if g.statHead ~= nil then
     BlzFrameSetText(g.statHead, CFG.C_GOLD .. (tab.statHead or "") .. CFG.C_END)
+  end
+
+  -- O tich: chu do THE tu sinh, bang khong biet no noi gi.
+  if g.toggle ~= nil then
+    local on = (tab.toggleText ~= nil)
+    show(g.toggle.btn, on)
+    if on and g.toggle.txt ~= nil then
+      BlzFrameSetText(g.toggle.txt, tab.toggleText(pid))
+    end
   end
 
   for i = 1, #g.cell do
@@ -302,9 +429,7 @@ local function refreshGrid(st, pid, tab)
         -- Cung quy uoc voi kieu "list": khong du tien thi chu XAM chu
         -- khong an nut -- an di la nguoi choi khong biet mon do ton bao
         -- nhieu de ma de danh.
-        BlzFrameSetText(c.btnTxt, (it.btnOn ~= false) and it.btn
-                                  or (CFG.C_GREY .. it.btn .. CFG.C_END))
-        setEnabled(c.btn, it.btnOn ~= false)
+        applyBtn(c, it)
       end
     end
   end
@@ -375,12 +500,79 @@ local function refresh(pid)
   if st.focus ~= nil then show(st.focus.root, kind == "focus") end
   if st.grid  ~= nil then show(st.grid.root,  kind == "grid")  end
 
+  -- Than bang dung duoc chua? Neu khong, dung de bang cam nin -- do la
+  -- kieu hong te nhat: nguoi choi mo bang ra thay mot khung trong ron
+  -- va tuong MINH lam sai gi do.
+  local bodyOk = true
+  if kind == "focus" then
+    bodyOk = (st.focus ~= nil and st.focus.root ~= nil)
+  elseif kind == "grid" then
+    bodyOk = (st.grid ~= nil and st.grid.root ~= nil)
+  end
+
+  if not bodyOk then
+    if st.empty ~= nil then
+      BlzFrameSetText(st.empty, CFG.C_RED .. API.t("panel_bodyfail") .. CFG.C_END)
+      show(st.empty, true)
+    end
+    API.trace("panel: the '" .. tostring(tab.name) .. "' kieu " .. kind ..
+              " KHONG co than -- hien dong bao thay vi de trong")
+    return
+  end
+
   if kind == "focus" then
     refreshFocus(st, pid, tab)
   elseif kind == "grid" then
     refreshGrid(st, pid, tab)
   else
     refreshList(st, pid, tab)
+  end
+end
+
+-- ---------- Nhay mot muc trong bang ----------
+--
+-- Goi tu he nao vua lam xong mot viec (luyen trang bi, mua do). Phan
+-- hoi phai o TREN CAI MUC VUA BAM: do la cho nguoi choi dang nhin, con
+-- hero ngoai map thi dang bi chinh cai bang che khuat.
+--
+-- Chay tren MOI may, nhung frame cua pid nao thi chi may cua nguoi do
+-- ve -- nen khong phai loc gi them.
+--
+-- Tim o CA HAI kieu than: luoi (Trang Bi) va danh sach (Shop, Phap Khi).
+-- He goi khong phai biet minh dang o kieu nao.
+local function panelFlash(pid, index, kind)
+  local st = stateOf(pid)
+
+  -- Hoi THE DANG MO la kieu gi, khong phai "bang nao ton tai".
+  -- Ca hai than deu dung san tu luc dung bang, nen thu luoi truoc la
+  -- dang o Shop cung nhay trung mot o Trang Bi -- sai o khong ai ngo.
+  local tab = S.panel.tabs[st.tab]
+  local kind = (tab ~= nil) and (tab.kind or "list") or "list"
+
+  local c = nil
+  if kind == "grid" then
+    c = (st.grid ~= nil and st.grid.cell ~= nil) and st.grid.cell[index] or nil
+  elseif kind == "list" then
+    c = (st.item ~= nil) and st.item[index] or nil
+  end
+  if c == nil or c.flash == nil then return end
+
+  local ok  = (kind ~= "fail")
+  local tex = ok and CFG.PANEL_FLASH_OK or CFG.PANEL_FLASH_FAIL
+  if BlzFrameSetTexture ~= nil then
+    BlzFrameSetTexture(c.flash, tex, 0, true)
+  end
+
+  local pulses = (kind == "big")  and (CFG.PANEL_FLASH_BIG_PULSES  or 3)
+              or (kind == "fail") and (CFG.PANEL_FLASH_FAIL_PULSES or 2)
+              or (CFG.PANEL_FLASH_OK_PULSES or 1)
+  local step = CFG.PANEL_FLASH_STEP or 0.16
+
+  -- Moi nhip: hien nua dau, tat nua sau. Hen gio tuyet doi tu bay gio
+  -- chu khong noi duoi nhau -- noi duoi thi mot nhip truot la lech het.
+  for k = 0, pulses - 1 do
+    API.after(k * step,           function() show(c.flash, true)  end)
+    API.after(k * step + step / 2, function() show(c.flash, false) end)
   end
 end
 
@@ -392,7 +584,7 @@ end
 
 -- ---------- Dung bang ----------
 
-local function build(pid)
+local function buildBody(pid)
   local st = stateOf(pid)
   if st.panel ~= nil then return true end
 
@@ -460,7 +652,7 @@ local function build(pid)
     if b == nil then return nil end
     BlzFrameSetSize(b, w, h)
     BlzFrameSetPoint(b, FRAMEPOINT_TOPLEFT, parentF, FRAMEPOINT_TOPLEFT, dx, -dy)
-    -- VIEN cua nut: HAI O MAU DAC LONG NHAU, khong mượn template.
+    -- VIEN cua nut: HAI O MAU DAC LONG NHAU, khong muon template.
     --
     -- O ngoai phu kin nut = duong vien. O trong thut vao moi be d = ruot.
     -- Ca hai la CON cua nut nen tu an/hien va tu di theo nut, va
@@ -475,9 +667,10 @@ local function build(pid)
       BlzFrameSetPoint(f, FRAMEPOINT_TOPLEFT, b, FRAMEPOINT_TOPLEFT, dx2, -dy2)
       BlzFrameSetTexture(f, tex, 0, true)
       API.frameDead(f)
+      return f
     end
-    o(name .. "Edge", 0.0, 0.0, w, h, CFG.PANEL_BTN_EDGE)
-    o(name .. "Fill", d, d, w - 2 * d, h - 2 * d, CFG.PANEL_BTN_FILL)
+    local edge = o(name .. "Edge", 0.0, 0.0, w, h, CFG.PANEL_BTN_EDGE)
+    local fill = o(name .. "Fill", d, d, w - 2 * d, h - 2 * d, CFG.PANEL_BTN_FILL)
 
     local t = BlzCreateFrameByType("TEXT", name .. "Txt", b, "", pid)
     if t ~= nil then
@@ -486,7 +679,9 @@ local function build(pid)
       API.frameDead(t)
     end
     BlzTriggerRegisterFrameEvent(S.panel.trig, b, FRAMEEVENT_CONTROL_CLICK)
-    return { btn = b, txt = t }
+    -- Giu ca vien/ruot va kich thuoc: doi be day vien luc ve lai thi
+    -- phai dat lai ruot, ma dat lai ruot thi phai biet nut to bao nhieu.
+    return { btn = b, txt = t, fill = fill, w = w, h = h }
   end
 
   local function backdropFrame(name, dx, dy, w, h, tex, parentF)
@@ -558,6 +753,13 @@ local function build(pid)
     local w  = textW()
 
     local it = {}
+    -- Lop nhay: phu ca dong, thuong xuyen AN. Tao TRUOC cac thu khac
+    -- de no nam DUOI chu va icon -- nhay lam nen chu khong che mat noi
+    -- dung. (Nguoc voi luoi: o luoi no phu len icon vi o do khong co
+    -- chu nao de che.)
+    it.flash = backdropFrame("CharFlash" .. i, P, y, W - 2 * P, ROW() - 0.004,
+                             CFG.PANEL_FLASH_OK)
+
     it.bg    = backdropFrame("CharBg" .. i, P, y, W - 2 * P, ROW() - 0.004,
                              CFG.PANEL_GRID_TEX)
     it.icon  = backdropFrame("CharIcon" .. i, P, y + 0.006, ICON(), ICON(), nil)
@@ -573,7 +775,14 @@ local function build(pid)
 
     local b = button("CharBtn" .. i, "", W - P - BTN_W(),
                      y + (ROW() - BTN_H()) * 0.5, BTN_W(), BTN_H())
-    if b ~= nil then it.btn, it.btnTxt = b.btn, b.txt end
+    -- GIU CA BANG ma button() tra ve, khong chi btn/btnTxt.
+    -- applyBtn() can them fill/w/h de doi BE DAY VIEN -- vut chung di
+    -- thi ba trang thai nut trong y het nhau, va do la loi da ship:
+    -- xay dung xong ca he ba muc ma tren man hinh khong doi gi.
+    if b ~= nil then
+      it.btn, it.btnTxt = b.btn, b.txt
+      it.fill, it.w, it.h = b.fill, b.w, b.h
+    end
 
     show(it.name, false); show(it.state, false); show(it.sub, false)
     show(it.btn, false)
@@ -607,7 +816,11 @@ local function build(pid)
       f.root = BlzCreateFrameByType("BACKDROP", "CharFocus", st.panel, "", pid)
       if f.root ~= nil then
         BlzFrameSetTexture(f.root, CFG.PANEL_GRID_TEX, 0, true)
-        API.frameDead(f.root)
+        -- KHONG goi frameDead o day. frameDead la
+        -- BlzFrameSetEnable(f, false), va mot frame bi TAT thi CON cua
+        -- no khong nhan duoc cu bam nao -- nut Dot Pha se ve ra day du
+        -- ma bam chet lang. frameDead chi dung cho o TRANG TRI nam DE
+        -- LEN nut, khong dung cho hop CHUA nut.
       end
     end
     if f.root ~= nil then
@@ -651,6 +864,60 @@ local function build(pid)
       local btnY  = noteY - btnH - 0.010
       local barY  = btnY - 0.020
 
+      -- ---------- DAI TRANH: canh gioi dang o -> canh gioi ke ----------
+      --
+      -- Than bang cao bang the dai nhat (7 ky nang), ma the Tu Vi chi co
+      -- ba dong -- nen giua ba dong va thanh tien do bo trong 46% than
+      -- bang. Do la mang trong to nhat ca giao dien.
+      --
+      -- Dat "dang o -> ke tiep" chu khong mot anh don, vi ca ba dong
+      -- tren deu la "truoc -> sau" (Power x1.00 -> x2.85). Hai buc tranh
+      -- xep cung nhip do thi doc ra ngay, va con cho nguoi choi THAY
+      -- cai minh sap mua chu khong chi doc ten no.
+      local rowsBot = 0.044 + 3 * 0.024 + 0.010     -- day ba dong so lieu
+      local artTop  = rowsBot + 0.012
+      local artH    = (barY - 0.012) - artTop
+      if artH > 0.040 then
+        f.art = {}
+        local nameH = 0.020
+        local s1 = artH - nameH                     -- anh dang o
+        local s2 = s1 * 0.70                        -- anh ke tiep
+        local gap = 0.034                           -- cho mui ten
+        local x1  = (fw - (s1 + gap + s2)) * 0.5
+        local x2  = x1 + s1 + gap
+
+        local function art(i, x, y, sz)
+          local a = {}
+          a.icon = backdropFrame("CharFArt" .. i, x, y, sz, sz, nil, f.root)
+          -- CAN GIUA bang CENTER-toi-CENTER. text() co tham so thu 7 la
+          -- 'right' chu KHONG co can giua -- truyen false thi no bam mep
+          -- TRAI. Da dinh o chu "Pet" va o ten hinh nguoi; day la lan ba.
+          a.name = BlzCreateFrameByType("TEXT", "CharFArtN" .. i,
+                                        f.root, "", pid)
+          if a.name ~= nil then
+            BlzFrameSetPoint(a.name, FRAMEPOINT_CENTER, a.icon,
+                             FRAMEPOINT_BOTTOM, 0.0, -0.011)
+            API.frameScale(a.name, CFG.PANEL_SCALE_NAME)
+            API.frameDead(a.name)
+          end
+          return a
+        end
+
+        f.art[1] = art(1, x1, artTop, s1)
+        f.art[2] = art(2, x2, artTop + (s1 - s2) * 0.5, s2)
+
+        f.artArrow = BlzCreateFrameByType("TEXT", "CharFArtArrow",
+                                          f.root, "", pid)
+        if f.artArrow ~= nil then
+          BlzFrameSetPoint(f.artArrow, FRAMEPOINT_CENTER, f.art[1].icon,
+                           FRAMEPOINT_RIGHT, gap * 0.5, 0.0)
+          API.frameScale(f.artArrow, CFG.PANEL_SCALE_HEAD)
+          API.frameDead(f.artArrow)
+        end
+      else
+        API.trace("panel: dai tranh cao " .. artH .. " -- khong du cho, bo qua")
+      end
+
       f.barBg = backdropFrame("CharFBarBg", 0.0, barY, fw, 0.010,
                               CFG.PANEL_BAR_BG, f.root)
       f.barFill = backdropFrame("CharFBarFill", 0.0, barY, fw * 0.5, 0.010,
@@ -658,7 +925,14 @@ local function build(pid)
 
       local b = button("CharFBtn", "", fw * 0.10, btnY,
                        fw * 0.80, btnH, f.root)
-      if b ~= nil then f.btn, f.btnTxt = b.btn, b.txt end
+      -- GIU CA BANG ma button() tra ve, khong chi btn/btnTxt.
+      -- applyBtn() can them fill/w/h de doi BE DAY VIEN -- vut chung di
+      -- thi ba trang thai nut trong y het nhau, va do la loi da ship:
+      -- xay dung xong ca he ba muc ma tren man hinh khong doi gi.
+      if b ~= nil then
+        f.btn, f.btnTxt = b.btn, b.txt
+        f.fill, f.w, f.h = b.fill, b.w, b.h
+      end
 
       f.note = text("CharFNote", f.root, 0.010, noteY, fw - 0.020,
                       CFG.PANEL_SCALE_SUB, false)
@@ -674,30 +948,156 @@ local function build(pid)
     -- Chia doi be ngang: luoi o ben trai, bang thong ke ben phai. Bang
     -- rong 0.74 nen xep doc het thi thua ngang va thieu doc -- ma thieu
     -- doc thi CA BON the cung cao len theo (bodyH lay max).
-    local dollW = fw * 0.62
+    -- Luoi chiem bao nhieu phan be ngang. Nam cot thi moi cot hep lai,
+    -- ma nut "FORGE  1" van phai vua -- nen phan cho luoi rong hon ban
+    -- ba cot. Bang thong ke ben phai con thua cho.
+    local dollW = fw * 0.70
     local colW  = dollW / GRID_COLS
     local btnW  = colW - 0.016
     if btnW > 0.132 then btnW = 0.132 end   -- du cho "TIEN GIAI  10"
 
+    -- HOP CHUA cua luoi. Kieu "FRAME" la mot hop VO HINH, dung de gom
+    -- con lai mot cho -- nhung khong phai ban Warcraft nao cung tao
+    -- duoc no bang BlzCreateFrameByType.
+    --
+    -- Thieu cai hop nay thi CA THE trong ron: refresh() da tat het dong
+    -- cua kieu "list" roi, ma luoi thi khong ve duoc. Nen phai co duong
+    -- lui, va duong lui la "BACKDROP" -- kieu ma file nay dung khap noi
+    -- nen chac chan tao duoc. No co ve ra mot o mau, nhung mot o mau
+    -- lam nen thi van hon mot bang trong.
     g.root = BlzCreateFrameByType("FRAME", "CharGrid", st.panel, "", pid)
     if g.root == nil then
-      API.trace("panel: khong tao duoc FRAME rong cho luoi trang bi")
+      -- Khong frameDead cai nay: xem chu thich o duong lui cua "focus".
+      g.root = BlzCreateFrameByType("BACKDROP", "CharGrid", st.panel, "", pid)
+      if g.root ~= nil and BlzFrameSetTexture ~= nil then
+        BlzFrameSetTexture(g.root, CFG.PANEL_GRID_TEX or CFG.FRAME_BG, 0, true)
+      end
+      API.trace("panel: kieu FRAME khong tao duoc -- luoi trang bi lui ve BACKDROP" ..
+                " (duoc=" .. tostring(g.root ~= nil) .. ")")
+    end
+    if g.root == nil then
+      API.trace("panel: KHONG dung duoc hop chua nao cho luoi trang bi")
     else
       BlzFrameSetSize(g.root, fw, bodyH())
       BlzFrameSetPoint(g.root, FRAMEPOINT_TOPLEFT, st.panel,
                        FRAMEPOINT_TOPLEFT, P, -top)
       show(g.root, false)
 
-      -- Cho hinh bong nguoi: cot giua, ba dong tren.
+      -- O PET: cho danh san, chua he nao dung toi.
       --
-      -- Chua co file thi ve o mau nen (PANEL_GRID_TEX) chu khong bo
-      -- trong: mot o trong giua luoi trong nhu loi ve, mot o toi mau thi
-      -- trong nhu cho danh san. Go duong dan chua import vao
-      -- CFG.GEAR_SILHOUETTE se ra o XANH LA, khong phai o trong.
-      if GRID_COLS >= 3 then
-        g.doll = backdropFrame("CharGridDoll", colW + 0.006, 0.0,
-                               colW - 0.012, 3 * rowStep() - CELL_GAP,
-                               CFG.GEAR_SILHOUETTE or CFG.PANEL_GRID_TEX, g.root)
+      -- Ve NHU MOT O THAT (vien + ruot) chu khong bo trong: mot cho
+      -- trong giua luoi trong nhu loi ve, con mot o co vien va chu mo
+      -- thi doc ra ngay la "cho nay se co thu gi".
+      --
+      -- Khong co nut. Khong bam duoc. Do la khac biet duy nhat.
+      -- Ve Y HET mot o that: cung o vuong bang icon, cung cho trong cot.
+      -- Khac dung mot thu -- khong co nut.
+      --
+      -- Ban truoc ve mot hop to bang ca o va nhet chu vao, nen no khong
+      -- thang hang voi day icon ben canh. Lay LAI dung phep tinh cua o
+      -- thuong (ix = cx + (colW - ICON()) * 0.5) thi khong the lech.
+      --
+      -- Chu can giua bang CENTER-toi-CENTER, giong cach button() can
+      -- nhan cua no. Can bang toa do thi phai biet be ngang chu, ma
+      -- Warcraft khong co native nao do duoc be ngang mot chuoi -- ban
+      -- truoc doan, va chu dat han sang mep phai.
+      -- ---------- COT GIUA: LY LICH HERO ----------
+      --
+      -- Ban truoc cho nay la bong nguoi (CFG.GEAR_SILHOUETTE). Doi vi
+      -- moi o da co icon that roi -- bong nguoi chi noi lai dieu icon
+      -- da noi. Doi lai, cot giua gio TRA LOI MOT CAU HOI CO THAT.
+      --
+      -- Dieu kien Tien Hoa la cultRank >= tier + 1. Muon biet "vi sao
+      -- Khien cua toi chua len canh gioi duoc" thi phai nho Tu Vi minh
+      -- dang o dau -- truoc day phai doi sang the I de xem. Dat ngay
+      -- giua luoi thi nut "CHO Kim Dan" ben canh doc ra nghia ngay.
+      --
+      -- Icon lay tu CFG.HEROES -- ba duong DA CHUNG MINH ve ra hinh,
+      -- dang dung o bang chon tuong. Khong them anh, khong them muc
+      -- trong war3map.imp, khong co cua doan sai duong dan.
+      local dollCol = CFG.GEAR_DOLL_COL
+      if dollCol ~= nil and GRID_ROWS >= 4 then
+        local dx = (dollCol - 1) * colW + 0.006
+        local dw = colW - 0.012
+        local dh = 3 * rowStep() - CELL_GAP      -- ba hang tren
+        g.doll = backdropFrame("CharDollBg", dx, 0.0, dw, dh,
+                               CFG.PANEL_GRID_TEX, g.root)
+
+        -- Icon KHONG lap day cot: 64x64 phong len 0.1375 la 3.9 lan,
+        -- nhin ra be. 0.090 la 2.5 lan -- doi mot phan dien tich lay do
+        -- net, va phan thua de chu ganh.
+        local iw = CFG.GEAR_DOLL_ICON or 0.090
+        local blockH = iw + 0.008 + 0.016 + 0.004 + 0.016
+        local top = (dh - blockH) * 0.5
+        g.dollIcon = backdropFrame("CharDollIcon",
+                                   dx + (dw - iw) * 0.5, top, iw, iw,
+                                   nil, g.root)
+        -- CAN GIUA bang CENTER-toi-CENTER, khong dung text().
+        --
+        -- text() co tham so thu 7 la 'right' (can phai) chu KHONG co
+        -- can giua -- truyen false thi no bam mep TRAI. Da dinh mot lan
+        -- o chu "Pet", va lai dinh o day.
+        --
+        -- Neo vao khung nen g.doll roi day xuong bang offset: can bang
+        -- toa do thi phai biet be ngang chuoi, ma Warcraft khong co
+        -- native nao do duoc.
+        local function mid(name, dy, scale)
+          local t = BlzCreateFrameByType("TEXT", name, g.root, "", pid)
+          if t == nil then return nil end
+          BlzFrameSetPoint(t, FRAMEPOINT_CENTER, g.doll,
+                           FRAMEPOINT_CENTER, 0.0, -(dy - dh * 0.5))
+          API.frameScale(t, scale)
+          API.frameDead(t)
+          return t
+        end
+        g.dollName = mid("CharDollName", top + iw + 0.008 + 0.008,
+                         CFG.PANEL_SCALE_NAME)
+        g.dollRank = mid("CharDollRank", top + iw + 0.008 + 0.020 + 0.008,
+                         CFG.PANEL_SCALE_SUB)
+      end
+
+      -- ---------- O PET ----------
+      -- Ve Y HET mot o that: cung o vuong bang icon, cung cho trong cot.
+      -- Khac dung mot thu -- khong co nut.
+      local pet = CFG.GEAR_PET_SLOT
+      if pet ~= nil then
+        local pd  = CFG.PANEL_BTN_BORDER or 0.0016
+        local pcx = (pet[1] - 1) * colW
+        local pcy = (pet[2] - 1) * rowStep()
+        local pix = pcx + (colW - ICON()) * 0.5
+        g.petEdge = backdropFrame("CharGridPetEdge", pix - pd, pcy - pd,
+                                  ICON() + 2 * pd, ICON() + 2 * pd,
+                                  CFG.PANEL_BTN_EDGE, g.root)
+        g.petFill = backdropFrame("CharGridPetFill", pix, pcy,
+                                  ICON(), ICON(),
+                                  CFG.PANEL_GRID_TEX, g.root)
+        if g.petFill ~= nil then
+          g.petTxt = BlzCreateFrameByType("TEXT", "CharGridPetTxt",
+                                          g.root, "", pid)
+          if g.petTxt ~= nil then
+            BlzFrameSetPoint(g.petTxt, FRAMEPOINT_CENTER, g.petFill,
+                             FRAMEPOINT_CENTER, 0.0, 0.0)
+            BlzFrameSetText(g.petTxt,
+                            CFG.C_GREY .. API.t("gear_pet") .. CFG.C_END)
+            BlzFrameSetVisible(g.petTxt, false)
+            API.frameDead(g.petTxt)
+          end
+        end
+      end
+
+      -- ---------- O TICH "luyen gop / luyen le" ----------
+      -- Ngoi o khe NUT cua o Pet, tuc dung hang voi tam nut kia. No doi
+      -- nhan cua CA TAM nut cung luc, nen phai nam trong dam nut do chu
+      -- khong nep ra ria.
+      --
+      -- Trang thai cua no la UI CUC BO, khong dong bo: xem tabToggle o
+      -- 5_gear.lua.
+      if GRID_TOGGLE ~= nil then
+        local tcx = (GRID_TOGGLE[1] - 1) * colW
+        local tcy = (GRID_TOGGLE[2] - 1) * rowStep() + ICON() + 0.004
+        g.toggle = button("CharGridToggle", "",
+                          tcx + (colW - btnW) * 0.5, tcy,
+                          btnW, BTN_H(), g.root)
       end
 
       local d = CFG.PANEL_BTN_BORDER or 0.0016
@@ -718,7 +1118,14 @@ local function build(pid)
         local by = cy + ICON() + 0.004
         local b = button("CharGridBtn" .. i, "", cx + (colW - btnW) * 0.5,
                          by, btnW, BTN_H(), g.root)
-        if b ~= nil then c.btn, c.btnTxt = b.btn, b.txt end
+        -- GIU CA BANG ma button() tra ve, khong chi btn/btnTxt.
+        -- applyBtn() can them fill/w/h de doi BE DAY VIEN -- vut chung di
+        -- thi ba trang thai nut trong y het nhau, va do la loi da ship:
+        -- xay dung xong ca he ba muc ma tren man hinh khong doi gi.
+        if b ~= nil then
+          c.btn, c.btnTxt = b.btn, b.txt
+          c.fill, c.w, c.h = b.fill, b.w, b.h
+        end
 
         -- Dong chu DUNG CHO NUT khi mon nay khong bam duoc gi.
         --
@@ -727,6 +1134,12 @@ local function build(pid)
         -- khong, nen phai lam lai.
         c.note = text("CharGridNote" .. i, g.root, cx, by + 0.004, colW,
                       CFG.PANEL_SCALE_SUB, false)
+
+        -- LOP NHAY: phu len icon, thuong xuyen AN. Tao SAU icon de no
+        -- nam TREN -- thu tu tao chinh la thu tu ve.
+        c.flash = backdropFrame("CharGridFlash" .. i, ix - d, cy - d,
+                                ICON() + 2 * d, ICON() + 2 * d,
+                                CFG.PANEL_FLASH_OK, g.root)
 
         show(c.edge, false); show(c.icon, false)
         show(c.btn, false); show(c.note, false)
@@ -744,10 +1157,21 @@ local function build(pid)
           alt = (CFG.PANEL_GRID and i % 2 == 0)
                 and backdropFrame("CharGridSA" .. i, sx - 0.004, y - 0.003,
                                   sw, 0.019, CFG.PANEL_GRID_TEX, g.root) or nil,
-          lbl = text("CharGridSL" .. i, g.root, sx, y, sw * 0.42,
-                     CFG.PANEL_SCALE_SUB, false),
-          val = text("CharGridSV" .. i, g.root, sx + sw * 0.42, y,
-                     sw * 0.58, CFG.PANEL_SCALE_SUB, true),
+          -- 60/40 VA SO CAN TRAI.
+          --
+          -- Ban truoc 42/58 va so can PHAI: so bi ep sat mep phai cua o
+          -- 204px trong khi no chi dai 55px -- ra mot khoang trong 150px
+          -- giua ten va chi so cua chinh no.
+          --
+          -- Do lai voi chu DAI NHAT that su ("Necklace - Exalted" 164px
+          -- + "-25.0% attack damage taken" 237px = 402px) thi ca hai
+          -- KHONG vua trong 352px du chia the nao -- nen chuoi bonus da
+          -- rut ngan o 6_i18n.lua. Cau day du van con cho o it.desc cua
+          -- kieu than "list", noi rong ca bang.
+          lbl = text("CharGridSL" .. i, g.root, sx, y, sw * 0.58,
+                     CFG.PANEL_SCALE_STAT, false),
+          val = text("CharGridSV" .. i, g.root, sx + sw * 0.58, y,
+                     sw * 0.42, CFG.PANEL_SCALE_STAT, false),
         }
       end
     end
@@ -759,6 +1183,27 @@ local function build(pid)
             MAX_ITEMS .. " dong, luoi " .. GRID_COLS .. "x" .. GRID_ROWS ..
             ", nen = " .. tostring(how) .. ")")
   return true
+end
+
+-- Boc pcall quanh buildBody(): loi Lua trong callback cua Warcraft khong in ra
+-- dau ca, nen khong boc thi mot dong sai o giua bien thanh "bam phim ra
+-- cai hop rong" -- khong manh moi nao.
+--
+-- Hong thi DON RAC. Backdrop da tao la da HIEN; de lai thi nguoi choi
+-- co mot cai hop khong dong duoc, va moi lan bam lai them mot cai.
+local function build(pid)
+  local ok, res = pcall(buildBody, pid)
+  if ok and res ~= false then return res end
+
+  API.trace("panel: DUNG BANG LOI -- " .. tostring(res))
+  API.msg(pid, CFG.C_RED .. "panel: dung bang loi, xem file vet." .. CFG.C_END)
+
+  local st = stateOf(pid)
+  if st ~= nil and st.panel ~= nil and BlzDestroyFrame ~= nil then
+    BlzDestroyFrame(st.panel)
+  end
+  if st ~= nil then st.panel = nil end
+  return false
 end
 
 local function setShown(pid, want)
@@ -838,6 +1283,13 @@ local function onClick()
         end
       end
 
+      if st.grid ~= nil and st.grid.toggle ~= nil
+         and f == st.grid.toggle.btn then
+        if tab ~= nil and tab.toggleAction ~= nil then tab.toggleAction(pid) end
+        refresh(pid)
+        return
+      end
+
       if st.grid ~= nil then
         for i = 1, #st.grid.cell do
           local c = st.grid.cell[i]
@@ -915,13 +1367,19 @@ local function bindEsc()
   TriggerAddAction(t, function()
     local pid = GetPlayerId(GetTriggerPlayer())
     if escLock[pid] then return end
-    -- Khung Co Duyen dang mo thi ESC khong dong no, va cung khong mo
-    -- bang nhan vat de len tren. Phai chon mot the moi di tiep.
+    -- HAI KHUNG MODAL, ESC khong dong duoc cai nao, va cung khong mo
+    -- bang nhan vat de len tren chung. Phai xong viec moi di tiep.
+    --
+    -- Bang chon hero tung KHONG co mat o day: bam ESC luc dang chon
+    -- hero la bang nhan vat mo de len, con bang chon hero nam ket phia
+    -- sau -- khong bam duoc ma cung khong dong duoc.
+    if API.heroFrameShown ~= nil and API.heroFrameShown(pid) then return end
     if API.fortuneFrameShown ~= nil and API.fortuneFrameShown(pid) then return end
     escLock[pid] = true
     API.after(CFG.PANEL_ESC_LOCK or 0.25, function() escLock[pid] = nil end)
 
-    -- BA TANG, va thu tu hoi CHINH LA thu tu uu tien:
+    -- BON TANG, va thu tu hoi CHINH LA thu tu uu tien:
+    --   chon hero -> da chan o tren, ESC khong lam gi
     --   Co Duyen  -> da chan o tren, ESC khong lam gi
     --   bang R    -> dong no, dung
     --   bang ESC  -> dong no, dung
@@ -973,6 +1431,11 @@ local function startPanel()
     -- Kich thuoc luoi suy TU bang o cua the, khong go tay.
     if t.kind == "grid" and t.slots ~= nil then
       GRID_SLOTS = t.slots
+      GRID_TOGGLE = t.toggleSlot
+      if t.toggleSlot ~= nil then
+        if t.toggleSlot[1] > GRID_COLS then GRID_COLS = t.toggleSlot[1] end
+        if t.toggleSlot[2] > GRID_ROWS then GRID_ROWS = t.toggleSlot[2] end
+      end
       for k = 1, #t.slots do
         local col, row = t.slots[k][1], t.slots[k][2]
         if col > GRID_COLS then GRID_COLS = col end
@@ -1001,5 +1464,7 @@ API.panelPlaceholder = placeholderTab
 API.panelRefresh     = refresh
 API.panelToggle      = toggle
 API.panelHide        = hide
+API.panelFlash       = panelFlash
+API.panelGearFlash   = panelFlash   -- ten cu, giu cho 5_gear.lua
 API.panelOpenTab     = openTab
 API.startPanel       = startPanel

@@ -103,6 +103,14 @@ local function hit(src, tgt, amount, model)
                    ATTACK_TYPE_NORMAL, DAMAGE_TYPE_MAGIC, WEAPON_TYPE_WHOKNOWS)
   busy = false
   if model ~= nil then API.fx(model, GetUnitX(tgt), GetUnitY(tgt)) end
+
+  -- NHAN an ca o duong ky nang. 'busy' lam onDamaged() return ngay dong
+  -- dau, nen neu khong goi o day thi hut mau chi chay tren don thuong --
+  -- kieu sai im lang, va hero danh phep thi khong hieu vi sao khong hoi.
+  if API.gearLifesteal ~= nil and API.heroPidOf ~= nil then
+    local sp = API.heroPidOf(src)
+    if sp ~= nil then API.gearLifesteal(sp, amount) end
+  end
 end
 
 -- ---------- Ky nang chu dong ----------
@@ -212,11 +220,11 @@ local function onDamaged()
       keep = keep * (1.0 - pct)
     end
 
-    -- Khien chan DON DANH, Nhan chan PHEP -- nen phai hoi engine day la
+    -- Khien chan DON DANH, Ao Choang chan PHEP -- nen phai hoi engine day
     -- don loai gi.
     --
     -- Thieu BlzGetEventDamageType thi KHONG nuot im: coi la don danh
-    -- (loai pho bien nhat) va GHI VET mot lan, de "Nhan khong an gi"
+    -- (loai pho bien nhat) va GHI VET mot lan, de "Ao Choang khong an gi"
     -- khong bi tuong la loi can bang. ADR 0012.
     if API.gearMitigPct ~= nil then
       local spell = false
@@ -225,7 +233,7 @@ local function onDamaged()
       elseif not dmgTypeWarned then
         dmgTypeWarned = true
         API.trace("effect: THIEU BlzGetEventDamageType -- moi don deu tinh la " ..
-                  "don danh, mon Nhan se khong an gi")
+                  "don danh, mon Ao Choang se khong an gi")
       end
       keep = keep * (1.0 - API.gearMitigPct(tp,
                        spell and "mitig_magic" or "mitig_phys"))
@@ -262,6 +270,13 @@ local function onDamaged()
       amount = amount * (1.0 + pct)
       BlzSetEventDamage(amount)
     end
+  end
+
+  -- NHAN: hut mau theo con so CUOI CUNG, tuc sau khi Kiem da cong %.
+  -- Dat sau khoi tren chu khong truoc: hai mon nhan voi nhau, va thu tu
+  -- nay la cho quyet dinh dieu do.
+  if sp ~= nil and tp == nil and API.gearLifesteal ~= nil then
+    API.gearLifesteal(sp, amount)
   end
 
   -- "cleave": hero GAY don. Van % sat thuong sang muc tieu ben canh.

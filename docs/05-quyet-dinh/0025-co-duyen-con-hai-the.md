@@ -83,8 +83,8 @@ thì khác nhau ở mỗi con số — vẫn không phải ba lựa chọn khác
 - **Giá đá trong shop là núm duy nhất điều nhịp Trang Bị.** Vàng → shop → đá là
   đường ra đá duy nhất còn lại. Đổi `price` của mục `iron` trong `CFG.SHOP` là
   đổi toàn bộ tốc độ lên đồ. Đặt `10`, suy ra từ: thu nhập vàng cả ván 12 400,
-  một món đi trọn 471 đá → mua được ~2.6 trong 7 món.
-- **Thẻ Trang Bị thành một lựa chọn, không phải thanh tiến độ.** Bảy món bày ra,
+  một món đi trọn 471 đá → mua được ~2.6 trong 8 món.
+- **Thẻ Trang Bị thành một lựa chọn, không phải thanh tiến độ.** Tám món bày ra,
   tiền luôn chỉ đủ khoảng ba — và tỉ lệ đó đứng yên ~2.6 suốt ván, nên áp lực
   chọn không dồn về đầu hay cuối.
 - **`CFG.FORTUNE_IRON` đã xoá.** Nhánh `"iron"` trong `makeCard()` vẫn còn để bật

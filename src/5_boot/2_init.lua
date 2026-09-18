@@ -142,6 +142,7 @@ local function bootstrap()
   API.startSkillFrame()
   API.startFortuneFrame()
   API.startGameFrame()      -- bang tran dau, phim R
+  API.startQuest()          -- trang huong dan phim tat o F9
   API.startSkillPicking()
   API.startPicking()
   API.trace("startPicking: tra ve")

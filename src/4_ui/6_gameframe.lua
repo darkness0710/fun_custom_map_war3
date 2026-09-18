@@ -67,7 +67,7 @@ end
 
 -- ---------- Dung khung ----------
 
-local function build(pid)
+local function buildBody(pid)
   local st = stateOf(pid)
   if st.root ~= nil then return true end
   if BlzGetOriginFrame == nil or BlzCreateFrameByType == nil then return false end
@@ -152,6 +152,27 @@ local function build(pid)
   BlzFrameSetVisible(bg, false)
   API.trace("gameframe: dung khung pid " .. pid)
   return true
+end
+
+-- Boc pcall quanh buildBody(): loi Lua trong callback cua Warcraft khong in ra
+-- dau ca, nen khong boc thi mot dong sai o giua bien thanh "bam phim ra
+-- cai hop rong" -- khong manh moi nao.
+--
+-- Hong thi DON RAC. Backdrop da tao la da HIEN; de lai thi nguoi choi
+-- co mot cai hop khong dong duoc, va moi lan bam lai them mot cai.
+local function build(pid)
+  local ok, res = pcall(buildBody, pid)
+  if ok and res ~= false then return res end
+
+  API.trace("gameframe: DUNG BANG LOI -- " .. tostring(res))
+  API.msg(pid, CFG.C_RED .. "gameframe: dung bang loi, xem file vet." .. CFG.C_END)
+
+  local st = stateOf(pid)
+  if st ~= nil and st.root ~= nil and BlzDestroyFrame ~= nil then
+    BlzDestroyFrame(st.root)
+  end
+  if st ~= nil then st.root = nil end
+  return false
 end
 
 -- ---------- Ve lai ----------
@@ -319,7 +340,18 @@ local function onCall(pid, _)
   end
   API.msg(nil, CFG.C_GREY ..
     API.t("wave_called", GetPlayerName(Player(pid))) .. CFG.C_END)
-  refreshAll()
+
+  -- DONG khung o MOI may, khong rieng may nguoi bam.
+  --
+  -- Hai ly do, ly do sau moi la ly do that:
+  --   . bang nay tra loi "tran dau dang the nao" -- goi dot xong thi
+  --     cau tra loi nam o ngoai bai chien, khong nam trong bang
+  --   . con mo la con bam duoc, ma khe giua "nhan loi goi" va "quai
+  --     hien ra" du dai de lot mot cu bam nua
+  --
+  -- Day la lop thu hai. Lop thu nhat la co S.waveCalling trong
+  -- waveNow() -- giao dien mot minh khong du, vi -next khong di qua no.
+  for i = 1, #S.pids do hideFrame(S.pids[i]) end
 end
 
 -- ---------- Phim R ----------

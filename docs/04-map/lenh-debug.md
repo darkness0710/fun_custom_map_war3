@@ -14,7 +14,7 @@ Tất cả nằm ở đầu [1_config.lua](../../src/1_core/1_config.lua). Đổ
 |---|---|---|
 | `CFG.DEV_COMMANDS` | `true` | Mở nhóm lệnh dev bên dưới |
 | `CFG.TRACE` | `true` | Ghi vết khởi động ra file |
-| `CFG.DEBUG` | `false` | In sơ đồ lưới, ping 25 block, báo cáo chi tiết lúc vào map |
+| `CFG.DEBUG` | `false` | In sơ đồ lưới, ping 25 block, báo cáo chi tiết lúc vào map — và mở lệnh `-debug` |
 | `CFG.REVEAL_MAP` | `true` | Mở toàn bộ sương mù — **không phải công tắc dev**, xem dưới |
 
 **Bốn cái này không kéo theo nhau.** Tắt `DEBUG` vẫn gõ lệnh dev được, vẫn có file
@@ -60,20 +60,37 @@ Không phụ thuộc công tắc nào. Đây là lối chơi, không phải debu
 > **chưa xác minh trên 1.31.1**. Kiểm bằng file vết: thấy `panel: da gan phim R`
 > là chạy, thấy `panel: KHONG co Blz...` thì dùng `-c`.
 
+## Lệnh `-debug` — cần `CFG.DEBUG = true`
+
+| Lệnh | Làm gì |
+|---|---|
+| `-debug` | Đẩy **cả bốn đồng tiền** lên `CFG.DEBUG_MONEY` *(mặc định 999 999)*: Linh Khí · Vàng · Gỗ · Đá Huyền Thiết |
+
+Lệnh này theo `CFG.DEBUG`, **không** theo `CFG.DEV_COMMANDS` — hai công tắc tách
+nhau. Nó phát hết tiền cho người chơi nên thuộc về công tắc *"đang soi kỹ"*, chứ
+không phải công tắc *"đang gõ lệnh"*.
+
+Khớp **chính xác** chứ không khớp tiền tố: gõ `-debugxyz` không ăn.
+
+> **`-lk` đã bỏ.** Nó lệch đúng một ký tự với `-lc` (mở thẻ Tu Vi), mà hai lệnh
+> làm hai việc khác hẳn nhau — gõ nhầm là cộng tiền thay vì mở bảng. Muốn Linh
+> Khí thì dùng `-debug`.
+
 ## Lệnh dev
 
 Cần `CFG.DEV_COMMANDS = true`.
 
 | Lệnh | Làm gì | Ví dụ |
 |---|---|---|
-| `-wave <số>` | Nhảy thẳng tới stage 1–100 | `-wave 110` → boss Độ Kiếp |
-| `-lk <số>` | Thêm **Linh Khí** *(biến riêng, hiện ở bảng)* | `-lk 5000` |
+| `-wave <số>` | Nhảy thẳng tới stage 1–100 | `-wave 50` → boss Độ Kiếp |
 | `-vang <số>` | Thêm **Vàng** *(thanh tài nguyên)* | `-vang 5000` |
 | `-go <số>` | Thêm **Gỗ** *(thanh tài nguyên)* | `-go 100` |
 | `-lc <số>` | Nhảy tới bậc Tu Vi 1–20 | `-lc 15` → Đại La |
 | `-sp` | Phát 1 điểm kỹ năng, hoặc mở bảng chọn kỹ năng tuỳ `CFG.SKILL_MODE` | |
 | `-next` | Gọi đợt kế tiếp — **chỉ khi đã dọn sạch** quái trên map | |
 | `-spawn` | Tạo thẳng một `H001` bằng `CreateUnit`, cạnh hero | để so với unit đặt sẵn |
+| `-icon <mã>` | **Đo** icon thật của một item: in ra tên + đường dẫn `.blp`. Cách duy nhất biết một đường dẫn icon có thật — gõ nhầm thì Warcraft vẽ ô **xanh lá** chứ không báo lỗi | `-icon bspd` |
+| `-fx <đường dẫn>` | **Đo** một model: vẽ thử ngay dưới chân hero. Gõ sai đường dẫn thì Warcraft **không vẽ gì và không báo lỗi** — im hơn cả icon. Phải nhìn mới biết | `-fx Abilities\Spells\Human\Avatar\AvatarCaster.mdl` |
 | `-nat` | Bản Warcraft này có native nào | |
 | `-nat <chữ>` | Liệt kê **mọi** hằng số toàn cục có tên chứa `<chữ>` — `UNIT_RF_*`, `ABILITY_ILF_*`… Màn hình cắt ở `NAT_FIELD_MAX`, **file vết ghi đủ**, chia 6 tên mỗi dòng vì `Preload()` tự cắt chuỗi dài | |
 | `-don` | **Giết sạch quái đang sống.** Đi qua đúng đường thật: sự kiện chết → `rewardAll` → tiền + lượt quay → wave sau ra. Thử cả dây chuyền, không chỉ cái bảng | dev |
@@ -96,10 +113,11 @@ Xem đường cong chỉ số có đúng không. Đối chiếu với bảng tra
 [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md).
 
 ```
--lk 9200  rồi  -lc 20
+-debug  rồi  -lc 20
 ```
-Hero ở đỉnh tu vi. Xem chỉ số có lên +749 mỗi loại không, và sát thương có ×19.7
-không.
+Hero ở đỉnh tu vi. Xem chỉ số cộng dồn có lên **+24 199** mỗi loại không, và sức
+mạnh có **×897** không — đối chiếu
+[duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md).
 
 ```
 -wave 11    (boss Phàm Nhân)

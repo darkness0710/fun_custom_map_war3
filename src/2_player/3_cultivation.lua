@@ -98,6 +98,18 @@ end
 -- ---------- Noi dung the ----------
 --
 -- Cai nguoi choi can biet la TRUOC -> SAU va GIA. Khong phai ca bang.
+-- Duong dan anh cua mot canh gioi. Chua ve toi thi dung anh CAO NHAT
+-- da co -- cung cach iconFor() cua 5_gear.lua, va cung ly do: thieu anh
+-- thi ra o trong, ma o trong nhin nhu giao dien hong.
+local function realmIcon(r)
+  if CFG.REALM_ICON_PATH == nil or r == nil then return nil end
+  local mx = CFG.REALM_ICON_MAX or 0
+  if r > mx then r = mx end
+  if r < 1 then return nil end
+  return string.format(CFG.REALM_ICON_PATH, r)
+end
+
+
 local function tabInfo(pid)
   local d = S.p[pid]
   if d == nil then return {} end
@@ -117,6 +129,13 @@ local function tabInfo(pid)
         "+" .. API.num(statAt(cur) - CFG.CULT_STAT_BASE), "" },
     }
     out.note = API.t("cult_peak")
+    -- Het thang: mot buc, khong mui ten -- khong con "sau" de tro toi.
+    out.art = { { icon = realmIcon(cur), name = rankName(cur) } }
+    -- Da o bac cao nhat: van ve mot nut, khoa. Khong co nut thi the
+    -- Tu Vi bong dung trong rong o cuoi van, trong nhu bang hong.
+    out.btn    = API.t("cult_btn_peak")
+    out.btnOn  = false
+    out.btnWhy = "locked" 
     return out
   end
 
@@ -129,9 +148,19 @@ local function tabInfo(pid)
       "+" .. API.num(statAt(cur + 1) - CFG.CULT_STAT_BASE) },
     { API.t("col_realm"), rankName(cur), rankName(cur + 1) },
   }
+  -- Cung nhip voi ba dong tren: trai la DANG O, phai la SAU KHI DOT PHA.
+  -- Buc phai mo di (dim) vi no chua thuoc ve nguoi choi.
+  out.art = {
+    { icon = realmIcon(cur),     name = rankName(cur) },
+    { icon = realmIcon(cur + 1), name = rankName(cur + 1), dim = true },
+  }
+
   out.btn    = API.t("cult_next", rankName(cur + 1)) .. "     " ..
                API.num(price) .. " " .. API.t("cur_qi")
   out.btnOn = (API.getQi(pid) >= price)
+  if not out.btnOn then
+    out.btn = out.btn .. API.t("gear_btn_have", API.num(API.getQi(pid)))
+  end
   out.note = API.t("cult_have", API.num(API.getQi(pid)))
   return out
 end
@@ -195,7 +224,7 @@ local function tabAction(pid)
   API.syncSend(pid, CFG.OP_CULT_UP, 0)
 end
 
--- "-lc" mo the Linh Can · "-lc up" dot pha · "-lc <so>" nhay bac (dev)
+-- "-lc" mo the Linh Can | "-lc up" dot pha | "-lc <so>" nhay bac (dev)
 --
 -- Lenh chat KHONG can di qua 02b_sync: su kien chat von da no tren moi
 -- may cung luc. Goi thang la dung, va do la ly do lenh chat luon chay

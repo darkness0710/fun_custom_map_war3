@@ -82,17 +82,25 @@ local function buy(pid, i)
   local d = S.p[pid]
   if d == nil then return end
 
+  -- Phan hoi nam tren DONG VUA BAM. Mot dong chat thi troi di, ma nguoi
+  -- choi luc do dang nhin vao bang chu khong nhin o chat.
+  local function flash(kind)
+    if API.panelFlash ~= nil then API.panelFlash(pid, i, kind) end
+  end
+
   -- Da: khong dung tui do, nen khong can hero va khong can kiem o.
   if isIronItem(item) then
     if not API.spendGold(pid, item.price) then
       API.msg(pid, CFG.C_RED .. API.t("no_gold") .. CFG.C_END ..
         API.t("need_have", API.num(item.price), API.num(API.getGold(pid))))
+      flash("fail")
       API.panelRefresh(pid)
       return
     end
     d.iron = (d.iron or 0) + item.iron
     API.msg(pid, API.t("shop_bought",
       CFG.C_JADE .. API.pick(item) .. CFG.C_END, API.num(item.price)))
+    flash("ok")
     API.panelRefresh(pid)
     return
   end
@@ -101,12 +109,14 @@ local function buy(pid, i)
 
   if not hasRoom(d.hero, item.item) then
     API.msg(pid, CFG.C_RED .. API.t("shop_full") .. CFG.C_END)
+    flash("fail")
     return
   end
 
   if not API.spendGold(pid, item.price) then
     API.msg(pid, CFG.C_RED .. API.t("no_gold") .. CFG.C_END ..
       API.t("need_have", API.num(item.price), API.num(API.getGold(pid))))
+    flash("fail")
     API.panelRefresh(pid)
     return
   end
@@ -120,6 +130,7 @@ local function buy(pid, i)
     SetItemCharges(old, c)
     API.msg(pid, API.t("shop_stack",
       CFG.C_JADE .. API.pick(item) .. CFG.C_END, c, API.num(item.price)))
+    flash("ok")
     API.panelRefresh(pid)
     return
   end
@@ -133,12 +144,14 @@ local function buy(pid, i)
     API.msg(pid, CFG.C_RED .. "Khong tao duoc item " ..
       API.idToStr(item.item) .. " -- da hoan " .. API.num(item.price) ..
       " vang. Kiem CFG.SHOP." .. CFG.C_END)
+    flash("fail")
     API.panelRefresh(pid)
     return
   end
 
   API.msg(pid, API.t("shop_bought",
     CFG.C_JADE .. API.pick(item) .. CFG.C_END, API.num(item.price)))
+  flash("ok")
   API.panelRefresh(pid)
 end
 
