@@ -8,7 +8,7 @@ Thêm khiên: lần đầu người chơi gặp một thanh máu **không** đi 
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Chấn Địa** `slam` | Mỗi **9s**: boss **đứng yên 2s**, một vòng tròn bán kính **600** hiện ra tại chỗ nó đang đứng, rồi nổ — `10×` một đòn thường lên mọi hero còn trong vòng. | **Chạy ra khỏi vòng.** Tâm nổ chốt lúc bắt đầu niệm nên chạy là thoát thật. Ăn trọn một phát mất ~83% máu hiệu dụng — hai phát liên tiếp là chết. Đổi lại boss bị khoá 2s: đó là cửa sổ để đánh trả. Không nhân hệ số phát cuồng. |
+| **Chấn Địa** `slam` | Mỗi **9s**: boss **đứng yên 2s**, một vòng tròn bán kính **600** hiện ra tại chỗ nó đang đứng, rồi nổ — `10×` một đòn thường lên mọi hero còn trong vòng. | **Chia vai, không phải cùng chạy.** Tanker **ở lại** ăn đòn — máu hiệu dụng nó trên trung bình nên đòn này ăn vào nó nhẹ hơn. Carry và Support **phải chạy**: dưới trung bình thì đòn này có thể quá 100% máu. Tâm nổ chốt lúc bắt đầu niệm nên chạy là thoát thật. Đổi lại boss bị khoá 2s — cửa sổ để đánh trả. Không nhân hệ số phát cuồng. [ADR 0023](../../05-quyet-dinh/0023-chan-dia-khong-noi-cast-tanker-o-lai-chiu.md) |
 | **Hộ Thể** `shield` | Mỗi **15s** tạo khiên hấp thụ bằng **12%** máu tối đa. | Dồn sát thương phá khiên trước khi lớp sau kịp lên, nếu không trận kéo vô hạn. |
 
 ## Chỉ số

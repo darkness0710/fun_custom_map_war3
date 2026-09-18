@@ -138,6 +138,7 @@ docs/
      0020-duong-cong-quai-bam-theo-tu-vi.md
      0021-trang-bi-la-mot-mon-tien-hoa.md
      0022-tien-thi-phang-suc-manh-thi-leo.md
+     0023-chan-dia-khong-noi-cast-tanker-o-lai-chiu.md
   06-object-editor/
      sua-va-clone-ability.md  Đọc/ghi war3map.w3a bằng script, mã trường đã đo
      import-model.md         Import model/texture bằng script, bẫy World Editor giữ bộ nhớ

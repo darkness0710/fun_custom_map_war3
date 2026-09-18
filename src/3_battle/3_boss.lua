@@ -131,22 +131,36 @@ local function spawn(stage, realm, x, y, face)
             " hero, dps " .. math.floor(dps) .. " -> mau " .. math.floor(hp) ..
             ", don " .. math.floor(dmg))
 
-  -- Chan Dia chi la co che neu chay THOAT duoc. Do luon toc do hero that
-  -- roi in ra, thay vi tin mot con so nho trong dau: doi CFG.BOSS_MECH
-  -- .slam.radius hay .cast xong la doi chieu duoc ngay.
-  if hasMech(S.boss, "slam") and GetUnitMoveSpeed ~= nil then
-    local sp = 0.0
-    for i = 1, #S.pids do
-      local dd = S.p[S.pids[i]]
-      local h  = dd and dd.hero or nil
-      if h ~= nil and GetUnitMoveSpeed(h) > sp then sp = GetUnitMoveSpeed(h) end
-    end
+  -- Chan Dia chi la co che neu hai cau hoi nay co cau tra lai DO DUOC:
+  --
+  --   1. Ai chay kip ra khoi vong? (toc do x cast so voi radius)
+  --   2. Ai o lai thi song? (don chia cho mau hieu dung CUA CHINH HO)
+  --
+  -- Cau 2 quan trong hon cau 1. b.dmg tinh tren mau hieu dung TRUNG BINH
+  -- ca doi, nen cung mot don Chan Dia se an vao tanker nhe hon va an vao
+  -- thang mong nang hon -- dung y do: tanker o lai chiu, thang mong phai
+  -- chay. Nhung "nhe hon" la bao nhieu thi phai do, khong doan.
+  if hasMech(S.boss, "slam") then
     local cast = mechNum("slam", "cast")
     local r    = mechNum("slam", "radius")
-    API.trace("boss: slam toc do hero nhanh nhat " .. math.floor(sp) ..
-              ", cast " .. cast .. "s -> chay duoc " .. math.floor(sp * cast) ..
-              " / can " .. math.floor(r) ..
-              (sp * cast >= r and "  (thoat duoc)" or "  (KHONG THOAT KIP)"))
+    local hit  = dmg * mechNum("slam", "factor")
+    for i = 1, #S.pids do
+      local pid = S.pids[i]
+      local dd  = S.p[pid]
+      local h   = dd and dd.hero or nil
+      if h ~= nil and API.alive(h) then
+        local cut  = damageReduction((BlzGetUnitArmor ~= nil) and BlzGetUnitArmor(h) or 0.0)
+        local ehp  = GetUnitState(h, UNIT_STATE_MAX_LIFE) / (1.0 - cut)
+        local pct  = (ehp > 0.0) and (hit / ehp * 100.0) or 999.0
+        local sp   = (GetUnitMoveSpeed ~= nil) and GetUnitMoveSpeed(h) or 0.0
+        API.trace("boss: slam pid " .. pid .. " " ..
+                  (API.heroNameOf and API.heroNameOf(GetUnitTypeId(h)) or "?") ..
+                  " -- mat " .. math.floor(pct) .. "% mau" ..
+                  (pct >= 100.0 and " (CHET NGAY)" or " (o lai duoc)") ..
+                  " | chay " .. math.floor(sp * cast) .. "/" .. math.floor(r) ..
+                  (sp * cast >= r and " (thoat kip)" or " (KHONG kip)"))
+      end
+    end
   end
   return u
 end

@@ -32,7 +32,7 @@ Khai báo ở `CFG.BOSSES`, con số cơ chế ở `CFG.BOSS_MECH`, mã ở
 
 | Cơ chế | Làm gì |
 |---|---|
-| **Chấn Địa** `slam` | Mỗi **9s**: đứng yên **2s**, vòng tròn bán kính **600** hiện ra tại chỗ, rồi nổ `10×` một đòn thường. Chạy ra là thoát. |
+| **Chấn Địa** `slam` | Mỗi **9s**: đứng yên **2s**, vòng tròn bán kính **600** hiện ra tại chỗ, rồi nổ `10×` một đòn thường. Tanker ở lại chịu, carry và support chạy — [ADR 0023](../../05-quyet-dinh/0023-chan-dia-khong-noi-cast-tanker-o-lai-chiu.md). |
 | **Hút Máu** `lifesteal` | Hồi lại **25%** sát thương nó gây ra. |
 | **Phát Cuồng** `enrage` | Dưới **30%** máu, sát thương `×1.6` vĩnh viễn. |
 | **Xé Giáp** `shred` | Mỗi đòn trúng cộng dồn **+2%** sát thương nhận vào **của riêng hero đó**. |
