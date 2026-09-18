@@ -1,5 +1,9 @@
-UtherV2.mdx
-war3mapImported/UtherV2.mdx
+# Duong dan DOC TU chunk texture cua chinh file .mdx, khong phai doan.
+#   python -c "import re,io;print(re.findall(rb'[ -~]{3,120}?\.blp',io.open(F,'rb').read()))"
+# Dat sai cho thi model ra o XANH LA va khong co loi nao bao.
 
-Uther.blp
-units/HotS/Uther/Uther.blp
+File: UtherV2.mdx
+Path: war3mapImported/UtherV2.mdx
+
+File: Uther.blp
+Path: units/HotS/Uther/Uther.blp

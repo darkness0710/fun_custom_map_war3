@@ -1,5 +1,12 @@
-SylvanasHighElf.mdx
-war3mapImported/SylvanasHighElf.mdx
+# Duong dan DOC TU chunk texture cua chinh file .mdx, khong phai doan.
+#   python -c "import re,io;print(re.findall(rb'[ -~]{3,120}?\.blp',io.open(F,'rb').read()))"
+# Dat sai cho thi model ra o XANH LA va khong co loi nao bao.
 
-BlackArrow1.blp
-war3mapImported/BlackArrow1.blp
+File: SylvanasHighElf.mdx
+Path: war3mapImported/SylvanasHighElf.mdx
+
+File: SylvanasHighElf.blp
+Path: units/HotS/Sylvanas/SylvanasHighElf.blp
+
+File: BlackArrow1.blp
+Path: units/HotS/Sylvanas/BlackArrow1.blp

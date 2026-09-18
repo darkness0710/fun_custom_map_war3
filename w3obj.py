@@ -203,6 +203,14 @@ FIELD_TYPE = {
     "arac": TYPE_STRING,   "aart": TYPE_STRING,  "arar": TYPE_STRING,
     "anam": TYPE_STRING,   "aret": TYPE_STRING,  "arut": TYPE_STRING,
     "aub1": TYPE_STRING,   "atp1": TYPE_STRING,  "ahky": TYPE_STRING,
+
+    # --- war3map.w3u (unit) ---
+    # DO tu chinh war3map.w3u do World Editor ghi ra: H001 Hart co san
+    # umdl kieu string ('war3mapImported\UtherV2.mdx'), doc bang
+    # "python w3obj.py dump test2.w3x/war3map.w3u". Ba truong chi so thi
+    # dump ra int o ca ba hero.
+    "umdl": TYPE_STRING,   "unam": TYPE_STRING,  "upro": TYPE_STRING,
+    "uagi": TYPE_INT,      "uint": TYPE_INT,     "ustr": TYPE_INT,
 }
 
 

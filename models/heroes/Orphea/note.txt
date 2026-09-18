@@ -1,5 +1,9 @@
-Orphea_web.mdx
-war3mapImported/Orphea_web.mdx
+# Duong dan DOC TU chunk texture cua chinh file .mdx, khong phai doan.
+#   python -c "import re,io;print(re.findall(rb'[ -~]{3,120}?\.blp',io.open(F,'rb').read()))"
+# Dat sai cho thi model ra o XANH LA va khong co loi nao bao.
 
-Orphea.blp
-Orphea.blp
+File: Orphea_web.mdx
+Path: war3mapImported/Orphea_web.mdx
+
+File: Orphea.blp
+Path: Orphea.blp

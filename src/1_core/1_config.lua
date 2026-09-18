@@ -288,9 +288,19 @@ CFG.HERO_COMMON_ABILITIES = {}
 --
 -- Duong dan phai KHOP TUNG KY TU voi ten file trong map. Bo dong goi
 -- (w3mpq.py) ghi ten theo duong dan tuong doi, dau gach nguoc.
+-- Duong dan phai KHOP TUNG KY TU voi war3map.imp, va voi chunk texture
+-- ben trong chinh file .mdx. Doc duong dan that bang:
+--   python w3import.py list
+--   python -c "import re,io; print(re.findall(rb'[ -~]{3,120}?\.blp', io.open(F,'rb').read()))"
+-- Dat texture sai cho la model ra o XANH LA va khong co loi nao bao.
 CFG.PRELOAD = {
-  [[war3mapImported\UtherV2.mdx]],
+  [[war3mapImported\UtherV2.mdx]],            -- H001 Hart
   [[units\HotS\Uther\Uther.blp]],
+  [[war3mapImported\SylvanasHighElf.mdx]],    -- H002 Hvwd (Agi)
+  [[units\HotS\Sylvanas\SylvanasHighElf.blp]],
+  [[units\HotS\Sylvanas\BlackArrow1.blp]],
+  [[war3mapImported\Orphea_web.mdx]],         -- H003 Hkal (Int)
+  [[Orphea.blp]],
 }
 
 -- ---------- Chon ky nang theo slot ----------
