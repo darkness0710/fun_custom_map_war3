@@ -8,7 +8,7 @@ Mốc giữa ván: ba cơ chế cùng lúc. Bài kiểm tra xem đội đã bi�
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Chấn Địa** `slam` | Mỗi **9s** gây `2.5×` một đòn thường lên mọi hero trong bán kính **420**. | Tản ra. Đòn này không nhắm ai — đứng chụm là cả đội cùng ăn. |
+| **Chấn Địa** `slam` | Mỗi **9s**: boss **đứng yên 2s**, một vòng tròn bán kính **600** hiện ra tại chỗ nó đang đứng, rồi nổ — `10×` một đòn thường lên mọi hero còn trong vòng. | **Chạy ra khỏi vòng.** Tâm nổ chốt lúc bắt đầu niệm nên chạy là thoát thật. Ăn trọn một phát mất ~83% máu hiệu dụng — hai phát liên tiếp là chết. Đổi lại boss bị khoá 2s: đó là cửa sổ để đánh trả. Không nhân hệ số phát cuồng. |
 | **Lao Kích** `charge` | Mỗi **11s** dịch chuyển tới hero **XA NHẤT** và gây `3×` một đòn. | Không có chỗ nấp. Ai đứng xa nhất là mục tiêu, kể cả người đang hồi máu. |
 | **Phát Cuồng** `enrage` | Dưới **30%** máu, sát thương `×1.6` vĩnh viễn. | Để dành kỹ năng và lọ cho 30% cuối. Nửa đầu dễ, nửa cuối mới là trận. |
 

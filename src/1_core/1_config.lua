@@ -738,14 +738,21 @@ CFG.BOSSES = {
 
 -- Con so dung chung cho tung co che.
 CFG.BOSS_MECH = {
-  slam  = { cd = 9.0,  radius = 420.0, factor = 2.5 },
-  lifesteal   = { ratio = 0.25 },
+  -- slam: cast giay -> vong tron hien ra, roi moi no. Xem chu thich dai
+  -- o groundSlam() trong 3_boss.lua.
+  --
+  -- CAST VA RADIUS PHAI DI VOI NHAU. Chay thoat duoc hay khong la
+  -- toc_do_hero x cast so voi radius. Hero dung ngay tam no thi phai
+  -- vuot dung RADIUS trong CAST giay. Dong trace luc boss xuat hien in
+  -- ra so DO DUOC, doi chieu o do chu dung tin con so o day.
+  slam      = { cd =  9.0, cast = 2.0, radius = 600.0, factor = 10.0, marks = 16 },
+  charge    = { cd = 11.0, factor = 3.0 },
+  summon    = { cd = 20.0, count = 4 },
+  shield    = { cd = 15.0, ratio = 0.12 },   -- khien = 12% mau toi da
+  lifesteal = { ratio = 0.25 },
+  reflect   = { ratio = 0.15 },
+  shred     = { perHit = 0.02 },             -- tru 2% giap HIEN CO moi don
   enrage    = { at = 0.30, dmg = 1.60 },
-  shred   = { perHit = 0.02 },   -- tru 2% giap HIEN CO moi don
-  summon = { cd = 20.0, count = 4 },
-  charge      = { cd = 11.0, factor = 3.0 },
-  shield    = { cd = 15.0, ratio = 0.12 },  -- khien = 12% mau toi da
-  reflect  = { ratio = 0.15 },
 }
 
 -- Bang cu, giu lai cho 3_boss.lua lui ve khi CFG.BOSSES thieu mot bac.
@@ -1087,6 +1094,15 @@ CFG.FX_HIT_LINE   = [[Abilities\Spells\Orc\Shockwave\ShockwaveMissile.mdl]]
 CFG.FX_HIT_CLEAVE = [[Abilities\Weapons\WitchDoctorMissile\WitchDoctorMissile.mdl]]
 CFG.FX_HIT_HEAL   = [[Abilities\Spells\Human\Heal\HealTarget.mdl]]
 CFG.FX_HIT_BUFF   = [[Abilities\Spells\Human\Avatar\AvatarCaster.mdl]]
+
+-- Vong tron bao truoc cua Chan Dia, va cai no ra o tam.
+--
+-- Hai duong dan nay la duong DA CHUNG MINH la ve ra hinh (dang dung o
+-- ngay tren). Duong dan model KHONG liet ke duoc tu ngoai -- game dong
+-- goi bang CASC -- va go sai thi WC3 im lang khong ve gi, khong bao
+-- loi. Nen tha xau ma chac con hon dep ma trang.
+CFG.FX_SLAM_MARK  = [[Abilities\Spells\Human\Avatar\AvatarCaster.mdl]]
+CFG.FX_SLAM_HIT   = [[Abilities\Spells\Orc\Shockwave\ShockwaveMissile.mdl]]
 
 CFG.OP_SKILL_UP = 6   -- arg = so thu tu ky nang trong CFG.SKILLS cua hero
 

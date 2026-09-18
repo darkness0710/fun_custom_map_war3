@@ -23,16 +23,16 @@
 > **Trạng thái:** Khung đã cài — **thân boss chưa có**
 > **Cập nhật:** 2026-09-16
 > **Code:** [2_wave.lua](../../src/3_battle/2_wave.lua)
-> **Khoá CFG:** `BOSS_EHP` `BOSS_DMG` `BOSS_SCALE` `TINHTHACH_BOSS_*`
+> **Khoá CFG:** `BOSSES` `BOSS_MECH` `BOSS_SECONDS` `BOSS_HITS_TO_KILL` `BOSS_SCALE` `REWARD_BOSS_*`
 
 > **Đã cài tới đâu.** Stage `11 × r` sinh đúng một con, chỉ số theo `BOSS_EHP` /
 > `BOSS_DMG`, to hơn và đỏ hơn, tên `"<cảnh giới> - Ma Ton"`, hạ xong rơi Tinh
 > Thạch và cả đội cùng nhận. Hạ boss stage 100 là thắng.
 >
-> **Chưa có gì của L4–L6**: kháng khống chế, đổi giai đoạn, phát điên. Cũng chưa
-> có 20 unit type riêng — boss hiện dùng chung mẫu lính của cõi đó, phóng to
-> `BOSS_SCALE` lần. Những khoá `BOSS_CC_RESIST`, `BOSS_PHASES`, `BOSS_ENRAGE_*`,
-> `BOSS_ARMOR_BONUS`, `BOSSES` nhắc dưới đây **chưa tồn tại trong `CFG`**.
+> **Phát cuồng thì đã có** (`BOSS_MECH.enrage`), và `CFG.BOSSES` là bảng 20
+> dòng có thật — mỗi cảnh giới một unit hero riêng. Vẫn **chưa có** kháng khống
+> chế và đổi giai đoạn: `BOSS_CC_RESIST`, `BOSS_PHASES`, `BOSS_ARMOR_BONUS`
+> nhắc dưới đây chưa tồn tại trong `CFG`.
 > **Xem kèm:** [dot-quai.md](dot-quai.md) ·
 > [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md)
 
@@ -144,7 +144,7 @@ dần chứ không bị ném vào một trận boss ba cơ chế ngay từ Phàm
 | `BOSS_ENRAGE_TIME` | Giây trước khi phát điên | Phải lớn hơn hẳn thời gian hạ boss dự kiến (~1.33 × `WAVE_TIME`), nếu không đội chơi đúng cũng bị phạt |
 | `BOSS_ENRAGE_STEP` `BOSS_ENRAGE_DMG` | Cứ mấy giây thì cộng bao nhiêu | |
 | `BOSS_PHASES` | Mốc % máu đổi giai đoạn | Giảm dần, ví dụ `{0.70, 0.40}` |
-| `BOSSES` | Bảng 20 dòng `{ id, ten, en, abilities }` | Đúng 20 dòng, khớp thứ tự `REALMS`. Id phải qua `id()` — [ADR 0006](../05-quyet-dinh/0006-fourcc-tra-hai-gia-tri.md) |
+| `BOSSES` | Bảng 20 dòng `{ r, vi, en, unit, mech }` | Đúng 20 dòng, khớp thứ tự `REALMS`. Id phải qua `id()` — [ADR 0006](../05-quyet-dinh/0006-fourcc-tra-hai-gia-tri.md) |
 
 ## Ràng buộc kỹ thuật
 
@@ -174,15 +174,17 @@ chân dung riêng) thì phải làm lại y hệt những xử lý đó.
 
 ## Chưa làm
 
-- **20 unit type và toàn bộ kỹ năng boss.** Hiện boss dùng chung mẫu lính của
-  cõi, phóng to và tô đỏ. Tên thì đã đúng (`"<cảnh giới> - Ma Ton"`).
-- **L4 kháng khống chế, L5 đổi giai đoạn, L6 phát điên** — chưa có dòng nào.
-  Riêng L6 đáng làm sớm: không có nó thì một đội thiếu DPS treo ván vô hạn.
-- Thanh máu boss.
+- **Kỹ năng riêng cho từng con.** 20 unit hero thì đã có; tám cơ chế dùng
+  chung ở `BOSS_MECH` cũng đã có. Cái thiếu là kỹ năng *chỉ một con mới có*.
+- **L4 kháng khống chế, L5 đổi giai đoạn** — chưa có dòng nào. (L6 phát cuồng
+  thì xong rồi: `BOSS_MECH.enrage`.)
+- Thanh máu boss, và một thanh **niệm** cho Chấn Địa — hiện chỉ có vòng tròn
+  và một dòng chữ.
 - Chuyện gì xảy ra nếu cả đội chết lúc đang đánh boss. Hiện chưa có hồi sinh
   hero.
 - Màn kết sau khi hạ boss stage 100. Hiện chỉ có một dòng `win_final` rồi
   `CustomVictoryBJ`.
 
-Phần thưởng thì **đã có**: `TINHTHACH_BOSS_BASE + STEP × (r−1)`, chia đều cho cả
-đội ([ADR 0013](../05-quyet-dinh/0013-thuong-chia-deu-cho-moi-nguoi.md)).
+Phần thưởng thì **đã có**: `REWARD_BOSS_QI` (100 Linh Khí) + `REWARD_BOSS_LUMBER`
+(5 Gỗ), **phẳng**, chia đều cho cả đội
+([ADR 0013](../05-quyet-dinh/0013-thuong-chia-deu-cho-moi-nguoi.md)).

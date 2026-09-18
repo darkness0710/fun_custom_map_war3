@@ -32,7 +32,7 @@ Khai báo ở `CFG.BOSSES`, con số cơ chế ở `CFG.BOSS_MECH`, mã ở
 
 | Cơ chế | Làm gì |
 |---|---|
-| **Chấn Địa** `slam` | Mỗi **9s** gây `2.5×` một đòn thường lên mọi hero trong bán kính **420**. |
+| **Chấn Địa** `slam` | Mỗi **9s**: đứng yên **2s**, vòng tròn bán kính **600** hiện ra tại chỗ, rồi nổ `10×` một đòn thường. Chạy ra là thoát. |
 | **Hút Máu** `lifesteal` | Hồi lại **25%** sát thương nó gây ra. |
 | **Phát Cuồng** `enrage` | Dưới **30%** máu, sát thương `×1.6` vĩnh viễn. |
 | **Xé Giáp** `shred` | Mỗi đòn trúng cộng dồn **+2%** sát thương nhận vào **của riêng hero đó**. |

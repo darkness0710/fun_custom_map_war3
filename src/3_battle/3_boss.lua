@@ -118,7 +118,7 @@ local function spawn(stage, realm, x, y, face)
 
   S.boss = {
     u = u, stage = stage, realm = realm, def = d, mech = mechSet,
-    dmg = dmg, maxHp = hp, enraged = false,
+    dmg = dmg, maxHp = hp, enraged = false, casting = false,
     cdSlam = mechNum("slam", "cd"), cdCharge = mechNum("charge", "cd"),
     cdSummon = mechNum("summon", "cd"), cdShield = mechNum("shield", "cd"),
     shield = 0.0,
@@ -130,6 +130,24 @@ local function spawn(stage, realm, x, y, face)
   API.trace("boss: r" .. realm .. " " .. API.idToStr(uid) .. " -- " .. n ..
             " hero, dps " .. math.floor(dps) .. " -> mau " .. math.floor(hp) ..
             ", don " .. math.floor(dmg))
+
+  -- Chan Dia chi la co che neu chay THOAT duoc. Do luon toc do hero that
+  -- roi in ra, thay vi tin mot con so nho trong dau: doi CFG.BOSS_MECH
+  -- .slam.radius hay .cast xong la doi chieu duoc ngay.
+  if hasMech(S.boss, "slam") and GetUnitMoveSpeed ~= nil then
+    local sp = 0.0
+    for i = 1, #S.pids do
+      local dd = S.p[S.pids[i]]
+      local h  = dd and dd.hero or nil
+      if h ~= nil and GetUnitMoveSpeed(h) > sp then sp = GetUnitMoveSpeed(h) end
+    end
+    local cast = mechNum("slam", "cast")
+    local r    = mechNum("slam", "radius")
+    API.trace("boss: slam toc do hero nhanh nhat " .. math.floor(sp) ..
+              ", cast " .. cast .. "s -> chay duoc " .. math.floor(sp * cast) ..
+              " / can " .. math.floor(r) ..
+              (sp * cast >= r and "  (thoat duoc)" or "  (KHONG THOAT KIP)"))
+  end
   return u
 end
 
@@ -156,11 +174,67 @@ local function enrageMult(b)
   return b.enraged and mechNum("enrage", "dmg") or 1.0
 end
 
+-- Chan Dia: don BAO TRUOC, khong phai cuc sat thuong dinh ky.
+--
+-- Ban truoc: 2.5x sat thuong, ban kinh 420, no NGAY va tam no bam theo
+-- boss. Nguoi choi khong co cach nao biet truoc, va boss di theo thi
+-- chay cung khong thoat. Nhin tu ghe nguoi choi thi no khong phai mot
+-- co che -- no chi la mau tru dan.
+--
+-- Ban nay:
+--   . boss DUNG YEN cast 2 giay, mot vong tron hien ra -- thay duoc
+--   . tam no CHOT o vi tri luc bat dau cast -- chay la thoat THAT
+--   . boss bi khoa 2 giay -- doi lay mot cua so ranh de danh tra
+--   . 10x mot don thuong = 10 / BOSS_HITS_TO_KILL = 83% mau hieu dung:
+--     an tron mot phat thi gan chet chu KHONG chet; an hai phat lien
+--     thi chet
+--
+-- KHONG nhan he so phat cuong. 10 x 1.6 = 133% tuc chet ngay tu mau
+-- day, ma mot don CHET CHAC thi bao truoc cung vo nghia -- phat cuong
+-- da the hien o don thuong roi.
+--
+-- Boss chet giua luc cast thi don huy: burst boss la mot cau tra loi
+-- hop le cho co che nay.
+local function slamRing(x, y, r)
+  local n = math.floor(mechNum("slam", "marks"))
+  if n < 4 then n = 4 end
+  for i = 1, n do
+    local a = 360.0 * i / n
+    API.fx(CFG.FX_SLAM_MARK, API.polarX(x, r, a), API.polarY(y, r, a))
+  end
+end
+
 local function groundSlam(b)
-  local x, y = GetUnitX(b.u), GetUnitY(b.u)
-  local dmg = b.dmg * mechNum("slam", "factor") * enrageMult(b)
+  local x, y  = GetUnitX(b.u), GetUnitY(b.u)
+  local r     = mechNum("slam", "radius")
+  local cast  = mechNum("slam", "cast")
+  if cast <= 0.0 then cast = 0.1 end
+
+  b.casting = true
+  PauseUnit(b.u, true)
   API.fx(CFG.FX_HIT_BUFF, x, y)
-  forEachEnemy(x, y, mechNum("slam", "radius"), function(t) strike(b, t, dmg) end)
+  slamRing(x, y, r)
+  API.msg(nil, CFG.C_RED .. API.t("boss_slam_cast") .. CFG.C_END)
+
+  -- Ve lai vong tron vai lan: hieu ung WC3 dien mot lan roi tat, ve mot
+  -- lan thi nguoi choi chi thay mot cai chop chu khong thay VONG.
+  local pulses = 3
+  for i = 1, pulses - 1 do
+    API.after(cast * i / pulses, function()
+      if b.casting then slamRing(x, y, r) end
+    end)
+  end
+
+  API.after(cast, function()
+    b.casting = false
+    -- Bo khoa TRUOC khi kiem con song: xac dang bi PauseUnit thi khong
+    -- ruc ra duoc, va con boss chet giua luc cast la truong hop thuong.
+    if b.u ~= nil then PauseUnit(b.u, false) end
+    if b.u == nil or not API.alive(b.u) then return end
+    local dmg = b.dmg * mechNum("slam", "factor")
+    API.fx(CFG.FX_SLAM_HIT, x, y)
+    forEachEnemy(x, y, r, function(t) strike(b, t, dmg) end)
+  end)
 end
 
 -- Lao toi hero XA NHAT, khong phai gan nhat: ep ke nup sau cung phai
@@ -221,15 +295,20 @@ local function tick()
     end
   end
 
+  -- Dang cast Chan Dia thi khong lam gi khac: lao di giua chung thi
+  -- boss bien mat khoi vong tron no vua ve ra, va loi hua "dung o day
+  -- se an don" thanh noi doi.
+  if b.casting then return end
+
   local function beat(field, name, f)
     if not hasMech(b, name) then return end
     b[field] = b[field] - CFG.WAVE_TICK
     if b[field] <= 0.0 then b[field] = mechNum(name, "cd"); f(b) end
   end
-  beat("cdChanDia", "slam",  groundSlam)
-  beat("cdLao",     "charge",      charge)
-  beat("cdTrieu",   "summon", summonAdds)
-  beat("cdKhien",   "shield",    shield)
+  beat("cdSlam",   "slam",   groundSlam)
+  beat("cdCharge", "charge",      charge)
+  beat("cdSummon", "summon", summonAdds)
+  beat("cdShield", "shield",    shield)
 end
 
 -- ---------- Su kien sat thuong rieng cua boss ----------

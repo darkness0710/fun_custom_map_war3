@@ -371,7 +371,7 @@ về `false` nên `2_wave.lua` gọi vẫn an toàn.
 
 ### ⚠ Tinh Thạch hiện không có chỗ tiêu
 
-Boss vẫn rơi `TINHTHACH_BOSS_BASE + STEP × (r−1)`, tổng **1 150** cả ván. Nhưng
+Boss vẫn rơi `REWARD_BOSS_QI + REWARD_BOSS_LUMBER`, tổng **1 150** cả ván. Nhưng
 Pháp Khí đã chuyển sang Ngộ Tính, nên **không hệ nào tiêu Tinh Thạch nữa** —
 `API.spendTinhThach` còn trong code nhưng không ai gọi.
 

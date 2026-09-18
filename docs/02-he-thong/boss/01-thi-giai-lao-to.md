@@ -8,7 +8,7 @@ Con boss dạy bài. Một cơ chế duy nhất, báo trước rõ ràng — ch�
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Chấn Địa** `slam` | Mỗi **9s** gây `2.5×` một đòn thường lên mọi hero trong bán kính **420**. | Tản ra. Đòn này không nhắm ai — đứng chụm là cả đội cùng ăn. |
+| **Chấn Địa** `slam` | Mỗi **9s**: boss **đứng yên 2s**, một vòng tròn bán kính **600** hiện ra tại chỗ nó đang đứng, rồi nổ — `10×` một đòn thường lên mọi hero còn trong vòng. | **Chạy ra khỏi vòng.** Tâm nổ chốt lúc bắt đầu niệm nên chạy là thoát thật. Ăn trọn một phát mất ~83% máu hiệu dụng — hai phát liên tiếp là chết. Đổi lại boss bị khoá 2s: đó là cửa sổ để đánh trả. Không nhân hệ số phát cuồng. |
 
 ## Chỉ số
 
