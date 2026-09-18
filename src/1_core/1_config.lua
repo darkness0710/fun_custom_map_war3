@@ -1276,13 +1276,40 @@ CFG.CULT_STAT_MODE = "all"
 -- KHIEN dang muon tam icon Talisman vi trong sau duong dan da chung
 -- minh khong co cai nao la khien. Sua trong World Editor -> Object
 -- Editor -> mot item bat ky -> Art - Icon, chep duong dan that vao day.
+-- MOI MON MOT VAI. 'role' la thu code doc de biet cong gi:
+--
+--   "str" "agi" "int"  cong diem chi so, qua heroRecompute. LEO theo
+--                      CULT_STAT_STEP -- xem CFG.GEAR_STAT_BASE.
+--   "all"              chia deu ca ba, tong bang mot mon don chi so.
+--   "dmgpct"           % sat thuong GAY RA -- don thuong, phep, va hoi mau.
+--   "mitig_phys"       % sat thuong DON DANH nhan vao duoc giam.
+--   "mitig_magic"      % sat thuong PHEP nhan vao duoc giam.
+--
+-- BA VAI CUOI KHONG LEO, va do khong phai thieu sot -- xem chu thich
+-- CFG.GEAR_STAT_BASE ("cong thi leo, nhan thi phang").
+--
+-- ICON: chi dung duong dan DA CHUNG MINH ve ra hinh. Mu dang muon icon
+-- BTNStaffOfSanctuary vi trong so duong da chung minh khong co cai nao
+-- la mu; Khien muon Talisman, cung ly do. Doi sang icon dung nghia thi
+-- phai lay duong dan THAT tu Object Editor truoc -- doan la ra o xanh la.
+--
+-- Thu tu bang nay la thu tu hien tren the. Doi thu tu khong sao (hai ben
+-- kenh dong bo doc chung mot bang), nhung doi thi doi mot lan.
 CFG.GEAR = {
-  { vi = "Kiem",       en = "Sword",    icon = [[ReplaceableTextures\CommandButtons\BTNSteelMelee.blp]] },
-  { vi = "Giap",       en = "Armor",    icon = [[ReplaceableTextures\CommandButtons\BTNSteelArmor.blp]] },
-  { vi = "Khien",      en = "Shield",   icon = [[ReplaceableTextures\CommandButtons\BTNTalisman.blp]] },
-  { vi = "Giay",       en = "Boots",    icon = [[ReplaceableTextures\CommandButtons\BTNBootsOfSpeed.blp]] },
-  { vi = "Day Chuyen", en = "Necklace", icon = [[ReplaceableTextures\CommandButtons\BTNPendantOfEnergy.blp]] },
-  { vi = "Nhan",       en = "Ring",     icon = [[ReplaceableTextures\CommandButtons\BTNRingSkull.blp]] },
+  { vi = "Mu",         en = "Helm",     role = "int",
+    icon = [[ReplaceableTextures\CommandButtons\BTNStaffOfSanctuary.blp]] },
+  { vi = "Day Chuyen", en = "Necklace", role = "all",
+    icon = [[ReplaceableTextures\CommandButtons\BTNPendantOfEnergy.blp]] },
+  { vi = "Ao",         en = "Robe",     role = "str",
+    icon = [[ReplaceableTextures\CommandButtons\BTNSteelArmor.blp]] },
+  { vi = "Kiem",       en = "Sword",    role = "dmgpct",
+    icon = [[ReplaceableTextures\CommandButtons\BTNSteelMelee.blp]] },
+  { vi = "Khien",      en = "Shield",   role = "mitig_phys",
+    icon = [[ReplaceableTextures\CommandButtons\BTNTalisman.blp]] },
+  { vi = "Nhan",       en = "Ring",     role = "mitig_magic",
+    icon = [[ReplaceableTextures\CommandButtons\BTNRingSkull.blp]] },
+  { vi = "Giay",       en = "Boots",    role = "agi",
+    icon = [[ReplaceableTextures\CommandButtons\BTNBootsOfSpeed.blp]] },
 }
 
 -- Nam cap trong MOT canh gioi. So phan tu PHAI bang #CFG.GEAR_ODDS.
@@ -1321,6 +1348,99 @@ CFG.GEAR_DISMANTLE = 10
 
 -- Trang Bi khong con khoa. (CFG.GEAR_LOCKED, _MAX_LEVEL, _PCT,
 -- _COST_BASE, _COST_STEP cua he 6 o x 10 cap da bo cung he do.)
+
+-- ---------- Bo cuc o trang bi (kieu hinh nhan) ----------
+--
+-- { cot, dong } cho tung mon, THEO DUNG THU TU CFG.GEAR o tren.
+-- Cot 1 va 3 la hai ben nguoi; cot 2 de trong cho hinh bong o giua.
+--
+--        cot1        cot2         cot3
+--   d1   Mu        (hinh bong)   Day Chuyen
+--   d2   Ao          "           Khien
+--   d3   Kiem        "           Nhan
+--   d4              Giay
+--
+-- Doi cho hai mon thi doi o day, khong phai sua 1_panel.lua -- bang chi
+-- doc bang nay va dem ra so cot/dong lon nhat de biet phai chua bao lon.
+CFG.GEAR_SLOTS = {
+  { 1, 1 },   -- Mu
+  { 3, 1 },   -- Day Chuyen
+  { 1, 2 },   -- Ao
+  { 1, 3 },   -- Kiem
+  { 3, 2 },   -- Khien
+  { 3, 3 },   -- Nhan
+  { 2, 4 },   -- Giay
+}
+
+-- Hinh bong nguoi o cot giua. nil = de trong (mot o vien rong).
+--
+-- Phai la duong dan DA IMPORT vao map bang w3import.py -- go mot duong
+-- dan khong co thi ra o XANH LA, khong phai o trong. De nil cho toi khi
+-- co file that.
+CFG.GEAR_SILHOUETTE = nil
+
+-- ---------- Chi so: CONG THI LEO, NHAN THI PHANG ----------
+--
+-- Sau mon chia lam HAI loai, va chung phai duoc doi xu khac nhau.
+--
+-- BON MON CONG DIEM (Ao/Giay/Mu/Nhan) khong tu leo. Mot diem Str o canh
+-- gioi 20 dang gia dung bang mot diem Str o canh gioi 1, ma quai thi da
+-- leo x146. Nen chung phai nhan CULT_STAT_STEP^(canh gioi-1) bang tay,
+-- neu khong den nua sau van chung thanh hat bui.
+--
+-- HAI MON NHAN (Kiem %sat thuong, Khien %chong chiu) TU LEO SAN: gia tri
+-- cua chung ti le voi toan bo suc manh con lai, ma phan do da leo x146
+-- roi. Cho chung leo them mot lan nua la x146 BINH PHUONG.
+--
+-- Day dung la cai bay ADR 0010 da phai viet ra cho quai -- giap phang
+-- nhung nhan voi mau dang leo -- lap lai o tang nguoi choi.
+--
+-- Nen: bon mon cong thi LEO theo Tu Vi, hai mon nhan thi PHANG (tuyen
+-- tinh theo so bac da di).
+
+-- Diem chi so cho MOT bac o canh gioi 1. Cac canh gioi sau nhan theo
+-- CHINH CULT_STAT_STEP -- dung go 1.30 o day, de doi duong cong Tu Vi
+-- thi trang bi tu di theo.
+--
+--   value(T,L) = BASE x [ 5 x (STEP^(T-1) - 1)/(STEP-1) + L x STEP^(T-1) ]
+--
+-- 1.5 chon de mot mon di TRON 100 bac dang ~4,726 diem = 20% Tu Vi ca
+-- van (24,198). Ba mon tron -- dung bang so tien ca van mua duoc -- la
+-- 60%. Do la phan VUOT LEN, khong phai phan bam theo quai (ADR 0020).
+CFG.GEAR_STAT_BASE = 1.5
+
+-- Kiem: % sat thuong GAY RA o bac 100. Tuyen tinh theo so bac.
+--
+-- An vao CA BA duong: don thuong (onDamaged), sat thuong phep va hoi mau
+-- (skillDamage). Doi lai no khong cho mau nhu Ao.
+--
+-- 0.20 de nguoi choi tron Kiem ngang mot mon cong diem tron: +4,726 diem
+-- tren nen 24,198 cua Tu Vi la +19.5% sat thuong. Lam tron len 20%.
+CFG.GEAR_DMG_MAX = 0.20
+
+-- Khien va Nhan: % sat thuong NHAN VAO duoc giam, o bac 100. Tuyen tinh.
+-- Khien cham DON DANH, Nhan cham PHEP -- moi mon mot nua chien truong.
+--
+-- KHONG cong diem giap. Da tinh: de ngang mot mon khac thi chi duoc cong
+-- 2.8 DIEM giap ca van -- tuc 0.03 moi bac, mot con so khong hien thi
+-- noi. Vi EHP = mau x (1 + 0.06 x giap) nen giap manh den muc khong chia
+-- duoc thanh 100 bac. Doi sang % chong chiu thi cung ngan sach do tra ve
+-- mot con so nguoi choi doc duoc.
+--
+-- 0.25 chu khong phai 0.15 vi moi mon chi an MOT PHAN luong sat thuong
+-- vao. Neu quai danh 60% vat ly / 40% phep thi Khien tron dang
+-- 0.25 x 0.60 = 15% tong, xap xi +20% cua cac mon kia.
+--
+-- TI LE 60/40 LA GIA DINH, CHUA DO. Do la hai con so dau tien phai xem
+-- lai sau tran choi thu dau -- bat CFG.TRACE, cong don sat thuong theo
+-- BlzGetEventDamageType roi chia.
+CFG.GEAR_MITIG_MAX = 0.25
+
+-- Tran CUNG cho tong phan giam sat thuong (Khien + bi dong "reduce").
+-- Hai nguon nhan voi nhau chu khong cong, nen khong bao gio toi 100% --
+-- nhung van chan mot lan nua o day de mot lan chinh so tay khong bien
+-- hero thanh bat tu.
+CFG.GEAR_MITIG_CAP = 0.40
 
 -- ============================================================
 --  PHAP KHI  --  5 mon, mua MOT lan, khong co cap
@@ -1434,27 +1554,29 @@ CFG.FORTUNE_RANGE_MAX = 1.30
 CFG.FORTUNE_GOLD_MIN = 30
 CFG.FORTUNE_GOLD_MAX = 90
 
--- The 1: da Huyen Thiet, PHANG, khong nhan theo bac.
+-- HAI THE, khong con ba. The "da Huyen Thiet" da BO -- 2026-09-18.
 --
--- Phang vi gia nang trang bi co dinh theo luong da -- chu du an chot.
+-- Ly do khong phai no yeu, ma no TRUNG: vang mua duoc da o shop, lai mua
+-- duoc ca lo va Ankh. The da la tap con cua the vang, kem dung mot thu
+-- la linh hoat. Hai the trung nhau thi khong con la lua chon.
 --
--- CON SO NAY BAM THEO SO MON TRANG BI, quy tac:
+-- Bo no con duoc mot thu quan trong hon: ca ván chi con MOT duong ra da
+-- (vang -> shop), nen gia da trong shop tro thanh NUM DUY NHAT dieu nhip
+-- Trang Bi. Truoc do hai nguon da danh nhau, chinh cai nay hong cai kia.
 --
---     FORTUNE_IRON ~= 2.5 x so mon
+-- Hai the con lai so duoc voi nhau, va do la diem chinh:
 --
--- Cach ra: mot mon di tron thang 100 bac ton ~300 da (ky vong 15 lan
--- thu moi canh gioi x 20). Ca van co 140 luot quay, nen:
---     1 mon  ->  300 da can  ->  FORTUNE_IRON = 3   (140x3 = 420)
---     4 mon  -> 1,200 da can ->  FORTUNE_IRON = 10  (140x10 = 1,400)
+--   the vang   60 vang tb -> 6 da (gia 10) -> 1.875 x 1.30^(r-1) diem
+--   the chi so                                 2.2 x 1.30^(r-1) diem
 --
--- Hien moi co MOT mon (Kiem) nen de 3. THEM MON LA PHAI SUA SO NAY --
--- de nguyen 10 thi da thua 4.7 lan, ma da thua thi bam mai cung trung,
--- tuc he xac suat 100/75/50/25/15 khong con nghia gi.
+-- CUNG THUA SO 1.30^(r-1) nen hai duong SONG SONG vinh vien, khong bao
+-- gio cat nhau -- cung thu thuat ADR 0020 dung cho quai. The chi so hon
+-- 17%, dung the: no tra ngay va khong qua xac suat, con the vang phai
+-- doi qua shop, qua he 100/75/50/25/15, va qua tran Tu Vi.
 --
--- Va no phai HOI THIEU mot chut so voi nhu cau: co thieu thi vang moi
--- co viec (shop ban da), va shop moi dung vai "go khi den" thay vi
--- thanh duong leo chinh.
-CFG.FORTUNE_IRON = 3
+-- Thu tu trong bang NAY LA thu tu cot trai sang phai, va cung la thu tu
+-- goi GetRandomInt trong drawCards -- doi thu tu la doi chuoi ngau nhien.
+CFG.FORTUNE_KINDS = { "gold", "stat" }
 
 -- The 2 cong vao MOT chi so ngau nhien trong ba.
 --
@@ -1500,13 +1622,21 @@ CFG.SHOP = {
   -- gi vao tui. Nen no khong ton o tui, khong can hasRoom(), va khong bi
   -- probeItems() do (khong co ma item de do).
   --
-  -- VAI CUA MON NAY LA GO KHI DEN, khong phai duong leo chinh. The 1 cua
-  -- Co Duyen cho 3 da mien phi; day la cho bo tien ra khi xui nhieu lan
-  -- lien tiep o cap 15%. Gia 25 dat co y: 3 da cua the 1 = 75 vang, ma
-  -- mot luot the 3 chi cho 30-90 -- nen mua da bang vang luon LO hon
-  -- nhat the 1, chi duoc cai la chu dong duoc.
+  -- VAI DA DOI -- 2026-09-18. Truoc day day la cho "go khi den" ben canh
+  -- the da cua Co Duyen. The da da bo, nen day gio la DUONG RA DA DUY
+  -- NHAT cua ca van: vang -> da -> Trang Bi.
+  --
+  -- GIA 10 LA NUM DIEU NHIP TRANG BI. Suy ra chu khong chon bua:
+  --   thu nhap vang ca van   4,000 (quai) + 8,400 (the vang) = 12,400
+  --   mot mon di tron        471 da
+  --   12,400 / 10            1,240 da  ->  ~2.6 mon
+  -- Tuc tien chi du cho 2-3 trong 6 mon: the Trang Bi la mot LUA CHON,
+  -- khong phai mot thanh tien do ai cung keo het.
+  --
+  -- Ha gia xuong la da thua, ma da thua thi bam mai cung trung -- he xac
+  -- suat 100/75/50/25/15 khong con nghia gi.
   { code = "iron", vi = "Da Huyen Thiet", en = "Black Iron",
-    iron = 1, price = 25,
+    iron = 1, price = 10,
     icon = [[ReplaceableTextures\CommandButtons\BTNStaffOfSanctuary.blp]],
     desc_vi    = "Mot vien da, dung de nang cap trang bi.",
     desc_en = "One stone, used to upgrade equipment." },

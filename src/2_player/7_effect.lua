@@ -37,6 +37,10 @@
 -- va game treo ngay wave dau.
 local busy = false
 
+-- Bao THIEU BlzGetEventDamageType dung mot lan, khong phai moi don --
+-- mot dong moi cu danh la file vet khong con doc duoc.
+local dmgTypeWarned = false
+
 -- ---------- Tra cuu ----------
 
 -- Tra ve (sk, bac) cua mot ability tren hero cua nguoi nay. Bac 0 hoac
@@ -188,19 +192,79 @@ local function onDamaged()
               or GetTriggerUnit()
   local src = GetEventDamageSource()
 
-  -- "reduce": hero NHAN don. Giam % sat thuong, co tran cung.
+  -- hero NHAN don. HAI nguon giam sat thuong: bi dong "reduce" va mon
+  -- Khien (%chong chiu).
+  --
+  -- Chung NHAN voi nhau chu khong cong. Cong thi hai nguon du manh se
+  -- cham 100% va hero thanh bat tu; nhan thi khong bao gio toi, va ti le
+  -- moi nguon dong gop van doc ra duoc.
+  --
+  -- MOT lan ghi duy nhat, dung luat cua recompute ben duoi: gom het roi
+  -- ghi, khong doc-cong-ghi-lai.
   local tp = heroPid(tgt)
   if tp ~= nil and BlzSetEventDamage ~= nil then
+    local keep = 1.0
+
     local sk, lv = skillByFx(tp, "reduce")
     if sk ~= nil then
       local pct = API.skillPct(sk, lv)
       if pct > CFG.FX_REDUCE_CAP then pct = CFG.FX_REDUCE_CAP end
-      BlzSetEventDamage(amount * (1.0 - pct))
+      keep = keep * (1.0 - pct)
+    end
+
+    -- Khien chan DON DANH, Nhan chan PHEP -- nen phai hoi engine day la
+    -- don loai gi.
+    --
+    -- Thieu BlzGetEventDamageType thi KHONG nuot im: coi la don danh
+    -- (loai pho bien nhat) va GHI VET mot lan, de "Nhan khong an gi"
+    -- khong bi tuong la loi can bang. ADR 0012.
+    if API.gearMitigPct ~= nil then
+      local spell = false
+      if BlzGetEventDamageType ~= nil then
+        spell = (BlzGetEventDamageType() ~= DAMAGE_TYPE_NORMAL)
+      elseif not dmgTypeWarned then
+        dmgTypeWarned = true
+        API.trace("effect: THIEU BlzGetEventDamageType -- moi don deu tinh la " ..
+                  "don danh, mon Nhan se khong an gi")
+      end
+      keep = keep * (1.0 - API.gearMitigPct(tp,
+                       spell and "mitig_magic" or "mitig_phys"))
+    end
+
+    -- Tran cung mot lan nua, de mot lan chinh so tay khong bien hero
+    -- thanh bat tu ma khong ai nhan ra.
+    local least = 1.0 - (CFG.GEAR_MITIG_CAP or 1.0)
+    if keep < least then keep = least end
+
+    if keep < 1.0 then BlzSetEventDamage(amount * keep) end
+  end
+
+  local sp = heroPid(src)
+
+  -- "Kiem": %sat thuong GAY RA -- phan DON THUONG.
+  --
+  -- Sat thuong ky nang khong toi day (hit() bat 'busy', ham nay da return
+  -- o dong dau); no duoc nhan trong skillDamage(). Hai duong, hai cho,
+  -- khong chong nhau.
+  --
+  -- Ghi de len 'amount' luon, de "cleave" ben duoi van % sang muc tieu
+  -- canh theo con so DA nhan -- chem lan cua mot cu danh manh thi phan
+  -- van sang cung phai manh theo.
+  --
+  -- Dieu kien 'tp == nil' de hai nhanh khong dam nhau: neu ca nguon lan
+  -- muc tieu deu la hero (ban minh -- map nay dong minh nen khong xay ra,
+  -- nhung dung de no am tham sai) thi nhanh nay se ghi de len con so da
+  -- giam o tren.
+  if sp ~= nil and tp == nil and BlzSetEventDamage ~= nil
+     and API.gearDmgPct ~= nil then
+    local pct = API.gearDmgPct(sp)
+    if pct > 0.0 then
+      amount = amount * (1.0 + pct)
+      BlzSetEventDamage(amount)
     end
   end
 
   -- "cleave": hero GAY don. Van % sat thuong sang muc tieu ben canh.
-  local sp = heroPid(src)
   if sp ~= nil and tgt ~= nil then
     local sk, lv = skillByFx(sp, "cleave")
     if sk ~= nil then
@@ -288,11 +352,18 @@ local function recompute(pid)
   local q = d.rollStats or {}
   local qStr, qAgi, qInt = q.str or 0, q.agi or 0, q.int or 0
 
+  -- Trang Bi: bon mon cong diem (Ao/Giay/Mu/Nhan). MOT loi goi tra ve ba
+  -- so -- khong cho nao doc chi so hien tai roi cong vao.
+  local gStr, gAgi, gInt = 0.0, 0.0, 0.0
+  if API.gearStat ~= nil then gStr, gAgi, gInt = API.gearStat(pid) end
+
   if CFG.CULT_STAT_MODE == "primary" then
     -- Cong vao chi so cao nhat cua NEN, khong phai cua hien tai -- chi
     -- so hien tai doi theo chinh phep cong nay thi no se nhay qua nhay
     -- lai giua hai chi so.
-    local s, a, i = n.str + qStr + bonus, n.agi + qAgi + bonus, n.int + qInt + bonus
+    local s, a, i = n.str + qStr + gStr + bonus,
+                    n.agi + qAgi + gAgi + bonus,
+                    n.int + qInt + gInt + bonus
     if s >= a and s >= i then s = s + cultAdd
     elseif a >= i then a = a + cultAdd
     else i = i + cultAdd end
@@ -300,9 +371,9 @@ local function recompute(pid)
     SetHeroAgi(h, math.floor(a + 0.5), true)
     SetHeroInt(h, math.floor(i + 0.5), true)
   else
-    SetHeroStr(h, math.floor(n.str + qStr + cultAdd + bonus + 0.5), true)
-    SetHeroAgi(h, math.floor(n.agi + qAgi + cultAdd + bonus + 0.5), true)
-    SetHeroInt(h, math.floor(n.int + qInt + cultAdd + bonus + 0.5), true)
+    SetHeroStr(h, math.floor(n.str + qStr + gStr + cultAdd + bonus + 0.5), true)
+    SetHeroAgi(h, math.floor(n.agi + qAgi + gAgi + cultAdd + bonus + 0.5), true)
+    SetHeroInt(h, math.floor(n.int + qInt + gInt + cultAdd + bonus + 0.5), true)
   end
 
   -- ---------- Mau / mana toi da: KHONG dong vao ----------
@@ -329,9 +400,10 @@ local function recompute(pid)
   -- cua hai ability do (CFG.SKILL_CARRY_BASE), nen Warcraft cong -- khong
   -- con ai phai so huu cong thuc giap nua.
   --
-  -- Sat thuong thi khong can vat mang: Trang Bi dang khoa nen
-  -- gearMult luon 1.0, tuc dong cu ghi lai dung con so no vua doc.
-  -- Mo Trang Bi lai thi phai chon vat mang cho no, dung ghi de o day.
+  -- Sat thuong cua Trang Bi KHONG can vat mang, va do la ly do mon Kiem
+  -- cong % chu khong cong diem: % thi nhan duoc ngay trong onDamaged va
+  -- skillDamage, khong phai muon truong cua mot ability nao ca.
+  -- (API.gearMult da bo -- khong file nao doc no.)
 end
 
 -- Aura cham toi NGUOI KHAC, nen doi bac cua mot nguoi la ca doi phai

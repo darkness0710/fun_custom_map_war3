@@ -209,11 +209,16 @@ Chi tiết: [02-he-thong/kinh-te.md](../02-he-thong/kinh-te.md) ·
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-| `GEAR` | Sáu ô `{ vi, en, icon }` | Tên chỉ là hương vị — **cả sáu có cùng tác dụng** |
-| `GEAR_LOCKED` | Khoá tạm | `true`. Thẻ vẫn hiện đủ sáu ô ghi `0/0` không có nút — để người chơi biết hệ tồn tại và đang đóng |
-| `GEAR_PCT` | Mỗi cấp cộng bao nhiêu | `+4%` sát thương. Sáu ô đầy cấp = `(1.04⁹)⁶ = ×8.3`. Con số này từng là "phần ×8 của ngân sách ×967"; ngân sách đó đã bỏ ([ADR 0020](../05-quyet-dinh/0020-duong-cong-quai-bam-theo-tu-vi.md)) nên ×8.3 giờ là **phần vượt lên thuần** |
-| `GEAR_MAX_LEVEL` | `10` | Ô bắt đầu ở cấp **1**, nâng 9 lần |
-| `GEAR_COST_BASE` `GEAR_COST_STEP` | Giá theo **tổng số lần đã nâng của cả sáu ô** | ⚠ **Cả hai đã chết.** `147 × 1.134ⁿ` suy ra từ thu nhập **mũ** cũ (1 880 187 Linh Khí cả ván). Với thu nhập phẳng 10 000: trọn 60 lần nâng tốn **974 606**, riêng lần thứ 54 tốn **115 295**, và 10 000 chỉ mua được **18/60** lần. Phải tính lại trước khi bỏ `GEAR_LOCKED` |
+| `GEAR` | Bảy món `{ vi, en, role, icon }` | `role` là thứ code đọc để biết cộng gì. **Mỗi món một vai, không món nào trùng** |
+| `GEAR_CAP` | 5 tên cấp | Cùng dạng `TIER_NAMES`. Số phần tử **phải bằng** `#GEAR_ODDS` |
+| `GEAR_ODDS` | `{1.00, .75, .50, .25, .15}` | Kỳ vọng 15 lần thử trọn một cảnh giới. Thất bại **chỉ mất viên đá** |
+| `GEAR_PRICE` `GEAR_DISMANTLE` | `1` `10` đá | Luyện phẳng; Tiến Giai là một **cửa** 100%, không phải canh bạc chồng canh bạc |
+| `GEAR_STAT_BASE` | `1.5` | Điểm cho **một bậc ở cảnh giới 1**. Các cảnh giới sau nhân theo **chính** `CULT_STAT_STEP`. Chọn để một món đi trọn 100 bậc = **4 726 điểm = 19.5% Tu Vi** — [ADR 0024](../05-quyet-dinh/0024-cong-thi-leo-nhan-thi-phang.md) |
+| `GEAR_DMG_MAX` | `0.20` | Kiếm ở bậc 100. **Tuyến tính**, không leo — % đã tự leo sẵn vì nó nhân với phần sức mạnh đang leo ×146 |
+| `GEAR_MITIG_MAX` | `0.25` | Khiên (đòn đánh) và Nhẫn (phép), mỗi món ở bậc 100. Cao hơn `DMG_MAX` vì mỗi món chỉ chạm **một phần** lượng sát thương vào. ⚠ Tỉ lệ 60/40 vật lý/phép là **giả định, chưa đo** |
+| `GEAR_MITIG_CAP` | `0.40` | Trần **cứng** cho tổng phần giảm sát thương. Khiên/Nhẫn và bị động `reduce` **nhân** với nhau chứ không cộng, nên không bao giờ chạm 100% — trần này chặn thêm một lần nữa |
+| `GEAR_SLOTS` | `{cột, dòng}` mỗi món | Bố cục lưới ô trong bảng. Bảng chỉ **đọc** — đổi chỗ hai món là sửa một dòng ở đây, không đụng `1_panel.lua`. Lệch số ô/số món thì `API.trace` báo lúc vào map |
+| `GEAR_SILHOUETTE` | `nil` | Hình bóng người ở cột giữa. Phải là đường dẫn **đã import**; gõ đường dẫn chưa có sẽ ra ô **xanh lá**, không phải ô trống |
 
 Cộng vào **sát thương nền**, không cộng chỉ số — Tu Vi đã cộng chỉ số rồi, và
 đổi một hệ thì phần của nó phải đo được riêng.
@@ -232,10 +237,10 @@ Chi tiết: [02-he-thong/quay-thuong.md](../02-he-thong/quay-thuong.md) ·
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
 | `FORTUNE_ELITE` `FORTUNE_BOSS` | Lượt quay tinh anh / boss | `1` + `3` → **140 lượt** cả ván |
-| `FORTUNE_IRON` | Thẻ 1 — đá mỗi lượt | **Phẳng, và bám theo số món trang bị:** `≈ 2.5 × số món`. Một món → `3`, bốn món → `10`. **Thêm món mà quên sửa là hệ xác suất chết** — đá thừa thì bấm mãi cũng trúng |
-| `FORTUNE_VALUE` `FORTUNE_RANGE_MIN/MAX` | Thẻ 2 — chỉ số | `2.2 × 1.30^(bậc−1)`, ±30%. **Leo** — nó là sức mạnh, không phải tiền |
-| `FORTUNE_GOLD_MIN` `FORTUNE_GOLD_MAX` | Thẻ 3 — vàng | `30..90`, **phẳng**. Đỉnh dải **phải vượt** giá trị thẻ 1 quy ra vàng (3 đá × 25 = 75), nếu không thẻ 3 thua mọi lượt và thành thẻ chết |
-| `FORTUNE_STATS` | Ba chỉ số thẻ 2 rút trúng | `str agi int`. Trúng Agi/Int **không** tăng sát thương kỹ năng (nó ăn theo chỉ số cao nhất, mà Hart luôn dẫn bằng Str) — canh bạc có chủ đích |
+| `FORTUNE_KINDS` | `{ "gold", "stat" }` | **Hai** thẻ. Thứ tự ở đây là thứ tự cột **và** thứ tự gọi `GetRandomInt` — đổi thứ tự là đổi chuỗi ngẫu nhiên. Thẻ đá đã bỏ vì nó là **tập con** của thẻ vàng — [ADR 0025](../05-quyet-dinh/0025-co-duyen-con-hai-the.md) |
+| `FORTUNE_VALUE` `FORTUNE_RANGE_MIN/MAX` | Thẻ chỉ số | `2.2 × 1.30^(bậc−1)`, ±30%. **Leo** — nó là sức mạnh, không phải tiền |
+| `FORTUNE_GOLD_MIN` `FORTUNE_GOLD_MAX` | Thẻ vàng | `30..90`, **phẳng**. Quy ra đá (giá `10`) thì dải này = `0.94 … 2.81 × 1.30^(r−1)` điểm, **ôm quanh** `2.2` của thẻ chỉ số — nên mỗi lượt vẫn là một quyết định thật |
+| `FORTUNE_STATS` | Ba chỉ số thẻ chỉ số rút trúng | `str agi int`. Trúng Agi/Int **không** tăng sát thương kỹ năng (nó ăn theo chỉ số cao nhất, mà Hart luôn dẫn bằng Str) — canh bạc có chủ đích |
 
 > **Tiền thì phẳng, sức mạnh thì leo.** Thẻ 1 và 3 cho tiền → phẳng; thẻ 2 cho
 > sức mạnh → leo. Một thẻ tiền leo còn thẻ kia đứng yên thì sớm muộn cũng cắt
@@ -271,10 +276,12 @@ món cần bộ bắt sự kiện riêng là một món có thể hỏng âm th�
 > đúng đường cong Tu Vi, nên hai hệ đang khoá là phần **vượt lên**, không phải
 > phần thiếu.
 
-> ⚠ **Đá Huyền Thiết không có chỗ tiêu.** Cơ Duyên rơi `FORTUNE_IRON = 10` mỗi lượt,
-> cả ván tới **1 400** đá, mà ô tiêu duy nhất là Trang Bị — đang khoá. Đây đúng
-> là cái bẫy đã giết Tinh Thạch, lặp lại. Xem
-> [kinh-te.md](../02-he-thong/kinh-te.md).
+> ✅ **Đá Huyền Thiết đã có chỗ tiêu, và chỉ còn một cửa vào** — 2026-09-18.
+> Thẻ đá của Cơ Duyên đã bỏ; đá giờ chỉ mua bằng **vàng ở shop** (giá `10`), và
+> chỉ tiêu vào Trang Bị — đã mở. Một cửa vào, một cửa ra, nên **giá đá là núm
+> duy nhất điều nhịp lên đồ**:
+> cả ván 12 400 vàng → 1 240 đá → **~2.6 trong 7 món**.
+> [ADR 0025](../05-quyet-dinh/0025-co-duyen-con-hai-the.md)
 
 ## Đồng bộ nhiều người chơi
 
@@ -321,7 +328,7 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | `REWARD_ELITE_LUMBER` `REWARD_BOSS_LUMBER` | `2` `5` | Nguồn Gỗ duy nhất. Cả ván `80×2 + 20×5 = 260` |
 | `SKILL_LUMBER_UNLOCK` `SKILL_LUMBER_UP` | `1` `1` | 70 giao dịch = 70 Gỗ trên 260 kiếm được |
 | `LUMBER_START` | `2` | Đủ mở **một** kỹ năng sát thương **và** Luyện Thể ngay giây đầu |
-| `GEAR_LOCKED` `RELIC_LOCKED` | `true` | Tạm khoá. Mở lại phải chọn lại đồng tiền — Linh Khí đã bị Tu Vi ăn 91% |
+| `RELIC_LOCKED` | `true` | Tạm khoá. Mở lại phải chọn lại đồng tiền — Linh Khí đã bị Tu Vi ăn 91%. *(`GEAR_LOCKED` đã bỏ — Trang Bị mở từ 2026-09-17)* |
 | `MOB_EHP_BASE` | `120` | Đo từ "Chưởng phát đầu mất 1/3 máu ở wave 1": `1.32 × (17+13) × 3 = 119` |
 | `MOB_EHP_FOLLOW_CULT` | `true` | Quái **bám theo** đường cong Tu Vi thay vì có đường cong riêng. Hệ số triệt tiêu ở cả hai vế nên tỉ lệ "mấy phát một con" phẳng theo định nghĩa — đổi `CULT_STAT_STEP` không phải chỉnh gì thêm |
 | `MOB_DMG_FOLLOW_POW` | `0.85` | Mũ của hệ số dùng cho **sát thương** quái. `< 1` = quái độc chậm hơn hero khoẻ lên |
@@ -331,8 +338,8 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | `SKILL_CARRY_BASE` | *(bảng)* | Mượn trường gốc làm **vật mang** cho giáp, thay vì tắt rồi tự cộng |
 | `FORTUNE_ELITE` `FORTUNE_BOSS` | `1` `3` | Lượt quay. 7/cảnh giới, 140 cả ván. `5`/`10` cho 600 lượt = 30 phút ngồi chọn menu |
 | `FORTUNE_VALUE` | `2.2` | Giá trị một thẻ ở bậc 1. Nhân theo **chính** `CULT_STAT_STEP` nên quay tự bám Tu Vi |
-| `FORTUNE_IRON` | `3` | Thẻ 1, **phẳng**, bám theo số món trang bị (`≈ 2.5 × số món`). Một món → 3; cả ván 420 đá |
-| `FORTUNE_GOLD_MIN/MAX` | `30` `90` | Thẻ 3, **phẳng + ngẫu nhiên**. Bản cũ `V × 12` leo ×180 làm thẻ 1 chết ở nửa sau ván — [ADR 0022](../05-quyet-dinh/0022-tien-thi-phang-suc-manh-thi-leo.md) |
+| `FORTUNE_KINDS` | `{gold, stat}` | Hai thẻ. Số cột của khung đọc từ đây, không gõ cứng |
+| `FORTUNE_GOLD_MIN/MAX` | `30` `90` | Thẻ vàng, **phẳng + ngẫu nhiên**. Bản cũ `V × 12` leo ×180 làm thẻ đá chết ở nửa sau ván — [ADR 0022](../05-quyet-dinh/0022-tien-thi-phang-suc-manh-thi-leo.md) |
 | `PANEL_W` | `0.74` | Năm thẻ *(Cơ Duyên đã tách thành khung riêng)*. Thẻ thứ **bảy** sẽ phải rút ngắn nhãn — khung 0.74 giữa màn hình 0.8 chỉ còn tràn 0.03 |
 | `FORTUNE_X` `FORTUNE_Y` | `0.40` `0.36` | Tâm khung Cơ Duyên. Cao hơn tâm màn hình để không đè thanh giao diện đáy |
 | `HOUSE_FROZEN` | `true` | Chốt Nhà Chính tại chỗ. `HOUSE_UNIT` là `Hmkg` — unit hero **có chân** thuộc slot máy, nên AI mặc định của Warcraft cho nó đi lang thang |

@@ -1,20 +1,24 @@
 -- ============================================================
 --  10_fortune.lua  --  The VI: Quay thuong
 --
---  Giet tinh anh 1 luot, boss 3 luot. Moi luot mo BA the, chon MOT.
+--  Giet tinh anh 1 luot, boss 3 luot. Moi luot mo CFG.FORTUNE_KINDS
+--  the, chon MOT.
 --
---    the 1  10 da Huyen Thiet, phang
---    the 2  +V vao MOT chi so ngau nhien trong ba
---    the 3  vang, PHANG, ngau nhien FORTUNE_GOLD_MIN..MAX
+--    "gold"  vang, PHANG, ngau nhien FORTUNE_GOLD_MIN..MAX
+--    "stat"  +V vao MOT chi so ngau nhien trong ba
 --
 --  V = CFG.FORTUNE_VALUE x CULT_STAT_STEP^(bac-1), ngau nhien +-30%.
---  CHI the 2 dung V. Dung CHINH buoc cua Tu Vi nen no tu bam theo --
---  doi duong cong Tu Vi thi the 2 tu co theo.
+--  CHI the "stat" dung V. Dung CHINH buoc cua Tu Vi nen no tu bam theo
+--  -- doi duong cong Tu Vi thi the nay tu co theo.
 --
---  The 1 va the 3 KHONG dung V: chung la TIEN, ma tien thi phang. Xem
---  chu thich CFG.FORTUNE_GOLD_MIN ve vi sao the 3 tung leo va vi sao bo.
+--  The "gold" KHONG dung V: no la TIEN, ma tien thi phang. Nhung no van
+--  song song voi the "stat", vi thu no mua (bac Trang Bi) moi la thu
+--  leo -- xem chu thich CFG.FORTUNE_KINDS.
 --
---  BA THE SINH O DAU, va vi sao cho do.
+--  SO THE DOC TU CFG, khong go cung. Them mot the la them mot dong vao
+--  CFG.FORTUNE_KINDS va mot nhanh trong take(); khung tu co theo.
+--
+--  THE SINH O DAU, va vi sao cho do.
 --
 --  GetRandomInt cua Warcraft da dong bo san giua cac may, VOI DIEU KIEN
 --  moi may goi cung so lan va cung thu tu. Goi no trong mot nhanh
@@ -37,17 +41,39 @@ local function rollValue(pid)
   return GetRandomInt(lo, hi) / 100.0
 end
 
--- Rut ba the moi. Chay tren MOI may -- xem chu thich dau file.
+-- Sinh mot the theo LOAI. Tach rieng de them loai moi la them mot
+-- nhanh, khong phai sua vong lap.
+--
+-- Moi nhanh goi GetRandomInt DUNG SO LAN NHU NHAU tren moi may -- do la
+-- dieu kien duy nhat de chuoi ngau nhien khong lech (xem dau file).
+local function makeCard(pid, kind, v)
+  if kind == "gold" then
+    return { kind = kind,
+             amount = GetRandomInt(CFG.FORTUNE_GOLD_MIN, CFG.FORTUNE_GOLD_MAX) }
+  elseif kind == "stat" then
+    return { kind = kind, amount = math.floor(v + 0.5),
+             stat = CFG.FORTUNE_STATS[GetRandomInt(1, #CFG.FORTUNE_STATS)] }
+  elseif kind == "iron" then
+    -- The da da bo khoi CFG.FORTUNE_KINDS, nhanh nay giu de bat lai
+    -- bang mot dong CFG neu can. Khong co CFG.FORTUNE_IRON nua thi coi
+    -- nhu 0 chu khong sap.
+    return { kind = kind, amount = CFG.FORTUNE_IRON or 0 }
+  end
+  API.trace("fortune: khong biet loai the '" .. tostring(kind) .. "'")
+  return nil
+end
+
+-- Rut mot luot the moi. Chay tren MOI may -- xem chu thich dau file.
 local function drawCards(pid)
   local d = S.p[pid]
   if d == nil then return end
   local v = rollValue(pid)
-  d.cards = {
-    { kind = "iron",    amount = CFG.FORTUNE_IRON },
-    { kind = "stat", amount = math.floor(v + 0.5),
-      stat = CFG.FORTUNE_STATS[GetRandomInt(1, #CFG.FORTUNE_STATS)] },
-    { kind = "gold", amount = GetRandomInt(CFG.FORTUNE_GOLD_MIN, CFG.FORTUNE_GOLD_MAX) },
-  }
+  local kinds = CFG.FORTUNE_KINDS
+  local out = {}
+  for i = 1, #kinds do
+    out[#out + 1] = makeCard(pid, kinds[i], v)
+  end
+  d.cards = out
 end
 
 -- Goi tu 2_wave.lua khi ha tinh anh / boss. Chay tren MOI may.

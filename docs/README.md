@@ -51,19 +51,24 @@ src/
   2_player/
      1_player.lua      đăng ký người chơi, tiền tệ, khoá hero
      2_heropick.lua    chọn hero, cây kỹ năng
-     3_cultivation.lua     tu vi — nguồn sức mạnh lớn nhất (Linh Khí)
-     4_skill.lua       bảy kỹ năng, mua bằng Ngộ Tính
-     5_gear.lua     sáu ô trang bị, mua bằng Linh Khí
-     6_relic.lua     năm pháp khí, mua bằng Tinh Thạch
-     7_effect.lua     hiệu ứng kỹ năng thật: sát thương, bị động, aura
+     3_cultivation.lua tu vi — nguồn sức mạnh lớn nhất (Linh Khí)
+     4_skill.lua       bảy kỹ năng, mua bằng Gỗ
+     5_gear.lua        bảy món trang bị 100 bậc, mua bằng Đá Huyền Thiết
+     6_relic.lua       năm pháp khí — đang khoá
+     7_effect.lua      hiệu ứng kỹ năng thật: sát thương, bị động, aura
+     8_shop.lua        cửa hàng — hệ duy nhất tiêu Vàng
+     9_useitem.lua     dùng đồ bằng hàng số trên
+     10_fortune.lua    Cơ Duyên: hai thẻ, chọn một
   3_battle/
      1_house.lua       nhà chính, chết là thua
      2_wave.lua        100 stage, sinh quái, tiền thưởng
+     3_boss.lua        20 boss cuối cảnh giới, cơ chế riêng
   4_ui/
-     1_panel.lua       bảng phím R, bốn thẻ
+     1_panel.lua       bảng phím E, năm thẻ, ba kiểu thân
      2_heroframe.lua   thẻ chọn hero
      3_skillframe.lua  bảng chọn kỹ năng
      4_fct.lua         chữ bay
+     5_fortuneframe.lua khung Cơ Duyên, mỗi thẻ một cột
   5_boot/         phải nạp cuối cùng
      1_events.lua      trigger, lệnh chat
      2_init.lua        bootstrap, móc vào main()
@@ -94,9 +99,9 @@ docs/
      ky-nang.md          Kỹ năng cố định & hệ nâng cấp bằng nút +
      ngon-ngu.md         Hai thứ tiếng, build --lang en|vi, tên quái
      kinh-te.md          Hai đồng tiền, ngân sách ×967, bảng giá bốn hệ
-     bang-nhan-vat.md    Bảng phím R: Kỹ Năng / Trang Bị / Tu Vi / Pháp Khí
-     quay-thuong.md      Cơ Duyên: khung ba cột -- đá / chỉ số / vàng
-     trang-bi-kiem.md    Kiếm tiến hoá 100 bậc, trần là Tu Vi
+     bang-nhan-vat.md    Bảng phím E: Tu Vi / Kỹ Năng / Trang Bị / Pháp Khí / Cửa Hàng
+     quay-thuong.md      Cơ Duyên: hai thẻ -- vàng hoặc chỉ số
+     trang-bi-kiem.md    Bảy món tiến hoá 100 bậc, mỗi món một vai
      dot-quai.md         100 đợt quái: cấu trúc, thành phần, nhịp, tu chính
      boss.md             20 boss cuối cảnh giới
      boss/              20 bản thiết kế boss, mỗi cảnh giới một con
@@ -139,6 +144,8 @@ docs/
      0021-trang-bi-la-mot-mon-tien-hoa.md
      0022-tien-thi-phang-suc-manh-thi-leo.md
      0023-chan-dia-khong-noi-cast-tanker-o-lai-chiu.md
+     0024-cong-thi-leo-nhan-thi-phang.md
+     0025-co-duyen-con-hai-the.md
   06-object-editor/
      sua-va-clone-ability.md  Đọc/ghi war3map.w3a bằng script, mã trường đã đo
      import-model.md         Import model/texture bằng script, bẫy World Editor giữ bộ nhớ

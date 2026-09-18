@@ -1,9 +1,12 @@
 -- ============================================================
---  5_fortuneframe.lua  --  Khung Co Duyen: BA COT DOC
+--  5_fortuneframe.lua  --  Khung Co Duyen: MOT COT MOI THE
 --
 --  Mo NGAY khi tinh anh/boss chet, khong phai mot the trong bang.
---  Ba cot dat canh nhau, moi cot la MOT the bam duoc -- kieu chon loi
+--  Cac cot dat canh nhau, moi cot la MOT the bam duoc -- kieu chon loi
 --  cua TFT.
+--
+--  SO COT DOC TU CFG.FORTUNE_KINDS, khong go cung. Be ngang khung giu
+--  nguyen, cot tu chia lai -- them hay bot the khong phai sua file nay.
 --
 --  KHONG DONG BANG ESC. Phai chon mot the moi di tiep. Do la ly do
 --  bindEsc() trong 1_panel.lua hoi API.fortuneFrameShown(pid) truoc khi
@@ -33,8 +36,16 @@ local function P()
   return PAD + (CFG.PANEL_BORDER or 0.0)
 end
 
+-- So the mot luot. Doc moi lan chu khong nho: build() chay sau khi CFG
+-- da nap xong, va giu mot ban sao cuc bo la mot cho nua co the lech.
+local function nCol()
+  local n = CFG.FORTUNE_KINDS and #CFG.FORTUNE_KINDS or 0
+  return (n > 0) and n or 1
+end
+
 local function colW()
-  return (W - 2 * P() - 2 * GAP) / 3
+  local n = nCol()
+  return (W - 2 * P() - (n - 1) * GAP) / n
 end
 
 local function frameH()
@@ -94,7 +105,7 @@ local function build(pid)
   local cw   = colW()
   local topY = P() + HEAD_H + GAP
 
-  for i = 1, 3 do
+  for i = 1, nCol() do
     local x = P() + (i - 1) * (cw + GAP)
     local c = {}
 
@@ -157,7 +168,10 @@ local function refresh(pid)
     "   " .. CFG.C_GREY .. API.t("fortune_left", API.num(API.fortuneRolls(pid))) ..
     CFG.C_END)
 
-  for i = 1, 3 do
+  -- Duyet theo SO THE THAT su rut duoc, khong theo so cot: hai so nay
+  -- chi lech neu ai do doi CFG giua chung -- nhung lech la mot cot giu
+  -- chu cu cua luot truoc, kieu sai im lang.
+  for i = 1, #st.col do
     local c = st.col[i]
     local t = card[i]
     if c ~= nil and t ~= nil then
@@ -211,7 +225,7 @@ local function onClick()
   if f == nil then return end
   for pid, st in pairs(S.fortuneUI or {}) do
     if GetLocalPlayer() == Player(pid) and st.shown then
-      for i = 1, 3 do
+      for i = 1, #st.col do
         if st.col[i] ~= nil and f == st.col[i].btn then
           -- Nha tieu diem ban phim, neu khong frame giu phim va ESC
           -- khong toi duoc trigger nua -- cung loi da dinh o bang.

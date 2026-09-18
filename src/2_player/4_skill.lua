@@ -129,8 +129,21 @@ end
 
 -- Sat thuong/hoi mau cua mot skill. Day la ham ma cac skill se goi khi
 -- co hieu ung that.
+-- Sat thuong PHEP, va luong HOI MAU cua ky nang.
+--
+-- %Kiem nhan O DAY chu khong o cho khac: ca fxLine lan fxHeal deu di qua
+-- ham nay, nen mot cho la du cho "phep + hoi mau". Don THUONG thi khong
+-- di qua day -- no duoc nhan trong onDamaged.
+--
+-- Hai cho KHONG chong nhau: sat thuong ky nang ban ra bang hit(), ma
+-- hit() bat co 'busy' nen onDamaged return ngay dong dau.
 local function skillDamage(u, factor)
-  return factor * (CFG.CULT_DMG_BASE + topStat(u))
+  local base = factor * (CFG.CULT_DMG_BASE + topStat(u))
+  local pid  = (API.heroPidOf ~= nil) and API.heroPidOf(u) or nil
+  if pid ~= nil and API.gearDmgPct ~= nil then
+    base = base * (1.0 + API.gearDmgPct(pid))
+  end
+  return base
 end
 
 -- ---------- Nang bac ----------

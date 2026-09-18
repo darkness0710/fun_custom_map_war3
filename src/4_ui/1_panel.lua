@@ -50,6 +50,23 @@ local LINE   = 0.016    -- khoang cach hai dong chu trong mot muc
 -- neu khong doi the mot cai la khung nhay -- nen lay max voi kieu list.
 local FOCUS_H = 0.200
 
+-- ---------- Than kieu "grid": o trang bi xep quanh hinh nguoi ----------
+--
+-- Doc tu the dang ky (tab.slots), khong go tay: doi CFG.GEAR_SLOTS la
+-- bang tu co theo, y het cach MAX_ITEMS doc so dong tu the dai nhat.
+local GRID_SLOTS = nil
+local GRID_COLS, GRID_ROWS = 0, 0
+local CELL_GAP = 0.008
+
+-- Mot o = icon o tren, nut Upgrade ngay duoi.
+local function cellH()  return ICON() + 0.004 + BTN_H() end
+local function rowStep() return cellH() + CELL_GAP end
+
+local function gridH()
+  if GRID_ROWS <= 0 then return 0.0 end
+  return GRID_ROWS * rowStep() - CELL_GAP
+end
+
 -- Le trong THAT = le + vien trang tri cua backdrop. Moi thu ben trong
 -- dung con so nay, nen doi backdrop chi phai sua mot cho.
 local function PAD()   return CFG.PANEL_PAD + (CFG.PANEL_BORDER or 0.0) end
@@ -62,9 +79,14 @@ local function BTN_H() return CFG.PANEL_BTN_H end
 -- khong go tay: them mot he 9 muc thi bang tu no rong ra.
 local MAX_ITEMS = 1
 
+-- Than bang cao bang the CAO NHAT trong ba kieu. Bang phai cao bang
+-- nhau o moi the, neu khong doi the mot cai la khung nhay.
 local function bodyH()
-  local list = MAX_ITEMS * ROW()
-  return (list > FOCUS_H) and list or FOCUS_H
+  local h = MAX_ITEMS * ROW()
+  if FOCUS_H > h then h = FOCUS_H end
+  local g = gridH()
+  if g > h then h = g end
+  return h
 end
 
 local function panelH()
@@ -113,6 +135,14 @@ end
 --   info(pid) -> { title, sub, row = { {lbl, before, after}, ... },
 --                  progress (0..1), note, btn, btnOn }
 --   action(pid)
+--
+-- kind = "grid":
+--   slots    -- { {cot, dong}, ... } mot cap cho moi o, dung thu tu items
+--   items(pid) -> nhu "list", dung them:
+--                   short  -- ten ngan, cho bang thong ke ben phai
+--                   stat   -- mon nay dang cong gi
+--   itemAction(pid, i)
+--   statHead -- tieu de cot thong ke
 
 local function addTab(tab)
   if tab.kind == nil then tab.kind = "list" end
@@ -242,6 +272,57 @@ local function refreshFocus(st, pid, tab)
   end
 end
 
+-- Ve lai luoi trang bi. Hai nua: o ben trai, bang thong ke ben phai --
+-- cung mot nguon du lieu (tab.items) nen khong the lech nhau.
+local function refreshGrid(st, pid, tab)
+  local g = st.grid
+  if g == nil or g.root == nil then return end
+  local items = (tab.items and tab.items(pid)) or {}
+
+  if g.statHead ~= nil then
+    BlzFrameSetText(g.statHead, CFG.C_GOLD .. (tab.statHead or "") .. CFG.C_END)
+  end
+
+  for i = 1, #g.cell do
+    local it, c = items[i], g.cell[i]
+    local has = (it ~= nil)
+    local hasBtn = has and it.btn ~= nil
+    show(c.edge, has)
+    show(c.icon, has and it.icon ~= nil)
+    show(c.btn,  hasBtn)
+    -- Co nut thi khong co chu, va nguoc lai -- hai thu dung CHUNG mot
+    -- cho nen bat ca hai la chung de len nhau.
+    show(c.note, has and not hasBtn)
+    if has then
+      if it.icon ~= nil then BlzFrameSetTexture(c.icon, it.icon, 0, true) end
+      if not hasBtn and c.note ~= nil then
+        BlzFrameSetText(c.note, CFG.C_GREY .. (it.note or "") .. CFG.C_END)
+      end
+      if it.btn ~= nil then
+        -- Cung quy uoc voi kieu "list": khong du tien thi chu XAM chu
+        -- khong an nut -- an di la nguoi choi khong biet mon do ton bao
+        -- nhieu de ma de danh.
+        BlzFrameSetText(c.btnTxt, (it.btnOn ~= false) and it.btn
+                                  or (CFG.C_GREY .. it.btn .. CFG.C_END))
+        setEnabled(c.btn, it.btnOn ~= false)
+      end
+    end
+  end
+
+  for i = 1, #g.stat do
+    local it, w = items[i], g.stat[i]
+    local has = (it ~= nil)
+    show(w.alt, has); show(w.lbl, has); show(w.val, has)
+    if has then
+      BlzFrameSetText(w.lbl, CFG.C_GREY .. (it.short or it.name or "?") .. CFG.C_END)
+      -- 'stat' da mang mau cua chinh no tu 5_gear.lua. Boc them mot lop
+      -- mau o day la loi mau LONG NHAU: Warcraft khong co ngan xep mau,
+      -- mot |r dong het ca hai va phan con lai cua dong mat mau.
+      BlzFrameSetText(w.val, it.stat or "")
+    end
+  end
+end
+
 local function refresh(pid)
   local st = stateOf(pid)
   if st.panel == nil then return end
@@ -275,18 +356,32 @@ local function refresh(pid)
     end
   end
 
-  local isList = (tab.kind ~= "focus")
-  for i = 1, MAX_ITEMS do
-    local w = st.item[i]
-    if w ~= nil and not isList then
-      show(w.bg, false); show(w.icon, false); show(w.name, false)
-      show(w.state, false); show(w.sub, false); show(w.btn, false)
-    end
-  end
-  if st.focus ~= nil then show(st.focus.root, not isList) end
-  if not isList then show(st.empty, false) end
+  local kind   = tab.kind or "list"
+  local isList = (kind == "list")
 
-  if isList then refreshList(st, pid, tab) else refreshFocus(st, pid, tab) end
+  -- Dong cua kieu "list" dung san o MOI the, nen the khac phai tat het
+  -- chung di truoc -- neu khong the Trang Bi se co bay dong ma cu nam
+  -- de duoi luoi.
+  if not isList then
+    for i = 1, MAX_ITEMS do
+      local w = st.item[i]
+      if w ~= nil then
+        show(w.bg, false); show(w.icon, false); show(w.name, false)
+        show(w.state, false); show(w.sub, false); show(w.btn, false)
+      end
+    end
+    show(st.empty, false)
+  end
+  if st.focus ~= nil then show(st.focus.root, kind == "focus") end
+  if st.grid  ~= nil then show(st.grid.root,  kind == "grid")  end
+
+  if kind == "focus" then
+    refreshFocus(st, pid, tab)
+  elseif kind == "grid" then
+    refreshGrid(st, pid, tab)
+  else
+    refreshList(st, pid, tab)
+  end
 end
 
 local function hide(pid)
@@ -571,9 +666,98 @@ local function build(pid)
     st.focus = f
   end
 
+  -- ----- Than kieu "grid" -----
+  if GRID_SLOTS ~= nil and GRID_ROWS > 0 then
+    local g  = { cell = {}, stat = {} }
+    local fw = W - 2 * P
+
+    -- Chia doi be ngang: luoi o ben trai, bang thong ke ben phai. Bang
+    -- rong 0.74 nen xep doc het thi thua ngang va thieu doc -- ma thieu
+    -- doc thi CA BON the cung cao len theo (bodyH lay max).
+    local dollW = fw * 0.62
+    local colW  = dollW / GRID_COLS
+    local btnW  = colW - 0.016
+    if btnW > 0.132 then btnW = 0.132 end   -- du cho "TIEN GIAI  10"
+
+    g.root = BlzCreateFrameByType("FRAME", "CharGrid", st.panel, "", pid)
+    if g.root == nil then
+      API.trace("panel: khong tao duoc FRAME rong cho luoi trang bi")
+    else
+      BlzFrameSetSize(g.root, fw, bodyH())
+      BlzFrameSetPoint(g.root, FRAMEPOINT_TOPLEFT, st.panel,
+                       FRAMEPOINT_TOPLEFT, P, -top)
+      show(g.root, false)
+
+      -- Cho hinh bong nguoi: cot giua, ba dong tren.
+      --
+      -- Chua co file thi ve o mau nen (PANEL_GRID_TEX) chu khong bo
+      -- trong: mot o trong giua luoi trong nhu loi ve, mot o toi mau thi
+      -- trong nhu cho danh san. Go duong dan chua import vao
+      -- CFG.GEAR_SILHOUETTE se ra o XANH LA, khong phai o trong.
+      if GRID_COLS >= 3 then
+        g.doll = backdropFrame("CharGridDoll", colW + 0.006, 0.0,
+                               colW - 0.012, 3 * rowStep() - CELL_GAP,
+                               CFG.GEAR_SILHOUETTE or CFG.PANEL_GRID_TEX, g.root)
+      end
+
+      local d = CFG.PANEL_BTN_BORDER or 0.0016
+      for i = 1, #GRID_SLOTS do
+        local col, row = GRID_SLOTS[i][1], GRID_SLOTS[i][2]
+        local cx = (col - 1) * colW
+        local cy = (row - 1) * rowStep()
+        local ix = cx + (colW - ICON()) * 0.5
+        local c  = {}
+
+        -- Vien quanh icon, cung cach nut tu ve vien: hai o mau long nhau.
+        c.edge = backdropFrame("CharGridEdge" .. i, ix - d, cy - d,
+                               ICON() + 2 * d, ICON() + 2 * d,
+                               CFG.PANEL_BTN_EDGE, g.root)
+        c.icon = backdropFrame("CharGridIcon" .. i, ix, cy,
+                               ICON(), ICON(), nil, g.root)
+
+        local by = cy + ICON() + 0.004
+        local b = button("CharGridBtn" .. i, "", cx + (colW - btnW) * 0.5,
+                         by, btnW, BTN_H(), g.root)
+        if b ~= nil then c.btn, c.btnTxt = b.btn, b.txt end
+
+        -- Dong chu DUNG CHO NUT khi mon nay khong bam duoc gi.
+        --
+        -- O trong khong loi giai thich thi nguoi choi tuong giao dien
+        -- hong -- kieu "list" cu da co cho nay (it.desc), luoi o thi
+        -- khong, nen phai lam lai.
+        c.note = text("CharGridNote" .. i, g.root, cx, by + 0.004, colW,
+                      CFG.PANEL_SCALE_SUB, false)
+
+        show(c.edge, false); show(c.icon, false)
+        show(c.btn, false); show(c.note, false)
+        g.cell[i] = c
+      end
+
+      -- Bang thong ke ben phai: mot dong moi mon.
+      local sx = dollW + 0.014
+      local sw = fw - sx
+      g.statHead = text("CharGridSH", g.root, sx, 0.0, sw,
+                        CFG.PANEL_SCALE_NAME, false)
+      for i = 1, #GRID_SLOTS do
+        local y = 0.026 + (i - 1) * 0.020
+        g.stat[i] = {
+          alt = (CFG.PANEL_GRID and i % 2 == 0)
+                and backdropFrame("CharGridSA" .. i, sx - 0.004, y - 0.003,
+                                  sw, 0.019, CFG.PANEL_GRID_TEX, g.root) or nil,
+          lbl = text("CharGridSL" .. i, g.root, sx, y, sw * 0.42,
+                     CFG.PANEL_SCALE_SUB, false),
+          val = text("CharGridSV" .. i, g.root, sx + sw * 0.42, y,
+                     sw * 0.58, CFG.PANEL_SCALE_SUB, true),
+        }
+      end
+    end
+    st.grid = g
+  end
+
   BlzFrameSetVisible(st.panel, false)
   API.trace("panel: dung bang pid " .. pid .. " (" .. n .. " the, " ..
-            MAX_ITEMS .. " dong, nen = " .. tostring(how) .. ")")
+            MAX_ITEMS .. " dong, luoi " .. GRID_COLS .. "x" .. GRID_ROWS ..
+            ", nen = " .. tostring(how) .. ")")
   return true
 end
 
@@ -647,6 +831,16 @@ local function onClick()
           st.tab = i
           refresh(pid)
           return
+        end
+      end
+
+      if st.grid ~= nil then
+        for i = 1, #st.grid.cell do
+          local c = st.grid.cell[i]
+          if c ~= nil and f == c.btn then
+            if tab ~= nil and tab.itemAction ~= nil then tab.itemAction(pid, i) end
+            return
+          end
         end
       end
 
@@ -758,6 +952,16 @@ local function startPanel()
   for i = 1, #S.panel.tabs do
     local t = S.panel.tabs[i]
     if t.rows ~= nil and t.rows > MAX_ITEMS then MAX_ITEMS = t.rows end
+
+    -- Kich thuoc luoi suy TU bang o cua the, khong go tay.
+    if t.kind == "grid" and t.slots ~= nil then
+      GRID_SLOTS = t.slots
+      for k = 1, #t.slots do
+        local col, row = t.slots[k][1], t.slots[k][2]
+        if col > GRID_COLS then GRID_COLS = col end
+        if row > GRID_ROWS then GRID_ROWS = row end
+      end
+    end
   end
 
   S.panel.trig = CreateTrigger()

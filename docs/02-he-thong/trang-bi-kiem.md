@@ -1,17 +1,30 @@
-# Trang Bị — sáu món tiến hoá 100 bậc
+# Trang Bị — bảy món tiến hoá 100 bậc
 
-> **Trạng thái:** **Đã cài** — khung chạy đủ, **chỉ số còn rỗng**
-> **Cập nhật:** 2026-09-17
-> **Khoá CFG:** `GEAR` `GEAR_CAP` `GEAR_ODDS` `GEAR_PRICE`
-> `GEAR_DISMANTLE` `OP_GEAR_UP` `OP_GEAR_DISMANTLE`
-> **Mã:** [5_gear.lua](../../src/2_player/5_gear.lua)
+> **Trạng thái:** **Đã cài** — khung, chỉ số và giao diện đều đã chạy
+> **Cập nhật:** 2026-09-18
+> **Khoá CFG:** `GEAR` `GEAR_CAP` `GEAR_ODDS` `GEAR_PRICE` `GEAR_DISMANTLE`
+> `GEAR_STAT_BASE` `GEAR_DMG_MAX` `GEAR_MITIG_MAX` `GEAR_MITIG_CAP`
+> `GEAR_SLOTS` `GEAR_SILHOUETTE` `OP_GEAR_UP` `OP_GEAR_DISMANTLE`
+> **Mã:** [5_gear.lua](../../src/2_player/5_gear.lua) *(số liệu)* ·
+> [1_panel.lua](../../src/4_ui/1_panel.lua) *(giao diện, `kind = "grid"`)*
 
-**Sáu món** — Kiếm · Giáp · Khiên · Giày · Dây Chuyền · Nhẫn — mỗi món leo
+**Bảy món** — Mũ · Dây Chuyền · Áo · Kiếm · Khiên · Nhẫn · Giày — mỗi món leo
 **100 bậc**, và trần của tất cả là **Tu Vi của chính người chơi**.
 
-> **Chỉ số còn rỗng có chủ ý.** Khung tiến hoá chạy đầy đủ (tên, cấp, xác
-> suất, Tiến Giai, trần Tu Vi) nhưng **chưa món nào cộng gì cả**. Chỗ chỉ số
-> sẽ nằm là `API.gearMult` / `API.gearStat`, hiện trả về `1.0` và `0`.
+**Không món nào trùng vai món nào:**
+
+| Món | Cộng gì | Loại | Ở bậc 100 |
+|---|---|---|---|
+| Mũ | Int | cộng điểm | +4 726 Int |
+| Dây Chuyền | cả Str · Agi · Int | cộng điểm | +1 575 mỗi chỉ số |
+| Áo | Str | cộng điểm | +4 726 Str |
+| Giày | Agi | cộng điểm | +4 726 Agi |
+| Kiếm | % sát thương **gây ra** *(đòn thường, phép, và hồi máu)* | nhân | +20% |
+| Khiên | % **đòn đánh** nhận vào | nhân | −25% |
+| Nhẫn | % **sát thương phép** nhận vào | nhân | −25% |
+
+Bảy vai này thay bản cũ sáu món chỉ khác nhau **tên và icon** —
+[ADR 0024](../05-quyet-dinh/0024-cong-thi-leo-nhan-thi-phang.md).
 
 ## Thang
 
@@ -102,8 +115,11 @@ kiem DANG DUOI tran   chua leo het, van con cap de danh bac
 Đá quá rẻ → luôn dính trần → bấm rồi chờ. Đá quá đắt → luôn tụt sau → cái trần
 chưa bao giờ có hiệu lực thật.
 
-**Cả hai luật chỉ cùng có nghĩa ở dải giữa**, và `CFG.FORTUNE_IRON` là nút chỉnh dải
-đó. Đây là con số đáng đo nhất ở lần chơi thử đầu.
+**Cả hai luật chỉ cùng có nghĩa ở dải giữa**, và **giá đá trong shop** là nút
+chỉnh dải đó — kể từ khi thẻ đá bị bỏ khỏi Cơ Duyên
+([ADR 0025](../05-quyet-dinh/0025-co-duyen-con-hai-the.md)), vàng là đường ra đá
+duy nhất, nên một con số điều được cả nhịp. Đây là số đáng đo nhất ở lần chơi
+thử đầu.
 
 ## Ba điều kỹ thuật phải làm đúng
 
@@ -113,17 +129,23 @@ tiêu một số khác nhau từ chuỗi ngẫu nhiên, và **từ giây đó m�
 cả ván đều lệch** — kể cả thẻ Cơ Duyên. Đúng bài học đầu
 [10_fortune.lua](../../src/2_player/10_fortune.lua).
 
-**2. Cấp là state trong `S.p[pid]`** — `d.tb[i] = { canh = 0..20, cap = 0..5 }`.
-Không gắn vào item, không gắn vào ability handle. `canh = 0` nghĩa là chưa luyện
+**2. Cấp là state trong `S.p[pid]`** — `d.gear[i] = { tier = 0..20, level = 0..5 }`.
+Không gắn vào item, không gắn vào ability handle. `tier = 0` nghĩa là chưa luyện
 lần nào.
 
-**3. Chỉ số phải đi qua vật mang**, không ghi thẳng lên unit. `BlzSetUnitArmor`
-và `BlzSetUnitBaseDamage` đều đã bị gỡ khỏi `heroRecompute` vì chúng đóng băng
-phần chỉ số — xem [ability-ban-sao.md](../03-du-lieu/ability-ban-sao.md).
+**3. Không ghi thẳng giáp hay sát thương lên unit.** `BlzSetUnitArmor` và
+`BlzSetUnitBaseDamage` đều đã bị gỡ khỏi `heroRecompute` vì chúng đóng băng phần
+chỉ số — xem [ability-ban-sao.md](../03-du-lieu/ability-ban-sao.md).
+
+Đó là lý do ba món "nhân" cộng **%** chứ không cộng điểm: % nhân được ngay trong
+`onDamaged` và `skillDamage`, **không cần vật mang nào cả**. Bản thiết kế trước
+định cho Khiên cộng điểm giáp và phải mượn trường của một ability — bỏ, vì đo ra
+Khiên chỉ được cộng **2.8 điểm giáp cả ván** mới vừa ngân sách, tức 0.03 mỗi bậc,
+một con số không hiển thị nổi.
 
 ## Không dùng item thật
 
-Sáu món **không nằm trong túi đồ**. Quyết định này bỏ được cả loạt vấn đề:
+Bảy món **không nằm trong túi đồ**. Quyết định này bỏ được cả loạt vấn đề:
 
 | | |
 |---|---|
@@ -134,27 +156,60 @@ Sáu món **không nằm trong túi đồ**. Quyết định này bỏ được 
 | Túi 6 ô, xung đột với Ankh 500 vàng | **biến mất** |
 
 Đổi lại là mất **tính cầm nắm** — không nhìn thấy nó trong túi. Bù bằng ba thứ
-đã có sẵn: tên đầy đủ hiện ở thẻ `focus`, `API.msg(nil, ...)` báo cho **cả ba
+đã có sẵn: lưới ô hình nhân vật ở thẻ III, `API.msg(nil, ...)` báo cho **cả ba
 người** khi luyện thành cấp cao, và `API.fx` trên hero lúc thăng cấp.
 
 Với một hệ có xác suất, việc cả đội nhìn thấy bạn trượt 15% lần thứ tư còn đáng
 nhớ hơn một cái icon.
 
-## Giao diện
+## Giao diện — kiểu thân bảng thứ ba
 
-Thẻ **III**, `kind = "list"` — **một dòng mỗi món**, sáu dòng
-([ADR 0016](../05-quyet-dinh/0016-bang-phim-e-hai-kieu-than.md)). Bản thiết kế
-đầu định dùng `kind = "focus"` như Tu Vi; đổi vì focus chỉ hiện **một** thứ, mà
-đây có sáu món phải so với nhau.
+Thẻ **III**, `kind = "grid"`. Đây là kiểu thân thứ ba của bảng phím E, thêm vào
+`"list"` và `"focus"` của
+[ADR 0016](../05-quyet-dinh/0016-bang-phim-e-hai-kieu-than.md).
+
+```
+   [Mu]      +--------+   [Day Chuyen]      Dang cong
+ ( LUYEN )   |        |   ( LUYEN )         Mu 3-2        +11 Int
+             |  hinh  |                     Day Chuyen 1-5  +2.5
+   [Ao]      |  bong  |   [Khien]           Ao 2-1        +9.4 Str
+ ( LUYEN )   |        |   ( TIEN GIAI )     Kiem 1-3      +0.6%
+             |        |                     Khien --
+   [Kiem]    +--------+   [Nhan]            Nhan --
+ ( LUYEN )                ( LUYEN )         Giay 1-1      +1.5 Agi
+
+             [Giay]
+           ( LUYEN )
+```
+
+Hai nửa, **cùng một nguồn dữ liệu** (`tab.items`) nên không thể lệch nhau: lưới ô
+bên trái, bảng thống kê bên phải.
+
+**Bố cục ô là dữ liệu, không phải code.** `CFG.GEAR_SLOTS` cho mỗi món một cặp
+`{cột, dòng}`; bảng đọc bảng đó rồi tự suy ra lưới mấy cột mấy dòng. Đổi chỗ hai
+món là sửa một dòng CFG, không đụng `1_panel.lua`. Lệch số ô và số món thì
+`API.trace` báo ngay lúc vào map, không để nó ve thiếu trong im lặng.
+
+**Cột giữa để trống cho hình bóng người.** `CFG.GEAR_SILHOUETTE = nil` nên hiện
+vẽ ô màu nền. Có file `.blp` thì import bằng
+[w3import.py](../../w3import.py) rồi điền đường dẫn vào đúng khoá đó — gõ một
+đường dẫn **chưa import** sẽ ra ô **xanh lá**, không phải ô trống.
+
+**Bảng không cao thêm.** Lưới 4 dòng = 0.288, thẻ Kỹ Năng 7 dòng = 0.336;
+`bodyH()` lấy max cả ba kiểu nên khung giữ nguyên kích thước. Bảng phải cao bằng
+nhau ở mọi thẻ, nếu không đổi thẻ một cái là khung nhảy.
 
 **Một nút, hai việc:** chưa tới Hoàn Hảo thì nút là `LUYEN  1`, tới rồi thì
 thành `TIEN GIAI  10`. Quyết định gửi op nào là **cục bộ** nhưng an toàn, vì
 trạng thái dựa vào đã đồng bộ sẵn — và cả hai nhánh đều **kiểm lại điều kiện ở
 bên nhận**.
 
-Khi Hoàn Hảo mà Tu Vi chưa tới, dòng đó **không có nút** nhưng nói rõ *"Tu Vi
-chưa tới Luyện Khí"*. Không có nút mà không giải thích thì người chơi tưởng giao
-diện hỏng.
+Khi Hoàn Hảo mà Tu Vi chưa tới, ô đó **không có nút** — và đúng chỗ nút vẫn có
+một dòng chữ xám *"CHỜ TU VI"*; món đã đi hết 100 bậc thì ghi *"TRỌN VẸN"*.
+Không có nút mà không giải thích thì người chơi tưởng giao diện hỏng.
+
+Nút và dòng chữ dùng **chung một chỗ**, bật cái này là tắt cái kia — bật cả hai
+là chúng đè lên nhau.
 
 ## Còn thiếu — chỉ số
 
