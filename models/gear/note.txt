@@ -1,0 +1,27 @@
+# Icon trang bi: 8 mon x 20 canh gioi = 160 file.
+#
+# Duong dan KHONG phai doan: no do mot cong thuc trong 1_config.lua sinh ra.
+#   CFG.GEAR_ICON_PATH = [[gear\%s\%02d.blp]]
+#   %s = truong 'key' cua mon trong CFG.GEAR  (tieng Anh, vi no thanh
+#        duong dan that trong map)
+#   %02d = so CANH GIOI 1..20, khop CFG.REALMS theo thu tu
+#
+# File o day la SINH RA, khong phai ve tay. Nguon la anh PNG:
+#   docs/01-tmp/<thu muc tieng Viet>/NN-*.png
+#        |  python w3gear_icons.py   (w3blp.py lo phan BLP1)
+#        v
+#   models/gear/<key>/NN.blp        <- ban nguon, thu muc nay
+#   test2.w3x/gear/<key>/NN.blp     <- ban trong map
+#   war3map.imp                     <- script tu them muc khai bao
+#
+# Hai ban tren giong nhau TUNG BYTE; script ghi ca hai trong mot luot.
+# Sua anh thi sua PNG roi chay lai script, dung sua BLP.
+#
+# Them canh gioi: tha PNG vao, chay script, nang CFG.GEAR_ICON_MAX.
+# Buoc ba la buoc de quen -- no tung ket o 5 trong khi map da co 15 muc,
+# va khong co gi bao vi thieu anh thi code lui ve muc thap hon.
+
+File: <key>/01.blp .. <key>/20.blp
+Path: gear\<key>\NN.blp
+
+# key: helm necklace armor sword shield cloak boots ring
