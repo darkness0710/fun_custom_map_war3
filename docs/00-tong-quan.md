@@ -33,7 +33,8 @@ thiết kế, và là chỗ mọi con số quy về —
 | **Dùng đồ bằng hàng số trên** | [9_useitem.lua](../src/2_player/9_useitem.lua) | Thêm vào numpad sẵn có, không thay |
 | **Trang Bị** | [5_gear.lua](../src/2_player/5_gear.lua) | **7 món × 100 bậc**, trần là Tu Vi. Mỗi món một vai, chỉ số đã chạy. Lưới ô kiểu hình nhân vật — [trang-bi-kiem.md](02-he-thong/trang-bi-kiem.md) |
 | **Pháp Khí** | [6_relic.lua](../src/2_player/6_relic.lua) | ⏸ **đang khoá** (`RELIC_LOCKED`) — thẻ vẫn hiện để người chơi biết hệ tồn tại |
-| Bảng nhân vật (phím **E**) | [1_panel.lua](../src/4_ui/1_panel.lua) | 5 thẻ, **ba** kiểu thân bảng: `list` · `focus` · `grid` |
+| Bảng nhân vật (phím **ESC**) | [1_panel.lua](../src/4_ui/1_panel.lua) | 5 thẻ, **ba** kiểu thân bảng: `list` · `focus` · `grid` |
+| **Bảng trận đấu (phím R)** | [6_gameframe.lua](../src/4_ui/6_gameframe.lua) | Tổng Quan + Nhiệm Vụ Phụ. **Nút gọi đợt** thay hẳn đồng hồ — [ADR 0026](05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md) |
 | Chữ bay | [4_fct.lua](../src/4_ui/4_fct.lua) | Cộng dồn sát thương trước khi vẽ |
 | Lưới 25 block, 4+4 dòng sông | [4_geometry.lua](../src/1_core/4_geometry.lua) | Có vùng thật `Blk01..Blk25` trong World Editor; địa hình chưa vẽ |
 
@@ -114,7 +115,7 @@ khỏi đây.
 
 1. **Sông chặn hay lội qua được?** Nước sâu chặn đường bộ, nước nông thì không.
    Quyết định này đổi hẳn nhịp di chuyển của map — và cũng chặn việc đo
-   `WAVE_TIME` cho đúng, vì chưa biết quái đi bộ tới nhà mất bao lâu.
+   nhịp di chuyển cho đúng, vì chưa biết quái đi bộ tới nhà mất bao lâu.
 2. **Qua sông bằng gì?** Cầu, cổng, hay phải phá. Chưa có gì.
 3. **Ba người chơi quan hệ thế nào?** Hiện là đồng minh. Muốn tranh chấp block
    thì phải đổi.

@@ -763,10 +763,14 @@ end
 
 local function setShown(pid, want)
   if not framesAvailable() then
-    API.msg(pid, CFG.C_RED .. "Khong ve duoc bang -- dung lenh chat." .. CFG.C_END)
+    API.msg(pid, CFG.C_RED .. API.t("panel_noframe") .. CFG.C_END)
     return
   end
   if not build(pid) then return end
+
+  -- HAI BANG LOAI TRU NHAU: chong len nhau thi ESC phai doan dong cai
+  -- nao, ma cau hoi do khong co dap an dung.
+  if want and API.gameFrameHide ~= nil then API.gameFrameHide(pid) end
 
   local st = stateOf(pid)
   st.shown = want
@@ -917,6 +921,19 @@ local function bindEsc()
     escLock[pid] = true
     API.after(CFG.PANEL_ESC_LOCK or 0.25, function() escLock[pid] = nil end)
 
+    -- BA TANG, va thu tu hoi CHINH LA thu tu uu tien:
+    --   Co Duyen  -> da chan o tren, ESC khong lam gi
+    --   bang R    -> dong no, dung
+    --   bang ESC  -> dong no, dung
+    --   khong gi  -> mo bang ESC
+    --
+    -- Hoi bang R TRUOC bang nay. Dao lai thi mo R roi bam ESC se di vao
+    -- nhanh "bang nay dang dong -> mo no ra", va bang R nam li.
+    if API.gameFrameShown ~= nil and API.gameFrameShown(pid) then
+      API.gameFrameHide(pid)
+      return
+    end
+
     if stateOf(pid).shown then hide(pid)
     elseif canToggle then toggle(pid) end
   end)
@@ -983,5 +1000,6 @@ API.panelAddTab      = addTab
 API.panelPlaceholder = placeholderTab
 API.panelRefresh     = refresh
 API.panelToggle      = toggle
+API.panelHide        = hide
 API.panelOpenTab     = openTab
 API.startPanel       = startPanel

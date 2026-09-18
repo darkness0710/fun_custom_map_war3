@@ -141,6 +141,7 @@ local function bootstrap()
   API.startHeroFrame()
   API.startSkillFrame()
   API.startFortuneFrame()
+  API.startGameFrame()      -- bang tran dau, phim R
   API.startSkillPicking()
   API.startPicking()
   API.trace("startPicking: tra ve")

@@ -1,5 +1,10 @@
 # Hệ thống: Phân vùng 25 block
 
+> ⛔ **Số trong tài liệu này tính theo `WAVE_TIME`, khoá đã xoá ngày 2026-09-18.**
+> Nhịp cả ván giờ do người chơi gọi, nên **thời lượng ván không tính trước được
+> nữa** — chỉ đo sau trận chơi thử. Lập luận giữ nguyên; con số là lịch sử.
+> [ADR 0026](../05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md)
+
 > **Trạng thái:** Bản đồ đã chốt — **chưa cài lối chơi nào**
 > **Cập nhật:** 2026-09-16
 > **Code:** [1_config.lua](../../src/1_core/1_config.lua) (`CFG.BLOCKS`),

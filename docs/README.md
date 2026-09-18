@@ -69,6 +69,7 @@ src/
      3_skillframe.lua  bảng chọn kỹ năng
      4_fct.lua         chữ bay
      5_fortuneframe.lua khung Cơ Duyên, mỗi thẻ một cột
+     6_gameframe.lua   bảng trận đấu phím R, nút gọi đợt
   5_boot/         phải nạp cuối cùng
      1_events.lua      trigger, lệnh chat
      2_init.lua        bootstrap, móc vào main()
@@ -101,6 +102,7 @@ docs/
      kinh-te.md          Hai đồng tiền, ngân sách ×967, bảng giá bốn hệ
      bang-nhan-vat.md    Bảng phím E: Tu Vi / Kỹ Năng / Trang Bị / Pháp Khí / Cửa Hàng
      quay-thuong.md      Cơ Duyên: hai thẻ -- vàng hoặc chỉ số
+     bang-tran-dau.md    Bảng phím R: Tổng Quan + Nhiệm Vụ Phụ, nút gọi đợt
      trang-bi-kiem.md    Bảy món tiến hoá 100 bậc, mỗi món một vai
      dot-quai.md         100 đợt quái: cấu trúc, thành phần, nhịp, tu chính
      boss.md             20 boss cuối cảnh giới
@@ -146,6 +148,7 @@ docs/
      0023-chan-dia-khong-noi-cast-tanker-o-lai-chiu.md
      0024-cong-thi-leo-nhan-thi-phang.md
      0025-co-duyen-con-hai-the.md
+     0026-nhip-van-do-nguoi-choi-goi.md
   06-object-editor/
      sua-va-clone-ability.md  Đọc/ghi war3map.w3a bằng script, mã trường đã đo
      import-model.md         Import model/texture bằng script, bẫy World Editor giữ bộ nhớ

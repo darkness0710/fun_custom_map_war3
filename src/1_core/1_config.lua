@@ -72,6 +72,7 @@ CFG.OP_SHOP   = 9   -- arg = so thu tu mon trong CFG.SHOP
 CFG.OP_ITEM   = 10  -- arg = o tui 0..5, dung do bang phim so
 CFG.OP_FORTUNE   = 11  -- arg = so thu tu the 1..3 trong luot quay
 CFG.OP_GEAR_DISMANTLE = 12 -- arg = so thu tu mon trong CFG.GEAR (Tien Giai)
+CFG.OP_WAVE_CALL = 13  -- arg = 0. Nut goi dot tren bang tran dau
 -- Opcode KHONG bi chan o mot chu so: unpackMsg dung math.floor(v/10^7)
 -- nen op 10, 11... van giai duoc. Thu bi chan la arg (< 10^5) va seq
 -- (< 100). Xem src/1_core/3_sync.lua.
@@ -506,81 +507,77 @@ CFG.TIER_NAMES = {
 CFG.WAVE_MOB_COUNT   = 50    -- co dinh, khong doi theo so nguoi (ADR 0009)
 CFG.WAVE_ELITE_COUNT = 1
 
--- Giay moi wave, theo coi. Day la nut chinh THOI LUONG VAN, va no cung
--- chinh DPS can -- hai thu dinh nhau.
--- RANG BUOC, khong phai so chinh tu do:
+-- ---------- DOT MOI CHI RA KHI NGUOI CHOI GOI ----------
 --
---   WAVE_TIME[coi]  >  quang duong/toc do  +  thoi gian giet het mot dot
+-- Khong con dong ho nao keo dot sau vao. Nhip cua ca van do nut "GOI DOT"
+-- tren bang tran dau (phim R) quyet dinh, va CHI no.
 --
--- Thieu ve phai thi nhanh "don sach -> vao dot sau" KHONG BAO GIO chay
--- duoc: map khong bao gio sach, nen S.alive khong bao gio ve 0, nen ca
--- WAVE_AUTO_NEXT lan lenh -next deu chet.
+-- DA BO, va vi sao:
 --
--- Do duoc (cua quai cach nha 5,361 don vi):
---   coi 1  Footman     270  di 19.9s  -> can >= 30s, truoc day dat 20  SAI
---   coi 2  Ghoul       350  di 15.3s  -> can >= 25s, dat 28            ok
---   coi 3  Abomination 190  di 28.2s  -> can >= 38s, truoc day dat 36  SAI
---   coi 4  Frost Wyrm  200  di 26.8s  -> can >= 37s, dat 45            ok
+--   WAVE_TIME         Giay moi wave theo coi. No khong con cam lai tu khi
+--                     WAVE_ONLY_WHEN_CLEAR bat: don sach som thi
+--                     onMobDeath keo dot sau vao truoc, don cham thi dong
+--                     ho tu hoan. Con so chay tren man hinh khong quyet
+--                     dinh gi -- chi tao ap luc gia.
+--                     Bo no cung bo luon rang buoc kho chiu nhat cua
+--                     ADR 0018:
+--                       WAVE_TIME[coi] > quang duong/toc do + thoi gian giet
+--                     Rang buoc do da lam sai WAVE_TIME hai lan, va khoa
+--                     cung moi lan doi CFG.MOB_UNIT.
 --
--- Vi sao coi 1 (32s) lai DAI HON coi 2 (28s) du de hon: WAVE_TIME khong
--- phai thuan do kho -- no bi chan duoi boi TOC DO MAU LINH. Footman cua
--- coi 1 cham hon Ghoul cua coi 2, nen no can nhieu giay hon du wave de
--- hon. Doi CFG.MOB_UNIT la phai tinh lai bang nay.
-CFG.WAVE_TIME = { 32.0, 28.0, 40.0, 45.0 }
-CFG.WAVE_FIRST_DELAY = 15.0
+--   WAVE_FIRST_DELAY  15 giay truoc dot 1. Da chet san vi WAVE_WAIT_FIRST.
+--
+--   WAVE_AUTO_NEXT    Don sach xong 1.5 giay la dot moi ra. DAY moi la thu
+--   WAVE_CLEAR_DELAY  khong cho nguoi choi tho: chua kip mo bang mua da da
+--                     co dot moi tren dau.
+--
+--   WAVE_WAIT_FIRST   Gio MOI dot deu cho goi, khong rieng dot 1.
+--
+--   S.waveDlg         Cua so dem nguoc cua Warcraft. Xoa theo WAVE_TIME.
 
--- ---------- Dot moi chi ra khi dot cu da don sach ----------
+-- Con quai song thi khong goi duoc dot moi.
 --
--- Ban truoc: dong ho chay song song, het WAVE_TIME giay la dot sau ra
--- DU CON SONG HAY KHONG. Y do la "ap luc chinh".
+-- Goi som la bo qua phan kho de an tien dot sau; va hai dot chong len nhau
+-- thi dot sau lai keo dai dot dang do, mot day chuyen nguoi choi khong
+-- ngan duoc.
 --
--- No sai, va sai theo kieu khong go lai duoc. Mot con tinh anh mau day
--- song qua het WAVE_TIME thi dot sau chong len dot truoc; dot sau nua
--- lai chong tiep; moi dot them lai keo dai dot dang do. Nguoi choi
--- khong co hanh dong nao ngan duoc day chuyen do -- danh nhanh hon
--- chinh la thu ho dang khong lam duoc.
---
--- Va no mau thuan voi luat da co o "-next": lenh do TU CHOI khi con
--- quai song, vi goi som la bo qua phan kho de an tien dot sau. Dong ho
--- lam dung viec ma -next bi cam lam.
---
--- Dat false thi ap luc dong ho quay lai y nhu cu.
+-- Dat false thi nut goi duoc bat moi luc -- nhung luc do ADR 0009 (50 linh
+-- co dinh) mat nghia, vi nguoi choi tu chon so quai tren map.
 CFG.WAVE_ONLY_WHEN_CLEAR = true
 
--- Don sach wave thi vao wave sau NGAY, khong ngoi cho het dong ho.
+-- ---------- Do lai so quai song ----------
 --
--- Voi WAVE_ONLY_WHEN_CLEAR bat thi day la duong VAO DOT SAU CHINH, con
--- dong ho chi la luoi do: no chi ban khi S.alive = 0, ma luc do nhanh
--- nay da chay roi. Giu dong ho lai de phong truong hop quai bien mat ma
--- khong sinh su kien chet -- luc do S.alive ve 0 nhung onMobDeath khong
--- he chay.
--- Dot DAU TIEN doi goi bang "-next" thay vi tu ra sau WAVE_FIRST_DELAY.
--- De co thoi gian nhin map, xem bang, nang ky nang truoc khi vao tran.
--- Cac dot sau van chay binh thuong.
-CFG.WAVE_WAIT_FIRST  = true
+-- LOI THAT DA XAY RA (ADR 0018): S.alive ket tren 0 thi MOI loi thoat
+-- cung chet -- ca duong "don sach" lan lenh goi tay, vi ca hai deu hoi
+-- cung mot con so. Ket thi ket vinh vien, khong loi nao bao.
+--
+-- Nen cu mot luc phai DO LAI thay vi tin con so dang giu.
+--
+-- DEM QUA S.mobs, KHONG quet map theo chu so huu. S.mobs chi duoc ghi o
+-- duong sinh quai cua he wave (2 cho, ca hai trong spawnStage), nen quai
+-- DAT SAN o cac vung dat sau nay khong bao gio lot vao. Dem theo
+-- GetOwningPlayer == S.enemy thi vo luon chung, va S.alive khong bao gio
+-- ve 0 -- dung cai bay ma phep do nay dinh chua.
+CFG.WAVE_RECOUNT = 10.0
 
-CFG.WAVE_AUTO_NEXT   = true
-CFG.WAVE_CLEAR_DELAY = 1.5   -- giay, de kip doc chu truoc khi wave sau ra
 
--- ---------- Nghi giua hai canh gioi ----------
+-- ---------- Hai moc nghi cua moi canh gioi ----------
 --
--- Dong ho chay suot 10 tang, roi DUNG HAN o hai moc:
+-- Nut goi dot doi NHAN o hai moc nay, chu khong chi doi so:
 --
---   tang 1..10        dong ho chay        <- ap luc, dot chong duoc
---   tang 10 don sach  DUNG dong ho        <- nghi
---     -next           BOSS
---   boss chet         DUNG dong ho        <- nghi, tieu Go
---     -next           canh gioi sau
+--   tang 1..4         GOI DOT (n)
+--   tang 4 don sach   TRIEU BOSS          <- moc 1
+--   boss chet         SANG CANH GIOI SAU  <- moc 2
 --
--- Vi sao khong bo han dong ho cho ca 5 stage: WAVE_TIME la thu DUY NHAT
--- con ep "wave phai ha kip gio". Quai bam theo duong cong Tu Vi nen do
--- kho tu can bang, nhung no khong noi gi ve TOC DO -- khong co dong ho
--- thi mot doi danh cham van thang, chi lau hon.
--- Giu dong ho trong 10 tang thi ap luc con nguyen, ma van co nhip.
+-- Tu 2026-09-18 ca 5 stage deu cho goi, nen hai moc nay khong con la
+-- "dung dong ho" nua -- chung la hai NHAN khac cua cung mot nut.
 --
--- Va no sua mot loi that: mo bang phim E khong dung game (frame khong
--- dung game duoc), nen truoc day mua sam nghia la dung chiu don. Gio
--- viec do co cho cua no.
+-- Nhung van giu bien rieng (S.waitNext) chu khong gop lam mot, vi ba
+-- trang thai lam ba viec khac nhau: goi dot thuong, trieu boss, va sang
+-- canh gioi. Moc 2 la cho Loi Kiep se gan vao.
+--
+-- Dat false thi hai moc bien mat: boss ra ngay sau tang 4, va canh gioi
+-- sau ra ngay sau boss -- khong con cho tieu tien.
 CFG.WAVE_REST = true
 
 -- Tran unit song. Qua nguong thi HOAN wave moi thay vi chong them.
@@ -1831,6 +1828,22 @@ CFG.PANEL_KEY = nil
 -- Giay chan trung cho ESC. Hai duong dang ky nam chung mot trigger nen
 -- mot lan bam no hai lan; xem chu thich trong bindEsc().
 CFG.PANEL_ESC_LOCK = 0.25
+
+-- ---------- Bang tran dau (phim R) ----------
+--
+-- Bang THU HAI, tach khoi bang nhan vat co y:
+--   ESC  "nhan vat toi the nao"   -- mo giua tran, voi
+--   R    "tran dau dang the nao"  -- mo giua hai dot, thong tha
+--
+-- Hai cau hoi khac nhau, hai nhip khac nhau. Gop lam mot bang 7 the la
+-- bat nguoi choi cuon qua Trang Bi de tim nut goi dot.
+--
+-- HAI BANG LOAI TRU NHAU, khong chong len nhau: mo cai nay la dong cai
+-- kia. Chong len nhau thi ESC phai doan dong cai nao, ma cau hoi do
+-- khong co dap an dung.
+CFG.GAME_KEY = "R"
+CFG.GAME_X   = 0.40
+CFG.GAME_Y   = 0.42
 
 -- ---------- Dung do bang hang so tren (canh Esc) ----------
 --

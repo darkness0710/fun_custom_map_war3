@@ -186,9 +186,12 @@ local function registerEvents()
   end
   TriggerAddAction(tCult, onCultCmd)
 
-  -- "-next" goi dot ke tiep. LUON dang ky, khong theo DEV_COMMANDS:
-  -- voi CFG.WAVE_WAIT_FIRST thi day la thu duy nhat khoi dong duoc van,
-  -- tat no di la ngoi nhin man hinh trong mai mai.
+  -- "-next" goi dot ke tiep. LUON dang ky, khong theo DEV_COMMANDS.
+  --
+  -- Duong CHINH la nut tren bang tran dau (phim R). Lenh nay giu lai lam
+  -- DUONG LUI: framesAvailable() co the tra false (thieu native frame),
+  -- va luc do khong con cach nao khoi dong van -- bang nhan vat da phai
+  -- in "Khong ve duoc bang -- dung lenh chat" vi dung ly do do.
   --
   -- Khong phai lenh cheat: no doi da don sach quai moi goi duoc, nen
   -- khong bo qua duoc phan nao ca.

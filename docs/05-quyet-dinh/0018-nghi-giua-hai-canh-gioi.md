@@ -1,5 +1,10 @@
 # 0018 — Đồng hồ dừng hẳn ở hai mốc mỗi cảnh giới
 
+> ⛔ **Số trong tài liệu này tính theo `WAVE_TIME`, khoá đã xoá ngày 2026-09-18.**
+> Nhịp cả ván giờ do người chơi gọi, nên **thời lượng ván không tính trước được
+> nữa** — chỉ đo sau trận chơi thử. Lập luận giữ nguyên; con số là lịch sử.
+> [ADR 0026](0026-nhip-van-do-nguoi-choi-goi.md)
+
 > **Số trong tài liệu này tính cho 220 stage** *(10 tầng + boss mỗi cảnh giới)*.
 > Từ 2026-09-17 còn **100 stage** *(4 tầng + boss)*, và thu nhập đã thành phẳng.
 > Lập luận giữ nguyên; con số thì tra [bang-can-bang.md](../03-du-lieu/bang-can-bang.md).

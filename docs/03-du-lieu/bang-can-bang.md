@@ -119,12 +119,14 @@ Chi tiết: [02-he-thong/dot-quai.md](../02-he-thong/dot-quai.md) ·
 | `REALMS` | Bảng 20 cảnh giới `{ vi, en, world }` | Đúng 20 dòng, đúng thứ tự. `vi` **không dấu** — font WC3 thiếu glyph tiếng Việt. `world` 1–4 quyết định mẫu lính và `WAVE_TIME` |
 | `TIERS_PER_REALM` | Tầng mỗi cảnh giới | `4`, mỗi tầng một tên trong `TIER_NAMES` *(Sơ Kì → Viên Mãn)*. Tổng stage = `20 × (TIERS_PER_REALM + 1)` = 100. Không hard-code số 5 ở đâu cả |
 | `WAVE_MOB_COUNT` `WAVE_ELITE_COUNT` | Lính / tinh anh mỗi wave | **Không** nhân theo số người chơi — [ADR 0009](../05-quyet-dinh/0009-so-luong-linh-co-dinh.md) |
-| `WAVE_TIME` | Giây mỗi wave, tra theo **cõi** | **Ràng buộc cứng: `> quãng đường/tốc độ + thời gian dọn một đợt`.** Thiếu là map không bao giờ sạch và cả `WAVE_AUTO_NEXT` lẫn `-next` chết. Bị chặn dưới bởi **tốc độ mẫu lính**, nên cõi dễ có thể cần nhiều giây hơn cõi khó |
-| `WAVE_REST` | Dừng hẳn đồng hồ sau tầng 10 và sau boss | `true`. Hai cửa sổ nghỉ mỗi cảnh giới — chỗ duy nhất mua sắm mà không phải đứng chịu đòn. [ADR 0018](../05-quyet-dinh/0018-nghi-giua-hai-canh-gioi.md) |
-| `WAVE_FIRST_DELAY` | Giây trước đợt đầu | Chỉ dùng khi `WAVE_WAIT_FIRST` tắt |
-| `WAVE_WAIT_FIRST` | Đợt 1 chờ gọi `-next` | `true`. Tắt nó đi thì đợt 1 tự ra sau `WAVE_FIRST_DELAY`, và người chơi vào trận trước khi kịp mở bảng |
-| `WAVE_AUTO_NEXT` `WAVE_CLEAR_DELAY` | Dọn sạch thì vào đợt sau ngay | Đồng hồ **vẫn chạy song song** — hai cơ chế không thay thế nhau |
-| `WAVE_MAX_ALIVE` | Trần quái sống | Hoãn việc **sinh**, không hoãn đồng hồ. Chạm thường xuyên = đường cong sai |
+| `WAVE_REST` | Hai mốc nghỉ mỗi cảnh giới | `true`. Không còn là "dừng đồng hồ" — chúng là hai **nhãn** khác của nút gọi đợt: `TRIỆU BOSS` và `SANG <cảnh giới>`. [ADR 0026](../05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md) |
+| `WAVE_RECOUNT` | Giây giữa hai lần **đo lại** số quái sống | `10`. Đếm qua `S.mobs`, **không** quét map theo chủ sở hữu — quái đặt sẵn ở vùng đất sau này sẽ làm `S.alive` không bao giờ về 0. Bắt buộc phải có: không còn đường thoát nào khác nếu con số kẹt |
+| `WAVE_MAX_ALIVE` | Trần quái sống | Chặn **nút gọi đợt**. Chạm thường xuyên = đường cong sai |
+
+> ⛔ **`WAVE_TIME` `WAVE_FIRST_DELAY` `WAVE_WAIT_FIRST` `WAVE_AUTO_NEXT`
+> `WAVE_CLEAR_DELAY` đã xoá** — 2026-09-18. Nhịp cả ván giờ do nút `GỌI ĐỢT`
+> trên bảng phím **R** quyết định, và chỉ nó.
+> [ADR 0026](../05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md) · [bang-tran-dau.md](../02-he-thong/bang-tran-dau.md)
 | `WAVE_TICK` | Giây giữa hai lần phát lại lệnh đi | Quái bị đánh lạc hướng đứng mãi nếu không có |
 | `SPAWN_JITTER` | Bán kính xê dịch điểm sinh | Đủ rộng để `WAVE_MOB_COUNT` con không chồng một chỗ |
 | `MOB_UNIT` | Mẫu lính mỗi cõi, tra theo `REALMS[r].world` | **Placeholder** — 4 unit gốc WC3. Thiết kế cần 4 cõi × 6 mẫu = 24 |
@@ -343,12 +345,14 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | `PANEL_W` | `0.74` | Năm thẻ *(Cơ Duyên đã tách thành khung riêng)*. Thẻ thứ **bảy** sẽ phải rút ngắn nhãn — khung 0.74 giữa màn hình 0.8 chỉ còn tràn 0.03 |
 | `FORTUNE_X` `FORTUNE_Y` | `0.40` `0.36` | Tâm khung Cơ Duyên. Cao hơn tâm màn hình để không đè thanh giao diện đáy |
 | `HOUSE_FROZEN` | `true` | Chốt Nhà Chính tại chỗ. `HOUSE_UNIT` là `Hmkg` — unit hero **có chân** thuộc slot máy, nên AI mặc định của Warcraft cho nó đi lang thang |
-| `WAVE_ONLY_WHEN_CLEAR` | `true` | Đợt mới chỉ ra khi đợt cũ đã dọn sạch. Tắt thì đồng hồ `WAVE_TIME` lại chồng đợt lên nhau |
+| `WAVE_ONLY_WHEN_CLEAR` | `true` | Còn quái sống thì **nút gọi đợt xám**. Tắt thì gọi lúc nào cũng được, và ADR 0009 (50 lính cố định) mất nghĩa vì người chơi tự chọn số quái trên map |
+| `WAVE_RECOUNT` | `10.0` | Giây giữa hai lần đo lại `S.alive`. Lưới đỡ duy nhất còn lại — xem [ADR 0026](../05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md) |
+| `GAME_KEY` `GAME_X/Y` | `"R"` `0.40` `0.42` | Bảng trận đấu. Hai bảng **loại trừ nhau**: mở cái này đóng cái kia |
 
 > `-next`, `-lc`, `-c`, `-sync`, `-nat` **không** theo `DEV_COMMANDS`: ba cái đầu
 > là lối chơi, hai cái sau là chỗ phải nhìn đầu tiên khi một hệ im lặng không
-> chạy. Riêng `-next` mà tắt đi thì với `WAVE_WAIT_FIRST` sẽ không có cách nào
-> khởi động ván.
+> chạy. Riêng `-next` giữ lại làm **đường lui**: `framesAvailable()` có thể trả
+> `false`, và lúc đó không vẽ được bảng nào để bấm nút gọi đợt.
 
 > **Mọi đường dẫn phải viết bằng `[[...]]`**, không dùng nháy kép — xem
 > [ADR 0003](../05-quyet-dinh/0003-duong-dan-dung-chuoi-tho.md).

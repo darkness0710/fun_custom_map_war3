@@ -1,5 +1,10 @@
 # Đường cong sức mạnh
 
+> ⛔ **Số trong tài liệu này tính theo `WAVE_TIME`, khoá đã xoá ngày 2026-09-18.**
+> Nhịp cả ván giờ do người chơi gọi, nên **thời lượng ván không tính trước được
+> nữa** — chỉ đo sau trận chơi thử. Lập luận giữ nguyên; con số là lịch sử.
+> [ADR 0026](../05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md)
+
 > ## Hết hiệu lực một phần — 2026-09-17
 >
 > Tài liệu này dựng trên **220 stage** và **thu nhập luỹ thừa ×967**. Cả hai đã

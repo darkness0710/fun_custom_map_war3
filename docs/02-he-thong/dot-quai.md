@@ -231,11 +231,12 @@ lọt bao nhiêu cũng không sao).
 |---|---|---|
 | `WAVE_MOB_COUNT` | Lính mỗi wave | `50`, cố định |
 | `WAVE_ELITE_COUNT` | Tinh anh mỗi wave | `1` |
-| `WAVE_TIME` | Giây/wave theo cõi | Nút chỉnh **thời lượng ván**, và nó cũng chỉnh DPS cần — hai thứ dính nhau |
-| `WAVE_FIRST_DELAY` | Giây trước đợt đầu | Chỉ dùng khi `WAVE_WAIT_FIRST` tắt |
-| `WAVE_WAIT_FIRST` | Đợt 1 chờ gọi `-next` | `true` — để kịp nhìn map, mở bảng, nâng kỹ năng trước khi vào trận |
-| `WAVE_AUTO_NEXT` `WAVE_CLEAR_DELAY` | Dọn sạch thì vào đợt sau ngay | Đồng hồ **vẫn chạy song song**; hai cơ chế không thay thế nhau |
-| `WAVE_MAX_ALIVE` | Trần unit sống, quá thì hoãn wave | ~300. Hoãn việc **sinh**, không hoãn đồng hồ. Chạm thường xuyên = đường cong sai |
+| `WAVE_RECOUNT` | Giây giữa hai lần đo lại số quái sống | `10`. Lưới đỡ bắt buộc — [ADR 0026](../05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md) |
+| `WAVE_MAX_ALIVE` | Trần unit sống | ~300. Chặn **nút gọi đợt**. Chạm thường xuyên = đường cong sai |
+
+> ⛔ **Bốn khoá đồng hồ đã xoá** — `WAVE_TIME` `WAVE_FIRST_DELAY`
+> `WAVE_WAIT_FIRST` `WAVE_AUTO_NEXT` `WAVE_CLEAR_DELAY`. Mọi đợt giờ đều chờ
+> người chơi gọi. Xem [bang-tran-dau.md](bang-tran-dau.md).
 | `WAVE_TICK` | Giây giữa hai lần ra lệnh lại cho quái | Quái bị đánh lạc hướng phải quay về nhà |
 | `SPAWN_JITTER` | Bán kính xê dịch điểm sinh | Đủ rộng để 50 con không chồng một chỗ |
 | `MOB_UNIT` | Mẫu lính mỗi cõi, tra theo `REALMS[r].coi` | **Placeholder** — 4 unit gốc WC3. Thiết kế cần 24 |

@@ -350,8 +350,9 @@ trước? Khác hẳn hai bản đã thử và bỏ:
 Giá phẳng: mở cái thứ nhất hay thứ bảy đều 1 điểm, đôn một bậc cũng 1 điểm.
 Trọn bảy cái là `7 × (1 mở + 9 đôn) = 70` điểm trên 300 kiếm được cả ván.
 
-Đợt 1 đánh bằng đòn thường. Với `WAVE_WAIT_FIRST` bật thì người chơi có thời gian
-nhìn bảng trước khi gõ `-next`, nên không ai bị ném vào trận mà chưa biết mình có gì.
+Đợt 1 đánh bằng đòn thường. **Mọi** đợt đều chờ người chơi bấm `GỌI ĐỢT` trên
+bảng phím **R**, nên không ai bị ném vào trận mà chưa biết mình có gì —
+[bang-tran-dau.md](bang-tran-dau.md).
 
 | | Điểm |
 |---|---|

@@ -117,7 +117,6 @@ local function spawnHero(pid, uid)
     API.heroBaseCapture(pid)
     API.skillApply(pid)          -- dat lai bac cho dung bang da mua
     API.heroRecomputeAll()       -- Linh Can + Trang Bi + bi dong + aura
-    API.waveReadyCheck()       -- du nguoi thi vao dot 1 ngay, khoi cho
     if CFG.SKILL_MODE == "learn" then
       API.grantSkillPoints(u, CFG.SKILL_POINTS_START)
     end

@@ -331,12 +331,15 @@ local function spawnStage(stage)
             S.wave.players .. " song=" .. S.alive)
 end
 
-local function waveSeconds(stage)
-  local realm = decode(stage)
-  return CFG.WAVE_TIME[realmWorld(realm)] or 30.0
-end
-
--- Dong ho KHONG duoc phep chong dot len nhau: xem CFG.WAVE_ONLY_WHEN_CLEAR.
+-- Dong ho khong con la NHIP nua -- no chi con mot viec: hoan viec sinh
+-- quai ra khoi su kien dang chay.
+--
+-- waveNow() duoc goi tu cu bam frame hoac tu lenh chat, tuc dang o BEN
+-- TRONG mot su kien cua engine. Sinh 51 unit ngay tai do la dung cai bay
+-- ADR 0005. Nen waveNow() hen timer 0.02 giay, va ham nay chay o nhip sau.
+--
+-- Moi dieu kien chan (con quai song, het stage) da kiem o waveNow/callState
+-- TRUOC khi toi day.
 local function onWaveTimer()
   if not S.running then return end
 
@@ -345,43 +348,7 @@ local function onWaveTimer()
     API.endGame(true, API.t("win_final", realmName(#CFG.REALMS)))
     return
   end
-
-  -- CHAN CHINH: con mot con song thi khong dot nao moi duoc ra.
-  --
-  -- Bao MOT lan roi im, va tat dong ho dem di. Bao moi nhip WAVE_TICK
-  -- la lap chu day man hinh; con de dong ho dung yen o 0:00 thi nguoi
-  -- choi tuong game treo -- dung loi ma pauseWaves() da phai xu ly.
-  if CFG.WAVE_ONLY_WHEN_CLEAR and S.alive > 0 then
-    if not S.waveHold then
-      S.waveHold = true
-      if S.waveDlg ~= nil then TimerDialogDisplay(S.waveDlg, false) end
-      API.msg(nil, CFG.C_GREY .. API.t("wave_hold", S.alive) .. CFG.C_END)
-      API.trace("wave: HOAN dot " .. nextStage .. ", con song " .. S.alive)
-    end
-    TimerStart(S.waveTimer, CFG.WAVE_TICK, false, onWaveTimer)
-    return
-  end
-  S.waveHold = false
-
-  -- Boss chiem TRON stage, mot minh (L4 trong dot-quai.md). Neu dong ho
-  -- het gio ma tang 10 chua don xong thi HOAN, dung sinh boss de len
-  -- dam linh con song -- lam vay la pha dung cai luat khien tran boss
-  -- co cam giac khac han mot wave.
-  local _, _, nextIsBoss = decode(nextStage)
-  if nextIsBoss and S.alive > 0 then
-    TimerStart(S.waveTimer, CFG.WAVE_TICK, false, onWaveTimer)
-    return
-  end
-
-  -- Chi con y nghia khi WAVE_ONLY_WHEN_CLEAR tat.
-  if S.alive >= CFG.WAVE_MAX_ALIVE then
-    API.msg(nil, CFG.C_GREY .. API.t("wave_hold", S.alive) .. CFG.C_END)
-    TimerStart(S.waveTimer, CFG.WAVE_TICK, false, onWaveTimer)
-    return
-  end
-
   spawnStage(nextStage)
-  TimerStart(S.waveTimer, waveSeconds(nextStage), false, onWaveTimer)
 end
 
 -- ---------- Nhip 2 giay: ra lenh lai ----------
@@ -397,22 +364,41 @@ local function tick()
   if API.bossTick ~= nil then API.bossTick() end
 end
 
--- Dua dong quai ke tiep ve NGAY. Goi tu lenh -next, tu luc moi nguoi
--- chon xong hero, va tu luc don sach wave.
+-- Goi dot ke tiep. Day la cho DUY NHAT dot moi duoc sinh ra -- khong con
+-- dong ho nao tu keo dot vao nua.
 --
--- Khong goi thang onWaveTimer(): lam vay thi bo dem cu van chay va mot
--- luc nua lai no them mot dot nua. Phai dung no truoc.
+-- Chay tren MOI may, tu kenh dong bo (nut tren bang tran dau) hoac tu
+-- lenh chat.
+--
+-- Khong goi thang onWaveTimer(): sinh 51 unit ngay trong su kien dang
+-- chay la cai bay ADR 0005. Hen 0.02 giay de no chay o nhip sau.
 local function waveNow()
   if not S.running or S.waveTimer == nil then
     API.trace("waveNow: TU CHOI -- running=" .. tostring(S.running) ..
               " timer=" .. tostring(S.waveTimer ~= nil))
     return false
   end
-  API.trace("waveNow: keo dot ke tiep (stage hien tai " .. S.stage ..
-            ", cho=" .. tostring(S.waitNext) .. ")")
+
+  -- Con quai song thi khong goi duoc. Kiem O DAY chu khong chi o giao
+  -- dien: nut co the bi bam dung luc con cuoi cung chua chet, va lenh
+  -- chat thi khong qua giao dien bao gio.
+  if CFG.WAVE_ONLY_WHEN_CLEAR and S.alive > 0 then
+    API.msg(nil, CFG.C_GREY .. API.t("wave_hold", S.alive) .. CFG.C_END)
+    API.trace("waveNow: TU CHOI -- con song " .. S.alive)
+    return false
+  end
+
+  if S.alive >= CFG.WAVE_MAX_ALIVE then
+    API.msg(nil, CFG.C_GREY .. API.t("wave_hold", S.alive) .. CFG.C_END)
+    return false
+  end
+
+  if S.stage + 1 > totalStages() then return false end
+
+  API.trace("waveNow: goi dot " .. (S.stage + 1) ..
+            " (cho=" .. tostring(S.waitNext) .. ")")
   S.waitNext = nil
   S.waveHold = false
-  if S.waveDlg ~= nil then TimerDialogDisplay(S.waveDlg, true) end
   PauseTimer(S.waveTimer)
   TimerStart(S.waveTimer, 0.02, false, onWaveTimer)
   return true
@@ -484,14 +470,87 @@ end
 
 -- ---------- Nghi giua hai canh gioi ----------
 --
--- Dung HAN dong ho va an dong ho dem. An la co y: mot cai dong ho dung
--- yen o 0:00 chi lam nguoi choi tuong game treo, dung loi ma
--- WAVE_WAIT_FIRST da phai xu ly mot lan.
+-- Danh dau dang cho viec gi. 'what' doi NHAN cua nut goi dot tren bang
+-- tran dau: "boss" -> TRIEU BOSS, "realm" -> SANG CANH GIOI SAU.
 local function pauseWaves(what)
   S.waitNext = what
   if S.waveTimer ~= nil then PauseTimer(S.waveTimer) end
-  if S.waveDlg ~= nil then TimerDialogDisplay(S.waveDlg, false) end
-  API.trace("wave: DUNG dong ho o stage " .. S.stage .. ", cho '" .. what .. "'")
+  API.trace("wave: cho '" .. what .. "' o stage " .. S.stage)
+end
+
+-- ---------- Wave vua sach ----------
+--
+-- Tach rieng khoi onMobDeath vi CO HAI duong toi day:
+--   1. con cuoi cung chet  -> onMobDeath
+--   2. phep DO LAI phat hien so dem da lech -> recount()
+--
+-- Duong 2 la thu bat buoc phai co. Neu mot con bien mat ma khong sinh su
+-- kien chet, onMobDeath khong chay cho no, va neu HAI MOC nay chi nam
+-- trong onMobDeath thi ca van se bo qua boss -- nut goi se hien "GOI DOT"
+-- thay vi "TRIEU BOSS", va khong ai biet da mat mot tran boss.
+local function onWaveCleared()
+  if S.stage <= 0 or not S.running then return end
+  if API.relicOnClear ~= nil then API.relicOnClear() end
+
+  local r, tier, wasBoss = decode(S.stage)
+
+  -- MOC 1: vua ha boss -> cho goi sang canh gioi sau.
+  if CFG.WAVE_REST and wasBoss and S.stage < totalStages() then
+    pauseWaves("realm")
+    API.msg(nil, CFG.C_GOLD ..
+      API.t("wave_realmdone", realmName(r + 1)) .. CFG.C_END)
+    return
+  end
+
+  -- MOC 2: vua don sach tang cuoi -> cho goi boss.
+  if CFG.WAVE_REST and (not wasBoss) and tier >= CFG.TIERS_PER_REALM then
+    pauseWaves("boss")
+    API.msg(nil, CFG.C_GOLD ..
+      API.t("wave_perfection", realmName(r)) .. CFG.C_END)
+    return
+  end
+
+  API.msg(nil, CFG.C_JADE .. API.t("wave_cleared") .. CFG.C_END)
+end
+
+-- ---------- DO LAI so quai song ----------
+--
+-- LOI THAT (ADR 0018): S.alive ket tren 0 thi MOI loi thoat cung chet --
+-- ca duong "don sach" lan nut goi tay, vi ca hai hoi cung con so do.
+-- Ket la ket vinh vien, khong loi nao bao.
+--
+-- Nen cu CFG.WAVE_RECOUNT giay lai DO LAI thay vi tin con so dang giu.
+--
+-- DEM QUA S.mobs, KHONG quet map theo chu so huu.
+--   S.mobs chi duoc ghi o duong sinh cua he wave, nen quai DAT SAN o cac
+--   vung dat sau nay khong bao gio lot vao. Dem theo
+--   GetOwningPlayer == S.enemy thi vo luon chung va S.alive khong bao gio
+--   ve 0 -- dung cai bay ma phep do nay dinh chua.
+--
+-- Xoa khoa trong luc pairs() la HOP LE trong Lua (them khoa moi moi
+-- khong duoc), nen don xac ngay tai cho duoc.
+local function recount()
+  if not S.running then return end
+  local n, gone = 0, 0
+  for u, _ in pairs(S.mobs) do
+    if API.alive(u) then
+      n = n + 1
+    else
+      S.mobs[u] = nil
+      S.mobStage[u] = nil
+      gone = gone + 1
+    end
+  end
+  if gone == 0 and n == S.alive then return end
+
+  local before = S.alive
+  API.trace("wave: DO LAI -- S.alive " .. before .. " -> " .. n ..
+            " (don " .. gone .. " con da bien mat khong sinh su kien chet)")
+  S.alive = n
+
+  -- Con cuoi cung bien mat ma khong ai bao: phai chay NOT phan "da don
+  -- sach", neu khong ca van se bo qua boss trong im lang.
+  if before > 0 and n == 0 then onWaveCleared() end
 end
 
 -- ---------- Goi tu 08_events khi mot con chet ----------
@@ -509,60 +568,36 @@ local function onMobDeath(u, killer)
 
   rewardAll(stage, kind)
 
-  -- Con cuoi cung cua stage vua chet.
-  -- Chi xet o day chu khong dat trong timer -- toi duoc day nghia la
-  -- chac chan da tung co quai, nen S.alive = 0 la "don sach" that,
-  -- khong phai "wave sinh hong khong con nao".
-  if S.alive ~= 0 or S.stage <= 0 or not S.running then return end
-
-  if API.relicOnClear ~= nil then API.relicOnClear() end
-
-  local r, tier, wasBoss = decode(S.stage)
-
-  -- MOC 1: vua ha boss -> dung han, cho -next sang canh gioi sau.
-  if CFG.WAVE_REST and wasBoss and S.stage < totalStages() then
-    pauseWaves("realm")
-    API.msg(nil, CFG.C_GOLD ..
-      API.t("wave_realmdone", realmName(r + 1)) .. CFG.C_END)
-    return
-  end
-
-  -- MOC 2: vua don sach tang cuoi -> dung han, cho -next goi boss.
-  if CFG.WAVE_REST and (not wasBoss) and tier >= CFG.TIERS_PER_REALM then
-    pauseWaves("boss")
-    API.msg(nil, CFG.C_GOLD ..
-      API.t("wave_perfection", realmName(r)) .. CFG.C_END)
-    return
-  end
-
-  -- Binh thuong: bao da don sach roi keo dot sau vao som.
-  if CFG.WAVE_AUTO_NEXT then
-    API.msg(nil, CFG.C_JADE .. API.t("wave_cleared") .. CFG.C_END)
-    API.after(CFG.WAVE_CLEAR_DELAY, function()
-      if S.alive == 0 and S.waitNext == nil then waveNow() end
-    end)
-  end
+  if S.alive == 0 then onWaveCleared() end
 end
 
 -- ---------- Khoi dong ----------
 
--- Goi khi mot nguoi vua chon hero xong. Dot dau khong cho het 15 giay
--- neu moi nguoi da san sang -- 15 giay do la de CHO CHON HERO, khong
--- phai mot phan cua nhip choi.
-local function readyCheck()
-  if CFG.WAVE_WAIT_FIRST then return end   -- dot 1 doi goi tay
-  if not S.running or S.stage > 0 then return end
-  local n = 0
-  for i = 1, #S.pids do
-    local d = S.p[S.pids[i]]
-    if d ~= nil and d.active then
-      if d.hero == nil then return end   -- con nguoi chua chon
-      n = n + 1
-    end
+-- Nhan cua nut goi dot tren bang tran dau. Giao dien chi VE lai thu ham
+-- nay tra ve -- no khong tu suy ra trang thai o dau ca, de nut va lenh
+-- chat khong bao gio noi hai dieu khac nhau.
+local function callState()
+  local nextStage = S.stage + 1
+  if not S.running then
+    return { label = API.t("wave_btn_wait"), on = false }
   end
-  if n == 0 then return end
-  API.trace("wave: ca " .. n .. " nguoi da co hero -- vao dot 1 ngay")
-  waveNow()
+  if nextStage > totalStages() then
+    return { label = API.t("wave_btn_done"), on = false }
+  end
+  if CFG.WAVE_ONLY_WHEN_CLEAR and S.alive > 0 then
+    return { label = API.t("wave_btn_busy", S.alive), on = false }
+  end
+  if S.waitNext == "boss" then
+    return { label = API.t("wave_btn_boss"), on = true }
+  end
+  if S.waitNext == "realm" then
+    local r = decode(S.stage)
+    return { label = API.t("wave_btn_realm", realmName(r + 1)), on = true }
+  end
+  if S.stage <= 0 then
+    return { label = API.t("wave_btn_first"), on = true }
+  end
+  return { label = API.t("wave_btn_next", nextStage), on = true }
 end
 
 local function startWaves()
@@ -572,22 +607,18 @@ local function startWaves()
   S.alive = 0
   S.wave  = { players = 1, spawnFail = 0 }
 
+  -- Dong ho nay KHONG con dem nguoc gi. No chi duoc waveNow() hen 0.02
+  -- giay mot lan de hoan viec sinh quai ra khoi su kien dang chay.
+  -- Khong co TimerDialog: khong con con so nao chay tren man hinh.
   S.waveTimer = CreateTimer()
-  S.waveDlg = CreateTimerDialog(S.waveTimer)
-  TimerDialogSetTitle(S.waveDlg, API.t("wave_next"))
-
-  if CFG.WAVE_WAIT_FIRST then
-    -- Khong khoi dong bo dem. Dong ho an luon: hien mot cai dem 0:00
-    -- dung yen chi lam nguoi choi tuong game treo.
-    TimerDialogDisplay(S.waveDlg, false)
-    API.msg(nil, CFG.C_GOLD .. API.t("wave_waiting") .. CFG.C_END)
-  else
-    TimerDialogDisplay(S.waveDlg, true)
-    TimerStart(S.waveTimer, CFG.WAVE_FIRST_DELAY, false, onWaveTimer)
-  end
+  API.msg(nil, CFG.C_GOLD .. API.t("wave_waiting") .. CFG.C_END)
 
   S.tickTimer = CreateTimer()
   TimerStart(S.tickTimer, CFG.WAVE_TICK, true, tick)
+
+  -- Luoi do: xem chu thich recount().
+  S.recountTimer = CreateTimer()
+  TimerStart(S.recountTimer, CFG.WAVE_RECOUNT, true, recount)
 
   API.trace("wave: khoi dong, " .. totalStages() .. " stage")
 end
@@ -595,7 +626,7 @@ end
 local function stopWaves()
   if S.waveTimer ~= nil then PauseTimer(S.waveTimer) end
   if S.tickTimer ~= nil then PauseTimer(S.tickTimer) end
-  if S.waveDlg ~= nil then TimerDialogDisplay(S.waveDlg, false) end
+  if S.recountTimer ~= nil then PauseTimer(S.recountTimer) end
 end
 
 -- Lenh dev "-wave N": nhay thang toi stage N. Khong co no thi khong ai
@@ -624,7 +655,7 @@ API.waveSpawnAt    = function(stage, realm, x, y)
 end
 API.waveNow        = waveNow
 API.waveWaiting    = function() return S.waitNext end
-API.waveReadyCheck = readyCheck
+API.waveCallState  = callState
 API.onMobDeath     = onMobDeath
 API.startWaves     = startWaves
 API.stopWaves      = stopWaves
