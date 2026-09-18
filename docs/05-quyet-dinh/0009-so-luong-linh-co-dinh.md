@@ -80,5 +80,5 @@ là đường cong quá nặng** — sửa đường cong, đừng nới trần.
 
 **`SCALE_*` phải đọc lại `#S.pids` chứ không đọc `CFG.PLAYER_SLOTS`.**
 `PLAYER_SLOTS` là slot đã bật trong World Editor; `S.pids` mới là người thật đang
-chơi ([1_player.lua](../../src/2_nguoi_choi/1_player.lua)). Nhầm hai cái này thì chơi một
+chơi ([1_player.lua](../../src/2_player/1_player.lua)). Nhầm hai cái này thì chơi một
 mình vẫn ăn độ khó ba người.

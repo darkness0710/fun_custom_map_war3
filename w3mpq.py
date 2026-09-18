@@ -88,7 +88,7 @@ class Mpq(object):
         a, bb = _hash(name, 1), _hash(name, 2)
         i = i0
         while True:
-            h1, h2, loc, plat, blk = self.hash[i]
+            h1, h2, needle, plat, blk = self.hash[i]
             if blk == 0xFFFFFFFF:
                 return None                 # o trong -> khong co
             if h1 == a and h2 == bb and blk != 0xFFFFFFFE:
@@ -179,14 +179,14 @@ def cmd_pack(folder, out_path):
 
     # Doc lai bang chinh bo doc cua minh: moi file phai tim thay duoc.
     m = Mpq(out_path)
-    thieu = []
+    missing = []
     for root, dirs, names in os.walk(folder):
         for nm in names:
             rel = os.path.relpath(os.path.join(root, nm), folder).replace(os.sep, chr(92))
             if m.find(rel) is None:
-                thieu.append(rel)
-    if thieu:
-        print("[loi] doc lai khong thay: " + ", ".join(thieu))
+                missing.append(rel)
+    if missing:
+        print("[loi] doc lai khong thay: " + ", ".join(missing))
         return 1
     print("     doc lai: tim thay du %d/%d file" % (n, n))
     return 0

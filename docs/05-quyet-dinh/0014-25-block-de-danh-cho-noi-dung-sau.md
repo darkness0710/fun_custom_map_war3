@@ -6,7 +6,7 @@
 ## Bối cảnh
 
 Lưới 25 block và 8 dòng sông đã có toạ độ từ Bước 1
-([4_geometry.lua](../../src/1_nen/4_geometry.lua)), nhưng **không lối chơi nào
+([4_geometry.lua](../../src/1_core/4_geometry.lua)), nhưng **không lối chơi nào
 gắn vào chúng**. Hệ đợt quái không dùng tới: quái ra ở `MyEmenyRegion` và đi
 thẳng tới nhà chính, nên 24 block còn lại là đất trống.
 

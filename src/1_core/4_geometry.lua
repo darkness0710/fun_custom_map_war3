@@ -254,11 +254,11 @@ end
 -- nil truoc moi lan dung.
 local function blockRole(idx)
   local b = CFG.BLOCKS[idx]
-  return (b ~= nil and b.vai) or "hoang"
+  return (b ~= nil and b.role) or "wilds"
 end
 
 local function blockRoleDef(idx)
-  return CFG.BLOCK_ROLE[blockRole(idx)] or CFG.BLOCK_ROLE.hoang
+  return CFG.BLOCK_ROLE[blockRole(idx)] or CFG.BLOCK_ROLE.wilds
 end
 
 local function blockRoleName(idx)

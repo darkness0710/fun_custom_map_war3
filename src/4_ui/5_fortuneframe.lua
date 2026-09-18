@@ -1,16 +1,16 @@
 -- ============================================================
---  5_quayframe.lua  --  Khung Co Duyen: BA COT DOC
+--  5_fortuneframe.lua  --  Khung Co Duyen: BA COT DOC
 --
 --  Mo NGAY khi tinh anh/boss chet, khong phai mot the trong bang.
 --  Ba cot dat canh nhau, moi cot la MOT the bam duoc -- kieu chon loi
 --  cua TFT.
 --
 --  KHONG DONG BANG ESC. Phai chon mot the moi di tiep. Do la ly do
---  bindEsc() trong 1_panel.lua hoi API.quayFrameDangMo(pid) truoc khi
+--  bindEsc() trong 1_panel.lua hoi API.fortuneFrameShown(pid) truoc khi
 --  lam gi: neu khung nay dang mo thi ESC khong dong ma cung khong mo
 --  bang nhan vat.
 --
---  Khung nay khong sinh ngau nhien: the da duoc rut o 10_quay.lua, tu
+--  Khung nay khong sinh ngau nhien: the da duoc rut o 10_fortune.lua, tu
 --  su kien quai chet, tren MOI may. O day chi VE lai thu da co.
 --
 --  Nho: goi ham cua file khac phai qua API.
@@ -33,20 +33,20 @@ local function P()
   return PAD + (CFG.PANEL_BORDER or 0.0)
 end
 
-local function cotW()
+local function colW()
   return (W - 2 * P() - 2 * GAP) / 3
 end
 
-local function khungH()
+local function frameH()
   return P() + HEAD_H + GAP + COT_H + P()
 end
 
 local function stateOf(pid)
-  if S.quayUI == nil then S.quayUI = {} end
-  if S.quayUI[pid] == nil then
-    S.quayUI[pid] = { root = nil, cot = {}, shown = false }
+  if S.fortuneUI == nil then S.fortuneUI = {} end
+  if S.fortuneUI[pid] == nil then
+    S.fortuneUI[pid] = { root = nil, col = {}, shown = false }
   end
-  return S.quayUI[pid]
+  return S.fortuneUI[pid]
 end
 
 local function show(f, on)
@@ -66,32 +66,32 @@ local function build(pid)
   local bg = API.backdrop(CFG.PANEL_BACKDROP, parent, pid, CFG.FRAME_BG)
   if bg == nil then return false end
   st.root = bg
-  BlzFrameSetAbsPoint(bg, FRAMEPOINT_CENTER, CFG.QUAY_X, CFG.QUAY_Y)
-  BlzFrameSetSize(bg, W, khungH())
+  BlzFrameSetAbsPoint(bg, FRAMEPOINT_CENTER, CFG.FORTUNE_X, CFG.FORTUNE_Y)
+  BlzFrameSetSize(bg, W, frameH())
 
   -- Chu: chia ti le phong ca toa do lan kich thuoc -- cung bai hoc voi
   -- text() cua bang nhan vat, BlzFrameSetScale phong luon khoang cach
   -- toi diem neo cua cha.
-  local function chu(ten, cha, dx, dy, w, scale, giua)
-    local t = BlzCreateFrameByType("TEXT", ten, cha, "", pid)
+  local function label(name, parent, dx, dy, w, scale, center)
+    local t = BlzCreateFrameByType("TEXT", name, parent, "", pid)
     if t == nil then return nil end
     local s = scale or 1.0
-    BlzFrameSetPoint(t, FRAMEPOINT_TOPLEFT, cha, FRAMEPOINT_TOPLEFT,
+    BlzFrameSetPoint(t, FRAMEPOINT_TOPLEFT, parent, FRAMEPOINT_TOPLEFT,
                      dx / s, -(dy / s))
     BlzFrameSetSize(t, w / s, 0.016 / s)
     if BlzFrameSetTextAlignment ~= nil then
       BlzFrameSetTextAlignment(t, TEXT_JUSTIFY_TOP,
-        giua and TEXT_JUSTIFY_CENTER or TEXT_JUSTIFY_LEFT)
+        center and TEXT_JUSTIFY_CENTER or TEXT_JUSTIFY_LEFT)
     end
     API.frameScale(t, s)
     API.frameDead(t)
     return t
   end
 
-  st.tieuDe = chu("QuayTitle", bg, P(), P(), W - 2 * P(),
+  st.titleF = label("QuayTitle", bg, P(), P(), W - 2 * P(),
                   CFG.PANEL_SCALE_HEAD, true)
 
-  local cw   = cotW()
+  local cw   = colW()
   local topY = P() + HEAD_H + GAP
 
   for i = 1, 3 do
@@ -107,14 +107,14 @@ local function build(pid)
     BlzFrameSetSize(c.btn, cw, COT_H)
     BlzFrameSetPoint(c.btn, FRAMEPOINT_TOPLEFT, bg, FRAMEPOINT_TOPLEFT,
                      x, -topY)
-    BlzTriggerRegisterFrameEvent(S.quayTrig, c.btn, FRAMEEVENT_CONTROL_CLICK)
+    BlzTriggerRegisterFrameEvent(S.fortuneTrig, c.btn, FRAMEEVENT_CONTROL_CLICK)
 
     -- Vien + ruot, cung cach bang nhan vat ve nut: hai o mau dac long
     -- nhau. Backdrop 9 o (EscMenuBackdrop) co goc khong co lai theo
     -- frame nen khong dung duoc cho o nho.
     local d = CFG.PANEL_BTN_BORDER or 0.0016
-    local function o(ten, dx, dy, w2, h2, tex)
-      local f = BlzCreateFrameByType("BACKDROP", ten, c.btn, "", pid)
+    local function o(name, dx, dy, w2, h2, tex)
+      local f = BlzCreateFrameByType("BACKDROP", name, c.btn, "", pid)
       if f == nil then return end
       BlzFrameSetSize(f, w2, h2)
       BlzFrameSetPoint(f, FRAMEPOINT_TOPLEFT, c.btn, FRAMEPOINT_TOPLEFT, dx, -dy)
@@ -132,16 +132,16 @@ local function build(pid)
       API.frameDead(c.icon)
     end
 
-    c.ten = chu("QuayTen" .. i, c.btn, 0.004, 0.016 + ICON_H + 0.012,
+    c.name = label("QuayTen" .. i, c.btn, 0.004, 0.016 + ICON_H + 0.012,
                 cw - 0.008, CFG.PANEL_SCALE_NAME, true)
-    c.mota = chu("QuayMota" .. i, c.btn, 0.004, 0.016 + ICON_H + 0.038,
+    c.desc = label("QuayMota" .. i, c.btn, 0.004, 0.016 + ICON_H + 0.038,
                  cw - 0.008, CFG.PANEL_SCALE_SUB, true)
 
-    st.cot[i] = c
+    st.col[i] = c
   end
 
   BlzFrameSetVisible(bg, false)
-  API.trace("quayframe: dung khung pid " .. pid)
+  API.trace("fortuneframe: dung khung pid " .. pid)
   return true
 end
 
@@ -150,22 +150,22 @@ end
 local function refresh(pid)
   local st = stateOf(pid)
   if st.root == nil then return end
-  local the = API.quayThe(pid)
-  if the == nil then return end
+  local card = API.fortuneCards(pid)
+  if card == nil then return end
 
-  BlzFrameSetText(st.tieuDe, CFG.C_GOLD .. API.t("quay_tieude") .. CFG.C_END ..
-    "   " .. CFG.C_GREY .. API.t("quay_con", API.num(API.quaySoLuot(pid))) ..
+  BlzFrameSetText(st.titleF, CFG.C_GOLD .. API.t("fortune_title") .. CFG.C_END ..
+    "   " .. CFG.C_GREY .. API.t("fortune_left", API.num(API.fortuneRolls(pid))) ..
     CFG.C_END)
 
   for i = 1, 3 do
-    local c = st.cot[i]
-    local t = the[i]
+    local c = st.col[i]
+    local t = card[i]
     if c ~= nil and t ~= nil then
       if c.icon ~= nil then
-        BlzFrameSetTexture(c.icon, API.quayIcon(t.loai) or "", 0, true)
+        BlzFrameSetTexture(c.icon, API.fortuneIcon(t.kind) or "", 0, true)
       end
-      BlzFrameSetText(c.ten,  CFG.C_GOLD .. API.quayMoTa(t) .. CFG.C_END)
-      BlzFrameSetText(c.mota, CFG.C_GREY .. API.t("quay_the_" .. t.loai) ..
+      BlzFrameSetText(c.name,  CFG.C_GOLD .. API.fortuneLabel(t) .. CFG.C_END)
+      BlzFrameSetText(c.desc, CFG.C_GREY .. API.t("fortune_card_" .. t.kind) ..
                               CFG.C_END)
     end
   end
@@ -173,7 +173,7 @@ end
 
 -- ---------- Bat / tat ----------
 
-local function hienThi(pid, want)
+local function setVisible(pid, want)
   local st = stateOf(pid)
   if st.root == nil then return end
   st.shown = want
@@ -184,14 +184,14 @@ local function hienThi(pid, want)
 end
 
 local function showFrame(pid)
-  if not API.quayConLuot(pid) then return end
+  if not API.fortuneHasRolls(pid) then return end
   if not build(pid) then return end
   refresh(pid)
-  hienThi(pid, true)
+  setVisible(pid, true)
 end
 
 local function hideFrame(pid)
-  hienThi(pid, false)
+  setVisible(pid, false)
 end
 
 local function refreshFrame(pid)
@@ -199,8 +199,8 @@ local function refreshFrame(pid)
 end
 
 -- Bang nhan vat hoi ham nay truoc khi xu ly ESC.
-local function dangMo(pid)
-  local st = S.quayUI and S.quayUI[pid] or nil
+local function isShown(pid)
+  local st = S.fortuneUI and S.fortuneUI[pid] or nil
   return st ~= nil and st.shown == true
 end
 
@@ -209,16 +209,16 @@ end
 local function onClick()
   local f = BlzGetTriggerFrame()
   if f == nil then return end
-  for pid, st in pairs(S.quayUI or {}) do
+  for pid, st in pairs(S.fortuneUI or {}) do
     if GetLocalPlayer() == Player(pid) and st.shown then
       for i = 1, 3 do
-        if st.cot[i] ~= nil and f == st.cot[i].btn then
+        if st.col[i] ~= nil and f == st.col[i].btn then
           -- Nha tieu diem ban phim, neu khong frame giu phim va ESC
           -- khong toi duoc trigger nua -- cung loi da dinh o bang.
           if BlzFrameSetEnable ~= nil then
             BlzFrameSetEnable(f, false); BlzFrameSetEnable(f, true)
           end
-          API.syncSend(pid, CFG.OP_QUAY, i)
+          API.syncSend(pid, CFG.OP_FORTUNE, i)
           return
         end
       end
@@ -226,15 +226,15 @@ local function onClick()
   end
 end
 
-local function startQuayFrame()
-  S.quayUI   = {}
-  S.quayTrig = CreateTrigger()
-  TriggerAddAction(S.quayTrig, onClick)
-  API.trace("quayframe: san sang")
+local function startFortuneFrame()
+  S.fortuneUI   = {}
+  S.fortuneTrig = CreateTrigger()
+  TriggerAddAction(S.fortuneTrig, onClick)
+  API.trace("fortuneframe: san sang")
 end
 
-API.quayFrameShow    = showFrame
-API.quayFrameHide    = hideFrame
-API.quayFrameRefresh = refreshFrame
-API.quayFrameDangMo  = dangMo
-API.startQuayFrame   = startQuayFrame
+API.fortuneFrameShow    = showFrame
+API.fortuneFrameHide    = hideFrame
+API.fortuneFrameRefresh = refreshFrame
+API.fortuneFrameShown  = isShown
+API.startFortuneFrame   = startFortuneFrame

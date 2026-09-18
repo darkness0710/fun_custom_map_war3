@@ -36,8 +36,8 @@
 > đồng tiền. Vàng và Gỗ được ưu tiên vì chúng là thứ tiêu liên tục; Linh Khí
 > chỉ tiêu ở đúng một chỗ nên nằm trong bảng là đủ.
 >
-> **Hai hệ tạm khoá:** Trang Bị *(`TRANGBI_LOCKED`)* hiện đủ sáu ô ghi `0/0`
-> không có nút; Pháp Khí *(`PHAPKHI_LOCKED`)* hiện dòng "tạm khoá". Hiện thẻ đầy
+> **Hai hệ tạm khoá:** Trang Bị *(`GEAR_LOCKED`)* hiện đủ sáu ô ghi `0/0`
+> không có nút; Pháp Khí *(`RELIC_LOCKED`)* hiện dòng "tạm khoá". Hiện thẻ đầy
 > đủ rồi khoá thì người chơi biết hệ đó tồn tại và đang đóng — để thẻ trống thì
 > họ tưởng giao diện hỏng.
 >
@@ -65,12 +65,12 @@
 
 > **Trạng thái:** Đã cài — **chưa chơi thử**
 > **Cập nhật:** 2026-09-16
-> **Code:** [1_player.lua](../../src/2_nguoi_choi/1_player.lua) (ví tiền),
-> [2_wave.lua](../../src/3_tran_dau/2_wave.lua) (thu nhập),
-> [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua),
-> [4_skill.lua](../../src/2_nguoi_choi/4_skill.lua),
-> [5_trangbi.lua](../../src/2_nguoi_choi/5_trangbi.lua),
-> [6_phapkhi.lua](../../src/2_nguoi_choi/6_phapkhi.lua) (chỗ tiêu)
+> **Code:** [1_player.lua](../../src/2_player/1_player.lua) (ví tiền),
+> [2_wave.lua](../../src/3_battle/2_wave.lua) (thu nhập),
+> [3_cultivation.lua](../../src/2_player/3_cultivation.lua),
+> [4_skill.lua](../../src/2_player/4_skill.lua),
+> [5_gear.lua](../../src/2_player/5_gear.lua),
+> [6_relic.lua](../../src/2_player/6_relic.lua) (chỗ tiêu)
 
 > **Ba hệ chạy, một hệ rỗng.** Pháp Khí đã bị xoá sạch nội dung (2026-09-16) và
 > sẽ thiết kế lại để tiêu **Ngộ Tính**, không tiêu Tinh Thạch.
@@ -129,7 +129,7 @@ Mã item và icon **đo lúc vào map**: `startShop()` tạo thử từng món r
 biết. Icon đọc được thì ghi đè lên đường dẫn trong config.
 
 `UnitAddItemById` trên unit **không có túi** vẫn trả về handle — nó thả item
-xuống **đất**. Nên `conCho()` coi `UnitInventorySize() <= 0` là **không có chỗ**;
+xuống **đất**. Nên `hasRoom()` coi `UnitInventorySize() <= 0` là **không có chỗ**;
 bản trước cho qua, và hậu quả là "phát 10/10 thành công" trong khi cả 20 lọ nằm
 dưới sàn.
 
@@ -139,7 +139,7 @@ Phát **sau khi pick xong hero**, không phải lúc vào map — quà là của
 vào map hero chưa tồn tại nên không có túi nào để bỏ vào. Chỉ phát cho lần pick
 **đầu tiên**; đổi hero mà phát lại là một đường nhận quà vô hạn.
 
-`CFG.GO_START = 1` + `CFG.START_ITEMS` (10 lọ mỗi loại). Danh sách quà dùng chung
+`CFG.LUMBER_START = 1` + `CFG.START_ITEMS` (10 lọ mỗi loại). Danh sách quà dùng chung
 mã với `CFG.SHOP`, không gõ lại mã item — hai chỗ cùng tạo một thứ thì sớm muộn
 cũng lệch.
 
@@ -229,8 +229,8 @@ thông báo ta vẫn gọi đúng tên, vài phút sau không ai để ý nữa.
 cái là phải kiểm lại tích. Lệch 20% ở một nguồn nghe nhỏ, nhưng lệch 20% ở cả bốn
 là tích lệch hơn gấp đôi.
 
-> **Đây là bản đang chạy trong code.** `CFG.LINHCAN_STEP = 1.17` (không phải
-> 1.215) và `CFG.TRANGBI_COST_BASE = 147` (không phải 86) đều thuộc bản này.
+> **Đây là bản đang chạy trong code.** `CFG.CULT_STEP = 1.17` (không phải
+> 1.215) và `CFG.GEAR_COST_BASE = 147` (không phải 86) đều thuộc bản này.
 >
 > Bản cũ chia **ba** nguồn: tu vi ×40.5, trang bị ×12, kỹ năng ×2 = ×971. Cũng
 > đúng — nhưng **không trộn được**. Trộn Tu Vi ×40.5 của bản cũ với Trang Bị
@@ -305,7 +305,7 @@ cũng phải để dành ~7 wave.
 ### Trang Bị — 6 ô × 9 lần nâng
 
 ```
-gia(lan thu k) = TRANGBI_COST_BASE × TRANGBI_COST_STEP^(k-1)
+gia(lan thu k) = GEAR_COST_BASE × GEAR_COST_STEP^(k-1)
                = 147 × 1.134^(k-1)
 ```
 
@@ -361,7 +361,7 @@ nhìn bảng trước khi gõ `-next`, nên không ai bị ném vào trận mà 
 
 ### Pháp Khí — rỗng, chờ thiết kế lại
 
-`CFG.PHAPKHI = {}`. Năm món cũ đã xoá — chúng mua bằng Tinh Thạch.
+`CFG.RELIC = {}`. Năm món cũ đã xoá — chúng mua bằng Tinh Thạch.
 
 **Ngân sách đã dành sẵn: 230 điểm Ngộ Tính**, và phần sức mạnh phải trả lại là
 **×2.5** của hợp đồng ×967.

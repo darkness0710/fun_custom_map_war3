@@ -190,6 +190,16 @@ def write_wct(map_dir, block):
 WCT_MAX = 64 * 1024     # war3map.wct that thi chi vai tram byte
 
 
+def wct_backup():
+    """Ban sao luu war3map.wct. Duoi moi la .orig; .goc la duoi CU, van
+    doc duoc de ban sao luu tu truoc lan doi ten khong thanh vo dung."""
+    for suffix in (".orig", ".goc"):
+        q = os.path.join(BAK_DIR, "war3map.wct" + suffix)
+        if os.path.isfile(q):
+            return q
+    return None
+
+
 def check_wct_size(map_dir):
     """Bao neu war3map.wct phinh to bat thuong.
 
@@ -211,11 +221,11 @@ def check_wct_size(map_dir):
 
     # Tu khoi phuc luon. De file nay nam do la lan commit sau bi GitHub
     # chan (gioi han 100 MB), va da bi chan hai lan roi.
-    goc = os.path.join(BAK_DIR, "war3map.wct.goc")
-    if os.path.isfile(goc) and os.path.getsize(goc) <= WCT_MAX:
-        shutil.copyfile(goc, p)
-        print("    Da khoi phuc tu build/war3map.wct.goc (%d byte)."
-              % os.path.getsize(p))
+    bak = wct_backup()
+    if bak is not None and os.path.getsize(bak) <= WCT_MAX:
+        shutil.copyfile(bak, p)
+        print("    Da khoi phuc tu %s (%d byte)."
+              % (os.path.basename(bak), os.path.getsize(p)))
     print("    World Editor VAN dang giu doan Custom Script trong bo nho:")
     print("    dong World Editor va KHONG Save, hoac xoa sach o Custom Script")
     print("    trong Trigger Editor (bam vao ten map o dau cay).")
@@ -310,7 +320,7 @@ def build_block(sources, lang=None):
 
     Ca chuoi file nam chung mot khoi nen local o file truoc van nhin thay
     duoc o file sau. Chieu nguoc lai thi khong -- do la ly do cac module
-    goi cheo nhau qua bang API trong 1_nen/2_state.lua.
+    goi cheo nhau qua bang API trong 1_core/2_state.lua.
     """
     stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     parts = [
@@ -574,7 +584,7 @@ def check_cross_file_locals(sources):
     return out
 
 
-SYNC_OWNER   = "1_nen/3_sync.lua"
+SYNC_OWNER   = "1_core/3_sync.lua"
 SYNC_NATIVES = [
     "BlzSendSyncData",
     "BlzGetTriggerSyncData",

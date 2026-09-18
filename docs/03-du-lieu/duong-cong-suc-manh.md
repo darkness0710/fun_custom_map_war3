@@ -326,13 +326,13 @@ trên là **bản cũ**; bản đang chạy là:
 
 | Nguồn | Nhân | Mua bằng | Trạng thái |
 |---|---|---|---|
-| Tu Vi | ×1.00 so với quái | Linh Khí | **Đã cài** — [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua) |
-| Cơ Duyên | **+40%** chỉ số | *(rơi ra)* | **Đã cài** — [10_quay.lua](../../src/2_nguoi_choi/10_quay.lua) |
+| Tu Vi | ×1.00 so với quái | Linh Khí | **Đã cài** — [3_cultivation.lua](../../src/2_player/3_cultivation.lua) |
+| Cơ Duyên | **+40%** chỉ số | *(rơi ra)* | **Đã cài** — [10_fortune.lua](../../src/2_player/10_fortune.lua) |
 | Kỹ Năng | bậc 1→10 | **Gỗ** | **Đã cài**, `SKILL_DATA_LIVE = true` từ 2026-09-16 |
-| Trang Bị | ×8.3 nếu mở | Linh Khí | ⏸ **khoá** — [5_trangbi.lua](../../src/2_nguoi_choi/5_trangbi.lua) |
-| Pháp Khí | chưa có nội dung | **Gỗ** | ⏸ **khoá** — [6_phapkhi.lua](../../src/2_nguoi_choi/6_phapkhi.lua) |
+| Trang Bị | ×8.3 nếu mở | Linh Khí | ⏸ **khoá** — [5_gear.lua](../../src/2_player/5_gear.lua) |
+| Pháp Khí | chưa có nội dung | **Gỗ** | ⏸ **khoá** — [6_relic.lua](../../src/2_player/6_relic.lua) |
 
-> **Cột "Nhân" đã hết nghĩa từ 2026-09-17.** `MOB_EHP_THEO_LINHCAN` làm EHP
+> **Cột "Nhân" đã hết nghĩa từ 2026-09-17.** `MOB_EHP_FOLLOW_CULT` làm EHP
 > quái **định nghĩa bằng** hệ số Tu Vi, nên không còn tích nào phải đạt ×967 —
 > [ADR 0020](../05-quyet-dinh/0020-duong-cong-quai-bam-theo-tu-vi.md). Tu Vi
 > triệt tiêu với quái; mọi hệ khác là phần **vượt lên**, không phải phần bù.

@@ -30,7 +30,7 @@ end
 
 -- So thu tu trong CFG.HEROES. Kenh dong bo chi cho gui so duoi 100000,
 -- ma id kieu FourCC thi hon mot ti -- nen gui so thu tu roi tra nguoc
--- ra id o dau ben kia. Xem src/1_nen/3_sync.lua.
+-- ra id o dau ben kia. Xem src/1_core/3_sync.lua.
 local function heroIndex(uid)
   for i = 1, #CFG.HEROES do
     if CFG.HEROES[i].id == uid then return i end
@@ -243,13 +243,13 @@ local function applyHeroPick(pid, uid)
   -- Chi phat cho lan pick DAU TIEN. Doi hero (heroCount > 1) ma phat
   -- lai la mot duong de nhan qua vo han.
   if d.heroCount == 1 then
-    if CFG.GO_START ~= nil and CFG.GO_START > 0 then
-      API.addGo(pid, CFG.GO_START)
+    if CFG.LUMBER_START ~= nil and CFG.LUMBER_START > 0 then
+      API.addLumber(pid, CFG.LUMBER_START)
     end
     if CFG.START_ITEMS ~= nil and API.shopGive ~= nil then
       for k = 1, #CFG.START_ITEMS do
         local q = CFG.START_ITEMS[k]
-        API.shopGive(pid, q.ma, q.so)
+        API.shopGive(pid, q.code, q.count)
       end
     end
   end

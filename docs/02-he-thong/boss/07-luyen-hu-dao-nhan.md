@@ -8,16 +8,16 @@ Khiên cộng thuộc hạ: ép chọn mục tiêu. Đánh boss thì thuộc h�
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Hộ Thể** `khien` | Mỗi **15s** tạo khiên hấp thụ bằng **12%** máu tối đa. | Dồn sát thương phá khiên trước khi lớp sau kịp lên, nếu không trận kéo vô hạn. |
-| **Triệu Hồi** `trieuhoi` | Mỗi **20s** gọi **4** thuộc hạ quanh mình. | Dọn thuộc hạ hay bỏ qua là lựa chọn: chúng cho tiền, nhưng cũng chặn đường. |
+| **Hộ Thể** `shield` | Mỗi **15s** tạo khiên hấp thụ bằng **12%** máu tối đa. | Dồn sát thương phá khiên trước khi lớp sau kịp lên, nếu không trận kéo vô hạn. |
+| **Triệu Hồi** `summon` | Mỗi **20s** gọi **4** thuộc hạ quanh mình. | Dọn thuộc hạ hay bỏ qua là lựa chọn: chúng cho tiền, nhưng cũng chặn đường. |
 
 ## Chỉ số
 
 Boss **không** lấy chỉ số từ đường cong quái. Nó **đo đội** ngay lúc xuất hiện:
 
 ```
-máu = Σ (17 + chỉ số cao nhất của mỗi hero) × BOSS_GIAY (40s)
-đòn = (máu hiệu dụng trung bình) / BOSS_SO_DON (12 đòn)
+máu = Σ (17 + chỉ số cao nhất của mỗi hero) × BOSS_SECONDS (40s)
+đòn = (máu hiệu dụng trung bình) / BOSS_HITS_TO_KILL (12 đòn)
       máu hiệu dụng = máu / (1 − giảm sát thương từ giáp)
 ```
 

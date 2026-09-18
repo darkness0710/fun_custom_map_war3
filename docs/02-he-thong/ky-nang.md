@@ -13,8 +13,8 @@
 > **Mọi chỉ số hero đi qua một cửa duy nhất** — `API.heroRecompute`. Mỗi hệ chỉ
 > khai báo nó đóng góp bao nhiêu; không hệ nào tự ghi lên unit. Xem
 > [thiet-ke-hero.md](thiet-ke-hero.md#một-chỗ-duy-nhất-được-ghi-chỉ-số-hero).
-> **Code:** [4_skill.lua](../../src/2_nguoi_choi/4_skill.lua) (bậc, giá),
-> [7_hieuung.lua](../../src/2_nguoi_choi/7_hieuung.lua) (hiệu ứng thật)
+> **Code:** [4_skill.lua](../../src/2_player/4_skill.lua) (bậc, giá),
+> [7_effect.lua](../../src/2_player/7_effect.lua) (hiệu ứng thật)
 
 > **Hai thứ vừa xong, và chúng gỡ đúng hai chỗ chặn cũ.**
 >
@@ -27,12 +27,12 @@
 > **2. `CFG.SKILL_DATA_LIVE = true`.** Sát thương kỹ năng giờ ăn theo chỉ số
 > thật. Cách làm: **không** sửa trường sát thương trong `war3map.w3a` — mã
 > trường của `AOsh`/`AHhb`/`AHad` chưa ai đo, mà dự án cấm đoán. Thay vào đó
-> [7_hieuung.lua](../../src/2_nguoi_choi/7_hieuung.lua) bắt sự kiện cast và **tự
+> [7_effect.lua](../../src/2_player/7_effect.lua) bắt sự kiện cast và **tự
 > gây sát thương**, không cần biết mã trường nào.
 >
 > `probeMax()` vẫn giữ: nếu sau này thêm ability mà quên đặt bậc, bảng hiện
 > `3/3!` đỏ thay vì nói dối 10/10.
-> **Code:** [2_heropick.lua](../../src/2_nguoi_choi/2_heropick.lua), [1_player.lua](../../src/2_nguoi_choi/1_player.lua)
+> **Code:** [2_heropick.lua](../../src/2_player/2_heropick.lua), [1_player.lua](../../src/2_player/1_player.lua)
 > **Khoá CFG:** `SKILL_MODE` `SKILL_POINTS_START` `HEROES[i].abilities` `HERO_COMMON_ABILITIES`
 
 ## Ba chế độ
@@ -204,10 +204,10 @@ local function topStat(u)
   return math.max(s, a, i)
 end
 
--- heSo : do manh rieng cua tung ky nang (vi du 1.5 = 150% chi so)
+-- factor : do manh rieng cua tung ky nang (vi du 1.5 = 150% chi so)
 -- cap  : 1..10, moi cap +10%
-function API.skillDamage(u, heSo, cap)
-  return topStat(u) * heSo * (1.10 ^ (cap - 1))
+function API.skillDamage(u, factor, cap)
+  return topStat(u) * factor * (1.10 ^ (cap - 1))
 end
 ```
 
@@ -227,4 +227,4 @@ thêm một quyết định xây dựng.
 | Mỗi kỹ năng cần một trigger | 21 trigger, nhưng dùng chung một hàm |
 | Kỹ năng buff/heal | Cũng nên ăn chỉ số, cùng lý do |
 | Kỹ năng bị động (aura, chí mạng) | Không qua đường này — chúng là dữ liệu Object Editor thuần |
-| `CFG.LINHCAN_DMG_BASE` | Chỉ ảnh hưởng đòn đánh, không ảnh hưởng skill nữa |
+| `CFG.CULT_DMG_BASE` | Chỉ ảnh hưởng đòn đánh, không ảnh hưởng skill nữa |

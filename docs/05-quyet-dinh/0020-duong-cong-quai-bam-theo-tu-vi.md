@@ -23,7 +23,7 @@ cuối ván. Không hằng số nào sửa được — chọn `MOB_EHP_REALM_ST
 cũng chỉ dời chỗ lệch chứ không xoá được nó.
 
 Và cái ngân sách ×967 tự nó đã là một món nợ: mỗi lần thêm hoặc khoá một hệ là
-phải **tính lại tích của cả bốn** rồi sửa `LINHCAN_STEP` cho khớp. Đã làm hai
+phải **tính lại tích của cả bốn** rồi sửa `CULT_STEP` cho khớp. Đã làm hai
 lần (1.215 → 1.17), và cả hai lần đều đúng *với bản ngân sách lúc đó*.
 
 ## Quyết định
@@ -31,21 +31,21 @@ lần (1.215 → 1.17), và cả hai lần đều đúng *với bản ngân sác
 **EHP quái không có đường cong riêng nữa. Nó là hệ số Tu Vi.**
 
 ```lua
-CFG.MOB_EHP_THEO_LINHCAN = true
+CFG.MOB_EHP_FOLLOW_CULT = true
 
--- src/3_tran_dau/2_wave.lua
-ehp = CFG.MOB_EHP_BASE * lcPower(realm) * CFG.MOB_EHP_GROWTH ^ (tier - 1)
+-- src/3_battle/2_wave.lua
+ehp = CFG.MOB_EHP_BASE * cultPowerAt(realm) * CFG.MOB_EHP_GROWTH ^ (tier - 1)
 ```
 
-`lcPower(r)` là **đúng cái hàm** Tu Vi dùng để tính sức mạnh người chơi ở bậc
+`cultPowerAt(r)` là **đúng cái hàm** Tu Vi dùng để tính sức mạnh người chơi ở bậc
 `r`. Hai vế có chung thừa số nên nó **triệt tiêu**: tỉ lệ "mấy phát một con"
 phẳng **theo định nghĩa**, không phải nhờ cân bằng khéo.
 
 Điều kiện duy nhất còn lại: người chơi lên **đúng một bậc mỗi cảnh giới**. Đó
-chính là giao kèo `LINHCAN_COST_BASE = 500` phẳng + một cảnh giới kiếm đúng 500
+chính là giao kèo `CULT_COST_BASE = 500` phẳng + một cảnh giới kiếm đúng 500
 Linh Khí.
 
-Sát thương quái bám theo nhưng **dốc thoải hơn** (`MOB_DMG_THEO_MU = 0.85`), có
+Sát thương quái bám theo nhưng **dốc thoải hơn** (`MOB_DMG_FOLLOW_POW = 0.85`), có
 chủ ý: người chơi phải thấy mình dày lên chứ không giậm chân.
 
 **Ngân sách ×967 bỏ hẳn.** Không còn con số nào mà tích bốn hệ phải đạt tới.
@@ -84,7 +84,7 @@ phần bù cho đủ:
 
 Nên câu hỏi cho hai hệ đang khoá **không còn là** "có đủ ×2.5 chưa" mà là **"cho
 vượt lên bao nhiêu là vừa"**. Mở lại Trang Bị ở mức ×8.3 cũ là nhân thêm ×8 lên
-phần đã vượt — xem cảnh báo ở `CFG.TRANGBI_COST_BASE`.
+phần đã vượt — xem cảnh báo ở `CFG.GEAR_COST_BASE`.
 
 **Độ khó giờ chỉnh bằng đúng ba nút**, không phải bằng cách suy lại ngân sách:
 
@@ -92,13 +92,13 @@ phần đã vượt — xem cảnh báo ở `CFG.TRANGBI_COST_BASE`.
 |---|---|
 | `MOB_EHP_BASE` | độ khó tổng thể — nút chính |
 | `MOB_EHP_GROWTH` | chênh lệch giữa 4 tầng trong một cảnh giới |
-| `MOB_DMG_THEO_MU` | người chơi dày lên nhanh hay chậm |
+| `MOB_DMG_FOLLOW_POW` | người chơi dày lên nhanh hay chậm |
 
 **Điều phải giữ:** nếu người chơi **không** đột phá mỗi cảnh giới thì hợp đồng
 gãy — quái vẫn lên theo bậc *của họ*, nhưng chỉ số thì không. Giao kèo 500 Linh
-Khí phẳng là thứ bảo vệ điều đó, nên **đổi `LINHCAN_COST_BASE` hay thu nhập là
+Khí phẳng là thứ bảo vệ điều đó, nên **đổi `CULT_COST_BASE` hay thu nhập là
 phải kiểm lại cả ADR này**.
 
 **Còn nợ:** `MOB_EHP_REALM_STEP` và ba khoá `MOB_DMG_*_STEP` vẫn nằm trong config
-cho nhánh `MOB_EHP_THEO_LINHCAN = false`. Giữ để so sánh khi chơi thử; xoá khi
+cho nhánh `MOB_EHP_FOLLOW_CULT = false`. Giữ để so sánh khi chơi thử; xoá khi
 đã chắc.

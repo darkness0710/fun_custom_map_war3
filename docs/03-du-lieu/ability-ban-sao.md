@@ -1,6 +1,6 @@
 # Ability bản sao: tắt hiệu ứng gốc, hay mượn nó làm vật mang
 
-> **Khoá CFG:** `SKILL_TAT_GOC` `SKILL_TAT_GOC_INT` `SKILL_CHO_GOC`
+> **Khoá CFG:** `SKILL_ZERO_BASE` `SKILL_ZERO_BASE_INT` `SKILL_CARRY_BASE`
 > **Đo bằng:** `-nat spell`, `-nat ilf` trong game (1.31.1)
 
 ## Vấn đề gốc
@@ -16,7 +16,7 @@ phần gốc thành vụn.
 
 ## Hai cách xử lý, chọn theo từng kỹ năng
 
-### Cách A — TẮT hiệu ứng gốc (`SKILL_TAT_GOC`)
+### Cách A — TẮT hiệu ứng gốc (`SKILL_ZERO_BASE`)
 
 Dùng khi **Lua đã tự làm thay**. Ghi `0` vào trường của ability ở **mọi bậc**,
 trong `applyLevel()`.
@@ -30,14 +30,14 @@ trong `applyLevel()`.
 
 Số nguyên phải gọi `BlzSetAbilityIntegerLevelField`, không phải bản Real.
 
-### Cách B — MƯỢN trường gốc làm **vật mang** (`SKILL_CHO_GOC`)
+### Cách B — MƯỢN trường gốc làm **vật mang** (`SKILL_CARRY_BASE`)
 
 Dùng khi **Warcraft làm tốt hơn ta**. Thay vì tắt rồi tự cộng, **ghi thẳng số
 cân bằng của mình vào trường** rồi để engine cộng.
 
 | Kỹ năng | Trường | Nguồn số |
 |---|---|---|
-| A003 Hiệu Lệnh | `ABILITY_RLF_ARMOR_BONUS_HAD1` | `giapAt(sk, lv)` |
+| A003 Hiệu Lệnh | `ABILITY_RLF_ARMOR_BONUS_HAD1` | `armorAt(sk, lv)` |
 | A007 Bất Hoại | `ABILITY_RLF_DEFENSE_BONUS_HAV1` | `FX_BUFF_ARMOR` theo bậc |
 
 ## Vì sao giáp phải dùng cách B — và nó sửa một lỗi khác
@@ -66,9 +66,9 @@ Warcraft tự cộng, và cả hai dòng ghi đè **xoá được hẳn**:
 Chỉ số chạy lại bình thường như mọi map Warcraft khác.
 
 **Không phải ta cần tính thêm, mà là ta cần thôi sở hữu.** Sửa xong là *bớt*
-code: `auraGiap()`, `buffGiap()`, `fxBuff()` và cờ `fxBuffLv` đều xoá.
+code: `auraGiap()`, `buffGiap()`, `fxBuff()` và cờ `buffLv` đều xoá.
 
-Sát thương không cần vật mang: Trang Bị đang khoá nên `trangBiMult` luôn `1.0`,
+Sát thương không cần vật mang: Trang Bị đang khoá nên `gearMult` luôn `1.0`,
 tức dòng cũ ghi lại đúng con số nó vừa đọc. **Mở Trang Bị lại thì phải chọn vật
 mang cho nó, đừng ghi đè ở `heroRecompute`.**
 

@@ -18,7 +18,7 @@
 -- Moi muc: { ten hien thi, gia tri, giai thich neu THIEU }
 local function groups()
   return {
-    { ten = "Su kien sat thuong", muc = {
+    { name = "Su kien sat thuong", entries = {
       { "EVENT_PLAYER_UNIT_DAMAGED",  EVENT_PLAYER_UNIT_DAMAGED,
         "khong co chu bay, khong lam duoc gi theo sat thuong" },
       { "EVENT_PLAYER_UNIT_DAMAGING", EVENT_PLAYER_UNIT_DAMAGING,
@@ -32,7 +32,7 @@ local function groups()
         "khong tu gay sat thuong duoc -- moi skill tu viet deu hong" },
     }},
 
-    { ten = "Sua so lieu ability luc CHAY", muc = {
+    { name = "Sua so lieu ability luc CHAY", entries = {
       { "BlzGetUnitAbility",            BlzGetUnitAbility, "" },
       { "BlzGetUnitAbilityByIndex",     BlzGetUnitAbilityByIndex, "" },
       { "BlzSetAbilityRealLevelField",  BlzSetAbilityRealLevelField,
@@ -45,7 +45,7 @@ local function groups()
       { "BlzSetUnitAbilityManaCost",      BlzSetUnitAbilityManaCost, "" },
     }},
 
-    { ten = "Ky nang tu viet", muc = {
+    { name = "Ky nang tu viet", entries = {
       { "EVENT_PLAYER_UNIT_SPELL_EFFECT", EVENT_PLAYER_UNIT_SPELL_EFFECT,
         "khong biet luc nao nguoi choi bam skill" },
       { "GetSpellAbilityId",     GetSpellAbilityId, "" },
@@ -57,7 +57,7 @@ local function groups()
         "chu tren nut se nuot cu bam -- bam dung chu thi khong an" },
     }},
 
-    { ten = "Chi so & ten unit", muc = {
+    { name = "Chi so & ten unit", entries = {
       { "BlzSetUnitName",           BlzSetUnitName,
         "quai giu ten goc cua mau linh (Footman, Ghoul...) -- nhin vao" ..
         " con quai khong biet no thuoc canh gioi nao, tang may" },
@@ -71,12 +71,12 @@ local function groups()
 end
 
 local function countGroup(g)
-  local co, thieu = 0, {}
-  for i = 1, #g.muc do
-    if g.muc[i][2] ~= nil then co = co + 1
-    else thieu[#thieu + 1] = g.muc[i][1] end
+  local have, missing = 0, {}
+  for i = 1, #g.entries do
+    if g.entries[i][2] ~= nil then have = have + 1
+    else missing[#missing + 1] = g.entries[i][1] end
   end
-  return co, thieu
+  return have, missing
 end
 
 -- Mot dong moi nhom cho file vet: du ngan de doc luot, du chi tiet de
@@ -84,9 +84,9 @@ end
 local function traceAll()
   local gs = groups()
   for i = 1, #gs do
-    local co, thieu = countGroup(gs[i])
-    local line = "native [" .. gs[i].ten .. "] co " .. co .. "/" .. #gs[i].muc
-    if #thieu > 0 then line = line .. " -- THIEU " .. table.concat(thieu, " ") end
+    local have, missing = countGroup(gs[i])
+    local line = "native [" .. gs[i].name .. "] co " .. have .. "/" .. #gs[i].entries
+    if #missing > 0 then line = line .. " -- THIEU " .. table.concat(missing, " ") end
     API.trace(line)
   end
 end
@@ -94,8 +94,8 @@ end
 local function has(name)
   local gs = groups()
   for i = 1, #gs do
-    for j = 1, #gs[i].muc do
-      if gs[i].muc[j][1] == name then return gs[i].muc[j][2] ~= nil end
+    for j = 1, #gs[i].entries do
+      if gs[i].entries[j][1] == name then return gs[i].entries[j][2] ~= nil end
     end
   end
   return false
@@ -111,23 +111,23 @@ end
 -- ve 0 ket qua va nguoi doc ket luan nham la ban nay khong co truong
 -- hoi mau. Gio quet moi ten VIET HOA -- UNIT_RF_*, UNIT_IF_*,
 -- ITEM_RF_*, ABILITY_* deu ra.
-local function fields(pid, loc)
-  loc = loc:upper()
+local function fields(pid, needle)
+  needle = needle:upper()
   -- Chat bi cat o CFG.NAT_FIELD_MAX vi man hinh co han. FILE VET thi
   -- khong -- truoc day no ghi cung mot danh sach da cat, nen loc rong
   -- mot chut la mat luon cai minh can tim. Gio ghi DU.
-  local hit, tatCa, n = {}, {}, 0
+  local hit, all, n = {}, {}, 0
   for k, _ in pairs(_G) do
     if type(k) == "string" and k == k:upper() and #k > 3
-       and k:find(loc, 1, true) then
+       and k:find(needle, 1, true) then
       n = n + 1
-      tatCa[#tatCa + 1] = k
+      all[#all + 1] = k
       if n <= CFG.NAT_FIELD_MAX then hit[#hit + 1] = k end
     end
   end
-  table.sort(tatCa)
+  table.sort(all)
   table.sort(hit)
-  API.msg(pid, CFG.C_GOLD .. "Hang so chua [" .. loc .. "]: " .. n ..
+  API.msg(pid, CFG.C_GOLD .. "Hang so chua [" .. needle .. "]: " .. n ..
     CFG.C_END)
   for i = 1, #hit do API.msg(pid, "   " .. hit[i]) end
   if n > #hit then
@@ -138,14 +138,14 @@ local function fields(pid, loc)
   -- 7 ten tren 414). Nen chia nho ra nhieu dong chu khong noi mot chuoi
   -- -- mot file vet bi cat lang le con te hon khong ghi gi, vi no trong
   -- nhu da ghi du.
-  API.trace("nat fields [" .. loc .. "] = " .. n)
-  local dong, phan = {}, 0
-  for k = 1, #tatCa do
-    dong[#dong + 1] = tatCa[k]
-    if #dong >= 6 or k == #tatCa then
-      phan = phan + 1
-      API.trace("  [" .. loc .. " " .. phan .. "] " .. table.concat(dong, " "))
-      dong = {}
+  API.trace("nat fields [" .. needle .. "] = " .. n)
+  local row, part = {}, 0
+  for k = 1, #all do
+    row[#row + 1] = all[k]
+    if #row >= 6 or k == #all then
+      part = part + 1
+      API.trace("  [" .. needle .. " " .. part .. "] " .. table.concat(row, " "))
+      row = {}
     end
   end
 end
@@ -154,11 +154,11 @@ local function report(pid)
   local gs = groups()
   API.msg(pid, CFG.C_GOLD .. "=== Ban " .. CFG.VERSION .. " co nhung gi ===" .. CFG.C_END)
   for i = 1, #gs do
-    local co, thieu = countGroup(gs[i])
-    local mau = (#thieu == 0) and CFG.C_JADE or CFG.C_RED
-    API.msg(pid, mau .. gs[i].ten .. ": " .. co .. "/" .. #gs[i].muc .. CFG.C_END)
-    for k = 1, #thieu do
-      API.msg(pid, "   " .. CFG.C_RED .. "thieu " .. thieu[k] .. CFG.C_END)
+    local have, missing = countGroup(gs[i])
+    local color = (#missing == 0) and CFG.C_JADE or CFG.C_RED
+    API.msg(pid, color .. gs[i].name .. ": " .. have .. "/" .. #gs[i].entries .. CFG.C_END)
+    for k = 1, #missing do
+      API.msg(pid, "   " .. CFG.C_RED .. "thieu " .. missing[k] .. CFG.C_END)
     end
   end
 end
@@ -185,7 +185,7 @@ local CO_BAN = {
   { "Apat", "Patrol" }, { "Aatk", "Attack" },
 }
 
-local function oCua(u, aid)
+local function buttonSlotOf(u, aid)
   if BlzGetUnitAbility == nil or BlzGetAbilityIntegerField == nil then
     return nil, "thieu BlzGetUnitAbility / BlzGetAbilityIntegerField"
   end
@@ -220,39 +220,39 @@ local function card(pid)
 
   API.msg(pid, CFG.C_GOLD .. "=== O command card (4x3) ===" .. CFG.C_END)
 
-  local chiem = {}
+  local taken = {}
   -- dem = true: o cua frame nay tinh vao viec do trung o.
-  local function ghi(ten, aid, dem)
-    local x, err, y = oCua(u, aid)
+  local function emit(name, aid, countOnly)
+    local x, err, y = buttonSlotOf(u, aid)
     if x == nil then
-      API.msg(pid, CFG.C_GREY .. "   " .. ten .. ": " .. (err or "?") .. CFG.C_END)
-      API.trace("card " .. ten .. ": " .. (err or "?"))
+      API.msg(pid, CFG.C_GREY .. "   " .. name .. ": " .. (err or "?") .. CFG.C_END)
+      API.trace("card " .. name .. ": " .. (err or "?"))
       return
     end
     local o = x .. "," .. y
-    if not dem then
-      API.msg(pid, CFG.C_GREY .. "   (" .. o .. ") " .. ten ..
+    if not countOnly then
+      API.msg(pid, CFG.C_GREY .. "   (" .. o .. ") " .. name ..
               "  -- game tu dat, so nay khong tin duoc" .. CFG.C_END)
-      API.trace("card [lenh] " .. ten .. " = (" .. o .. ")")
+      API.trace("card [lenh] " .. name .. " = (" .. o .. ")")
       return
     end
-    local cu = chiem[o]
-    chiem[o] = (cu and (cu .. " + " .. ten)) or ten
-    local mau = cu and CFG.C_RED or CFG.C_JADE
-    API.msg(pid, "   " .. mau .. "(" .. o .. ")" .. CFG.C_END .. " " .. ten ..
-            (cu and (CFG.C_RED .. "  DE LEN " .. cu .. CFG.C_END) or ""))
-    API.trace("card " .. ten .. " = (" .. o .. ")")
+    local old = taken[o]
+    taken[o] = (old and (old .. " + " .. name)) or name
+    local color = old and CFG.C_RED or CFG.C_JADE
+    API.msg(pid, "   " .. color .. "(" .. o .. ")" .. CFG.C_END .. " " .. name ..
+            (old and (CFG.C_RED .. "  DE LEN " .. old .. CFG.C_END) or ""))
+    API.trace("card " .. name .. " = (" .. o .. ")")
   end
 
-  for i = 1, #CO_BAN do ghi(CO_BAN[i][2], FourCC(CO_BAN[i][1]), false) end
+  for i = 1, #CO_BAN do emit(CO_BAN[i][2], FourCC(CO_BAN[i][1]), false) end
 
   local sk = CFG.SKILLS[GetUnitTypeId(u)]
   if sk ~= nil then
-    for i = 1, #sk do ghi(API.pick(sk[i]), sk[i].id, true) end
+    for i = 1, #sk do emit(API.pick(sk[i]), sk[i].id, true) end
   end
 
   local n = 0
-  for _, v in pairs(chiem) do if v:find("+", 1, true) then n = n + 1 end end
+  for _, v in pairs(taken) do if v:find("+", 1, true) then n = n + 1 end end
   if n > 0 then
     API.msg(pid, CFG.C_RED .. n .. " o bi hai KY NANG cung nhan -- sua " ..
       "O_CHUDONG/O_BIDONG trong w3skill.py roi chay lai 'gen'." .. CFG.C_END)
@@ -286,31 +286,31 @@ end
 -- so sanh duoc voi nhau.
 local DO_LOAI = {
   hp = {
-    ten    = "mau",
-    truong = "UNIT_RF_HIT_POINTS_REGENERATION_RATE",
+    name    = "mau",
+    field = "UNIT_RF_HIT_POINTS_REGENERATION_RATE",
     cur    = function() return UNIT_STATE_LIFE end,
     max    = function() return UNIT_STATE_MAX_LIFE end,
-    doc    = function(u) return GetHeroStr(u, false), GetHeroStr(u, true) end,
-    ghi    = function(u, v) SetHeroStr(u, v, true) end,
-    chiSo  = "Str",
+    read    = function(u) return GetHeroStr(u, false), GetHeroStr(u, true) end,
+    emit    = function(u, v) SetHeroStr(u, v, true) end,
+    statProbe  = "Str",
   },
   mana = {
-    ten    = "mana",
-    truong = "UNIT_RF_MANA_REGENERATION",
+    name    = "mana",
+    field = "UNIT_RF_MANA_REGENERATION",
     cur    = function() return UNIT_STATE_MANA end,
     max    = function() return UNIT_STATE_MAX_MANA end,
-    doc    = function(u) return GetHeroInt(u, false), GetHeroInt(u, true) end,
-    ghi    = function(u, v) SetHeroInt(u, v, true) end,
-    chiSo  = "Int",
+    read    = function(u) return GetHeroInt(u, false), GetHeroInt(u, true) end,
+    emit    = function(u, v) SetHeroInt(u, v, true) end,
+    statProbe  = "Int",
   },
 }
 
 local REG_TEST = 7.0
 local REG_STEP = 10
 
-local function regen(pid, giay, loai)
-  giay = giay or 8.0
-  local L = DO_LOAI[loai or "hp"]
+local function regen(pid, secs, kind)
+  secs = secs or 8.0
+  local L = DO_LOAI[kind or "hp"]
   if L == nil then L = DO_LOAI.hp end
 
   local d = S.p[pid]
@@ -320,10 +320,10 @@ local function regen(pid, giay, loai)
     return
   end
 
-  local F = _G[L.truong]
-  API.msg(pid, CFG.C_GOLD .. "=== Do hoi " .. L.ten .. " (" .. giay ..
+  local F = _G[L.field]
+  API.msg(pid, CFG.C_GOLD .. "=== Do hoi " .. L.name .. " (" .. secs ..
           "s x2) ===" .. CFG.C_END)
-  API.msg(pid, "   hang so " .. L.truong .. ": " ..
+  API.msg(pid, "   hang so " .. L.field .. ": " ..
           (F ~= nil and (CFG.C_JADE .. "CO" .. CFG.C_END)
                     or (CFG.C_RED .. "KHONG CO -- go '-nat regen'" .. CFG.C_END)))
   if F == nil or BlzGetUnitRealField == nil or BlzSetUnitRealField == nil then
@@ -334,17 +334,17 @@ local function regen(pid, giay, loai)
   -- KIEU hoi mau, chi co ben mau. Neu hero la Night/Blight thi dat rate
   -- bao nhieu cung bang 0 ngoai dieu kien do, va phep do se ra 0 ma
   -- khong noi duoc TAI SAO.
-  if loai ~= "mana" then
+  if kind ~= "mana" then
     local TF = _G["UNIT_IF_HIT_POINTS_REGENERATION_TYPE"]
     if TF ~= nil and BlzGetUnitIntegerField ~= nil then
-      local v, ten = BlzGetUnitIntegerField(h, TF), "?"
-      local bang = { "NONE", "ALWAYS", "DAY", "NIGHT", "BLIGHT" }
-      for k = 1, #bang do
-        if _G["REGENERATION_TYPE_" .. bang[k]] == v then ten = bang[k] end
+      local v, name = BlzGetUnitIntegerField(h, TF), "?"
+      local names = { "NONE", "ALWAYS", "DAY", "NIGHT", "BLIGHT" }
+      for k = 1, #names do
+        if _G["REGENERATION_TYPE_" .. names[k]] == v then name = names[k] end
       end
-      local xau = (ten == "NIGHT" or ten == "BLIGHT" or ten == "NONE")
+      local bad = (name == "NIGHT" or name == "BLIGHT" or name == "NONE")
       API.msg(pid, "   kieu hoi mau (uhrt)        : " ..
-              (xau and CFG.C_RED or CFG.C_JADE) .. ten .. CFG.C_END)
+              (bad and CFG.C_RED or CFG.C_JADE) .. name .. CFG.C_END)
     end
   end
 
@@ -361,61 +361,61 @@ local function regen(pid, giay, loai)
   local maxV = GetUnitState(h, L.max())
   SetUnitState(h, L.cur(), maxV * 0.10)
 
-  local truoc = BlzGetUnitRealField(h, F)
+  local before = BlzGetUnitRealField(h, F)
   BlzSetUnitRealField(h, F, REG_TEST)
   API.msg(pid, "   truong truoc / sau khi dat : " ..
-          string.format("%.3f", truoc) .. " -> " ..
+          string.format("%.3f", before) .. " -> " ..
           string.format("%.3f", BlzGetUnitRealField(h, F)))
 
   -- In CA HAI chi so. Neu goc va tong bang nhau thi phep do KHONG phan
   -- biet duoc "engine dung chi so goc" voi "dung chi so tong" -- noi
   -- thang ra thay vi de nguoi doc tu suy.
-  local sGoc, sTong = L.doc(h)
-  API.msg(pid, "   " .. L.chiSo .. " goc / tong" ..
-          string.rep(" ", 16 - #L.chiSo) .. ": " .. sGoc .. " / " .. sTong ..
-          (sGoc ~= sTong and (CFG.C_GOLD .. "  <- khac nhau, phan biet duoc" .. CFG.C_END)
+  local sBase, sTotal = L.read(h)
+  API.msg(pid, "   " .. L.statProbe .. " goc / tong" ..
+          string.rep(" ", 16 - #L.statProbe) .. ": " .. sBase .. " / " .. sTotal ..
+          (sBase ~= sTotal and (CFG.C_GOLD .. "  <- khac nhau, phan biet duoc" .. CFG.C_END)
                           or (CFG.C_GREY .. "  (bang nhau -- khong phan biet duoc)" .. CFG.C_END)))
 
   -- Cham tran thi so trung binh vo nghia -- phai BAO, dung de nguoi doc
   -- tuong day la toc do hoi that.
-  local function bao(pid2, nhan, r, cuoi)
-    local day = (cuoi >= maxV - 0.01)
-    API.msg(pid2, (day and CFG.C_RED or CFG.C_JADE) ..
-            "   hoi THAT " .. nhan .. " : " .. string.format("%.2f", r) ..
-            " " .. L.ten .. "/giay" .. CFG.C_END ..
-            (day and (CFG.C_RED .. "  -> DA DAY BINH, so nay VO NGHIA." ..
-                      " Go '-reg " .. (loai == "mana" and "mana " or "") ..
+  local function report(pid2, tag, r, last)
+    local full = (last >= maxV - 0.01)
+    API.msg(pid2, (full and CFG.C_RED or CFG.C_JADE) ..
+            "   hoi THAT " .. tag .. " : " .. string.format("%.2f", r) ..
+            " " .. L.name .. "/giay" .. CFG.C_END ..
+            (full and (CFG.C_RED .. "  -> DA DAY BINH, so nay VO NGHIA." ..
+                      " Go '-reg " .. (kind == "mana" and "mana " or "") ..
                       "3' cho ngan lai." .. CFG.C_END) or ""))
-    return day
+    return full
   end
 
   local v0 = GetUnitState(h, L.cur())
-  API.after(giay, function()
+  API.after(secs, function()
     local c1 = GetUnitState(h, L.cur())
-    local r1 = (c1 - v0) / giay
-    bao(pid, "lan 1", r1, c1)
+    local r1 = (c1 - v0) / secs
+    report(pid, "lan 1", r1, c1)
 
-    L.ghi(h, sGoc + REG_STEP)
-    local sau = BlzGetUnitRealField(h, F)
-    API.msg(pid, "   truong sau +" .. REG_STEP .. " " .. L.chiSo .. " : " ..
-            string.format("%.3f", sau) ..
-            (math.abs(sau - REG_TEST) > 0.01
+    L.emit(h, sBase + REG_STEP)
+    local after = BlzGetUnitRealField(h, F)
+    API.msg(pid, "   truong sau +" .. REG_STEP .. " " .. L.statProbe .. " : " ..
+            string.format("%.3f", after) ..
+            (math.abs(after - REG_TEST) > 0.01
              and (CFG.C_RED .. "  -> DA BI TINH LAI" .. CFG.C_END)
              or  (CFG.C_JADE .. "  -> giu nguyen" .. CFG.C_END)))
 
     SetUnitState(h, L.cur(), maxV * 0.10)
     local v1 = GetUnitState(h, L.cur())
-    API.after(giay, function()
+    API.after(secs, function()
       local c2 = GetUnitState(h, L.cur())
-      local r2 = (c2 - v1) / giay
-      local day = bao(pid, "lan 2", r2, c2)
-      API.msg(pid, (day and CFG.C_GREY or CFG.C_GOLD) ..
-              "   => mot diem " .. L.chiSo .. " = " ..
+      local r2 = (c2 - v1) / secs
+      local full = report(pid, "lan 2", r2, c2)
+      API.msg(pid, (full and CFG.C_GREY or CFG.C_GOLD) ..
+              "   => mot diem " .. L.statProbe .. " = " ..
               string.format("%.4f", (r2 - r1) / REG_STEP) .. " " ..
-              L.ten .. "/giay" .. CFG.C_END)
-      L.ghi(h, sGoc)
-      API.trace("reg[" .. L.ten .. "]: r1=" .. r1 .. " r2=" .. r2 ..
-                " truong_sau=" .. sau)
+              L.name .. "/giay" .. CFG.C_END)
+      L.emit(h, sBase)
+      API.trace("reg[" .. L.name .. "]: r1=" .. r1 .. " r2=" .. r2 ..
+                " truong_sau=" .. after)
     end)
   end)
 end
@@ -440,17 +440,17 @@ local function spells(pid)
 
   API.msg(pid, CFG.C_GOLD .. "=== Hang so theo ability goc ===" .. CFG.C_END)
   for i = 1, #sk do
-    local g = sk[i].goc
+    local g = sk[i].baseAbil
     if g == nil then
       API.msg(pid, CFG.C_GREY .. "   " .. API.pick(sk[i]) ..
               ": chua ghi 'goc' trong CFG.SKILLS" .. CFG.C_END)
     else
       -- Bo chu cai dau (A/O/H/u...) de khop rong hon: "AOsh" -> "OSH".
-      local loc = g:sub(2):upper()
+      local needle = g:sub(2):upper()
       local hit = {}
       for k, _ in pairs(_G) do
         if type(k) == "string" and k:sub(1, 8) == "ABILITY_"
-           and k:find(loc, 1, true) then
+           and k:find(needle, 1, true) then
           hit[#hit + 1] = k
         end
       end
@@ -482,7 +482,7 @@ end
 -- Cong 100 chu khong phai 1 de sai so lam tron khong nuot mat ket qua.
 local DO_BUOC = 100
 
-local function chiSo(pid)
+local function statProbe(pid)
   local d = S.p[pid]
   local h = d and d.hero or nil
   if h == nil then
@@ -492,27 +492,27 @@ local function chiSo(pid)
 
   API.msg(pid, CFG.C_GOLD .. "=== Mot diem chi so doi ra gi ===" .. CFG.C_END)
 
-  local function do1(ten, getf, setf, docf, donVi)
+  local function measureOne(name, getf, setf, readf, unitName)
     if getf == nil or setf == nil then return end
-    local goc = getf(h, false)
-    local v0  = docf(h)
-    setf(h, goc + DO_BUOC, true)
-    local v1 = docf(h)
-    setf(h, goc, true)
-    API.msg(pid, "   " .. ten .. " +" .. DO_BUOC .. " -> " .. donVi .. " +" ..
+    local baseAbil = getf(h, false)
+    local v0  = readf(h)
+    setf(h, baseAbil + DO_BUOC, true)
+    local v1 = readf(h)
+    setf(h, baseAbil, true)
+    API.msg(pid, "   " .. name .. " +" .. DO_BUOC .. " -> " .. unitName .. " +" ..
             string.format("%.1f", v1 - v0) .. CFG.C_END ..
-            CFG.C_GOLD .. "   => 1 " .. ten .. " = " ..
-            string.format("%.3f", (v1 - v0) / DO_BUOC) .. " " .. donVi .. CFG.C_END)
-    API.trace("chiso: 1 " .. ten .. " = " .. ((v1 - v0) / DO_BUOC) .. " " .. donVi)
+            CFG.C_GOLD .. "   => 1 " .. name .. " = " ..
+            string.format("%.3f", (v1 - v0) / DO_BUOC) .. " " .. unitName .. CFG.C_END)
+    API.trace("stat: 1 " .. name .. " = " .. ((v1 - v0) / DO_BUOC) .. " " .. unitName)
   end
 
-  do1("Str", GetHeroStr, SetHeroStr,
+  measureOne("Str", GetHeroStr, SetHeroStr,
       function(u) return GetUnitState(u, UNIT_STATE_MAX_LIFE) end, "mau")
-  do1("Int", GetHeroInt, SetHeroInt,
+  measureOne("Int", GetHeroInt, SetHeroInt,
       function(u) return GetUnitState(u, UNIT_STATE_MAX_MANA) end, "mana")
   if BlzGetUnitArmor ~= nil then
-    do1("Agi", GetHeroAgi, SetHeroAgi,
-        function(u) return BlzGetUnitArmor(u) end, "giap")
+    measureOne("Agi", GetHeroAgi, SetHeroAgi,
+        function(u) return BlzGetUnitArmor(u) end, "armor")
   end
 
   -- Tra chi so ve dung duong ma du an dung, khong tu dat lai bang tay:
@@ -526,10 +526,10 @@ local function onChat(pid, raw)
   if raw ~= nil then
     if raw:match("^%s*%-nat%s+card%s*$") ~= nil then return card(pid) end
     if raw:match("^%s*%-nat%s+spell%s*$") ~= nil then return spells(pid) end
-    if raw:match("^%s*%-nat%s+stat%s*$") ~= nil then return chiSo(pid) end
+    if raw:match("^%s*%-nat%s+stat%s*$") ~= nil then return statProbe(pid) end
     -- "-nat dam" -> liet ke hang so ability co ten chua "dam"
-    local loc = raw:match("^%s*%-nat%s+(%S+)")
-    if loc ~= nil then return fields(pid, loc) end
+    local needle = raw:match("^%s*%-nat%s+(%S+)")
+    if needle ~= nil then return fields(pid, needle) end
   end
   return report(pid)
 end
@@ -543,6 +543,6 @@ API.nativeChat   = onChat
 API.nativeFields = fields
 API.nativeCard   = card
 API.nativeSpells = spells
-API.nativeChiSo  = chiSo
+API.nativeStat  = statProbe
 API.nativeRegen  = regen
 API.startNatives = startNatives

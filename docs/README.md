@@ -9,7 +9,7 @@ Bắt đầu đọc từ [00-tong-quan.md](00-tong-quan.md), rồi
 ## Ba quy ước, chỉ ba thôi
 
 **1. Con số sống trong code, không sống ở đây.**
-Toàn bộ số cấu hình nằm trong `CFG` tại [1_config.lua](../src/1_nen/1_config.lua).
+Toàn bộ số cấu hình nằm trong `CFG` tại [1_config.lua](../src/1_core/1_config.lua).
 Tài liệu nhắc tới chúng bằng **tên khoá** (`CFG.RIVER_TILES`), không bao giờ chép
 giá trị. Lý do: giá trị đổi mỗi lần cân bằng lại; nếu chép vào đây thì sau ba lần
 sửa tài liệu sẽ nói dối, mà tài liệu nói dối còn tệ hơn không có tài liệu.
@@ -41,30 +41,30 @@ kia".
 
 ```
 src/
-  1_nen/               nền tảng — phải nạp trước
+  1_core/               nền tảng — phải nạp trước
      1_config.lua      mọi con số chỉnh được, tạo bảng CFG
      2_state.lua       tạo S và API, tiện ích chung
      3_sync.lua        kênh đồng bộ nhiều người chơi
      4_geometry.lua    lưới 25 ô, toạ độ, vùng
      5_natives.lua     bản 1.31.1 này có native nào — đo, không đoán
-     6_lang.lua        hai thứ tiếng: API.t và API.pick
-  2_nguoi_choi/
+     6_i18n.lua        hai thứ tiếng: API.t và API.pick
+  2_player/
      1_player.lua      đăng ký người chơi, tiền tệ, khoá hero
      2_heropick.lua    chọn hero, cây kỹ năng
-     3_linhcan.lua     tu vi — nguồn sức mạnh lớn nhất (Linh Khí)
+     3_cultivation.lua     tu vi — nguồn sức mạnh lớn nhất (Linh Khí)
      4_skill.lua       bảy kỹ năng, mua bằng Ngộ Tính
-     5_trangbi.lua     sáu ô trang bị, mua bằng Linh Khí
-     6_phapkhi.lua     năm pháp khí, mua bằng Tinh Thạch
-     7_hieuung.lua     hiệu ứng kỹ năng thật: sát thương, bị động, aura
-  3_tran_dau/
+     5_gear.lua     sáu ô trang bị, mua bằng Linh Khí
+     6_relic.lua     năm pháp khí, mua bằng Tinh Thạch
+     7_effect.lua     hiệu ứng kỹ năng thật: sát thương, bị động, aura
+  3_battle/
      1_house.lua       nhà chính, chết là thua
      2_wave.lua        100 stage, sinh quái, tiền thưởng
-  4_giao_dien/
+  4_ui/
      1_panel.lua       bảng phím R, bốn thẻ
      2_heroframe.lua   thẻ chọn hero
      3_skillframe.lua  bảng chọn kỹ năng
      4_fct.lua         chữ bay
-  5_khoi_dong/         phải nạp cuối cùng
+  5_boot/         phải nạp cuối cùng
      1_events.lua      trigger, lệnh chat
      2_init.lua        bootstrap, móc vào main()
 ```
@@ -76,7 +76,7 @@ hạn mức 200 của chính nó, và cái giá phải trả chính là ADR 0002
 nhìn thấy `local` của file trước, nên mọi lời gọi chéo phải đi qua `API`.
 
 **Thứ tự thư mục là thứ tự nạp.** Chỉ ba ràng buộc thật: `1_config` trước
-(nó tạo `CFG`), `2_state` ngay sau (tạo `S` và `API`), `5_khoi_dong` cuối cùng.
+(nó tạo `CFG`), `2_state` ngay sau (tạo `S` và `API`), `5_boot` cuối cùng.
 Phần giữa sắp kiểu gì cũng được vì mọi lời gọi chéo file đi qua `API` lúc chạy
 — [ADR 0002](05-quyet-dinh/0002-goi-cheo-qua-bang-api.md).
 
@@ -166,7 +166,7 @@ object sai là World Editor có thể lặng lẽ nuốt mất dữ liệu, ki�
 Và cả bốn đều **cần đóng World Editor trước khi chạy**.
 
 **Không gọi `FourCC` trần** — nó trả về *hai* giá trị và nở ra ở vị trí cuối của
-bảng. Dùng `id()` trong [1_config.lua](../src/1_nen/1_config.lua).
+bảng. Dùng `id()` trong [1_config.lua](../src/1_core/1_config.lua).
 [ADR 0006](05-quyet-dinh/0006-fourcc-tra-hai-gia-tri.md)
 
 **Không gọi `GetUnitGoldCost` / `GetUnitWoodCost`** — sập ngay cả với id hợp lệ.

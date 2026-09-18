@@ -125,13 +125,13 @@ local function bootstrap()
   -- bao nhieu the de chia be ngang.
   -- Thu tu dang ky = thu tu the trong bang. Nam he -- xem
   -- docs/02-he-thong/kinh-te.md
-  API.startLinhCan()   -- I.   Linh Khi
+  API.startCult()   -- I.   Linh Khi
   API.startSkills()    -- II.  Go
-  API.startTrangBi()   -- III. Da Huyen Thiet
-  API.startPhapKhi()   -- IV.  (tam khoa)
+  API.startGear()   -- III. Da Huyen Thiet
+  API.startRelic()   -- IV.  (tam khoa)
   API.startShop()      -- V.   Vang
-  API.startQuay()      -- Co Duyen (khung rieng, khong phai the)
-  API.startDungDo()
+  API.startFortune()      -- Co Duyen (khung rieng, khong phai the)
+  API.startUseItem()
   API.startPanel()
 
   API.startSkillFx()
@@ -140,7 +140,7 @@ local function bootstrap()
   API.startWaves()
   API.startHeroFrame()
   API.startSkillFrame()
-  API.startQuayFrame()
+  API.startFortuneFrame()
   API.startSkillPicking()
   API.startPicking()
   API.trace("startPicking: tra ve")
@@ -176,7 +176,7 @@ API.bootstrap  = bootstrap
 API.trace("chunk: da nap, dang moc InitGlobals")
 
 do
-  local function chay()
+  local function run()
     TimerStart(CreateTimer(), 0.00, false, function()
       DestroyTimer(GetExpiredTimer())
       bootstrap()   -- tu chan neu da chay roi (S.running)
@@ -196,8 +196,8 @@ do
   local prevInitGlobals = InitGlobals
   InitGlobals = function()
     if prevInitGlobals ~= nil then prevInitGlobals() end
-    chay()
+    run()
   end
 
-  chay()
+  run()
 end

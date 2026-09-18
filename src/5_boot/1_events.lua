@@ -99,8 +99,8 @@ local function onWaveCmd()
 end
 
 -- "-lc" mo bang Linh Can, "-lc up" dot pha thang khong can bang.
-local function onLinhCanCmd()
-  API.linhCanChat(GetPlayerId(GetTriggerPlayer()), GetEventPlayerChatString())
+local function onCultCmd()
+  API.cultChat(GetPlayerId(GetTriggerPlayer()), GetEventPlayerChatString())
 end
 
 -- Lenh dev cho tien: "-lk 5000" Linh Khi, "-go 300" Go, "-vang 5000" Vang.
@@ -112,27 +112,27 @@ local function onMoneyCmd()
 
   local n = tonumber(raw:match("^%s*%-lk%s+(%d+)"))
   if n ~= nil then
-    API.addLinhKhi(pid, n)
+    API.addQi(pid, n)
     API.msg(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " linh khi -> " ..
-      API.num(API.getLinhKhi(pid)) .. CFG.C_END)
+      API.num(API.getQi(pid)) .. CFG.C_END)
     API.panelRefresh(pid)
     return
   end
 
   n = tonumber(raw:match("^%s*%-go%s+(%d+)"))
   if n ~= nil then
-    API.addGo(pid, n)
+    API.addLumber(pid, n)
     API.msg(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " go -> " ..
-      API.num(API.getGo(pid)) .. CFG.C_END)
+      API.num(API.getLumber(pid)) .. CFG.C_END)
     API.panelRefresh(pid)
     return
   end
 
   n = tonumber(raw:match("^%s*%-vang%s+(%d+)"))
   if n ~= nil then
-    API.addVang(pid, n)
+    API.addGold(pid, n)
     API.msg(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " vang -> " ..
-      API.num(API.getVang(pid)) .. CFG.C_END)
+      API.num(API.getGold(pid)) .. CFG.C_END)
     API.panelRefresh(pid)
     return
   end
@@ -180,11 +180,11 @@ local function registerEvents()
   end
 
   -- Loi choi, khong phai lenh dev -- luon dang ky.
-  local tLC = CreateTrigger()
+  local tCult = CreateTrigger()
   for i = 1, #S.pids do
-    TriggerRegisterPlayerChatEvent(tLC, Player(S.pids[i]), "-lc", false)
+    TriggerRegisterPlayerChatEvent(tCult, Player(S.pids[i]), "-lc", false)
   end
-  TriggerAddAction(tLC, onLinhCanCmd)
+  TriggerAddAction(tCult, onCultCmd)
 
   -- "-next" goi dot ke tiep. LUON dang ky, khong theo DEV_COMMANDS:
   -- voi CFG.WAVE_WAIT_FIRST thi day la thu duy nhat khoi dong duoc van,
@@ -212,11 +212,11 @@ local function registerEvents()
       end
       -- Dang o cua so nghi thi -next la thu DUY NHAT di tiep duoc, nen
       -- bao ro ai la nguoi bam.
-      local cho = API.waveWaiting()
+      local waiting = API.waveWaiting()
       if API.waveNow() then
         API.msg(nil, CFG.C_GREY .. GetPlayerName(Player(pid)) ..
           " -> " .. API.t("wave_next") ..
-          (cho ~= nil and (" (" .. cho .. ")") or "") .. CFG.C_END)
+          (waiting ~= nil and (" (" .. waiting .. ")") or "") .. CFG.C_END)
       end
     end)
   end
@@ -280,8 +280,8 @@ local function registerEvents()
       local pid = GetPlayerId(GetTriggerPlayer())
       local raw = GetEventPlayerChatString() or ""
       -- "-reg" mau | "-reg mana" mana | "-reg 5" / "-reg mana 5" doi so giay
-      local loai = raw:find("mana", 1, true) and "mana" or "hp"
-      API.nativeRegen(pid, tonumber(raw:match("(%d+)")), loai)
+      local kind = raw:find("mana", 1, true) and "mana" or "hp"
+      API.nativeRegen(pid, tonumber(raw:match("(%d+)")), kind)
     end)
   end
 
@@ -321,7 +321,7 @@ local function registerEvents()
 
       if raw:match("^%s*%-quay") ~= nil then
         n = n or 10
-        if API.quayThemLuot ~= nil then API.quayThemLuot(pid, n) end
+        if API.fortuneAddRolls ~= nil then API.fortuneAddRolls(pid, n) end
         API.msg(pid, CFG.C_GREY .. "[dev] +" .. n .. " luot quay." .. CFG.C_END)
         API.panelRefresh(pid)
         return
@@ -330,7 +330,7 @@ local function registerEvents()
       if raw:match("^%s*%-da") ~= nil then
         n = n or 100
         local d = S.p[pid]
-        if d ~= nil then API.addDa(pid, n) end
+        if d ~= nil then API.addIron(pid, n) end
         API.msg(pid, CFG.C_GREY .. "[dev] +" .. n .. " da." .. CFG.C_END)
         API.panelRefresh(pid)
         return
@@ -343,22 +343,22 @@ local function registerEvents()
   -- Luon dang ky, khong theo DEV_COMMANDS: chua he nao gan vao block,
   -- nen day la cach DUY NHAT nhin thay bang CFG.BLOCKS co dung nhu dinh
   -- khong -- va de doi chieu voi vung Blk.. trong World Editor.
-  local tVung = CreateTrigger()
+  local tRegion = CreateTrigger()
   for i = 1, #S.pids do
-    TriggerRegisterPlayerChatEvent(tVung, Player(S.pids[i]), "-vung", true)
+    TriggerRegisterPlayerChatEvent(tRegion, Player(S.pids[i]), "-vung", true)
   end
-  TriggerAddAction(tVung, function()
+  TriggerAddAction(tRegion, function()
     local pid = GetPlayerId(GetTriggerPlayer())
     API.msg(pid, CFG.C_GOLD .. "=== Phan vung 25 block ===" .. CFG.C_END)
 
-    local thieu = 0
+    local missing = 0
     -- In tu hang TREN xuong, dung chieu nguoi choi nhin ban do.
     for row = S.grid.rows, 1, -1 do
       local line = ""
       for col = 1, S.grid.cols do
         local idx = API.blockIndex(col, row)
         local d   = API.blockRoleDef(idx)
-        if API.blockRegion(idx) == nil then thieu = thieu + 1 end
+        if API.blockRegion(idx) == nil then missing = missing + 1 end
         line = line .. string.format("%-14s", idx .. " " .. API.pick(d))
       end
       API.msg(pid, line)
@@ -366,13 +366,13 @@ local function registerEvents()
 
     -- Ping tam moi block, mau theo vai tro.
     API.forEachBlock(function(col, row, idx, x0, y0, x1, y1)
-      local m = API.blockRoleDef(idx).mau
+      local m = API.blockRoleDef(idx).color
       PingMinimapEx((x0 + x1) * 0.5, (y0 + y1) * 0.5, 6.0,
                     m[1], m[2], m[3], false)
     end)
 
-    if thieu > 0 then
-      API.msg(pid, CFG.C_RED .. "Thieu " .. thieu .. " vung " ..
+    if missing > 0 then
+      API.msg(pid, CFG.C_RED .. "Thieu " .. missing .. " vung " ..
         CFG.BLOCK_RGN_PREFIX .. ".. trong World Editor." .. CFG.C_END ..
         CFG.C_GREY .. " Chay: python w3region.py gen" .. CFG.C_END)
     end

@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Đã cài
 > **Cập nhật:** 2026-09-16
-> **Code:** [2_heropick.lua](../../src/2_nguoi_choi/2_heropick.lua), [2_heroframe.lua](../../src/4_giao_dien/2_heroframe.lua)
+> **Code:** [2_heropick.lua](../../src/2_player/2_heropick.lua), [2_heroframe.lua](../../src/4_ui/2_heroframe.lua)
 > **Khoá CFG:** `HEROES` `PICK_*` `HERO_*` `CARD_*`
 
 ## Nó là gì
@@ -182,7 +182,7 @@ thành một dòng, ngăn bằng `|`. Muốn viết dài hơn thì nới `CFG.CA
 | Cỡ chữ | Một cỡ mặc định cho mọi dòng — nhìn vào là một khối chữ đều đều | Ba cấp: `CARD_SCALE_TITLE` / `_NAME` / `_DESC` |
 
 Nhịp dọc **suy ra** từ cỡ icon và cỡ chữ (`rowH()` trong
-[2_heroframe.lua](../../src/4_giao_dien/2_heroframe.lua)), không gõ tay. Trước đây
+[2_heroframe.lua](../../src/4_ui/2_heroframe.lua)), không gõ tay. Trước đây
 vị trí ba dòng chữ là ba hằng số rời rạc (`y`, `y+0.018`, `y+0.040`) — đổi cỡ chữ
 một cái là cả ba lệch, đúng lỗi mà bảng phím R đã dính một lần.
 

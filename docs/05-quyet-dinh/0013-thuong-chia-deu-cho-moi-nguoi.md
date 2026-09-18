@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Đã chốt
 > **Ngày:** 2026-09-15
-> **Code:** [2_wave.lua](../../src/3_tran_dau/2_wave.lua) — `rewardAll`
+> **Code:** [2_wave.lua](../../src/3_battle/2_wave.lua) — `rewardAll`
 
 ## Bối cảnh
 

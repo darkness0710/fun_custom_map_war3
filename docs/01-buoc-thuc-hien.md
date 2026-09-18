@@ -14,8 +14,8 @@ sau — không dựng ba tầng rồi mới bật game lên xem.
 | Việc | Ở đâu |
 |---|---|
 | Đo map size thật từ `war3map.w3e` | [04-map/kich-thuoc.md](04-map/kich-thuoc.md) |
-| 3 người chơi + 1 phe địch, quan hệ đồng minh | [1_player.lua](../src/2_nguoi_choi/1_player.lua) |
-| Lưới 5×5 tự chia theo vùng chơi được | [4_geometry.lua](../src/1_nen/4_geometry.lua) |
+| 3 người chơi + 1 phe địch, quan hệ đồng minh | [1_player.lua](../src/2_player/1_player.lua) |
+| Lưới 5×5 tự chia theo vùng chơi được | [4_geometry.lua](../src/1_core/4_geometry.lua) |
 
 **Cách kiểm:** `python build.py`, vào map. Với `CFG.DEBUG = true` sẽ thấy bảng số
 lưới in ra chat (đối chiếu với [04-map/luoi-25-o.md](04-map/luoi-25-o.md)) và 25
@@ -39,7 +39,7 @@ Vùng `MyTarvenRegion` không còn dùng tới; xoá trong World Editor lúc nà
 
 ## ✅ Bước 5 — Đợt quái
 
-**Đã cài — chưa chơi thử.** [2_wave.lua](../src/3_tran_dau/2_wave.lua).
+**Đã cài — chưa chơi thử.** [2_wave.lua](../src/3_battle/2_wave.lua).
 
 Làm xong, theo đúng thứ tự đã định:
 
@@ -48,7 +48,7 @@ Làm xong, theo đúng thứ tự đã định:
 3. ✅ Áp đường cong chỉ số — EHP, giáp, sát thương, nhân theo số người.
 4. ✅ Tinh anh và boss (chỉ số + tên + thưởng).
 5. ✅ Tên quái theo cảnh giới + tầng, dòng báo thành phần đợt.
-6. ✅ Kinh tế **phẳng**: `THUONG_*`, ba đồng tiền Linh Khí · Vàng · Gỗ.
+6. ✅ Kinh tế **phẳng**: `REWARD_*`, ba đồng tiền Linh Khí · Vàng · Gỗ.
 7. ✅ Máu nhà tính lại mỗi đợt theo `HOUSE_HP_HITS`.
 
 Hai câu hỏi từng chặn bước này **đã quyết**:
@@ -81,7 +81,7 @@ Cách đo: dùng `-wave N` nhảy tới stage 1, 25, 50, 75, 100, bấm giờ xe
 
 Hai thứ từng chặn bước này **đã xong**: cả bảy ability đã có `Stats - Levels =
 10`, và `CFG.SKILL_DATA_LIVE` đã bật — sát thương ăn theo chỉ số thật qua
-[7_hieuung.lua](../src/2_nguoi_choi/7_hieuung.lua).
+[7_effect.lua](../src/2_player/7_effect.lua).
 
 Những thứ mới cài, chưa ai nhìn thấy chạy:
 
@@ -102,9 +102,9 @@ Những thứ mới cài, chưa ai nhìn thấy chạy:
 
 ## ⏸ Bước 7 — Trang Bị & Pháp Khí (đã cài, **đang khoá**)
 
-[5_trangbi.lua](../src/2_nguoi_choi/5_trangbi.lua) ·
-[6_phapkhi.lua](../src/2_nguoi_choi/6_phapkhi.lua) — code chạy được, thẻ vẫn
-hiện, nhưng `TRANGBI_LOCKED` và `PHAPKHI_LOCKED` đều `true`.
+[5_gear.lua](../src/2_player/5_gear.lua) ·
+[6_relic.lua](../src/2_player/6_relic.lua) — code chạy được, thẻ vẫn
+hiện, nhưng `GEAR_LOCKED` và `RELIC_LOCKED` đều `true`.
 
 **Vì sao khoá, và vì sao mở lại không đơn giản là đặt `false`:**
 
@@ -137,9 +137,9 @@ Hai quyết định kèm theo:
 
 | Hệ | Mã | Làm gì |
 |---|---|---|
-| **Shop** (thẻ V) | [8_shop.lua](../src/2_nguoi_choi/8_shop.lua) | Hệ duy nhất tiêu **Vàng**, duy nhất bán đồ tiêu hao. Gộp lọ cùng loại vào một ô nên không đầy túi sau sáu lần mua |
-| **Cơ Duyên** | [10_quay.lua](../src/2_nguoi_choi/10_quay.lua) · [5_quayframe.lua](../src/4_giao_dien/5_quayframe.lua) | Khung ba cột riêng, mở ngay khi tinh anh/boss chết. Chọn 1 trong 3: đá · chỉ số · vàng |
-| **Dùng đồ** | [9_dungdo.lua](../src/2_nguoi_choi/9_dungdo.lua) | Hàng số trên cạnh Esc, **thêm** vào numpad chứ không thay |
+| **Shop** (thẻ V) | [8_shop.lua](../src/2_player/8_shop.lua) | Hệ duy nhất tiêu **Vàng**, duy nhất bán đồ tiêu hao. Gộp lọ cùng loại vào một ô nên không đầy túi sau sáu lần mua |
+| **Cơ Duyên** | [10_fortune.lua](../src/2_player/10_fortune.lua) · [5_fortuneframe.lua](../src/4_ui/5_fortuneframe.lua) | Khung ba cột riêng, mở ngay khi tinh anh/boss chết. Chọn 1 trong 3: đá · chỉ số · vàng |
+| **Dùng đồ** | [9_useitem.lua](../src/2_player/9_useitem.lua) | Hàng số trên cạnh Esc, **thêm** vào numpad chứ không thay |
 
 Chi tiết: [quay-thuong.md](02-he-thong/quay-thuong.md) ·
 [kinh-te.md](02-he-thong/kinh-te.md).

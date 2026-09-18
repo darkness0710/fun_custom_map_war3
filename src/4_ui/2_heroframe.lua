@@ -184,12 +184,12 @@ local function buildRow(pid, parent, hero, dy)
 
   -- Ba gach noi thanh MOT dong. Gach cuoi luon la diem yeu nen to do --
   -- do la thu duy nhat lam nguoi choi phai nghi xem nen chon con nao.
-  local list = (API.lang() == "en" and hero.mota_en) or hero.mota
+  local list = (API.lang() == "en" and hero.desc_en) or hero.desc_vi
   if list ~= nil and #list > 0 then
     local parts = {}
     for i = 1, #list do
-      local mau = (i == #list) and CFG.C_RED or CFG.C_JADE
-      parts[i] = mau .. list[i] .. CFG.C_END
+      local color = (i == #list) and CFG.C_RED or CFG.C_JADE
+      parts[i] = color .. list[i] .. CFG.C_END
     end
     textLine(pid, row, "HeroRowDesc", x, P + CFG.CARD_LINE + 0.006, w,
              CFG.CARD_SCALE_DESC,
@@ -264,7 +264,7 @@ local function buildPanel(pid, list)
     if row ~= nil then
       BlzTriggerRegisterFrameEvent(S.hframe.trig, row, FRAMEEVENT_CONTROL_CLICK)
       -- Ghi SO THU TU trong CFG.HEROES, khong phai id: kenh dong bo chi
-      -- tai duoc so nho. Xem src/1_nen/3_sync.lua.
+      -- tai duoc so nho. Xem src/1_core/3_sync.lua.
       st.map[row] = { pid = pid, idx = API.heroIndex(list[i].id) }
       made = made + 1
     end

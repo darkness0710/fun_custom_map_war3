@@ -2,16 +2,16 @@
 
 > **Trạng thái:** **Đã cài** — khung chạy đủ, **chỉ số còn rỗng**
 > **Cập nhật:** 2026-09-17
-> **Khoá CFG:** `TRANGBI` `TRANGBI_CAP` `TRANGBI_XS` `TRANGBI_GIA`
-> `TRANGBI_TIEN_GIAI` `OP_TB_UP` `OP_TB_TIEN`
-> **Mã:** [5_trangbi.lua](../../src/2_nguoi_choi/5_trangbi.lua)
+> **Khoá CFG:** `GEAR` `GEAR_CAP` `GEAR_ODDS` `GEAR_PRICE`
+> `GEAR_DISMANTLE` `OP_GEAR_UP` `OP_GEAR_DISMANTLE`
+> **Mã:** [5_gear.lua](../../src/2_player/5_gear.lua)
 
 **Sáu món** — Kiếm · Giáp · Khiên · Giày · Dây Chuyền · Nhẫn — mỗi món leo
 **100 bậc**, và trần của tất cả là **Tu Vi của chính người chơi**.
 
 > **Chỉ số còn rỗng có chủ ý.** Khung tiến hoá chạy đầy đủ (tên, cấp, xác
 > suất, Tiến Giai, trần Tu Vi) nhưng **chưa món nào cộng gì cả**. Chỗ chỉ số
-> sẽ nằm là `API.trangBiMult` / `API.trangBiChiSo`, hiện trả về `1.0` và `0`.
+> sẽ nằm là `API.gearMult` / `API.gearStat`, hiện trả về `1.0` và `0`.
 
 ## Thang
 
@@ -102,7 +102,7 @@ kiem DANG DUOI tran   chua leo het, van con cap de danh bac
 Đá quá rẻ → luôn dính trần → bấm rồi chờ. Đá quá đắt → luôn tụt sau → cái trần
 chưa bao giờ có hiệu lực thật.
 
-**Cả hai luật chỉ cùng có nghĩa ở dải giữa**, và `CFG.QUAY_DA` là nút chỉnh dải
+**Cả hai luật chỉ cùng có nghĩa ở dải giữa**, và `CFG.FORTUNE_IRON` là nút chỉnh dải
 đó. Đây là con số đáng đo nhất ở lần chơi thử đầu.
 
 ## Ba điều kỹ thuật phải làm đúng
@@ -111,7 +111,7 @@ chưa bao giờ có hiệu lực thật.
 nút. Bấm frame chỉ nổ trên máy người bấm; gọi `GetRandomInt` ở đó là mỗi máy
 tiêu một số khác nhau từ chuỗi ngẫu nhiên, và **từ giây đó mọi số ngẫu nhiên của
 cả ván đều lệch** — kể cả thẻ Cơ Duyên. Đúng bài học đầu
-[10_quay.lua](../../src/2_nguoi_choi/10_quay.lua).
+[10_fortune.lua](../../src/2_player/10_fortune.lua).
 
 **2. Cấp là state trong `S.p[pid]`** — `d.tb[i] = { canh = 0..20, cap = 0..5 }`.
 Không gắn vào item, không gắn vào ability handle. `canh = 0` nghĩa là chưa luyện
@@ -159,8 +159,8 @@ diện hỏng.
 ## Còn thiếu — chỉ số
 
 **Mỗi cấp cho gì, bao nhiêu.** Chưa chốt, **hoãn có chủ ý**. Khung đã chạy nên
-nó không còn chặn gì; chỗ điền là hai hàm `multOf` / `chiSoOf` trong
-[5_trangbi.lua](../../src/2_nguoi_choi/5_trangbi.lua), đang trả về `1.0` và `0`.
+nó không còn chặn gì; chỗ điền là hai hàm `multOf` / `statOf` trong
+[5_gear.lua](../../src/2_player/5_gear.lua), đang trả về `1.0` và `0`.
 
 Ràng buộc đã biết khi thiết kế phần đó:
 
@@ -176,18 +176,18 @@ Ràng buộc đã biết khi thiết kế phần đó:
 
 | Khoá | Giá trị |
 |---|---|
-| `TRANGBI` | 6 món `{ ten, en, icon }` |
-| `TRANGBI_CAP` | 5 tên cấp — cùng dạng `TIER_NAMES` |
-| `TRANGBI_XS` | `{ 1.00, 0.75, 0.50, 0.25, 0.15 }` |
-| `TRANGBI_GIA` | `1` đá mỗi lần luyện |
-| `TRANGBI_TIEN_GIAI` | `10` đá |
-| `OP_TB_UP` `OP_TB_TIEN` | `7` `12` |
+| `GEAR` | 6 món `{ ten, en, icon }` |
+| `GEAR_CAP` | 5 tên cấp — cùng dạng `TIER_NAMES` |
+| `GEAR_ODDS` | `{ 1.00, 0.75, 0.50, 0.25, 0.15 }` |
+| `GEAR_PRICE` | `1` đá mỗi lần luyện |
+| `GEAR_DISMANTLE` | `10` đá |
+| `OP_GEAR_UP` `OP_GEAR_DISMANTLE` | `7` `12` |
 
 > **Icon Khiên đang mượn tạm của Talisman.** Trong sáu đường dẫn đã chứng minh
 > vẽ ra hình thì không có cái nào là khiên, mà đoán một đường dẫn sai thì ra ô
 > **xanh lá** (lỗi `BTNRingViolet` đã dính). Sửa bằng cách mở World Editor →
 > Object Editor → một item bất kỳ → `Art - Icon`, chép đường dẫn thật vào
-> `CFG.TRANGBI`.
+> `CFG.GEAR`.
 
 ### Ngân sách đá — **chưa cân**
 
@@ -196,7 +196,7 @@ Sáu món, mỗi món 20 cảnh giới:
 ```
 1 mon  = 20 x (15 lan luyen + 10 Tien Giai)  =  500 da
 6 mon                                        = 3,000 da
-Co Duyen the 1 (QUAY_DA = 3) ca van          =   420 da
+Co Duyen the 1 (FORTUNE_IRON = 3) ca van          =   420 da
 ```
 
 Thiếu **~7 lần**. Chủ dự án đã biết và **để sau** — nguồn đá sẽ bổ sung. Ghi

@@ -8,7 +8,7 @@ w3region.py -- sinh va doc war3map.w3r (vung cua World Editor).
     python w3region.py gen --dry       # chi in ra, khong ghi
 
 MUC DICH. Luoi 25 block hien chi ton tai duoi dang TOA DO tinh luc chay
-(src/1_nen/4_geometry.lua). World Editor khong nhin thay chung, nen khong
+(src/1_core/4_geometry.lua). World Editor khong nhin thay chung, nen khong
 cach nao cam chuot ma sua. File nay ghi chung thanh VUNG THAT trong
 war3map.w3r -- mo World Editor la thay du 25 o trong Region Palette, keo
 tha va doi kich thuoc duoc.
@@ -56,7 +56,7 @@ PREFIX  = "Blk"          # tien to cua vung do file nay quan ly
 BORDER_TILES = 6
 TILE         = 128.0
 
-# Phai khop CFG trong src/1_nen/1_config.lua.
+# Phai khop CFG trong src/1_core/1_config.lua.
 GRID_COLS   = 5
 GRID_ROWS   = 5
 RIVER_TILES = 8
@@ -210,26 +210,26 @@ def cmd_gen(map_dir, dry):
     ver, regs = read_regions(w3r)
     g = grid(os.path.join(map_dir, "war3map.w3e"))
 
-    giu = [r for r in regs if not r["name"].startswith(PREFIX)]
+    keep = [r for r in regs if not r["name"].startswith(PREFIX)]
     bo  = [r for r in regs if r["name"].startswith(PREFIX)]
 
-    moi = []
+    new = []
     for row in range(1, GRID_ROWS + 1):
         for col in range(1, GRID_COLS + 1):
             idx = (row - 1) * GRID_COLS + col
             x0, y0, x1, y1 = bounds(g, col, row)
-            moi.append(dict(l=x0, b=y0, r=x1, t=y1,
+            new.append(dict(l=x0, b=y0, r=x1, t=y1,
                             name="%s%02d" % (PREFIX, idx), cre=0,
                             wea=b"\0\0\0\0", amb="", col=COLOR_DEFAULT))
 
     print("giu nguyen %d vung tu tao: %s"
-          % (len(giu), ", ".join(r["name"] for r in giu) or "(khong co)"))
+          % (len(keep), ", ".join(r["name"] for r in keep) or "(khong co)"))
     print("thay the   %d vung %s* cu" % (len(bo), PREFIX))
     print("sinh moi   %d vung block %.0f x %.0f don vi"
-          % (len(moi), g["blockW"], g["blockH"]))
+          % (len(new), g["blockW"], g["blockH"]))
 
     # Vung tu tao roi vao block nao -- de doi chieu voi luoi logic.
-    for r in giu:
+    for r in keep:
         hit = block_at(g, (r["l"] + r["r"]) / 2, (r["b"] + r["t"]) / 2)
         if hit:
             print("   %-16s nam trong block #%d (%d,%d)"
@@ -241,38 +241,38 @@ def cmd_gen(map_dir, dry):
         print("\n[dry] khong ghi gi.")
         return
 
-    n = write_regions(w3r, ver, giu + moi)
-    print("\n[ok] da ghi %s -- %d vung, %d byte" % (w3r, len(giu + moi), n))
+    n = write_regions(w3r, ver, keep + new)
+    print("\n[ok] da ghi %s -- %d vung, %d byte" % (w3r, len(keep + new), n))
     print("[ok] ban cu chep vao build/war3map.w3r.goc")
     print("     Mo World Editor -> phim R -> thay %s01..%s%02d."
           % (PREFIX, PREFIX, GRID_COLS * GRID_ROWS))
 
 
-def cmd_rm(map_dir, ten, dry):
+def cmd_rm(map_dir, name, dry):
     """Xoa mot vung theo ten. Dung cho vung bo di ma con sot lai."""
     w3r = os.path.join(map_dir, "war3map.w3r")
     ver, regs = read_regions(w3r)
 
     # Ten ket thuc bang * thi xoa theo TIEN TO: "Blk*" xoa ca 25 vung.
-    if ten.endswith("*"):
-        pre = ten[:-1].lower()
+    if name.endswith("*"):
+        pre = name[:-1].lower()
         khop = lambda nm: nm.lower().startswith(pre)
     else:
-        khop = lambda nm: nm.lower() == ten.lower()
+        khop = lambda nm: nm.lower() == name.lower()
 
-    giu = [r for r in regs if not khop(r["name"])]
+    keep = [r for r in regs if not khop(r["name"])]
     bo  = [r for r in regs if khop(r["name"])]
     if not bo:
-        print("[canh bao] khong co vung nao khop %r" % ten)
+        print("[canh bao] khong co vung nao khop %r" % name)
         print("   dang co: " + ", ".join(r["name"] for r in regs))
         return
     print("xoa %d vung: %s" % (len(bo), ", ".join(r["name"] for r in bo)))
-    print("con lai %d vung" % len(giu))
+    print("con lai %d vung" % len(keep))
     if dry:
         print("[dry] khong ghi gi.")
         return
-    n = write_regions(w3r, ver, giu)
-    print("[ok] da ghi %s -- %d vung, %d byte" % (w3r, len(giu), n))
+    n = write_regions(w3r, ver, keep)
+    print("[ok] da ghi %s -- %d vung, %d byte" % (w3r, len(keep), n))
     print("     dong gg_rct_* tuong ung trong war3map.lua se mat o lan"
           " World Editor luu sau.")
 

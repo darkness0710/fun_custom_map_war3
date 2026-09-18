@@ -1,5 +1,5 @@
 -- ============================================================
---  9_dungdo.lua  --  Dung do trong tui bang HANG SO TREN (canh Esc)
+--  9_useitem.lua  --  Dung do trong tui bang HANG SO TREN (canh Esc)
 --
 --  Warcraft chi gan san san tui do vao numpad (7/8/4/5/1/2). May
 --  khong co numpad, va tay phai roi chuot de voi sang numpad, nen
@@ -19,7 +19,7 @@
 -- ============================================================
 
 -- Chay tren MOI may, tu kenh dong bo. o = 0..5.
-local function dung(pid, o)
+local function use(pid, o)
   local d = S.p[pid]
   if d == nil or d.hero == nil then return end
   if UnitItemInSlot == nil or UnitUseItem == nil then return end
@@ -29,23 +29,23 @@ local function dung(pid, o)
   UnitUseItem(d.hero, it)
 end
 
-local function startDungDo()
+local function startUseItem()
   if CFG.ITEM_KEYS == nil or #CFG.ITEM_KEYS == 0 then return end
   if BlzTriggerRegisterPlayerKeyEvent == nil then
-    API.trace("dungdo: KHONG co BlzTriggerRegisterPlayerKeyEvent")
+    API.trace("useitem: KHONG co BlzTriggerRegisterPlayerKeyEvent")
     return
   end
 
-  API.syncOn(CFG.OP_ITEM, dung)
+  API.syncOn(CFG.OP_ITEM, use)
 
-  local thieu, xong = {}, 0
+  local missing, done = {}, 0
   for k = 1, #CFG.ITEM_KEYS do
-    local ten = CFG.ITEM_KEYS[k]
-    local key = _G["OSKEY_" .. ten]
+    local name = CFG.ITEM_KEYS[k]
+    local key = _G["OSKEY_" .. name]
     if key == nil then
       -- Go sai ten hang la tra ve nil roi im lang khong lam gi ca --
       -- ghi ra chu khong nuot (ADR 0012). "-nat oskey" liet ke ten that.
-      thieu[#thieu + 1] = "OSKEY_" .. ten
+      missing[#missing + 1] = "OSKEY_" .. name
     else
       local t = CreateTrigger()
       for i = 1, #S.pids do
@@ -56,16 +56,16 @@ local function startDungDo()
       TriggerAddAction(t, function()
         API.syncSend(GetPlayerId(GetTriggerPlayer()), CFG.OP_ITEM, k - 1)
       end)
-      xong = xong + 1
+      done = done + 1
     end
   end
 
-  if #thieu > 0 then
-    API.trace("dungdo: THIEU hang so " .. table.concat(thieu, " ") ..
+  if #missing > 0 then
+    API.trace("useitem: THIEU hang so " .. table.concat(missing, " ") ..
               " -- go '-nat oskey' de tim ten dung")
   end
-  API.trace("dungdo: gan " .. xong .. "/" .. #CFG.ITEM_KEYS .. " phim")
+  API.trace("useitem: gan " .. done .. "/" .. #CFG.ITEM_KEYS .. " phim")
 end
 
-API.dungDo      = dung
-API.startDungDo = startDungDo
+API.useItem      = use
+API.startUseItem = startUseItem

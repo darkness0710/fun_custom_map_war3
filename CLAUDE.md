@@ -11,18 +11,22 @@ Map thủ trận Warcraft III (patch **1.31.1**), chủ đề tu tiên. Code Lua
 
 | | Phải là | Không được |
 |---|---|---|
-| Tên hàm | `drawCard`, `addGold`, `heroRecompute` | `rutThe`, `themVang`, `capNhatHero` |
+| Tên hàm | `drawCards`, `addGold`, `heroRecompute` | `rutThe`, `themVang`, `capNhatHero` |
 | Tên biến | `remaining`, `bossDamage`, `tierName` | `conLai`, `satThuongBoss`, `tenTang` |
 | Khoá bảng / field | `d.rolls`, `b.shield` | `d.luotQuay`, `b.khien` |
 | Khoá `CFG` | `CFG.BOSS_SECONDS` | `CFG.BOSS_GIAY` |
-| Tên thư mục | `src/core/`, `src/player/` | `src/1_nen/`, `src/2_nguoi_choi/` |
-| Tên file Lua | `linhcan.lua` → `cultivation.lua` | `3_linhcan.lua` |
+| Khoá i18n | `boss_enraged`, `gear_up` | `boss_cuong`, `tb_len` |
+| Tên thư mục | `src/2_player/` | `src/2_nguoi_choi/` |
+| Tên file Lua | `3_cultivation.lua` | `3_linhcan.lua` |
 | Tên file Python/docs | tiếng Anh | |
+
+Số ở đầu tên thư mục và file Lua là **thứ tự nạp** của `build.py`, không phải
+tiếng Việt — giữ nguyên.
 
 ### Ngoại lệ duy nhất: chữ hiển thị cho người chơi
 
 Mọi chuỗi người chơi **nhìn thấy** đi qua i18n trong
-[`src/1_nen/6_lang.lua`](src/1_nen/6_lang.lua) — hai bảng `T.en` và `T.vi`:
+[`src/1_core/6_i18n.lua`](src/1_core/6_i18n.lua) — hai bảng `T.en` và `T.vi`:
 
 ```lua
 API.msg(pid, API.t("boss_enraged"))        -- ĐÚNG
@@ -32,8 +36,9 @@ API.msg(pid, "Boss phat cuong!")           -- SAI: chuỗi cứng
 **Khoá i18n cũng là tiếng Anh** (`boss_enraged`, không phải `boss_cuong`); chỉ
 *giá trị* trong `T.vi` mới là tiếng Việt.
 
-Tên dữ liệu trong bảng (cảnh giới, kỹ năng, boss…) dùng cặp `ten` / `en` và đọc
-qua `API.pick(tbl)` — đó không phải định danh, đó là dữ liệu.
+Tên dữ liệu trong bảng (cảnh giới, kỹ năng, boss…) dùng cặp `vi` / `en` và đọc
+qua `API.pick(tbl)`; mô tả dài thì `desc_vi` / `desc_en`. Đó không phải định
+danh, đó là dữ liệu — nhưng *khoá* vẫn là mã ngôn ngữ, không phải `ten`/`mota`.
 
 ### Chú thích thì viết tiếng Việt
 
@@ -41,15 +46,27 @@ Chú thích trong code viết **tiếng Việt không dấu** (giữ như hiện
 `war3map.lua` đi qua nhiều công cụ nhị phân, dấu tiếng Việt từng gây lỗi mã hoá).
 Docs trong `docs/` viết tiếng Việt **có dấu** bình thường.
 
-### Mã nguồn hiện tại **chưa** theo quy ước này
+### Mã nguồn đã đổi xong (2026-09-18)
 
-Đo được: **5/5 thư mục**, **26/26 file Lua**, và khoảng **412** hàm/`API.*` đang
-dùng tiếng Việt không dấu (`rutThe`, `themLuot`, `chanDia`, `linhCanStatBonus`,
-`src/2_nguoi_choi/3_linhcan.lua`…).
+Cả 5 thư mục, 26/26 file Lua, toàn bộ hàm/biến/field/khoá `CFG`/khoá i18n đều
+đã sang tiếng Anh. Kiểm lại bằng cách quét định danh *ngoài chú thích và chuỗi*
+— hiện còn **0** chỗ.
 
-Quy ước áp dụng cho **code mới**. Đổi tên toàn bộ là một lần sửa lớn chạm gần như
-mọi file — làm khi được yêu cầu rõ, và làm **một lần một** (đổi tên thuần, không
-kèm thay đổi hành vi) để `git diff` còn đọc được.
+Bài học của lần đổi đó, đáng nhớ cho lần sau:
+
+- **Che chú thích và chuỗi trước khi đổi tên.** Lần đầu làm ẩu, `"Phong thu"`
+  thành `"Phong tries"` — hỏng thật chứ không phải phiền nhỏ. Cách đúng: thay
+  chú thích/chuỗi bằng placeholder, đổi định danh, rồi trả lại; chuỗi nào cần
+  đổi (khoá i18n, tên cơ chế) thì một lượt riêng, khớp **trọn** chuỗi.
+- **Đổi tên theo từng file thì dễ đứt liên kết giữa file.** File A ghi
+  `out.dong`, file B đọc `d.row` — Lua trả `nil`, không báo gì. Sau khi đổi
+  phải quét: field nào *đọc* mà không ai *ghi*.
+- **Đổi định danh mà quên chuỗi tương ứng.** `API.t("quay_the_" .. kind)` trong
+  khi khoá đã thành `fortune_card_*`; `ICON.chiso` thành `ICON.statVal` trong
+  khi `kind` vẫn là `"chiso"`; `CFG.BOSS_MECH` còn khoá `chandia` trong khi
+  `3_boss.lua` tra bằng `"slam"`. Cả ba đều im lặng cho tới lúc chạy.
+- Đổi tên thì làm **một lần một** (đổi tên thuần, không kèm thay đổi hành vi)
+  để `git diff` còn đọc được.
 
 ---
 

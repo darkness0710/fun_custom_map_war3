@@ -200,7 +200,7 @@ vòng ghi–đọc.
 | `ACce` | Cleaving Attack (**lấy từ unit**, không phải hero) | chưa đo |
 
 > **Bốn dòng "chưa đo" ở trên không còn chặn việc gì.**
-> [7_hieuung.lua](../../src/2_nguoi_choi/7_hieuung.lua) không sửa trường sát
+> [7_effect.lua](../../src/2_player/7_effect.lua) không sửa trường sát
 > thương của ability — nó bắt `EVENT_PLAYER_UNIT_SPELL_EFFECT` rồi **tự gọi**
 > `UnitDamageTarget`. Sát thương gốc của Warcraft vẫn còn, nhưng ở bậc 10 với
 > Tu Vi bậc 20 thì nó là sai số làm tròn.

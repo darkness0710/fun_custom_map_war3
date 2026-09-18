@@ -177,7 +177,7 @@ local function buildPanel(pid, slotIndex)
 
       BlzTriggerRegisterFrameEvent(S.sframe.trig, btn, FRAMEEVENT_CONTROL_CLICK)
       -- Ghi SO THU TU cua lua chon, khong phai id ability: kenh dong bo
-      -- chi tai duoc so nho. Xem src/1_nen/3_sync.lua.
+      -- chi tai duoc so nho. Xem src/1_core/3_sync.lua.
       st.map[btn] = { pid = pid, slot = slotIndex, ci = i }
       made = made + 1
     end

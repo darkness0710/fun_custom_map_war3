@@ -46,7 +46,7 @@ máu ở đó.
 
 > Ba nguồn giáp phụ đó **chưa tồn tại trong `CFG`** — hiện chỉ có giáp nền
 > `MOB_ARMOR_BASE + MOB_ARMOR_PER_REALM × (r−1)`, và `hpFromEhp()` trong
-> [2_wave.lua](../../src/3_tran_dau/2_wave.lua) đã chia máu theo đúng luật này.
+> [2_wave.lua](../../src/3_battle/2_wave.lua) đã chia máu theo đúng luật này.
 > Luật viết sẵn cho lúc thêm chúng vào.
 
 Hệ quả trực tiếp: **đổi `MOB_ARMOR_PER_REALM` không đổi độ khó.** Nó chỉ đổi tỉ

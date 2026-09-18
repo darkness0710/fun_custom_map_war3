@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Đã cài
 > **Cập nhật:** 2026-09-16
-> **Code:** [2_wave.lua](../../src/3_tran_dau/2_wave.lua) — `decode()`, `tierLabel()`
+> **Code:** [2_wave.lua](../../src/3_battle/2_wave.lua) — `decode()`, `tierLabel()`
 > **Khoá CFG:** `REALMS` `TIERS_PER_REALM`
 
 Bảng tra. Đây là dữ liệu tham chiếu, không phải luật — luật nằm ở
@@ -14,12 +14,12 @@ Bảng tra. Đây là dữ liệu tham chiếu, không phải luật — luật 
 > *Linh Căn* là **tư chất bẩm sinh** — thứ không đổi được. Hệ này thì ngược lại,
 > nó là **bậc tu luyện**, lên từng nấc theo cảnh giới. Đổi cả họ định danh là sửa
 > ~50 chỗ ở 7 file mà không đổi một hành vi nào, nên chỉ đổi nhãn; chỗ lệch duy
-> nhất ghi ở đầu [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua).
+> nhất ghi ở đầu [3_cultivation.lua](../../src/2_player/3_cultivation.lua).
 
 ## Đột phá cộng bao nhiêu chỉ số
 
 Mỗi lần đột phá **cộng thêm** một cục, cục sau lớn hơn cục trước `×1.30`
-(`LINHCAN_STAT_GAIN = 50`, `LINHCAN_STAT_STEP = 1.30`):
+(`CULT_STAT_GAIN = 50`, `CULT_STAT_STEP = 1.30`):
 
 | Bậc | Cộng lần này | Chỉ số | Hệ số | Chưởng bậc 10 | EHP quái | **Phát** | Sát thương quái |
 |---|---|---|---|---|---|---|---|
@@ -34,7 +34,7 @@ Mỗi lần đột phá **cộng thêm** một cục, cục sau lớn hơn cục
 ### Vì sao cột "Phát" đứng yên
 
 **Quái bám theo chính đường cong Tu Vi**, không có đường cong riêng
-(`CFG.MOB_EHP_THEO_LINHCAN`):
+(`CFG.MOB_EHP_FOLLOW_CULT`):
 
 ```
 EHP quái = MOB_EHP_BASE × (hệ số Tu Vi của cảnh giới) × MOB_EHP_GROWTH^(tầng−1)
@@ -56,11 +56,11 @@ giao kèo `500 Linh Khí/cảnh giới = 500 một lần đột phá`.
 Mũ của `MOB_EHP_GROWTH` là **(tầng − 1)**, không phải (stage − 1): phần tăng
 trưởng theo cảnh giới đã nằm trong hệ số rồi, đếm hai lần là nhân đôi độ dốc.
 
-Sát thương quái dùng cùng hệ số nhưng **mũ `0.85`** (`MOB_DMG_THEO_MU`) — quái
+Sát thương quái dùng cùng hệ số nhưng **mũ `0.85`** (`MOB_DMG_FOLLOW_POW`) — quái
 độc chậm hơn hero khoẻ lên một chút, cố ý, để người chơi thấy mình đang đẩy lên
 chứ không giậm chân.
 
-### Chọn `LINHCAN_STAT_STEP`
+### Chọn `CULT_STAT_STEP`
 
 Gấp đôi (`2.0`) đúng 19 lần cho ra **26 triệu** chỉ số và **138 triệu** máu quái
 — vỡ map.

@@ -11,7 +11,7 @@
 > **Hai đường đăng ký ESC nằm chung một trigger nên một lần bấm nổ HAI lần.** Hồi
 > ESC còn là chỉ-tắt thì vô hại (lần hai đóng một bảng đã đóng); từ lúc thành
 > bật/tắt thì lần hai **huỷ** lần một — bảng mở rồi đóng ngay trong cùng khung
-> hình, nhìn y như ESC không làm gì. Chặn trùng `CFG.PANEL_ESC_KHOA = 0.25`.
+> hình, nhìn y như ESC không làm gì. Chặn trùng `CFG.PANEL_ESC_LOCK = 0.25`.
 
 > **Viền nút tự vẽ, không mượn backdrop có sẵn** *(2026-09-16)*. Hai lần hỏng
 > trước khi ra cách này:
@@ -33,9 +33,9 @@
 
 > **Trạng thái:** Đã cài — **cả bốn thẻ có nội dung**
 > **Cập nhật:** 2026-09-16
-> **Code:** [1_panel.lua](../../src/4_giao_dien/1_panel.lua) (khung),
-> [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua),
-> [4_skill.lua](../../src/2_nguoi_choi/4_skill.lua) (nội dung)
+> **Code:** [1_panel.lua](../../src/4_ui/1_panel.lua) (khung),
+> [3_cultivation.lua](../../src/2_player/3_cultivation.lua),
+> [4_skill.lua](../../src/2_player/4_skill.lua) (nội dung)
 > **Khoá CFG:** `PANEL_X` `PANEL_Y` `PANEL_W` `PANEL_GRID` `PANEL_GRID_TEX`
 > **Liên quan:** [ky-nang.md](ky-nang.md), [kinh-te.md](kinh-te.md)
 
@@ -66,8 +66,8 @@ Bấm **E** mở một bảng frame che giữa màn hình, có bốn thẻ:
 └──────────────────────────────────────────────┘
 ```
 
-Hạ tầng đã có sẵn: [3_skillframe.lua](../../src/4_giao_dien/3_skillframe.lua) và
-[2_heroframe.lua](../../src/4_giao_dien/2_heroframe.lua) đã vẽ được panel, nút, icon, và đã
+Hạ tầng đã có sẵn: [3_skillframe.lua](../../src/4_ui/3_skillframe.lua) và
+[2_heroframe.lua](../../src/4_ui/2_heroframe.lua) đã vẽ được panel, nút, icon, và đã
 xử lý đồng bộ nhiều người. Bảng này dùng lại đúng khuôn đó.
 
 ## Bốn thẻ, bốn hệ nâng cấp
@@ -95,8 +95,8 @@ Bốn hệ không cùng hình dạng, nên bảng có hai kiểu thân chứ kh�
 trong 20 bậc chỉ có đúng bậc kế tiếp là mua được.
 
 ```lua
-info(pid) -> { tieuDe, phu, dong = {{nhan, truoc, sau}, ...},
-               tienDo, ghiChu, nut, batNut }
+info(pid) -> { titleF, phu, dong = {{nhan, truoc, sau}, ...},
+               progress, note, nut, btnOn }
 action(pid)
 ```
 
@@ -104,8 +104,8 @@ action(pid)
 Dùng cho ba thẻ còn lại.
 
 ```lua
-soMuc                         -- bang này cần mấy dòng
-items(pid) -> { { icon, ten, mota, trangThai, nut, batNut }, ... }
+rows                         -- bang này cần mấy dòng
+items(pid) -> { { icon, ten, mota, status, nut, btnOn }, ... }
 itemAction(pid, i)
 ```
 
@@ -129,7 +129,7 @@ nó đã chạy được.
 
 ## Thẻ Tu Vi — **đã cài**
 
-> Code: [3_linhcan.lua](../../src/2_nguoi_choi/3_linhcan.lua). Mở bằng `-lc`.
+> Code: [3_cultivation.lua](../../src/2_player/3_cultivation.lua). Mở bằng `-lc`.
 > Không vẽ được frame thì tự lùi về thông báo chữ, và `-lc up` đột phá
 > thẳng không cần bảng.
 
@@ -152,10 +152,10 @@ phải sửa gì.
 > thương — thiếu một nửa. Phải giải ngược để bù:
 >
 > ```
-> chiSo(r) = (DMG_BASE + STAT_BASE) × STEP^(r-1) − DMG_BASE
+> statProbe(r) = (DMG_BASE + STAT_BASE) × STEP^(r-1) − DMG_BASE
 > ```
 >
-> `CFG.LINHCAN_DMG_BASE` và `LINHCAN_STAT_BASE` phải khớp hero thật trong Object
+> `CFG.CULT_DMG_BASE` và `CULT_STAT_BASE` phải khớp hero thật trong Object
 > Editor thì nhân số mới đúng. Bảng `-lc` in ra nhân số thực để đối chiếu.
 
 ## Thẻ Kỹ Năng
@@ -223,8 +223,8 @@ vào dòng kia. Đó chính là lỗi "click bị trượt". Giờ `0,048` và `
 **Chiều cao bảng suy ra từ số mục của thẻ dài nhất**, không gõ tay:
 
 ```lua
--- tinh luc startPanel(), tu truong soMuc cua tung the
-MAX_ITEMS = max(tab.soMuc)
+-- tinh luc startPanel(), tu truong rows cua tung the
+MAX_ITEMS = max(tab.rows)
 panelH()  = PAD + TAB_H + GAP + HEAD_H + GAP + MAX_ITEMS*ROW + GAP + FOOT + PAD
 ```
 

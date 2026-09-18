@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Đã cài, chưa phủ hết
 > **Cập nhật:** 2026-09-16
-> **Code:** [6_lang.lua](../../src/1_nen/6_lang.lua)
+> **Code:** [6_i18n.lua](../../src/1_core/6_i18n.lua)
 > **Khoá CFG:** `LANG`
 
 Một bộ nguồn, xuất ra được bản tiếng Anh và bản tiếng Việt.
@@ -20,17 +20,17 @@ làm bẩn cây làm việc, và `git diff` không nhảy lên sau mỗi lần b
 ## Hai cách, dùng cho hai thứ khác nhau
 
 **`API.t("key")` — chữ cố định của giao diện.** Nằm trong bảng `T` ở
-[6_lang.lua](../../src/1_nen/6_lang.lua), một chỗ duy nhất. Nhận thêm tham số
+[6_i18n.lua](../../src/1_core/6_i18n.lua), một chỗ duy nhất. Nhận thêm tham số
 như `string.format`:
 
 ```lua
-API.t("skill_up", tenKyNang, 5, 10)   -- "Earthshatter reached level 5/10."
+API.t("skill_up", skillName, 5, 10)   -- "Earthshatter reached level 5/10."
 ```
 
 **`API.pick(tbl)` — tên nằm trong bảng dữ liệu.** Cảnh giới, kỹ năng, hero:
 
 ```lua
-{ ten = "Pham Nhan", en = "Mortal", coi = 1 }
+{ vi = "Pham Nhan", en = "Mortal", world = 1 }
 API.pick(CFG.REALMS[1])      -- "Mortal" hoặc "Pham Nhan"
 ```
 
@@ -67,7 +67,7 @@ Tên quái ghép từ **tên cảnh giới + tầng + hậu tố theo loại**:
 |---|---|---|---|
 | cảnh giới | `CFG.REALMS[r]` | Qi Refining | Luyen Khi |
 | tầng 1–9 | `tier_word` | Tier 3 | Tang 3 |
-| tầng 10 | `tier_full` | Perfection | Vien Man |
+| tầng 10 | `tier_perfection` | Perfection | Vien Man |
 | lính thường | `mob_suffix` | Cultivator | Tan Tu |
 | tinh anh | `elite_suffix` | Elite | Tinh Anh |
 | boss | `boss_suffix` | Lord | Ma Ton |
@@ -88,7 +88,7 @@ Không có tầng thì cả 5 stage của một cảnh giới ra **cùng một c
 dồn lại qua nhiều wave — đo được: ở stage 6 vẫn còn 174 con sống — nên trên map
 lúc nào cũng có vài thế hệ cùng lúc. Nhìn một con không biết nó thuộc đợt nào,
 cũng không biết nó đang trả giá thưởng của stage nào
-([`S.mobStage`](../../src/3_tran_dau/2_wave.lua) trả theo stage lúc **sinh**).
+([`S.mobStage`](../../src/3_battle/2_wave.lua) trả theo stage lúc **sinh**).
 
 Boss không cần tầng: nó là lần độ kiếp **duy nhất** của cảnh giới đó.
 
@@ -111,7 +111,7 @@ trong Object Editor, và đổi tiếng cũng không đụng tới nó.
 
 Thiếu native thì quái giữ tên gốc của **mẫu lính** làm nó — `Footman`, `Ghoul`,
 `Abomination`, `Frost Wyrm` theo `CFG.MOB_UNIT`. Đó là lỗi im lặng đúng kiểu ADR
-0012, nên [5_natives.lua](../../src/1_nen/5_natives.lua) đo `BlzSetUnitName` và
+0012, nên [5_natives.lua](../../src/1_core/5_natives.lua) đo `BlzSetUnitName` và
 ghi vào file vết; `-nat` xem lại được trong game.
 
 ## Chưa phủ hết
@@ -123,8 +123,8 @@ chúng dành cho người làm map, không phải người chơi.
 Chưa dịch: tên hero (`Hart`/`Hvwd`/`Hkal` là tên riêng, giữ nguyên), vai hero
 (`Warrior`/`Shooter`/`Mage` — vốn đã tiếng Anh), và `CFG.HOUSE_NAME`.
 
-`CFG.TIER_VIEN_MAN` **đã bỏ** — tên tầng cuối là chữ hiển thị chứ không phải
-tham số, nên nó chuyển sang khoá `tier_full` ở đây. Cùng lý do với
+`CFG.TIER_PERFECTION` **đã bỏ** — tên tầng cuối là chữ hiển thị chứ không phải
+tham số, nên nó chuyển sang khoá `tier_perfection` ở đây. Cùng lý do với
 `CFG.PICK_TITLE` trước đó.
 
 **Tooltip của kỹ năng trong command card: đã có bộ sinh, nhưng chỉ một thứ tiếng

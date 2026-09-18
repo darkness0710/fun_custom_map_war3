@@ -1,7 +1,7 @@
 -- ============================================================
---  6_phapkhi.lua  --  Mua MOT lan, khong co cap
+--  6_relic.lua  --  Mua MOT lan, khong co cap
 --
---  BANG DANG RONG (CFG.PHAPKHI = {}) -- 2026-09-16. Nam mon cu da xoa:
+--  BANG DANG RONG (CFG.RELIC = {}) -- 2026-09-16. Nam mon cu da xoa:
 --  chung mua bang Tinh Thach, mot dong tien gio da xoa han. He nay
 --  tra bang GO.
 --
@@ -10,21 +10,21 @@
 --
 --  Code chay duoc voi bang rong: the hien mot dong "chua co gi", khong
 --  mua duoc gi, va moi hieu ung tra ve false -- nen 2_wave.lua goi
---  API.phapKhiCo / phapKhiAiCo / phapKhiOnClear van an toan.
+--  API.relicHas / relicAnyHas / relicOnClear van an toan.
 --
 --  KHI THEM MON MOI. Moi mon phai DOC-LUC-DUNG: khong dang ky trigger
---  rieng, ma cho can biet thi hoi API.phapKhiCo. Mot mon can bo bat su
+--  rieng, ma cho can biet thi hoi API.relicHas. Mot mon can bo bat su
 --  kien rieng la mot mon co the hong am tham, ma ca van chi mua duoc
---  vai lan. Them mon la them dong vao CFG.PHAPKHI VA viet cho doc 'ma'
+--  vai lan. Them mon la them dong vao CFG.RELIC VA viet cho doc 'ma'
 --  cua no -- khong co bang dieu phoi tu dong nao ca.
 --
 --  Nho: goi ham cua file khac phai qua API.
 -- ============================================================
 
 -- Nguoi nay co mon do khong.
-local function co(pid, ma)
+local function has(pid, code)
   local d = S.p[pid]
-  return (d ~= nil) and (d.pk ~= nil) and (d.pk[ma] == true)
+  return (d ~= nil) and (d.relic ~= nil) and (d.relic[code] == true)
 end
 
 -- CO AI trong doi co mon do khong.
@@ -32,16 +32,16 @@ end
 -- Dung cho hai mon cong vao NHA CHINH: nha la cua chung, nen mot nguoi
 -- mua la ca doi duoc huong. Do cung la ly do hai mon do dat hon hai mon
 -- ca nhan.
-local function aiCo(ma)
+local function anyHas(code)
   for i = 1, #S.pids do
-    if co(S.pids[i], ma) then return true end
+    if has(S.pids[i], code) then return true end
   end
   return false
 end
 
-local function defOf(ma)
-  for i = 1, #CFG.PHAPKHI do
-    if CFG.PHAPKHI[i].ma == ma then return CFG.PHAPKHI[i] end
+local function defOf(code)
+  for i = 1, #CFG.RELIC do
+    if CFG.RELIC[i].code == code then return CFG.RELIC[i] end
   end
   return nil
 end
@@ -50,27 +50,27 @@ end
 -- Chay tren MOI may, tu kenh dong bo.
 
 local function buy(pid, i)
-  local mon = CFG.PHAPKHI[i]
-  if mon == nil then return end
+  local item = CFG.RELIC[i]
+  if item == nil then return end
 
   local d = S.p[pid]
   if d == nil then return end
-  if d.pk == nil then d.pk = {} end
-  if d.pk[mon.ma] then return end
+  if d.relic == nil then d.relic = {} end
+  if d.relic[item.code] then return end
 
-  if CFG.PHAPKHI_LOCKED then return end
-  if not API.spendGo(pid, mon.gia) then
-    API.msg(pid, CFG.C_RED .. API.t("no_go") .. CFG.C_END ..
-      API.t("need_have", API.num(mon.gia), API.num(API.getGo(pid))) ..
-      CFG.C_GREY .. " " .. API.t("go_note") .. CFG.C_END)
+  if CFG.RELIC_LOCKED then return end
+  if not API.spendLumber(pid, item.price) then
+    API.msg(pid, CFG.C_RED .. API.t("no_lumber") .. CFG.C_END ..
+      API.t("need_have", API.num(item.price), API.num(API.getLumber(pid))) ..
+      CFG.C_GREY .. " " .. API.t("lumber_note") .. CFG.C_END)
     API.panelRefresh(pid)
     return
   end
 
-  d.pk[mon.ma] = true
-  API.msg(nil, API.t("pk_bought",
+  d.relic[item.code] = true
+  API.msg(nil, API.t("relic_bought",
     CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END,
-    CFG.C_JADE .. API.pick(mon) .. CFG.C_END))
+    CFG.C_JADE .. API.pick(item) .. CFG.C_END))
 
   if d.hero ~= nil then
     API.fx([[Abilities\Spells\Items\AIem\AIemTarget.mdl]],
@@ -84,7 +84,7 @@ end
 -- Goi tu onMobDeath luc con cuoi cung chet. Mot nguoi mua thi ca doi
 -- duoc -- cung nguyen tac voi hai mon cong vao nha.
 local function onClear()
-  if not aiCo("mana") then return end
+  if not anyHas("mana") then return end
   for i = 1, #S.pids do
     local d = S.p[S.pids[i]]
     if d ~= nil and d.hero ~= nil and API.alive(d.hero) then
@@ -96,29 +96,29 @@ end
 
 -- ---------- The trong bang phim E ----------
 
-local function motaOf(mon)
-  if API.lang() == "en" then return mon.mota_en or mon.mota end
-  return mon.mota or mon.mota_en
+local function descOf(item)
+  if API.lang() == "en" then return item.desc_en or item.desc end
+  return item.desc or item.desc_en
 end
 
 local function tabItems(pid)
   -- KHOA TAM THOI: khong ban gi ca. Tra ve rong de bang hien dong
   -- "chua co gi" + ly do, thay vi hien mon mua khong duoc.
-  if CFG.PHAPKHI_LOCKED then return {} end
-  local ngo = API.getGo(pid)
+  if CFG.RELIC_LOCKED then return {} end
+  local lumber = API.getLumber(pid)
   local out = {}
-  for i = 1, #CFG.PHAPKHI do
-    local mon = CFG.PHAPKHI[i]
-    local it  = { icon = mon.icon, ten = API.pick(mon), mota = motaOf(mon) }
+  for i = 1, #CFG.RELIC do
+    local item = CFG.RELIC[i]
+    local it  = { icon = item.icon, name = API.pick(item), desc = descOf(item) }
 
-    if co(pid, mon.ma) then
-      it.trangThai = CFG.C_JADE .. API.t("st_owned") .. CFG.C_END
+    if has(pid, item.code) then
+      it.status = CFG.C_JADE .. API.t("st_owned") .. CFG.C_END
     else
-      it.trangThai = CFG.C_GREY .. API.num(mon.gia) .. CFG.C_END
-      -- GO: buy() goi API.spendGo. Nhan sai tien tren nut la noi doi voi
+      it.status = CFG.C_GREY .. API.num(item.price) .. CFG.C_END
+      -- GO: buy() goi API.spendLumber. Nhan sai tien tren nut la noi doi voi
       -- nguoi choi ve thu ho dang de danh.
-      it.nut       = API.t("btn_buy") .. "  " .. API.num(mon.gia) .. " " .. API.t("cur_go")
-      it.batNut    = (ngo >= mon.gia)
+      it.btn       = API.t("btn_buy") .. "  " .. API.num(item.price) .. " " .. API.t("cur_lumber")
+      it.btnOn    = (lumber >= item.price)
     end
     out[i] = it
   end
@@ -126,25 +126,25 @@ local function tabItems(pid)
 end
 
 local function tabItemAction(pid, i)
-  if CFG.PHAPKHI[i] == nil then return end
-  API.syncSend(pid, CFG.OP_PK_BUY, i)
+  if CFG.RELIC[i] == nil then return end
+  API.syncSend(pid, CFG.OP_RELIC_BUY, i)
 end
 
-local function startPhapKhi()
+local function startRelic()
   API.panelAddTab({
-    ten        = API.t("panel_treasure"),
+    name        = API.t("panel_relic"),
     kind       = "list",
-    soMuc      = #CFG.PHAPKHI,
+    rows      = #CFG.RELIC,
     items      = tabItems,
     itemAction = tabItemAction,
-    trong      = CFG.PHAPKHI_LOCKED and API.t("pk_locked") or API.t("pk_empty"),
+    empty      = CFG.RELIC_LOCKED and API.t("relic_locked") or API.t("relic_empty"),
   })
-  API.syncOn(CFG.OP_PK_BUY, buy)
-  API.trace("phapkhi: " .. #CFG.PHAPKHI .. " mon, the san sang")
+  API.syncOn(CFG.OP_RELIC_BUY, buy)
+  API.trace("relic: " .. #CFG.RELIC .. " mon, the san sang")
 end
 
-API.phapKhiCo      = co
-API.phapKhiAiCo    = aiCo
-API.phapKhiDef     = defOf
-API.phapKhiOnClear = onClear
-API.startPhapKhi   = startPhapKhi
+API.relicHas      = has
+API.relicAnyHas    = anyHas
+API.relicDef     = defOf
+API.relicOnClear = onClear
+API.startRelic   = startRelic

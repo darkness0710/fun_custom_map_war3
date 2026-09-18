@@ -1,5 +1,5 @@
 -- ============================================================
---  7_hieuung.lua  --  Ky nang co hieu luc that
+--  7_effect.lua  --  Ky nang co hieu luc that
 --
 --  Truoc file nay, bay ky nang cua Hart la bay ability GOC cua Warcraft
 --  duoc nhan ban: Shockwave, Holy Light, Devotion Aura, Avatar... Chung
@@ -122,16 +122,16 @@ local function fxLine(pid, u, sk, lv)
   local L   = CFG.FX_LINE_LEN
   local cx  = API.polarX(x, L * 0.5, ang)
   local cy  = API.polarY(y, L * 0.5, ang)
-  local dmg = API.skillDamage(u, API.skillHeSo(sk, lv))
+  local dmg = API.skillDamage(u, API.skillFactor(sk, lv))
 
   local ux, uy = Cos(ang * bj_DEGTORAD), Sin(ang * bj_DEGTORAD)
   enemiesNear(cx, cy, L * 0.5 + CFG.FX_LINE_WIDTH, function(e)
     local dx, dy = GetUnitX(e) - x, GetUnitY(e) - y
-    local doc = dx * ux + dy * uy                 -- chieu len duong danh
-    if doc < 0.0 or doc > L then return end
-    local ngang = dx * (-uy) + dy * ux            -- khoang cach toi duong
-    if ngang < 0 then ngang = -ngang end
-    if ngang > CFG.FX_LINE_WIDTH then return end
+    local along = dx * ux + dy * uy                 -- chieu len duong danh
+    if along < 0.0 or along > L then return end
+    local perp = dx * (-uy) + dy * ux            -- khoang cach toi duong
+    if perp < 0 then perp = -perp end
+    if perp > CFG.FX_LINE_WIDTH then return end
     hit(u, e, dmg, CFG.FX_HIT_LINE)
   end)
 end
@@ -140,7 +140,7 @@ end
 local function fxHeal(pid, u, sk, lv)
   local t = (GetSpellTargetUnit ~= nil) and GetSpellTargetUnit() or nil
   if t == nil then t = u end
-  local amount = API.skillDamage(u, API.skillHeSo(sk, lv))
+  local amount = API.skillDamage(u, API.skillFactor(sk, lv))
   local hp = GetUnitState(t, UNIT_STATE_LIFE) + amount
   local mx = GetUnitState(t, UNIT_STATE_MAX_LIFE)
   SetUnitState(t, UNIT_STATE_LIFE, (hp > mx) and mx or hp)
@@ -151,7 +151,7 @@ end
 --
 -- Bat Hoai la ban sao cua Avatar, va Avatar tu co buff co thoi luong.
 -- Giap cua no lay tu ABILITY_RLF_DEFENSE_BONUS_HAV1 -- truong ma
--- applyLevel() ghi so can bang cua ta vao (CFG.SKILL_CHO_GOC). Nen
+-- applyLevel() ghi so can bang cua ta vao (CFG.SKILL_CARRY_BASE). Nen
 -- khong con gi de lam bang Lua: bam la Warcraft lo het.
 --
 -- Thoi luong gio la thoi luong goc cua Avatar, khong phai
@@ -159,7 +159,7 @@ end
 -- war3map.w3a.
 --
 -- HAV2 (mau toi da) van chay: ban 1.31.1 khong phoi ra hang so nao cho
--- no nen khong tat duoc -- xem chu thich o CFG.SKILL_TAT_GOC.
+-- no nen khong tat duoc -- xem chu thich o CFG.SKILL_ZERO_BASE.
 
 local FX_CAST = { line = fxLine, heal = fxHeal }
 
@@ -204,11 +204,11 @@ local function onDamaged()
   if sp ~= nil and tgt ~= nil then
     local sk, lv = skillByFx(sp, "cleave")
     if sk ~= nil then
-      local van = amount * API.skillPct(sk, lv)
-      if van >= 1.0 then
+      local splash = amount * API.skillPct(sk, lv)
+      if splash >= 1.0 then
         enemiesNear(GetUnitX(tgt), GetUnitY(tgt), CFG.FX_CLEAVE_AOE,
           function(e)
-            if e ~= tgt then hit(src, e, van, CFG.FX_HIT_CLEAVE) end
+            if e ~= tgt then hit(src, e, splash, CFG.FX_HIT_CLEAVE) end
           end)
       end
     end
@@ -245,12 +245,12 @@ local function baseCapture(pid)
   local d = S.p[pid]
   if d == nil or d.hero == nil then return end
   local h = d.hero
-  d.nen = {
+  d.base = {
     str   = GetHeroStr(h, false),
     agi   = GetHeroAgi(h, false),
     int   = GetHeroInt(h, false),
     dmg   = (BlzGetUnitBaseDamage ~= nil) and BlzGetUnitBaseDamage(h, 0) or 0,
-    giap  = (BlzGetUnitArmor ~= nil) and BlzGetUnitArmor(h) or 0.0,
+    armor  = (BlzGetUnitArmor ~= nil) and BlzGetUnitArmor(h) or 0.0,
   }
 end
 
@@ -259,7 +259,7 @@ end
 -- Hai ham cu -- auraGiap() va buffGiap() -- da xoa. Chung ton tai de
 -- cong giap vao BlzSetUnitArmor, ma dong do chinh la thu dong bang phan
 -- chi so. Gio giap nam trong truong cua chinh hai ability do
--- (CFG.SKILL_CHO_GOC) va Warcraft cong.
+-- (CFG.SKILL_CARRY_BASE) va Warcraft cong.
 --
 -- DOI HANH VI: aura cua Warcraft co BAN KINH, ban Lua cu thi khong --
 -- no cong cho ca doi du dung dau tren map. Map nay ba nguoi gan nhu
@@ -270,39 +270,39 @@ local function recompute(pid)
   local d = S.p[pid]
   if d == nil or d.hero == nil then return end
   local h = d.hero
-  if d.nen == nil then baseCapture(pid) end
-  local n = d.nen
+  if d.base == nil then baseCapture(pid) end
+  local n = d.base
 
   -- ---------- Chi so ----------
   -- nen + Linh Can, roi nhan % cua bi dong "stat" (Luyen The).
-  local lc = API.linhCanStatBonus(pid)
+  local cultAdd = API.cultStatBonus(pid)
   -- Luyen The cong PHANG, khong nhan phan tram -- xem CFG.SKILLS A004.
   local sk, lv = skillByFx(pid, "stat")
-  local them = 0.0
-  if sk ~= nil and API.skillChiSo ~= nil then
-    them = API.skillChiSo(sk, lv, API.linhCanRank and API.linhCanRank(pid) or 1)
+  local bonus = 0.0
+  if sk ~= nil and API.skillStat ~= nil then
+    bonus = API.skillStat(sk, lv, API.cultRank and API.cultRank(pid) or 1)
   end
 
   -- Chi so tu QUAY cong vao truoc khi nhan %: mot cong thuc duy nhat,
   -- khong phai nho thu tu.
-  local q = d.quayChiSo or {}
-  local qs, qa, qi = q.str or 0, q.agi or 0, q.int or 0
+  local q = d.rollStats or {}
+  local qStr, qAgi, qInt = q.str or 0, q.agi or 0, q.int or 0
 
-  if CFG.LINHCAN_STAT_MODE == "primary" then
+  if CFG.CULT_STAT_MODE == "primary" then
     -- Cong vao chi so cao nhat cua NEN, khong phai cua hien tai -- chi
     -- so hien tai doi theo chinh phep cong nay thi no se nhay qua nhay
     -- lai giua hai chi so.
-    local s, a, i = n.str + qs + them, n.agi + qa + them, n.int + qi + them
-    if s >= a and s >= i then s = s + lc
-    elseif a >= i then a = a + lc
-    else i = i + lc end
+    local s, a, i = n.str + qStr + bonus, n.agi + qAgi + bonus, n.int + qInt + bonus
+    if s >= a and s >= i then s = s + cultAdd
+    elseif a >= i then a = a + cultAdd
+    else i = i + cultAdd end
     SetHeroStr(h, math.floor(s + 0.5), true)
     SetHeroAgi(h, math.floor(a + 0.5), true)
     SetHeroInt(h, math.floor(i + 0.5), true)
   else
-    SetHeroStr(h, math.floor(n.str + qs + lc + them + 0.5), true)
-    SetHeroAgi(h, math.floor(n.agi + qa + lc + them + 0.5), true)
-    SetHeroInt(h, math.floor(n.int + qi + lc + them + 0.5), true)
+    SetHeroStr(h, math.floor(n.str + qStr + cultAdd + bonus + 0.5), true)
+    SetHeroAgi(h, math.floor(n.agi + qAgi + cultAdd + bonus + 0.5), true)
+    SetHeroInt(h, math.floor(n.int + qInt + cultAdd + bonus + 0.5), true)
   end
 
   -- ---------- Mau / mana toi da: KHONG dong vao ----------
@@ -326,11 +326,11 @@ local function recompute(pid)
   -- Agi vao con so do. Agi 511 ma giap van bang 2.
   --
   -- Phan cong them cua Hieu Lenh va Bat Hoai gio nam trong CHINH TRUONG
-  -- cua hai ability do (CFG.SKILL_CHO_GOC), nen Warcraft cong -- khong
+  -- cua hai ability do (CFG.SKILL_CARRY_BASE), nen Warcraft cong -- khong
   -- con ai phai so huu cong thuc giap nua.
   --
   -- Sat thuong thi khong can vat mang: Trang Bi dang khoa nen
-  -- trangBiMult luon 1.0, tuc dong cu ghi lai dung con so no vua doc.
+  -- gearMult luon 1.0, tuc dong cu ghi lai dung con so no vua doc.
   -- Mo Trang Bi lai thi phai chon vat mang cho no, dung ghi de o day.
 end
 
@@ -356,11 +356,11 @@ local function startSkillFx()
       "Chem Lan va Da Sat se khong chay." .. CFG.C_END)
   end
 
-  API.trace("hieuung: san sang (cast + damage)")
+  API.trace("effect: san sang (cast + damage)")
 end
 
 API.heroBaseCapture  = baseCapture
-API.heroPidCua       = heroPid
+API.heroPidOf       = heroPid
 API.heroRecompute    = recompute
 API.heroRecomputeAll = recomputeAll
 API.skillFxRecompute = recomputeAll   -- ten cu, giu cho cho goi san co

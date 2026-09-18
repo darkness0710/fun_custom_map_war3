@@ -2,8 +2,8 @@
 
 > **Trạng thái:** Hart **đã chốt, vỏ đã sinh**. Hvwd và Hkal ⏸ **trống — chờ thiết kế lại**
 > **Cập nhật:** 2026-09-16
-> **Code:** [4_skill.lua](../../src/2_nguoi_choi/4_skill.lua) ·
-> [7_hieuung.lua](../../src/2_nguoi_choi/7_hieuung.lua) ·
+> **Code:** [4_skill.lua](../../src/2_player/4_skill.lua) ·
+> [7_effect.lua](../../src/2_player/7_effect.lua) ·
 > [w3skill.py](../../w3skill.py)
 > **Số liệu:** [nâng cấp kỹ năng](../03-du-lieu/nang-cap-ky-nang.md) ·
 > [kinh-te.md](kinh-te.md)
@@ -162,7 +162,7 @@ một lần.
 ## Một chỗ duy nhất được ghi chỉ số hero
 
 `API.heroRecompute(pid)` trong
-[7_hieuung.lua](../../src/2_nguoi_choi/7_hieuung.lua) là **cửa duy nhất** ghi lên
+[7_effect.lua](../../src/2_player/7_effect.lua) là **cửa duy nhất** ghi lên
 hero. Mọi hệ chỉ **khai báo nó đóng góp bao nhiêu**; recompute cộng hết rồi ghi
 một lần.
 

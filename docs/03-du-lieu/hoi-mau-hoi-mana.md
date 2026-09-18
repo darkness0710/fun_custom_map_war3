@@ -47,7 +47,7 @@ cần né sang ability/buff.
 
 Trường này là **giá trị tuyệt đối**, không phải "cộng dồn". Hai hệ cùng ghi vào
 thì hệ sau xoá hệ trước — đúng cái bẫy mà `API.heroRecompute` trong
-[7_hieuung.lua](../../src/2_nguoi_choi/7_hieuung.lua) đã dựng ra để tránh cho ba
+[7_effect.lua](../../src/2_player/7_effect.lua) đã dựng ra để tránh cho ba
 chỉ số.
 
 Nên khi làm dây chuyền / nhẫn: mọi nguồn bonus phải đi qua **một** hàm tính lại

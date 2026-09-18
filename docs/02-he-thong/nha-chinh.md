@@ -2,9 +2,9 @@
 
 > **Trạng thái:** Đã cài — vùng đã có trong map
 > **Cập nhật:** 2026-09-16
-> **Code:** [1_house.lua](../../src/3_tran_dau/1_house.lua), [4_geometry.lua](../../src/1_nen/4_geometry.lua)
+> **Code:** [1_house.lua](../../src/3_battle/1_house.lua), [4_geometry.lua](../../src/1_core/4_geometry.lua)
 > **Khoá CFG:** `RGN_HOUSE` `RGN_ENEMY` `HOUSE_*`
-> **Code thêm:** [1_events.lua](../../src/5_khoi_dong/1_events.lua), [1_player.lua](../../src/2_nguoi_choi/1_player.lua)
+> **Code thêm:** [1_events.lua](../../src/5_boot/1_events.lua), [1_player.lua](../../src/2_player/1_player.lua)
 
 ## Nó là gì
 
@@ -13,7 +13,7 @@ Hai mốc cố định trên bản đồ:
 - **Nhà chính** — Mountain King dựng giữa vùng `MyHouseRegion`. Máu 1 000, tầm
   nhìn 1 500, không đánh được ai, **chết là thua**.
 - **Vùng địch** — `MyEmenyRegion`, nơi quái ra. Đã nối vào hệ đợt quái:
-  [2_wave.lua](../../src/3_tran_dau/2_wave.lua) sinh quái quanh tâm vùng này.
+  [2_wave.lua](../../src/3_battle/2_wave.lua) sinh quái quanh tâm vùng này.
 
 > **Máu 1 000 chỉ đúng lúc mới dựng.** Từ đợt quái đầu tiên trở đi, máu nhà
 > được **tính lại mỗi wave** theo `HOUSE_HP_HITS × sát thương một con lính ở
@@ -65,7 +65,7 @@ Chung tầm nhìn là **bắt buộc**, không phải trang trí — không có 
 
 **L4. Nhà chết là cả ba người chơi thua ngay.**
 `CFG.HOUSE_DEATH_ENDS_GAME`. Bắt bằng `EVENT_PLAYER_UNIT_DEATH` trong
-[1_events.lua](../../src/5_khoi_dong/1_events.lua). Chờ 3 giây cho đọc được lý do rồi mới
+[1_events.lua](../../src/5_boot/1_events.lua). Chờ 3 giây cho đọc được lý do rồi mới
 hiện màn hình kết quả.
 
 **L5. Người chơi không chọn được nhà chính.**

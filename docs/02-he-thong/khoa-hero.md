@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Đã cài
 > **Cập nhật:** 2026-09-14
-> **Code:** [1_player.lua](../../src/2_nguoi_choi/1_player.lua)
+> **Code:** [1_player.lua](../../src/2_player/1_player.lua)
 > **Khoá CFG:** `LOCK_HERO_XP` `STRIP_SKILL_POINTS` `HERO_REMOVE_ABILITIES` `HERO_XP_SWEEP`
 
 ## Nó là gì
@@ -46,7 +46,7 @@ gỡ được ability unit **thật sự đang có**.
 
 | Muốn gì | Làm sao | Cấu hình |
 |---|---|---|
-| **Luôn có sẵn**, không lên cấp | Để trống `Techtree - Hero Abilities`, gọi `UnitAddAbility(u, id('A000'))` ngay sau `CreateUnit` trong [2_heropick.lua](../../src/2_nguoi_choi/2_heropick.lua) | Giữ nguyên hiện tại |
+| **Luôn có sẵn**, không lên cấp | Để trống `Techtree - Hero Abilities`, gọi `UnitAddAbility(u, id('A000'))` ngay sau `CreateUnit` trong [2_heropick.lua](../../src/2_player/2_heropick.lua) | Giữ nguyên hiện tại |
 | **Học bằng điểm** như hero thường | Đặt ability tự tạo vào `Techtree - Hero Abilities` | `STRIP_SKILL_POINTS = false`, `LOCK_HERO_XP = false` |
 
 Đường thứ nhất hợp với hướng hiện tại của map — không hero nào lên cấp. Ability

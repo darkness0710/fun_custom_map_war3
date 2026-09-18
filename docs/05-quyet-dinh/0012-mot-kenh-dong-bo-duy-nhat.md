@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Đã chốt — đo trong game 2026-09-15, chạy đường `blz`
 > **Ngày:** 2026-09-15
-> **Code:** [3_sync.lua](../../src/1_nen/3_sync.lua)
+> **Code:** [3_sync.lua](../../src/1_core/3_sync.lua)
 
 ## Kết quả đo (một người, 1.31.1)
 
@@ -32,9 +32,9 @@ bấm**. Warcraft III chạy lockstep: mọi máy mô phỏng cùng một ván c
 nhịp. Đổi trạng thái game ngay trong sự kiện đó thì máy ấy đi trước hai máy kia
 — và lệch nhịp là bị đá ra khỏi trận, không phải lỗi hiển thị.
 
-Ba giao diện frame ([bảng kỹ năng](../../src/4_giao_dien/3_skillframe.lua),
-[thẻ chọn hero](../../src/4_giao_dien/2_heroframe.lua),
-[Tu Vi](../../src/2_nguoi_choi/3_linhcan.lua)) mỗi file tự dò native, tự quyết định có đồng bộ hay không, tự lùi về chế độ chạy thẳng
+Ba giao diện frame ([bảng kỹ năng](../../src/4_ui/3_skillframe.lua),
+[thẻ chọn hero](../../src/4_ui/2_heroframe.lua),
+[Tu Vi](../../src/2_player/3_cultivation.lua)) mỗi file tự dò native, tự quyết định có đồng bộ hay không, tự lùi về chế độ chạy thẳng
 khi thiếu. **Ba câu trả lời khác nhau cho cùng một câu hỏi.**
 
 Và cả ba đều trả lời sai, vì cùng một lý do: cả ba dò
@@ -143,7 +143,7 @@ thành đồ trang trí.
 
 - Ba file giao diện mất hẳn phần dò native và phần lùi chế độ. Ngắn hơn, và
   không thể lệch nhau.
-- Thêm một `op` mới là thêm một hằng trong [1_config.lua](../../src/1_nen/1_config.lua)
+- Thêm một `op` mới là thêm một hằng trong [1_config.lua](../../src/1_core/1_config.lua)
   và một `API.syncOn`.
 - `arg` trần 99999 là ràng buộc thật: cái gì cần gửi thì phải đánh số được
   trong một bảng tĩnh.

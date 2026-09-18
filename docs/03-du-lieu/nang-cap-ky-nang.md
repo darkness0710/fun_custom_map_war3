@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Đường cong sức mạnh đã chốt — **giá trả bằng Gỗ**
 > **Cập nhật:** 2026-09-17
-> **Khoá CFG:** `SKILL_GO_UP` `SKILL_GO_UNLOCK` `GO_START` `SKILL_DMG_STEP` `SKILL_CD_STEP` `SKILL_PASSIVE_STEP`
+> **Khoá CFG:** `SKILL_LUMBER_UP` `SKILL_LUMBER_UNLOCK` `LUMBER_START` `SKILL_DMG_STEP` `SKILL_CD_STEP` `SKILL_PASSIVE_STEP`
 
 > **Phần GIÁ của trang này đã lỗi thời.** Kỹ năng không mua bằng Linh Khí nữa —
 > nó mua bằng **Gỗ**, rơi từ tinh anh (2) và boss (5), và giá là **1 điểm mỗi
@@ -51,7 +51,7 @@ bac           gia     cong don    cd 60s    he so  bi dong     tich
 10         21,888       43,908     40.0s     1.33     2.00     1.99
 ```
 
-> **Cột `gia` và `cong don` ở trên là bản cũ** (Linh Khí, `89 × 1.99^(bac-1)`).
+> **Cột `price` và `cong don` ở trên là bản cũ** (Linh Khí, `89 × 1.99^(bac-1)`).
 > Giữ lại vì phần còn lại của bảng — `cd`, `he so`, `bi dong`, `tich` — vẫn là số
 > đang chạy. Giá hiện tại **phẳng, 1 điểm Ngộ Tính mỗi lần**:
 >
@@ -254,7 +254,7 @@ số nền đổi ×2,421. Nên sức mạnh của skill do **Tu Vi** quyết đ
 do **bậc skill** — người chơi bỏ 10 Gỗ ra mà gần như không thấy gì.
 
 ```
-bonus = chiso × SKILL_PASSIVE_STEP^(bậc skill−1) × LINHCAN_STAT_STEP^(bậc Tu Vi−1)
+bonus = chiso × SKILL_PASSIVE_STEP^(bậc skill−1) × CULT_STAT_STEP^(bậc Tu Vi−1)
       = 4 × 1.0801^(lv−1) × 1.30^(rank−1)
 ```
 
@@ -268,7 +268,7 @@ bonus = chiso × SKILL_PASSIVE_STEP^(bậc skill−1) × LINHCAN_STAT_STEP^(bậ
 Hai trục đều có nghĩa: **bậc skill** đổi ×2 *(trả Gỗ thì thấy được)*, **bậc Tu
 Vi** giữ nó không bị bỏ lại. Tỉ lệ so với một lần đột phá **đứng yên 16%**.
 
-Dùng **chính** `LINHCAN_STAT_STEP` như hệ quay, nên đổi đường cong Tu Vi thì cả
+Dùng **chính** `CULT_STAT_STEP` như hệ quay, nên đổi đường cong Tu Vi thì cả
 ba hệ tự co theo.
 
 > **Đá Sắt và Chém Lan không dính lỗi này.** Chúng là phần trăm của *sát thương*
@@ -307,7 +307,7 @@ Kiểm ngược ở cuối game (Tu Vi bậc 20, kỹ năng bậc 10, ×12 trang
 
 ## Lỗ hổng đã vá: Tu Vi thiếu một nửa
 
-Phát hiện khi đi gán số gốc. `CFG.LINHCAN_STEP` đang là **1,17**:
+Phát hiện khi đi gán số gốc. `CFG.CULT_STEP` đang là **1,17**:
 
 | | Nhân |
 |---|---|
@@ -319,8 +319,8 @@ Cuối game người chơi chỉ mạnh bằng **49%** mức cần — thua ch�
 báo. Đã đổi thành **1,215** (×40,5 → tổng ×971).
 
 Cùng lúc sửa hai số trước đây là phỏng đoán, giờ đọc được từ hero thật:
-`LINHCAN_DMG_BASE` 20 → **17** (sát thương trung bình của Hart),
-`LINHCAN_STAT_BASE` 20 → **10** (Str của Hart cấp 1).
+`CULT_DMG_BASE` 20 → **17** (sát thương trung bình của Hart),
+`CULT_STAT_BASE` 20 → **10** (Str của Hart cấp 1).
 
 ## Hai lỗi đã gặp khi chơi thử
 

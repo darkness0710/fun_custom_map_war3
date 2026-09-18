@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Đã cài — **chưa chơi thử**
 > **Cập nhật:** 2026-09-16
-> **Code:** [2_wave.lua](../../src/3_tran_dau/2_wave.lua)
+> **Code:** [2_wave.lua](../../src/3_battle/2_wave.lua)
 > **Khoá CFG:** `WAVE_*` `MOB_*` `ELITE_*` `BOSS_*` `SCALE_*` `LINHKHI_*`
 > **Xem kèm:** [canh-gioi.md](../03-du-lieu/canh-gioi.md) ·
 > [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) · [boss.md](boss.md)

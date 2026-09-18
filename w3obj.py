@@ -221,9 +221,9 @@ def set_field(obj, mid, value, level=0):
 
     for m in obj.mods:
         if m.mid == mid and m.level == level:
-            cu = m.value
+            old = m.value
             m.value = value
-            return cu, value
+            return old, value
 
     obj.mods.append(Mod(mid, vtype, value, level, 0, END_TAG))
     return None, value
@@ -248,10 +248,10 @@ def write_back(path, version, orig, custom):
 
     bak = os.path.join(os.path.dirname(os.path.abspath(__file__)), "build")
     os.makedirs(bak, exist_ok=True)
-    shutil.copyfile(path, os.path.join(bak, os.path.basename(path) + ".goc"))
+    shutil.copyfile(path, os.path.join(bak, os.path.basename(path) + ".orig"))
     with open(path, "wb") as f:
         f.write(blob)
-    print("[ok] da ghi %s (%d byte); ban cu o build/%s.goc"
+    print("[ok] da ghi %s (%d byte); ban cu o build/%s.orig"
           % (path, len(blob), os.path.basename(path)))
     return True
 
@@ -263,9 +263,9 @@ def cmd_set(path, objid, mid, value, dry):
         print("[loi] khong thay object '%s'" % objid)
         return False
     for o in hit:
-        cu, moi = set_field(o, mid, value)
+        old, new = set_field(o, mid, value)
         print("  %s.%s : %s -> %s" % (objid, mid,
-              "(chua co)" if cu is None else repr(cu), repr(moi)))
+              "(chua co)" if old is None else repr(old), repr(new)))
     if dry:
         print("[dry] khong ghi gi.")
         return True
@@ -284,12 +284,12 @@ def cmd_levels(path, n, dry):
     n = int(n)
     doi = 0
     for o in custom:
-        cu, moi = set_field(o, "alev", n)
-        dau = "   " if cu == moi else "-> "
-        if cu != moi:
+        old, new = set_field(o, "alev", n)
+        dau = "   " if old == new else "-> "
+        if old != new:
             doi += 1
         print("  %s%-5s alev : %s -> %d"
-              % (dau, o.newid or o.base, "(chua co)" if cu is None else cu, moi))
+              % (dau, o.newid or o.base, "(chua co)" if old is None else old, new))
     print("[%d/%d object doi]" % (doi, len(custom)))
     if dry:
         print("[dry] khong ghi gi.")

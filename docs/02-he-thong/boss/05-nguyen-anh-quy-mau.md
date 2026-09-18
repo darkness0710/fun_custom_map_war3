@@ -8,16 +8,16 @@ Hút máu cộng thuộc hạ: càng đông càng khoẻ. Con boss đầu tiên 
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Hút Máu** `hutmau` | Hồi lại **25%** sát thương nó gây ra. | Đánh gấp. Kéo dài trận là cho nó hồi, và nó hồi theo số người nó chạm được. |
-| **Triệu Hồi** `trieuhoi` | Mỗi **20s** gọi **4** thuộc hạ quanh mình. | Dọn thuộc hạ hay bỏ qua là lựa chọn: chúng cho tiền, nhưng cũng chặn đường. |
+| **Hút Máu** `lifesteal` | Hồi lại **25%** sát thương nó gây ra. | Đánh gấp. Kéo dài trận là cho nó hồi, và nó hồi theo số người nó chạm được. |
+| **Triệu Hồi** `summon` | Mỗi **20s** gọi **4** thuộc hạ quanh mình. | Dọn thuộc hạ hay bỏ qua là lựa chọn: chúng cho tiền, nhưng cũng chặn đường. |
 
 ## Chỉ số
 
 Boss **không** lấy chỉ số từ đường cong quái. Nó **đo đội** ngay lúc xuất hiện:
 
 ```
-máu = Σ (17 + chỉ số cao nhất của mỗi hero) × BOSS_GIAY (40s)
-đòn = (máu hiệu dụng trung bình) / BOSS_SO_DON (12 đòn)
+máu = Σ (17 + chỉ số cao nhất của mỗi hero) × BOSS_SECONDS (40s)
+đòn = (máu hiệu dụng trung bình) / BOSS_HITS_TO_KILL (12 đòn)
       máu hiệu dụng = máu / (1 − giảm sát thương từ giáp)
 ```
 

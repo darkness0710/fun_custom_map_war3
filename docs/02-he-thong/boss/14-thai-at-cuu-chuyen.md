@@ -8,16 +8,16 @@ Chấn địa quét cả thuộc hạ lẫn hero. Đứng giữa đám đông l�
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Triệu Hồi** `trieuhoi` | Mỗi **20s** gọi **4** thuộc hạ quanh mình. | Dọn thuộc hạ hay bỏ qua là lựa chọn: chúng cho tiền, nhưng cũng chặn đường. |
-| **Chấn Địa** `chandia` | Mỗi **9s** gây `2.5×` một đòn thường lên mọi hero trong bán kính **420**. | Tản ra. Đòn này không nhắm ai — đứng chụm là cả đội cùng ăn. |
+| **Triệu Hồi** `summon` | Mỗi **20s** gọi **4** thuộc hạ quanh mình. | Dọn thuộc hạ hay bỏ qua là lựa chọn: chúng cho tiền, nhưng cũng chặn đường. |
+| **Chấn Địa** `slam` | Mỗi **9s** gây `2.5×` một đòn thường lên mọi hero trong bán kính **420**. | Tản ra. Đòn này không nhắm ai — đứng chụm là cả đội cùng ăn. |
 
 ## Chỉ số
 
 Boss **không** lấy chỉ số từ đường cong quái. Nó **đo đội** ngay lúc xuất hiện:
 
 ```
-máu = Σ (17 + chỉ số cao nhất của mỗi hero) × BOSS_GIAY (40s)
-đòn = (máu hiệu dụng trung bình) / BOSS_SO_DON (12 đòn)
+máu = Σ (17 + chỉ số cao nhất của mỗi hero) × BOSS_SECONDS (40s)
+đòn = (máu hiệu dụng trung bình) / BOSS_HITS_TO_KILL (12 đòn)
       máu hiệu dụng = máu / (1 − giảm sát thương từ giáp)
 ```
 

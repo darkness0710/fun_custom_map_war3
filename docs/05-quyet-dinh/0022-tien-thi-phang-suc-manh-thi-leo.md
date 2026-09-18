@@ -47,10 +47,10 @@ Chính `1_config.lua` đã ghi trước luật này rồi, chỉ là ghi cho hư
 | 2 | Chỉ số | **sức mạnh → leo ×1.30** |
 
 ```lua
-CFG.QUAY_DA       = 3       -- phang
-CFG.QUAY_VANG_MIN = 30      -- phang, ngau nhien trong dai
-CFG.QUAY_VANG_MAX = 90
--- CFG.QUAY_VANG_MOI_DIEM da bo
+CFG.FORTUNE_IRON       = 3       -- phang
+CFG.FORTUNE_GOLD_MIN = 30      -- phang, ngau nhien trong dai
+CFG.FORTUNE_GOLD_MAX = 90
+-- CFG.FORTUNE_GOLD_PER_POINT da bo
 ```
 
 Đúng hướng cả nền kinh tế đã đi: thu nhập phẳng, Tu Vi phẳng 500, kỹ năng phẳng
@@ -105,7 +105,7 @@ stage**. Đây là lợi ích phụ, không phải mục tiêu, nhưng đáng gh
 **Ankh 500 vàng nặng hơn trước** — khoảng 8 lượt thẻ 3, thay vì "một lượt ở cảnh
 giới 15". Chưa đo được nó có quá nặng không.
 
-**Còn nợ:** `CFG.QUAY_GIA_TRI` (thẻ 2) vẫn leo ×1.30, và đó là **đúng** — nó là
+**Còn nợ:** `CFG.FORTUNE_VALUE` (thẻ 2) vẫn leo ×1.30, và đó là **đúng** — nó là
 sức mạnh. Nhưng chưa ai kiểm xem ở cảnh giới 20 thì `+322` chỉ số có đè bẹp 3 đá
 và 60 vàng không. Lý thuyết thì không, vì **một bậc kiếm ở cảnh giới 20 cũng đáng
 hơn một bậc ở cảnh giới 1** — đá phẳng nhưng thứ đá mua được thì leo. Phải chơi

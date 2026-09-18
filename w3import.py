@@ -68,73 +68,73 @@ def read_imp(map_dir):
     ver, n = struct.unpack_from("<ii", raw, 0)
     off, out = 8, []
     for _ in range(n):
-        co = raw[off]
+        have = raw[off]
         off += 1
         end = raw.index(b"\0", off)
-        out.append((co, raw[off:end].decode("latin-1")))
+        out.append((have, raw[off:end].decode("latin-1")))
         off = end + 1
     if off != len(raw):
         print("[canh bao] doc xong con thua %d byte" % (len(raw) - off))
     return ver, out
 
 
-def write_imp(map_dir, ver, muc):
-    out = [struct.pack("<ii", ver, len(muc))]
-    for co, duong in muc:
-        out.append(bytes([co]))
-        out.append(duong.encode("latin-1") + b"\0")
+def write_imp(map_dir, ver, entries):
+    out = [struct.pack("<ii", ver, len(entries))]
+    for have, path_ in entries:
+        out.append(bytes([have]))
+        out.append(path_.encode("latin-1") + b"\0")
     with open(imp_path(map_dir), "wb") as f:
         f.write(b"".join(out))
 
 
-def chuan(duong):
+def normalize(path_):
     """Warcraft dung dau \\ trong duong dan."""
-    return duong.replace("/", "\\").lstrip("\\")
+    return path_.replace("/", "\\").lstrip("\\")
 
 
 def cmd_list(map_dir):
-    ver, muc = read_imp(map_dir)
-    print("war3map.imp -- phien ban %d, %d muc" % (ver, len(muc)))
-    for co, duong in muc:
-        tren_dia = os.path.join(map_dir, duong.replace("\\", os.sep))
-        co_that = "co" if os.path.exists(tren_dia) else "THIEU TREN DIA"
-        kich = os.path.getsize(tren_dia) if os.path.exists(tren_dia) else 0
+    ver, entries = read_imp(map_dir)
+    print("war3map.imp -- phien ban %d, %d muc" % (ver, len(entries)))
+    for have, path_ in entries:
+        on_disk = os.path.join(map_dir, path_.replace("\\", os.sep))
+        exists = "co" if os.path.exists(on_disk) else "THIEU TREN DIA"
+        size = os.path.getsize(on_disk) if os.path.exists(on_disk) else 0
         print("  co=%-3d %-44s %9s byte  %s"
-              % (co, duong, format(kich, ","), co_that))
+              % (have, path_, format(size, ","), exists))
 
 
-def cmd_add(map_dir, nguon, dich):
-    if not os.path.exists(nguon):
-        raise SystemExit("[loi] khong thay file nguon: " + nguon)
-    dich = chuan(dich)
+def cmd_add(map_dir, source, dich):
+    if not os.path.exists(source):
+        raise SystemExit("[loi] khong thay file nguon: " + source)
+    dich = normalize(dich)
 
-    tren_dia = os.path.join(map_dir, dich.replace("\\", os.sep))
-    thu_muc = os.path.dirname(tren_dia)
+    on_disk = os.path.join(map_dir, dich.replace("\\", os.sep))
+    thu_muc = os.path.dirname(on_disk)
     if thu_muc and not os.path.isdir(thu_muc):
         os.makedirs(thu_muc)
-    shutil.copy2(nguon, tren_dia)
+    shutil.copy2(source, on_disk)
 
-    ver, muc = read_imp(map_dir)
-    muc = [m for m in muc if m[1].lower() != dich.lower()]
-    muc.append((CO_MAC_DINH, dich))
-    write_imp(map_dir, ver, muc)
+    ver, entries = read_imp(map_dir)
+    entries = [m for m in entries if m[1].lower() != dich.lower()]
+    entries.append((CO_MAC_DINH, dich))
+    write_imp(map_dir, ver, entries)
 
     print("[ok] %s  ->  %s  (%s byte)"
-          % (nguon, dich, format(os.path.getsize(tren_dia), ",")))
+          % (source, dich, format(os.path.getsize(on_disk), ",")))
     return 0
 
 
 def cmd_rm(map_dir, dich):
-    dich = chuan(dich)
-    ver, muc = read_imp(map_dir)
-    con = [m for m in muc if m[1].lower() != dich.lower()]
-    if len(con) == len(muc):
+    dich = normalize(dich)
+    ver, entries = read_imp(map_dir)
+    con = [m for m in entries if m[1].lower() != dich.lower()]
+    if len(con) == len(entries):
         print("[canh bao] khong co muc nao ten " + dich)
     write_imp(map_dir, ver, con)
 
-    tren_dia = os.path.join(map_dir, dich.replace("\\", os.sep))
-    if os.path.exists(tren_dia):
-        os.remove(tren_dia)
+    on_disk = os.path.join(map_dir, dich.replace("\\", os.sep))
+    if os.path.exists(on_disk):
+        os.remove(on_disk)
     print("[ok] da go " + dich)
     return 0
 

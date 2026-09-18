@@ -245,21 +245,21 @@ local function selfTest()
   end
 
   API.after(CFG.SYNC_TEST_WAIT, function()
-    local ve, mat = {}, {}
+    local here, gone = {}, {}
     for i = 1, #S.pids do
       local pid = S.pids[i]
-      if S.sync.pingSeen[pid] then ve[#ve + 1] = pid else mat[#mat + 1] = pid end
+      if S.sync.pingSeen[pid] then here[#here + 1] = pid else gone[#gone + 1] = pid end
     end
     API.trace("sync: tu kiem [" .. S.sync.mode .. "] ping ve tu " ..
-      #ve .. "/" .. #S.pids .. " nguoi" ..
-      (#ve > 0 and (" (player " .. table.concat(ve, ",") .. ")") or "") ..
-      (#mat > 0 and (" -- MAT player " .. table.concat(mat, ",")) or ""))
+      #here .. "/" .. #S.pids .. " nguoi" ..
+      (#here > 0 and (" (player " .. table.concat(here, ",") .. ")") or "") ..
+      (#gone > 0 and (" -- MAT player " .. table.concat(gone, ",")) or ""))
     -- KHONG tu doi duong o day. Neu hai may ket luan khac nhau thi moi
     -- may chay mot kieu -- dung cai muon tranh ngay tu dau. Bao ra roi
     -- de nguoi sua CFG.SYNC_MODE, build lai.
-    if #mat > 0 and S.sync.mode ~= "local" then
+    if #gone > 0 and S.sync.mode ~= "local" then
       API.msg(nil, CFG.C_RED .. "Dong bo [" .. S.sync.mode ..
-        "] khong nhan duoc tin cua player " .. table.concat(mat, ",") ..
+        "] khong nhan duoc tin cua player " .. table.concat(gone, ",") ..
         " -- nut trong bang se khong an." .. CFG.C_END)
       API.msg(nil, CFG.C_GOLD .. "Doi CFG.SYNC_MODE trong 1_config.lua sang " ..
         (S.sync.mode == "cache" and "\"blz\"" or "\"cache\"") ..

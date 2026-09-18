@@ -58,7 +58,7 @@ Nhờ vậy **bỏ hẳn được một đường cong phải cân bằng** (`SK
 
 ### Ngân sách sức mạnh chuyển sang bản bốn nguồn
 
-`CFG.LINHCAN_STEP` đổi **1.215 → 1.17**, và `CFG.TRANGBI_COST_BASE` là 147 chứ
+`CFG.CULT_STEP` đổi **1.215 → 1.17**, và `CFG.GEAR_COST_BASE` là 147 chứ
 không phải 86.
 
 | | Tu Vi | Trang Bị | Kỹ Năng | Pháp Khí | Tích |

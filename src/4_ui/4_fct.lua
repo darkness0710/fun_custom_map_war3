@@ -153,7 +153,7 @@ local function onDamage()
 end
 
 -- Goi tu 04_player moi khi cong linh khi.
-local function onLinhKhi(pid, amount)
+local function onQi(pid, amount)
   if not CFG.FCT_ENABLED or not CFG.FCT_SHOW_GOLD then return end
   if amount == nil or amount <= 0 then return end
 
@@ -202,6 +202,6 @@ local function startFct()
             CFG.FCT_MAX_TAGS .. " chu/lan")
 end
 
-API.fctOnLinhKhi = onLinhKhi
+API.fctOnQi = onQi
 API.fctTag       = tag
 API.startFct     = startFct

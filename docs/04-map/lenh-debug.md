@@ -1,13 +1,13 @@
 # Lệnh debug & chế độ phát triển
 
 > **Cập nhật:** 2026-09-15
-> **Code:** [1_config.lua](../../src/1_nen/1_config.lua) · [1_events.lua](../../src/5_khoi_dong/1_events.lua)
+> **Code:** [1_config.lua](../../src/1_core/1_config.lua) · [1_events.lua](../../src/5_boot/1_events.lua)
 
 Sổ tra cho lúc chạy thử. Mọi lệnh gõ thẳng vào ô chat trong game.
 
 ## Bốn công tắc, độc lập với nhau
 
-Tất cả nằm ở đầu [1_config.lua](../../src/1_nen/1_config.lua). Đổi xong phải chạy
+Tất cả nằm ở đầu [1_config.lua](../../src/1_core/1_config.lua). Đổi xong phải chạy
 `python build.py` rồi mới Ctrl+F9.
 
 | Khoá | Mặc định | Bật thì được gì |
@@ -137,7 +137,7 @@ Những dòng đáng để mắt:
 ## Đồng bộ nhiều người chơi — phép đo phải làm một lần
 
 Nút bấm trong bảng chỉ nổ trên máy người bấm. Cả dự án đi qua một kênh duy nhất
-([3_sync.lua](../../src/1_nen/3_sync.lua), [ADR 0012](../05-quyet-dinh/0012-mot-kenh-dong-bo-duy-nhat.md)).
+([3_sync.lua](../../src/1_core/3_sync.lua), [ADR 0012](../05-quyet-dinh/0012-mot-kenh-dong-bo-duy-nhat.md)).
 Vào map xong, mở file vết tìm hai dòng này:
 
 ```
@@ -152,7 +152,7 @@ sync: tu kiem [blz] ve=0 mat=khong ai
 | `local` | **Không có kênh nào. Chỉ chơi một mình được.** |
 
 `ve=` phải liệt kê **mọi** player đang chơi. Thiếu ai là kênh đó không thật sự
-chạy: đổi `CFG.SYNC_MODE` trong [1_config.lua](../../src/1_nen/1_config.lua) sang
+chạy: đổi `CFG.SYNC_MODE` trong [1_config.lua](../../src/1_core/1_config.lua) sang
 đường còn lại (`"blz"` ↔ `"cache"`), build lại, đo lại.
 
 > Dòng `blzReg=` là `BlzTriggerRegisterPlayerSyncEvent`, `regCu=` là cùng tên

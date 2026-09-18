@@ -8,16 +8,16 @@ Mọi đòn đánh đều quay lại chống người chơi: phản một phần
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Phản Đòn** `phandon` | Phản lại **15%** sát thương nhận vào, thẳng vào người đánh. | Hero giòn phải cẩn thận: đánh càng mạnh càng tự thương. |
-| **Hút Máu** `hutmau` | Hồi lại **25%** sát thương nó gây ra. | Đánh gấp. Kéo dài trận là cho nó hồi, và nó hồi theo số người nó chạm được. |
+| **Phản Đòn** `reflect` | Phản lại **15%** sát thương nhận vào, thẳng vào người đánh. | Hero giòn phải cẩn thận: đánh càng mạnh càng tự thương. |
+| **Hút Máu** `lifesteal` | Hồi lại **25%** sát thương nó gây ra. | Đánh gấp. Kéo dài trận là cho nó hồi, và nó hồi theo số người nó chạm được. |
 
 ## Chỉ số
 
 Boss **không** lấy chỉ số từ đường cong quái. Nó **đo đội** ngay lúc xuất hiện:
 
 ```
-máu = Σ (17 + chỉ số cao nhất của mỗi hero) × BOSS_GIAY (40s)
-đòn = (máu hiệu dụng trung bình) / BOSS_SO_DON (12 đòn)
+máu = Σ (17 + chỉ số cao nhất của mỗi hero) × BOSS_SECONDS (40s)
+đòn = (máu hiệu dụng trung bình) / BOSS_HITS_TO_KILL (12 đòn)
       máu hiệu dụng = máu / (1 − giảm sát thương từ giáp)
 ```
 

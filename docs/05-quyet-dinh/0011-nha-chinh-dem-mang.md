@@ -20,7 +20,7 @@
 
 Phần còn lại của file này là **bối cảnh lịch sử**, giữ nguyên như lúc viết. Kết
 luận nằm ở khung trên: đề xuất bị bác, và `HOUSE_HP_HITS` là thứ đã cài trong
-[2_wave.lua](../../src/3_tran_dau/2_wave.lua). Mọi khoá `HOUSE_LIVES`,
+[2_wave.lua](../../src/3_battle/2_wave.lua). Mọi khoá `HOUSE_LIVES`,
 `LEAK_COST_MOB`, `LEAK_COST_ELITE` nhắc dưới đây **chưa từng tồn tại trong
 `CFG`** — đừng đi tìm.
 
@@ -71,7 +71,7 @@ con.
 **Máu nhà tăng theo đường cong sát thương địch.**
 `HOUSE_HP(s) = HOUSE_HP_BASE × (đường cong dmg)`. Giữ nguyên "số đòn nhà chịu
 được" suốt ván, và giữ nguyên mọi thứ đã cài trong
-[1_house.lua](../../src/3_tran_dau/1_house.lua).
+[1_house.lua](../../src/3_battle/1_house.lua).
 
 Loại vì nó đúng nhưng vô hình. Người chơi thấy thanh máu nhà tụt 30 % ở wave 80
 và không suy ra được điều gì — 30 % của một con số vừa đổi mà họ không biết. Và

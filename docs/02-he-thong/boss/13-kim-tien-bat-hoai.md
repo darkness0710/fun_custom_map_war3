@@ -8,16 +8,16 @@ Con boss **phòng thủ thuần**. Không đuổi, không gọi quân, chỉ đ�
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Phản Đòn** `phandon` | Phản lại **15%** sát thương nhận vào, thẳng vào người đánh. | Hero giòn phải cẩn thận: đánh càng mạnh càng tự thương. |
-| **Hộ Thể** `khien` | Mỗi **15s** tạo khiên hấp thụ bằng **12%** máu tối đa. | Dồn sát thương phá khiên trước khi lớp sau kịp lên, nếu không trận kéo vô hạn. |
+| **Phản Đòn** `reflect` | Phản lại **15%** sát thương nhận vào, thẳng vào người đánh. | Hero giòn phải cẩn thận: đánh càng mạnh càng tự thương. |
+| **Hộ Thể** `shield` | Mỗi **15s** tạo khiên hấp thụ bằng **12%** máu tối đa. | Dồn sát thương phá khiên trước khi lớp sau kịp lên, nếu không trận kéo vô hạn. |
 
 ## Chỉ số
 
 Boss **không** lấy chỉ số từ đường cong quái. Nó **đo đội** ngay lúc xuất hiện:
 
 ```
-máu = Σ (17 + chỉ số cao nhất của mỗi hero) × BOSS_GIAY (40s)
-đòn = (máu hiệu dụng trung bình) / BOSS_SO_DON (12 đòn)
+máu = Σ (17 + chỉ số cao nhất của mỗi hero) × BOSS_SECONDS (40s)
+đòn = (máu hiệu dụng trung bình) / BOSS_HITS_TO_KILL (12 đòn)
       máu hiệu dụng = máu / (1 − giảm sát thương từ giáp)
 ```
 

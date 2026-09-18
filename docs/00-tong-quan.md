@@ -19,24 +19,24 @@ thiết kế, và là chỗ mọi con số quy về —
 | Hệ | Code | Ghi chú |
 |---|---|---|
 | Quy trình build `src/` → `war3map.lua` | [build.py](../build.py) | Chạy lại nhiều lần vẫn ra một kết quả. `--pack` `--run` bỏ qua hẳn World Editor |
-| Đăng ký người chơi, quan hệ đồng minh | [1_player.lua](../src/2_nguoi_choi/1_player.lua) | Slot trống bị bỏ qua, nên chơi một mình vẫn vào được |
-| Kênh đồng bộ nhiều người | [3_sync.lua](../src/1_nen/3_sync.lua) | blz → cache → local, tự dò |
-| Hai thứ tiếng | [6_lang.lua](../src/1_nen/6_lang.lua) | `build.py --lang en\|vi` |
-| Nhà chính, chết là thua | [1_house.lua](../src/3_tran_dau/1_house.lua) | Máu tính lại mỗi đợt theo `HOUSE_HP_HITS` |
-| Chọn hero lúc vào map | [2_heropick.lua](../src/2_nguoi_choi/2_heropick.lua) | 3 hero, mỗi người 1, không ai trùng |
-| Khoá kinh nghiệm & điểm kỹ năng | [1_player.lua](../src/2_nguoi_choi/1_player.lua) | Quét lại toàn map mỗi `HERO_XP_SWEEP` giây |
-| **100 đợt quái** | [2_wave.lua](../src/3_tran_dau/2_wave.lua) | Đường cong chỉ số, tinh anh, boss, tiền thưởng |
-| **Tu Vi** — tu vi người chơi | [3_linhcan.lua](../src/2_nguoi_choi/3_linhcan.lua) | 20 bậc, ×19.7 — mua bằng **Linh Khí** |
-| **Bảy kỹ năng, 10 bậc** | [4_skill.lua](../src/2_nguoi_choi/4_skill.lua) · [7_hieuung.lua](../src/2_nguoi_choi/7_hieuung.lua) | Mua bằng **Gỗ**, 1 điểm mỗi lần. Sát thương **đã ăn theo chỉ số thật** |
-| **Sáu ô trang bị** | [5_trangbi.lua](../src/2_nguoi_choi/5_trangbi.lua) | ×8.3 — mua bằng **Linh Khí** |
-| **Cửa hàng** | [8_shop.lua](../src/2_nguoi_choi/8_shop.lua) | Hệ duy nhất tiêu **Vàng**, và duy nhất bán đồ tiêu hao. Gộp lọ cùng loại vào một ô |
-| **Cơ Duyên** | [10_quay.lua](../src/2_nguoi_choi/10_quay.lua) · [5_quayframe.lua](../src/4_giao_dien/5_quayframe.lua) | Khung ba cột riêng, mở ngay khi tinh anh/boss chết. Chọn 1 trong 3 |
-| **Dùng đồ bằng hàng số trên** | [9_dungdo.lua](../src/2_nguoi_choi/9_dungdo.lua) | Thêm vào numpad sẵn có, không thay |
-| **Trang Bị** | [5_trangbi.lua](../src/2_nguoi_choi/5_trangbi.lua) | 6 món × 100 bậc, trần là Tu Vi. Khung chạy đủ, **chỉ số còn rỗng** — [trang-bi-kiem.md](02-he-thong/trang-bi-kiem.md) |
-| **Pháp Khí** | [6_phapkhi.lua](../src/2_nguoi_choi/6_phapkhi.lua) | ⏸ **đang khoá** (`PHAPKHI_LOCKED`) — thẻ vẫn hiện để người chơi biết hệ tồn tại |
-| Bảng nhân vật (phím **E**) | [1_panel.lua](../src/4_giao_dien/1_panel.lua) | 4 thẻ, hai kiểu thân bảng |
-| Chữ bay | [4_fct.lua](../src/4_giao_dien/4_fct.lua) | Cộng dồn sát thương trước khi vẽ |
-| Lưới 25 block, 4+4 dòng sông | [4_geometry.lua](../src/1_nen/4_geometry.lua) | Có vùng thật `Blk01..Blk25` trong World Editor; địa hình chưa vẽ |
+| Đăng ký người chơi, quan hệ đồng minh | [1_player.lua](../src/2_player/1_player.lua) | Slot trống bị bỏ qua, nên chơi một mình vẫn vào được |
+| Kênh đồng bộ nhiều người | [3_sync.lua](../src/1_core/3_sync.lua) | blz → cache → local, tự dò |
+| Hai thứ tiếng | [6_i18n.lua](../src/1_core/6_i18n.lua) | `build.py --lang en\|vi` |
+| Nhà chính, chết là thua | [1_house.lua](../src/3_battle/1_house.lua) | Máu tính lại mỗi đợt theo `HOUSE_HP_HITS` |
+| Chọn hero lúc vào map | [2_heropick.lua](../src/2_player/2_heropick.lua) | 3 hero, mỗi người 1, không ai trùng |
+| Khoá kinh nghiệm & điểm kỹ năng | [1_player.lua](../src/2_player/1_player.lua) | Quét lại toàn map mỗi `HERO_XP_SWEEP` giây |
+| **100 đợt quái** | [2_wave.lua](../src/3_battle/2_wave.lua) | Đường cong chỉ số, tinh anh, boss, tiền thưởng |
+| **Tu Vi** — tu vi người chơi | [3_cultivation.lua](../src/2_player/3_cultivation.lua) | 20 bậc, ×19.7 — mua bằng **Linh Khí** |
+| **Bảy kỹ năng, 10 bậc** | [4_skill.lua](../src/2_player/4_skill.lua) · [7_effect.lua](../src/2_player/7_effect.lua) | Mua bằng **Gỗ**, 1 điểm mỗi lần. Sát thương **đã ăn theo chỉ số thật** |
+| **Sáu ô trang bị** | [5_gear.lua](../src/2_player/5_gear.lua) | ×8.3 — mua bằng **Linh Khí** |
+| **Cửa hàng** | [8_shop.lua](../src/2_player/8_shop.lua) | Hệ duy nhất tiêu **Vàng**, và duy nhất bán đồ tiêu hao. Gộp lọ cùng loại vào một ô |
+| **Cơ Duyên** | [10_fortune.lua](../src/2_player/10_fortune.lua) · [5_fortuneframe.lua](../src/4_ui/5_fortuneframe.lua) | Khung ba cột riêng, mở ngay khi tinh anh/boss chết. Chọn 1 trong 3 |
+| **Dùng đồ bằng hàng số trên** | [9_useitem.lua](../src/2_player/9_useitem.lua) | Thêm vào numpad sẵn có, không thay |
+| **Trang Bị** | [5_gear.lua](../src/2_player/5_gear.lua) | 6 món × 100 bậc, trần là Tu Vi. Khung chạy đủ, **chỉ số còn rỗng** — [trang-bi-kiem.md](02-he-thong/trang-bi-kiem.md) |
+| **Pháp Khí** | [6_relic.lua](../src/2_player/6_relic.lua) | ⏸ **đang khoá** (`RELIC_LOCKED`) — thẻ vẫn hiện để người chơi biết hệ tồn tại |
+| Bảng nhân vật (phím **E**) | [1_panel.lua](../src/4_ui/1_panel.lua) | 4 thẻ, hai kiểu thân bảng |
+| Chữ bay | [4_fct.lua](../src/4_ui/4_fct.lua) | Cộng dồn sát thương trước khi vẽ |
+| Lưới 25 block, 4+4 dòng sông | [4_geometry.lua](../src/1_core/4_geometry.lua) | Có vùng thật `Blk01..Blk25` trong World Editor; địa hình chưa vẽ |
 
 ## Cấu hình đã chốt
 
@@ -69,7 +69,7 @@ code**: lối chơi vẫn hoãn có chủ ý,
 
 ## Không còn ngân sách sức mạnh
 
-**Đường cong quái giờ *là* đường cong Tu Vi** (`MOB_EHP_THEO_LINHCAN`). Hai vế
+**Đường cong quái giờ *là* đường cong Tu Vi** (`MOB_EHP_FOLLOW_CULT`). Hai vế
 có chung thừa số nên nó triệt tiêu: tỉ lệ "mấy phát một con" phẳng theo định
 nghĩa, không nhờ cân bằng khéo —
 [ADR 0020](05-quyet-dinh/0020-duong-cong-quai-bam-theo-tu-vi.md).
@@ -86,7 +86,7 @@ quái; mọi nguồn khác là phần **vượt lên thuần**:
 | Pháp Khí | chưa có nội dung | Gỗ | ⏸ **khoá** — 190 Gỗ dành sẵn |
 
 Điều kiện duy nhất: người chơi phải lên **đúng một bậc mỗi cảnh giới**. Đó là
-giao kèo `LINHCAN_COST_BASE = 500` phẳng + một cảnh giới kiếm đúng 500 Linh Khí.
+giao kèo `CULT_COST_BASE = 500` phẳng + một cảnh giới kiếm đúng 500 Linh Khí.
 
 > ⚠ **Hai chỗ tiền chỉ vào mà không ra.**
 >
@@ -97,7 +97,7 @@ giao kèo `LINHCAN_COST_BASE = 500` phẳng + một cảnh giới kiếm đúng 
 >   trước khi bỏ khoá.
 
 `SKILL_DATA_LIVE` **đã bật** từ 2026-09-16: cả bảy ability có 10 bậc thật, và
-sát thương ăn theo chỉ số qua [7_hieuung.lua](../src/2_nguoi_choi/7_hieuung.lua).
+sát thương ăn theo chỉ số qua [7_effect.lua](../src/2_player/7_effect.lua).
 
 > **Nhưng chỉ Hart có kỹ năng.** Ba người chọn ba hero thì hai người có **0 kỹ
 > năng** — đây là khoảng trống lớn nhất còn lại.

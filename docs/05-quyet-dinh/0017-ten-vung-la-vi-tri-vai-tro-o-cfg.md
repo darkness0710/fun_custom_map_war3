@@ -6,7 +6,7 @@
 ## Bối cảnh
 
 Lưới 25 block chỉ tồn tại dưới dạng **toạ độ tính lúc chạy**
-([4_geometry.lua](../../src/1_nen/4_geometry.lua)). World Editor không nhìn thấy
+([4_geometry.lua](../../src/1_core/4_geometry.lua)). World Editor không nhìn thấy
 chúng, nên không cầm chuột sửa được — mà sửa bằng chuột chính là việc sẽ phải làm
 nhiều lần khi dựng phó bản và thí luyện.
 

@@ -49,9 +49,9 @@ end
 local function tierLabel(stage)
   local _, tier, isBoss = decode(stage)
   if isBoss then return API.t("stage_boss") end
-  local ten = CFG.TIER_NAMES and CFG.TIER_NAMES[tier] or nil
-  if ten ~= nil then return API.pick(ten) end
-  if tier >= CFG.TIERS_PER_REALM then return API.t("tier_full") end
+  local name = CFG.TIER_NAMES and CFG.TIER_NAMES[tier] or nil
+  if name ~= nil then return API.pick(name) end
+  if tier >= CFG.TIERS_PER_REALM then return API.t("tier_perfection") end
   return API.t("tier_word") .. " " .. tier
 end
 
@@ -76,14 +76,14 @@ local function mobName(stage, kind)
   if kind == "boss" then
     return realmName(realm) .. " - " .. API.t("boss_suffix")
   end
-  local hau = (kind == "elite") and "elite_suffix" or "mob_suffix"
-  return realmName(realm) .. " " .. tierLabel(stage) .. " - " .. API.t(hau)
+  local suffix = (kind == "elite") and "elite_suffix" or "mob_suffix"
+  return realmName(realm) .. " " .. tierLabel(stage) .. " - " .. API.t(suffix)
 end
 
-local function realmCoi(realm)
+local function realmWorld(realm)
   local r = CFG.REALMS[realm]
   if r == nil then return 1 end
-  return r.coi
+  return r.world
 end
 
 -- Chu hien cho nguoi choi: "Truc Co Tang 4" hoac "Truc Co Vien Man".
@@ -98,24 +98,24 @@ end
 
 -- He so Linh Can cua mot BAC, tinh thang tu bang chi so.
 --
--- Goi qua API vi statAt nam trong 3_linhcan.lua. Tra ve 1.0 neu he do
+-- Goi qua API vi statAt nam trong 3_cultivation.lua. Tra ve 1.0 neu he do
 -- chua san sang -- quai van sinh duoc, chi la khong bam theo.
-local function lcPower(rank)
-  if API.linhCanStatAt == nil then return 1.0 end
-  local b = CFG.LINHCAN_DMG_BASE
-  return (b + API.linhCanStatAt(rank)) / (b + API.linhCanStatAt(1))
+local function cultPowerAt(rank)
+  if API.cultStatAt == nil then return 1.0 end
+  local b = CFG.CULT_DMG_BASE
+  return (b + API.cultStatAt(rank)) / (b + API.cultStatAt(1))
 end
 
--- EHP quai BAM THEO duong cong Linh Can -- xem CFG.MOB_EHP_THEO_LINHCAN.
+-- EHP quai BAM THEO duong cong Linh Can -- xem CFG.MOB_EHP_FOLLOW_CULT.
 --
 -- Ca hai ve deu co cung thua so he so Linh Can nen no triet tieu, va ti
 -- le "may phat mot con" phang theo dinh nghia. Mu cua MOB_EHP_GROWTH la
 -- (TANG - 1), khong phai (stage - 1): phan tang truong theo canh gioi
 -- da nam trong he so roi, dem hai lan la nhan doi do doc.
 local function ehpOf(stage, realm)
-  if CFG.MOB_EHP_THEO_LINHCAN then
+  if CFG.MOB_EHP_FOLLOW_CULT then
     local _, tier = decode(stage)
-    return CFG.MOB_EHP_BASE * lcPower(realm)
+    return CFG.MOB_EHP_BASE * cultPowerAt(realm)
          * CFG.MOB_EHP_GROWTH ^ (tier - 1)
   end
   return CFG.MOB_EHP_BASE
@@ -127,13 +127,13 @@ end
 -- theo Suc Manh, tuc len theo dung he so do. Giu nguyen duong cong cu
 -- thi cuoi van quai go khong not hero.
 --
--- MOB_DMG_THEO_MU < 1 nen quai doc cham hon hero khoe len mot chut --
+-- MOB_DMG_FOLLOW_POW < 1 nen quai doc cham hon hero khoe len mot chut --
 -- co y, de nguoi choi thay minh cung day len chu khong dam chan tai cho.
 local function dmgOf(stage, realm)
-  if CFG.MOB_EHP_THEO_LINHCAN then
+  if CFG.MOB_EHP_FOLLOW_CULT then
     local _, tier = decode(stage)
     return CFG.MOB_DMG_BASE
-         * lcPower(realm) ^ (CFG.MOB_DMG_THEO_MU or 1.0)
+         * cultPowerAt(realm) ^ (CFG.MOB_DMG_FOLLOW_POW or 1.0)
          * CFG.MOB_DMG_GROWTH ^ (tier - 1)
   end
   return CFG.MOB_DMG_BASE
@@ -196,7 +196,7 @@ end
 -- ha quanh minh, va thuoc ha phai di qua day de cung duong cong, cung
 -- tien thuong, va cung duoc dem vao S.alive.
 local function spawnOne(stage, realm, kind, ex, ey)
-  local uid = CFG.MOB_UNIT[realmCoi(realm)]
+  local uid = CFG.MOB_UNIT[realmWorld(realm)]
   if uid == nil then return nil end
 
   local x, y = spawnPoint()
@@ -244,10 +244,10 @@ end
 --
 -- Thu nhap gio PHANG: mot con dung mot dong. Khong con phan le nao de
 -- cong don, nen ca ba ham thanh thua. rewardAll() goi thang
--- API.addLinhKhi / addVang / addGo.
+-- API.addQi / addGold / addLumber.
 --
 -- He so x1.25 cua Phap Khi "Tu Linh Tran" mat theo, va do la dung: he
--- Phap Khi dang khoa (CFG.PHAPKHI_LOCKED).
+-- Phap Khi dang khoa (CFG.RELIC_LOCKED).
 
 -- ---------- Mot wave ----------
 
@@ -273,9 +273,9 @@ local function rescaleHouse(stage, realm)
   -- nguoi mua la ca doi duoc -- do la ly do chung dat gia cao hon hai
   -- mon ca nhan o tren.
   local bonusMax, bonusRegen = 0.0, 0.0
-  if API.phapKhiAiCo ~= nil then
-    if API.phapKhiAiCo("nhahp")    then bonusMax   = 0.30 end
-    if API.phapKhiAiCo("nharegen") then bonusRegen = 0.15 end
+  if API.relicAnyHas ~= nil then
+    if API.relicAnyHas("nhahp")    then bonusMax   = 0.30 end
+    if API.relicAnyHas("nharegen") then bonusRegen = 0.15 end
   end
   newMax = math.floor(newMax * (1 + bonusMax) + 0.5)
   if newMax < 1 then newMax = 1 end
@@ -333,7 +333,7 @@ end
 
 local function waveSeconds(stage)
   local realm = decode(stage)
-  return CFG.WAVE_TIME[realmCoi(realm)] or 30.0
+  return CFG.WAVE_TIME[realmWorld(realm)] or 30.0
 end
 
 -- Dong ho KHONG duoc phep chong dot len nhau: xem CFG.WAVE_ONLY_WHEN_CLEAR.
@@ -438,36 +438,36 @@ local function rewardAll(stage, kind)
   --   Linh Khi -> Linh Can   Vang -> Shop   Go -> Ky Nang
   --
   -- Xem docs/02-he-thong/kinh-te.md
-  local lk, vang, go, quay = 0, 0, 0, 0
+  local qi, gold, lumber, cards = 0, 0, 0, 0
   if kind == "boss" then
-    lk   = CFG.THUONG_BOSS_LINHKHI
-    go   = CFG.THUONG_BOSS_GO
-    quay = CFG.QUAY_BOSS
+    qi   = CFG.REWARD_BOSS_QI
+    lumber   = CFG.REWARD_BOSS_LUMBER
+    cards = CFG.FORTUNE_BOSS
   elseif kind == "elite" then
-    lk   = CFG.THUONG_ELITE_LINHKHI
-    go   = CFG.THUONG_ELITE_GO
-    quay = CFG.QUAY_ELITE
+    qi   = CFG.REWARD_ELITE_QI
+    lumber   = CFG.REWARD_ELITE_LUMBER
+    cards = CFG.FORTUNE_ELITE
   else
-    lk   = CFG.THUONG_MOB_LINHKHI
-    vang = CFG.THUONG_MOB_VANG
+    qi   = CFG.REWARD_MOB_QI
+    gold = CFG.REWARD_MOB_GOLD
   end
 
   for i = 1, #S.pids do
     local pid = S.pids[i]
     if S.p[pid] ~= nil and S.p[pid].active then
-      if lk > 0 then API.addLinhKhi(pid, lk) end
-      if vang > 0 then API.addVang(pid, vang) end
+      if qi > 0 then API.addQi(pid, qi) end
+      if gold > 0 then API.addGold(pid, gold) end
       -- Them luot quay CHAY TREN MOI MAY (ham nay di tu su kien quai
       -- chet), va no rut luon ba the -- do la cho duy nhat duoc goi
-      -- GetRandomInt cho he quay. Xem dau 10_quay.lua.
-      if quay > 0 and API.quayThemLuot ~= nil then
-        API.quayThemLuot(pid, quay)
+      -- GetRandomInt cho he quay. Xem dau 10_fortune.lua.
+      if cards > 0 and API.fortuneAddRolls ~= nil then
+        API.fortuneAddRolls(pid, cards)
       end
-      if go > 0 then
-        local n = go
-        if kind == "elite" and API.phapKhiCo ~= nil
-           and API.phapKhiCo(pid, "go") then n = n + 1 end
-        API.addGo(pid, n)
+      if lumber > 0 then
+        local n = lumber
+        if kind == "elite" and API.relicHas ~= nil
+           and API.relicHas(pid, "go") then n = n + 1 end
+        API.addLumber(pid, n)
       end
     end
   end
@@ -475,10 +475,10 @@ local function rewardAll(stage, kind)
   -- va Linh Khi cua tinh anh/boss (50/100) -- moi cai deu dang ke. Quai
   -- thuong nhay 1 moi con, ve lai moi con la 50 lan mot wave, de nhip
   -- refresh cua bang lo.
-  if go > 0 then API.panelRefreshAll() end
+  if lumber > 0 then API.panelRefreshAll() end
 
   if kind == "boss" then
-    API.msg(nil, CFG.C_JADE .. API.t("boss_down", realmName(realm), go) .. CFG.C_END)
+    API.msg(nil, CFG.C_JADE .. API.t("boss_down", realmName(realm), lumber) .. CFG.C_END)
   end
 end
 
@@ -515,7 +515,7 @@ local function onMobDeath(u, killer)
   -- khong phai "wave sinh hong khong con nao".
   if S.alive ~= 0 or S.stage <= 0 or not S.running then return end
 
-  if API.phapKhiOnClear ~= nil then API.phapKhiOnClear() end
+  if API.relicOnClear ~= nil then API.relicOnClear() end
 
   local r, tier, wasBoss = decode(S.stage)
 
@@ -531,7 +531,7 @@ local function onMobDeath(u, killer)
   if CFG.WAVE_REST and (not wasBoss) and tier >= CFG.TIERS_PER_REALM then
     pauseWaves("boss")
     API.msg(nil, CFG.C_GOLD ..
-      API.t("wave_vienman", realmName(r)) .. CFG.C_END)
+      API.t("wave_perfection", realmName(r)) .. CFG.C_END)
     return
   end
 
@@ -617,7 +617,7 @@ API.ehpOf          = ehpOf
 API.dmgOf          = dmgOf
 API.armorOf        = armorOf
 API.mobName        = mobName
-API.realmCoi       = realmCoi
+API.realmWorld       = realmWorld
 -- Boss goi de sinh thuoc ha quanh minh, tai mot toa do cu the.
 API.waveSpawnAt    = function(stage, realm, x, y)
   return spawnOne(stage, realm, "mob", x, y)

@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Đã cài
 > **Cập nhật:** 2026-09-16
-> **Nguồn sự thật:** [1_config.lua](../../src/1_nen/1_config.lua)
+> **Nguồn sự thật:** [1_config.lua](../../src/1_core/1_config.lua)
 
 > Khoá nào ở đây mà `CFG` không có thì ghi rõ **`(chưa có)`**. Một tên khoá không
 > tồn tại đọc y hệt một tên khoá tồn tại, và đó là kiểu sai khó thấy nhất trong
@@ -11,7 +11,7 @@
 Trang này **không chứa giá trị**. Giá trị sống trong `CFG`. Ở đây là ý nghĩa của
 từng khoá và ràng buộc nó phải tuân — thứ đọc code không suy ra được.
 
-Muốn xem số hiện tại: mở [1_config.lua](../../src/1_nen/1_config.lua).
+Muốn xem số hiện tại: mở [1_config.lua](../../src/1_core/1_config.lua).
 
 ## Người chơi
 
@@ -47,7 +47,7 @@ Chi tiết: [02-he-thong/phan-vung.md](../02-he-thong/phan-vung.md) ·
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
 | `BLOCKS` | `[chỉ số block] = { vai }` | Block **không** khai báo ở đây là `"hoang"`. Chỉ số 1–25, đếm từ góc dưới-trái theo `blockIndex(col,row)`. Hiện chỉ 6/25 có vai trò — [ADR 0019](../05-quyet-dinh/0019-moi-vung-mot-co-che-co-op.md) |
-| `BLOCK_ROLE` | Bảng vai trò → `{ ten, en, mau, tien, coop }` | **`coop` là ô bắt buộc**: một câu mô tả cơ chế buộc ba người phối hợp. Vai trò nào không điền được ô đó thì chưa nên có. `mau` dùng cho ping minimap của `-vung` |
+| `BLOCK_ROLE` | Bảng vai trò → `{ vi, en, color, currency, coop }` | **`coop` là ô bắt buộc**: một câu mô tả cơ chế buộc ba người phối hợp. Vai trò nào không điền được ô đó thì chưa nên có. `color` dùng cho ping minimap của `-vung` |
 | `BLOCK_RGN_PREFIX` | Tiền tố tên vùng trong World Editor | `"Blk"` — phải khớp `w3region.py`. **Tên vùng là vị trí, vai trò ở `BLOCKS`** |
 
 > Chưa hệ nào gắn vào block. Bảng này là *bản đồ*, không phải lối chơi —
@@ -79,8 +79,8 @@ Chi tiết: [02-he-thong/chon-hero.md](../02-he-thong/chon-hero.md).
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-| `HEROES` | Danh sách `{ id, name, role, icon, mota, mota_en, abilities, skills }` | Không được rỗng. `mota` đúng **3 gạch**, gạch thứ ba luôn là điểm yếu. Mỗi gạch tối đa 3–4 từ: frame chữ của WC3 không tự xuống dòng, dòng dài tràn sang thẻ bên cạnh |
-| `PICK_TITLE` | Tiêu đề bảng chọn | **(đã bỏ)** — chuyển sang khoá `pick_title` ở [6_lang.lua](../../src/1_nen/6_lang.lua) |
+| `HEROES` | Danh sách `{ id, name, role, icon, desc_vi, desc_en, abilities, skills }` | Không được rỗng. `desc_vi` đúng **3 gạch**, gạch thứ ba luôn là điểm yếu. Mỗi gạch tối đa 3–4 từ: frame chữ của WC3 không tự xuống dòng, dòng dài tràn sang thẻ bên cạnh |
+| `PICK_TITLE` | Tiêu đề bảng chọn | **(đã bỏ)** — chuyển sang khoá `pick_title` ở [6_i18n.lua](../../src/1_core/6_i18n.lua) |
 | `HERO_PICK_MODE` | `"frame"` (thẻ có icon) hoặc `"dialog"` (popup chữ) | |
 | `HEROES[i].icon` `role` | Icon và vai hiện trên thẻ | Chỉ dùng ở `"frame"` |
 | `CARD_W` `CARD_GAP` `CARD_ICON` `CARD_PAD` `CARD_LINE` | Hình học một dòng hero | Toạ độ màn hình: X 0.0–0.8, Y 0.0–0.6. **Chiều cao một dòng suy ra** từ `CARD_ICON` và `CARD_LINE` — không có `CARD_H` |
@@ -116,7 +116,7 @@ Chi tiết: [02-he-thong/dot-quai.md](../02-he-thong/dot-quai.md) ·
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-| `REALMS` | Bảng 20 cảnh giới `{ ten, en, coi }` | Đúng 20 dòng, đúng thứ tự. `ten` (vi) **không dấu** — font WC3 thiếu glyph tiếng Việt. `coi` 1–4 quyết định mẫu lính và `WAVE_TIME` |
+| `REALMS` | Bảng 20 cảnh giới `{ vi, en, world }` | Đúng 20 dòng, đúng thứ tự. `vi` **không dấu** — font WC3 thiếu glyph tiếng Việt. `world` 1–4 quyết định mẫu lính và `WAVE_TIME` |
 | `TIERS_PER_REALM` | Tầng mỗi cảnh giới | `4`, mỗi tầng một tên trong `TIER_NAMES` *(Sơ Kì → Viên Mãn)*. Tổng stage = `20 × (TIERS_PER_REALM + 1)` = 100. Không hard-code số 5 ở đâu cả |
 | `WAVE_MOB_COUNT` `WAVE_ELITE_COUNT` | Lính / tinh anh mỗi wave | **Không** nhân theo số người chơi — [ADR 0009](../05-quyet-dinh/0009-so-luong-linh-co-dinh.md) |
 | `WAVE_TIME` | Giây mỗi wave, tra theo **cõi** | **Ràng buộc cứng: `> quãng đường/tốc độ + thời gian dọn một đợt`.** Thiếu là map không bao giờ sạch và cả `WAVE_AUTO_NEXT` lẫn `-next` chết. Bị chặn dưới bởi **tốc độ mẫu lính**, nên cõi dễ có thể cần nhiều giây hơn cõi khó |
@@ -127,7 +127,7 @@ Chi tiết: [02-he-thong/dot-quai.md](../02-he-thong/dot-quai.md) ·
 | `WAVE_MAX_ALIVE` | Trần quái sống | Hoãn việc **sinh**, không hoãn đồng hồ. Chạm thường xuyên = đường cong sai |
 | `WAVE_TICK` | Giây giữa hai lần phát lại lệnh đi | Quái bị đánh lạc hướng đứng mãi nếu không có |
 | `SPAWN_JITTER` | Bán kính xê dịch điểm sinh | Đủ rộng để `WAVE_MOB_COUNT` con không chồng một chỗ |
-| `MOB_UNIT` | Mẫu lính mỗi cõi, tra theo `REALMS[r].coi` | **Placeholder** — 4 unit gốc WC3. Thiết kế cần 4 cõi × 6 mẫu = 24 |
+| `MOB_UNIT` | Mẫu lính mỗi cõi, tra theo `REALMS[r].world` | **Placeholder** — 4 unit gốc WC3. Thiết kế cần 4 cõi × 6 mẫu = 24 |
 | `ELITE_EHP` `ELITE_DMG` `ELITE_SCALE` | Tinh anh | `ELITE_DMG` phải thấp hơn nhiều `ELITE_EHP` — nhân 10 cả hai là giết hero một đòn |
 | `BOSS_EHP` `BOSS_DMG` `BOSS_SCALE` | Boss | Xem [boss.md](../02-he-thong/boss.md) |
 | `MOB_ARCHETYPES` | 6 mẫu lính | **(chưa có)** `Σ(tỉ lệ)` = 1.0 và `Σ(tỉ lệ × EHP mult)` ∈ [0.95, 1.05] |
@@ -159,13 +159,13 @@ Chi tiết: [02-he-thong/kinh-te.md](../02-he-thong/kinh-te.md).
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-| `THUONG_MOB_LINHKHI` `THUONG_MOB_VANG` | Lính thường rơi ra | `1` + `1`. Cả ván 4 000 con |
-| `THUONG_ELITE_LINHKHI` `THUONG_ELITE_GO` | Tinh anh rơi ra | `50` + `2`. Cả ván 80 con |
-| `THUONG_BOSS_LINHKHI` `THUONG_BOSS_GO` | Boss rơi ra | `100` + `5`. Cả ván 20 con |
+| `REWARD_MOB_QI` `REWARD_MOB_GOLD` | Lính thường rơi ra | `1` + `1`. Cả ván 4 000 con |
+| `REWARD_ELITE_QI` `REWARD_ELITE_LUMBER` | Tinh anh rơi ra | `50` + `2`. Cả ván 80 con |
+| `REWARD_BOSS_QI` `REWARD_BOSS_LUMBER` | Boss rơi ra | `100` + `5`. Cả ván 20 con |
 
 **Thu nhập phẳng — không còn đường cong mũ nào.** Sáu số trên chọn để **một
 cảnh giới kiếm đúng một lần đột phá**: `4 wave × 100 + boss 100 = 500`, mà
-`LINHCAN_COST_BASE` cũng đúng `500`. Cả ván: **Linh Khí 10 000 · Vàng 4 000 ·
+`CULT_COST_BASE` cũng đúng `500`. Cả ván: **Linh Khí 10 000 · Vàng 4 000 ·
 Gỗ 260**. Đổi một trong sáu số là gãy giao kèo đó — và giao kèo đó là thứ
 [ADR 0020](../05-quyet-dinh/0020-duong-cong-quai-bam-theo-tu-vi.md) dựa vào.
 
@@ -180,10 +180,10 @@ Chi tiết: [02-he-thong/kinh-te.md](../02-he-thong/kinh-te.md) ·
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-| `LINHCAN_STAT_GAIN` `LINHCAN_STAT_STEP` | Chỉ số cộng thêm ở lần đột phá đầu, và nhân mỗi lần sau | `50 × 1.30`. Cộng dồn 19 bậc = **24 199** chỉ số. Chọn `1.30` chứ không phải `2.0` vì gấp đôi 19 lần ra 26 **triệu** chỉ số — số phải đọc được. `LINHCAN_STEP` cũ đã bỏ cùng ngân sách ×967 |
-| `LINHCAN_COST_BASE` `LINHCAN_COST_STEP` | Giá đột phá bậc `r` = `BASE × STEP^(r−1)` | `500 × 1.0` — **phẳng**. Không suy từ đường cong nào, nó là một giao kèo đơn: dọn sạch một cảnh giới = lên một bậc |
-| `LINHCAN_DMG_BASE` `LINHCAN_STAT_BASE` | Hai số để **giải ngược** ra chỉ số cần đạt | Nhân thẳng chỉ số lên mỗi bậc là **sai**: sát thương hero = nền + chỉ số, phần nền làm loãng nhân số. Đổi hai số này cho khớp hero thật trong Object Editor |
-| `LINHCAN_STAT_MODE` | `"all"` hay `"primary"` | `"all"` phục vụ nhiều thứ cùng lúc (Str→máu, Int→mana) nhưng Agi cho **tốc đánh** — một nguồn DPS mà đường cong quái không hề biết. Đổi sang `"primary"` nếu đo thấy hero mạnh vượt đường cong |
+| `CULT_STAT_GAIN` `CULT_STAT_STEP` | Chỉ số cộng thêm ở lần đột phá đầu, và nhân mỗi lần sau | `50 × 1.30`. Cộng dồn 19 bậc = **24 199** chỉ số. Chọn `1.30` chứ không phải `2.0` vì gấp đôi 19 lần ra 26 **triệu** chỉ số — số phải đọc được. `CULT_STEP` cũ đã bỏ cùng ngân sách ×967 |
+| `CULT_COST_BASE` `CULT_COST_STEP` | Giá đột phá bậc `r` = `BASE × STEP^(r−1)` | `500 × 1.0` — **phẳng**. Không suy từ đường cong nào, nó là một giao kèo đơn: dọn sạch một cảnh giới = lên một bậc |
+| `CULT_DMG_BASE` `CULT_STAT_BASE` | Hai số để **giải ngược** ra chỉ số cần đạt | Nhân thẳng chỉ số lên mỗi bậc là **sai**: sát thương hero = nền + chỉ số, phần nền làm loãng nhân số. Đổi hai số này cho khớp hero thật trong Object Editor |
+| `CULT_STAT_MODE` | `"all"` hay `"primary"` | `"all"` phục vụ nhiều thứ cùng lúc (Str→máu, Int→mana) nhưng Agi cho **tốc đánh** — một nguồn DPS mà đường cong quái không hề biết. Đổi sang `"primary"` nếu đo thấy hero mạnh vượt đường cong |
 
 ## Nâng cấp kỹ năng
 
@@ -192,28 +192,28 @@ Chi tiết: [nang-cap-ky-nang.md](nang-cap-ky-nang.md) ·
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-| `SKILLS` | Bảy kỹ năng của mỗi hero, tra theo unit id | `heSo` ăn theo **chỉ số cao nhất** của hero, không phải số cố định. Bị động tính theo **phần trăm** — cộng thẳng một lượng cố định thì cuối game vô nghĩa |
+| `SKILLS` | Bảy kỹ năng của mỗi hero, tra theo unit id | `factor` ăn theo **chỉ số cao nhất** của hero, không phải số cố định. Bị động tính theo **phần trăm** — cộng thẳng một lượng cố định thì cuối game vô nghĩa |
 | `SKILL_MAX_LEVEL` | Trần thiết kế | Trần **thật** là `min(trần này, Stats - Levels trong Object Editor)`. Code đo bậc thật rồi mới cho nâng — bảng ghi 10/10 mà unit ở bậc 3 là bảng nói dối |
-| `SKILL_GO_UP` | Giá nâng một bậc, bằng **Gỗ** | `1`. Một con số phẳng, không bảng, không đường cong |
-| `SKILL_GO_UNLOCK` | Giá mở khoá một kỹ năng | `1`. Mở cái thứ nhất hay thứ bảy đều như nhau — người chơi chỉ chọn **thứ tự**, không phải tính toán |
+| `SKILL_LUMBER_UP` | Giá nâng một bậc, bằng **Gỗ** | `1`. Một con số phẳng, không bảng, không đường cong |
+| `SKILL_LUMBER_UNLOCK` | Giá mở khoá một kỹ năng | `1`. Mở cái thứ nhất hay thứ bảy đều như nhau — người chơi chỉ chọn **thứ tự**, không phải tính toán |
 | `SKILL_START_COUNT` | Bao nhiêu kỹ năng phát sẵn | `0` — command card trống khi vào map |
-| `GO_START` | Gỗ cầm sẵn lúc vào map | `2` — đủ mở **một** kỹ năng sát thương **và** Luyện Thể ngay giây đầu. Đó là quyết định đầu tiên của ván |
+| `LUMBER_START` | Gỗ cầm sẵn lúc vào map | `2` — đủ mở **một** kỹ năng sát thương **và** Luyện Thể ngay giây đầu. Đó là quyết định đầu tiên của ván |
 | `SKILL_DMG_STEP` `SKILL_CD_STEP` `SKILL_PASSIVE_STEP` | Sức mạnh mỗi bậc | Ngân sách cả hệ là ×2, và ×2 đó là **tích** của mọi nút chỉnh: chủ động ×1.33 sát thương × 1.5 tần suất; bị động ăn trọn ×2 vì không có hồi chiêu |
 | `SKILL_MANA_STEP` | Mana mỗi bậc | Tăng **chậm hơn** bộ mana (Tu Vi cộng cả Int). Chủ ý: đầu ván mana là ràng buộc thật, cuối ván không còn |
-| `SKILL_DATA_LIVE` | Số liệu đã có hiệu lực chưa | `true` từ 2026-09-16. Bảy ability có 10 bậc thật, và [7_hieuung.lua](../../src/2_nguoi_choi/7_hieuung.lua) tự gây sát thương theo đúng `CFG.SKILLS` |
+| `SKILL_DATA_LIVE` | Số liệu đã có hiệu lực chưa | `true` từ 2026-09-16. Bảy ability có 10 bậc thật, và [7_effect.lua](../../src/2_player/7_effect.lua) tự gây sát thương theo đúng `CFG.SKILLS` |
 
 ## Trang Bị
 
 Chi tiết: [02-he-thong/kinh-te.md](../02-he-thong/kinh-te.md) ·
-[5_trangbi.lua](../../src/2_nguoi_choi/5_trangbi.lua).
+[5_gear.lua](../../src/2_player/5_gear.lua).
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-| `TRANGBI` | Sáu ô `{ ten, en, icon }` | Tên chỉ là hương vị — **cả sáu có cùng tác dụng** |
-| `TRANGBI_LOCKED` | Khoá tạm | `true`. Thẻ vẫn hiện đủ sáu ô ghi `0/0` không có nút — để người chơi biết hệ tồn tại và đang đóng |
-| `TRANGBI_PCT` | Mỗi cấp cộng bao nhiêu | `+4%` sát thương. Sáu ô đầy cấp = `(1.04⁹)⁶ = ×8.3`. Con số này từng là "phần ×8 của ngân sách ×967"; ngân sách đó đã bỏ ([ADR 0020](../05-quyet-dinh/0020-duong-cong-quai-bam-theo-tu-vi.md)) nên ×8.3 giờ là **phần vượt lên thuần** |
-| `TRANGBI_MAX_LEVEL` | `10` | Ô bắt đầu ở cấp **1**, nâng 9 lần |
-| `TRANGBI_COST_BASE` `TRANGBI_COST_STEP` | Giá theo **tổng số lần đã nâng của cả sáu ô** | ⚠ **Cả hai đã chết.** `147 × 1.134ⁿ` suy ra từ thu nhập **mũ** cũ (1 880 187 Linh Khí cả ván). Với thu nhập phẳng 10 000: trọn 60 lần nâng tốn **974 606**, riêng lần thứ 54 tốn **115 295**, và 10 000 chỉ mua được **18/60** lần. Phải tính lại trước khi bỏ `TRANGBI_LOCKED` |
+| `GEAR` | Sáu ô `{ vi, en, icon }` | Tên chỉ là hương vị — **cả sáu có cùng tác dụng** |
+| `GEAR_LOCKED` | Khoá tạm | `true`. Thẻ vẫn hiện đủ sáu ô ghi `0/0` không có nút — để người chơi biết hệ tồn tại và đang đóng |
+| `GEAR_PCT` | Mỗi cấp cộng bao nhiêu | `+4%` sát thương. Sáu ô đầy cấp = `(1.04⁹)⁶ = ×8.3`. Con số này từng là "phần ×8 của ngân sách ×967"; ngân sách đó đã bỏ ([ADR 0020](../05-quyet-dinh/0020-duong-cong-quai-bam-theo-tu-vi.md)) nên ×8.3 giờ là **phần vượt lên thuần** |
+| `GEAR_MAX_LEVEL` | `10` | Ô bắt đầu ở cấp **1**, nâng 9 lần |
+| `GEAR_COST_BASE` `GEAR_COST_STEP` | Giá theo **tổng số lần đã nâng của cả sáu ô** | ⚠ **Cả hai đã chết.** `147 × 1.134ⁿ` suy ra từ thu nhập **mũ** cũ (1 880 187 Linh Khí cả ván). Với thu nhập phẳng 10 000: trọn 60 lần nâng tốn **974 606**, riêng lần thứ 54 tốn **115 295**, và 10 000 chỉ mua được **18/60** lần. Phải tính lại trước khi bỏ `GEAR_LOCKED` |
 
 Cộng vào **sát thương nền**, không cộng chỉ số — Tu Vi đã cộng chỉ số rồi, và
 đổi một hệ thì phần của nó phải đo được riêng.
@@ -222,7 +222,7 @@ Cộng vào **sát thương nền**, không cộng chỉ số — Tu Vi đã c�
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-| `PHAPKHI_LOCKED` | Khoá tạm | `true`. Thẻ hiện dòng "hệ đang tạm khoá" |
+| `RELIC_LOCKED` | Khoá tạm | `true`. Thẻ hiện dòng "hệ đang tạm khoá" |
 
 ## Cơ Duyên
 
@@ -231,11 +231,11 @@ Chi tiết: [02-he-thong/quay-thuong.md](../02-he-thong/quay-thuong.md) ·
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-| `QUAY_ELITE` `QUAY_BOSS` | Lượt quay tinh anh / boss | `1` + `3` → **140 lượt** cả ván |
-| `QUAY_DA` | Thẻ 1 — đá mỗi lượt | **Phẳng, và bám theo số món trang bị:** `≈ 2.5 × số món`. Một món → `3`, bốn món → `10`. **Thêm món mà quên sửa là hệ xác suất chết** — đá thừa thì bấm mãi cũng trúng |
-| `QUAY_GIA_TRI` `QUAY_DAI_MIN/MAX` | Thẻ 2 — chỉ số | `2.2 × 1.30^(bậc−1)`, ±30%. **Leo** — nó là sức mạnh, không phải tiền |
-| `QUAY_VANG_MIN` `QUAY_VANG_MAX` | Thẻ 3 — vàng | `30..90`, **phẳng**. Đỉnh dải **phải vượt** giá trị thẻ 1 quy ra vàng (3 đá × 25 = 75), nếu không thẻ 3 thua mọi lượt và thành thẻ chết |
-| `QUAY_CHISO` | Ba chỉ số thẻ 2 rút trúng | `str agi int`. Trúng Agi/Int **không** tăng sát thương kỹ năng (nó ăn theo chỉ số cao nhất, mà Hart luôn dẫn bằng Str) — canh bạc có chủ đích |
+| `FORTUNE_ELITE` `FORTUNE_BOSS` | Lượt quay tinh anh / boss | `1` + `3` → **140 lượt** cả ván |
+| `FORTUNE_IRON` | Thẻ 1 — đá mỗi lượt | **Phẳng, và bám theo số món trang bị:** `≈ 2.5 × số món`. Một món → `3`, bốn món → `10`. **Thêm món mà quên sửa là hệ xác suất chết** — đá thừa thì bấm mãi cũng trúng |
+| `FORTUNE_VALUE` `FORTUNE_RANGE_MIN/MAX` | Thẻ 2 — chỉ số | `2.2 × 1.30^(bậc−1)`, ±30%. **Leo** — nó là sức mạnh, không phải tiền |
+| `FORTUNE_GOLD_MIN` `FORTUNE_GOLD_MAX` | Thẻ 3 — vàng | `30..90`, **phẳng**. Đỉnh dải **phải vượt** giá trị thẻ 1 quy ra vàng (3 đá × 25 = 75), nếu không thẻ 3 thua mọi lượt và thành thẻ chết |
+| `FORTUNE_STATS` | Ba chỉ số thẻ 2 rút trúng | `str agi int`. Trúng Agi/Int **không** tăng sát thương kỹ năng (nó ăn theo chỉ số cao nhất, mà Hart luôn dẫn bằng Str) — canh bạc có chủ đích |
 
 > **Tiền thì phẳng, sức mạnh thì leo.** Thẻ 1 và 3 cho tiền → phẳng; thẻ 2 cho
 > sức mạnh → leo. Một thẻ tiền leo còn thẻ kia đứng yên thì sớm muộn cũng cắt
@@ -246,10 +246,10 @@ Chi tiết: [02-he-thong/quay-thuong.md](../02-he-thong/quay-thuong.md) ·
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-| `SHOP` | Bốn món `{ ma, ten, en, item/da, gia, icon, mota }` | Món có `da` thay cho `item` thì **không dùng túi đồ** — cộng thẳng vào bộ đếm |
+| `SHOP` | Bốn món `{ code, vi, en, item/iron, price, icon, desc_vi }` | Món có `iron` thay cho `item` thì **không dùng túi đồ** — cộng thẳng vào bộ đếm |
 | `SHOP_CHECK_BAG` | Chặn mua khi đầy túi | `true`. Không có nó thì item rơi xuống đất và người chơi mất vàng mà không hiểu vì sao |
 | `SHOP_STACK_MAX` | Gộp mấy lượt vào một ô | `10`. Gộp bằng tay vì item có sẵn của game không do ta nắm thuộc tính tự gộp |
-| `START_ITEMS` | Quà phát sau khi chọn hero | Dùng **chung bảng** với `SHOP`, tra theo `ma` — hai chỗ cùng tạo một thứ thì sớm muộn cũng lệch |
+| `START_ITEMS` | Quà phát sau khi chọn hero | Dùng **chung bảng** với `SHOP`, tra theo `code` — hai chỗ cùng tạo một thứ thì sớm muộn cũng lệch |
 
 Giá định theo **tổng vàng cả ván ~12 400** *(quái 4 000 + Cơ Duyên ~8 400)*,
 không theo bậc. Đá Huyền Thiết `25` là đối thủ đầu tiên của Vàng ngoài lọ thuốc.
@@ -259,7 +259,7 @@ không theo bậc. Đá Huyền Thiết `25` là đối thủ đầu tiên của
 Luật: [02-he-thong/trang-bi-kiem.md](../02-he-thong/trang-bi-kiem.md) ·
 [ADR 0021](../05-quyet-dinh/0021-trang-bi-la-mot-mon-tien-hoa.md).
 **Chưa có khoá nào** — chặn bởi phần chỉ số chưa chốt.
-| `PHAPKHI` | **Đang rỗng** `{}` | Năm món cũ đã xoá (2026-09-16). Hệ này sẽ tiêu **Gỗ**, ngân sách dành sẵn **190 điểm** |
+| `RELIC` | **Đang rỗng** `{}` | Năm món cũ đã xoá (2026-09-16). Hệ này sẽ tiêu **Gỗ**, ngân sách dành sẵn **190 điểm** |
 
 Mỗi món phải **đọc-lúc-dùng**, không món nào được đăng ký trigger riêng — một
 món cần bộ bắt sự kiện riêng là một món có thể hỏng âm thầm, mà cả ván chỉ mua
@@ -271,7 +271,7 @@ món cần bộ bắt sự kiện riêng là một món có thể hỏng âm th�
 > đúng đường cong Tu Vi, nên hai hệ đang khoá là phần **vượt lên**, không phải
 > phần thiếu.
 
-> ⚠ **Đá Huyền Thiết không có chỗ tiêu.** Cơ Duyên rơi `QUAY_DA = 10` mỗi lượt,
+> ⚠ **Đá Huyền Thiết không có chỗ tiêu.** Cơ Duyên rơi `FORTUNE_IRON = 10` mỗi lượt,
 > cả ván tới **1 400** đá, mà ô tiêu duy nhất là Trang Bị — đang khoá. Đây đúng
 > là cái bẫy đã giết Tinh Thạch, lặp lại. Xem
 > [kinh-te.md](../02-he-thong/kinh-te.md).
@@ -279,7 +279,7 @@ món cần bộ bắt sự kiện riêng là một món có thể hỏng âm th�
 ## Đồng bộ nhiều người chơi
 
 Chi tiết: [ADR 0012](../05-quyet-dinh/0012-mot-kenh-dong-bo-duy-nhat.md) ·
-[3_sync.lua](../../src/1_nen/3_sync.lua).
+[3_sync.lua](../../src/1_core/3_sync.lua).
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
@@ -315,26 +315,26 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | `DEV_COMMANDS` | `true` | `-sp` `-wave` `-lk` `-tt` `-spawn`. Có **riêng** một cờ để tắt báo cáo mà vẫn gõ lệnh thử được |
 | `TRACE` `TRACE_FILE` | `true` | Ghi vết khởi động ra file. Game sập thì mọi dòng chat đều mất — đây là cách duy nhất biết nó chết ở bước nào |
 | `REVEAL_MAP` | `true` | Mở toàn bộ sương mù — **luật của map**, không phải công tắc dev |
-| `THUONG_MOB_LINHKHI` `THUONG_MOB_VANG` | `1` `1` | Lính thường rơi ra. **Phẳng**, không theo stage |
-| `THUONG_ELITE_LINHKHI` `THUONG_BOSS_LINHKHI` | `50` `100` | Chọn để 1 cảnh giới kiếm **đúng 500** = 1 lần đột phá |
-| `LINHCAN_STAT_GAIN` `LINHCAN_STAT_STEP` | `50` `1.30` | Đột phá cộng `+50`, cục sau ×1.30 cục trước. Cộng dồn 19 bậc = `24,209`. Gấp đôi (`2.0`) cho ra 26 **triệu** — vỡ map, và **không** mạnh hơn về cảm giác |
-| `THUONG_ELITE_GO` `THUONG_BOSS_GO` | `2` `5` | Nguồn Gỗ duy nhất. Cả ván `80×2 + 20×5 = 260` |
-| `SKILL_GO_UNLOCK` `SKILL_GO_UP` | `1` `1` | 70 giao dịch = 70 Gỗ trên 260 kiếm được |
-| `GO_START` | `2` | Đủ mở **một** kỹ năng sát thương **và** Luyện Thể ngay giây đầu |
-| `TRANGBI_LOCKED` `PHAPKHI_LOCKED` | `true` | Tạm khoá. Mở lại phải chọn lại đồng tiền — Linh Khí đã bị Tu Vi ăn 91% |
+| `REWARD_MOB_QI` `REWARD_MOB_GOLD` | `1` `1` | Lính thường rơi ra. **Phẳng**, không theo stage |
+| `REWARD_ELITE_QI` `REWARD_BOSS_QI` | `50` `100` | Chọn để 1 cảnh giới kiếm **đúng 500** = 1 lần đột phá |
+| `CULT_STAT_GAIN` `CULT_STAT_STEP` | `50` `1.30` | Đột phá cộng `+50`, cục sau ×1.30 cục trước. Cộng dồn 19 bậc = `24,209`. Gấp đôi (`2.0`) cho ra 26 **triệu** — vỡ map, và **không** mạnh hơn về cảm giác |
+| `REWARD_ELITE_LUMBER` `REWARD_BOSS_LUMBER` | `2` `5` | Nguồn Gỗ duy nhất. Cả ván `80×2 + 20×5 = 260` |
+| `SKILL_LUMBER_UNLOCK` `SKILL_LUMBER_UP` | `1` `1` | 70 giao dịch = 70 Gỗ trên 260 kiếm được |
+| `LUMBER_START` | `2` | Đủ mở **một** kỹ năng sát thương **và** Luyện Thể ngay giây đầu |
+| `GEAR_LOCKED` `RELIC_LOCKED` | `true` | Tạm khoá. Mở lại phải chọn lại đồng tiền — Linh Khí đã bị Tu Vi ăn 91% |
 | `MOB_EHP_BASE` | `120` | Đo từ "Chưởng phát đầu mất 1/3 máu ở wave 1": `1.32 × (17+13) × 3 = 119` |
-| `MOB_EHP_THEO_LINHCAN` | `true` | Quái **bám theo** đường cong Tu Vi thay vì có đường cong riêng. Hệ số triệt tiêu ở cả hai vế nên tỉ lệ "mấy phát một con" phẳng theo định nghĩa — đổi `LINHCAN_STAT_STEP` không phải chỉnh gì thêm |
-| `MOB_DMG_THEO_MU` | `0.85` | Mũ của hệ số dùng cho **sát thương** quái. `< 1` = quái độc chậm hơn hero khoẻ lên |
-| `MOB_EHP_REALM_STEP` | `1.22` | Chỉ còn dùng khi `MOB_EHP_THEO_LINHCAN = false` |
+| `MOB_EHP_FOLLOW_CULT` | `true` | Quái **bám theo** đường cong Tu Vi thay vì có đường cong riêng. Hệ số triệt tiêu ở cả hai vế nên tỉ lệ "mấy phát một con" phẳng theo định nghĩa — đổi `CULT_STAT_STEP` không phải chỉnh gì thêm |
+| `MOB_DMG_FOLLOW_POW` | `0.85` | Mũ của hệ số dùng cho **sát thương** quái. `< 1` = quái độc chậm hơn hero khoẻ lên |
+| `MOB_EHP_REALM_STEP` | `1.22` | Chỉ còn dùng khi `MOB_EHP_FOLLOW_CULT = false` |
 | `PANEL_W` | `0.68` | Năm thẻ. Ở `0.56` thì nhãn `IV. Treasures` tràn sang `V. Shop` |
-| `SKILL_TAT_GOC` `_INT` | *(bảng)* | Tắt hiệu ứng gốc của ability bản sao. Xem [ability-ban-sao.md](ability-ban-sao.md) |
-| `SKILL_CHO_GOC` | *(bảng)* | Mượn trường gốc làm **vật mang** cho giáp, thay vì tắt rồi tự cộng |
-| `QUAY_ELITE` `QUAY_BOSS` | `1` `3` | Lượt quay. 7/cảnh giới, 140 cả ván. `5`/`10` cho 600 lượt = 30 phút ngồi chọn menu |
-| `QUAY_GIA_TRI` | `2.2` | Giá trị một thẻ ở bậc 1. Nhân theo **chính** `LINHCAN_STAT_STEP` nên quay tự bám Tu Vi |
-| `QUAY_DA` | `3` | Thẻ 1, **phẳng**, bám theo số món trang bị (`≈ 2.5 × số món`). Một món → 3; cả ván 420 đá |
-| `QUAY_VANG_MIN/MAX` | `30` `90` | Thẻ 3, **phẳng + ngẫu nhiên**. Bản cũ `V × 12` leo ×180 làm thẻ 1 chết ở nửa sau ván — [ADR 0022](../05-quyet-dinh/0022-tien-thi-phang-suc-manh-thi-leo.md) |
+| `SKILL_ZERO_BASE` `_INT` | *(bảng)* | Tắt hiệu ứng gốc của ability bản sao. Xem [ability-ban-sao.md](ability-ban-sao.md) |
+| `SKILL_CARRY_BASE` | *(bảng)* | Mượn trường gốc làm **vật mang** cho giáp, thay vì tắt rồi tự cộng |
+| `FORTUNE_ELITE` `FORTUNE_BOSS` | `1` `3` | Lượt quay. 7/cảnh giới, 140 cả ván. `5`/`10` cho 600 lượt = 30 phút ngồi chọn menu |
+| `FORTUNE_VALUE` | `2.2` | Giá trị một thẻ ở bậc 1. Nhân theo **chính** `CULT_STAT_STEP` nên quay tự bám Tu Vi |
+| `FORTUNE_IRON` | `3` | Thẻ 1, **phẳng**, bám theo số món trang bị (`≈ 2.5 × số món`). Một món → 3; cả ván 420 đá |
+| `FORTUNE_GOLD_MIN/MAX` | `30` `90` | Thẻ 3, **phẳng + ngẫu nhiên**. Bản cũ `V × 12` leo ×180 làm thẻ 1 chết ở nửa sau ván — [ADR 0022](../05-quyet-dinh/0022-tien-thi-phang-suc-manh-thi-leo.md) |
 | `PANEL_W` | `0.74` | Năm thẻ *(Cơ Duyên đã tách thành khung riêng)*. Thẻ thứ **bảy** sẽ phải rút ngắn nhãn — khung 0.74 giữa màn hình 0.8 chỉ còn tràn 0.03 |
-| `QUAY_X` `QUAY_Y` | `0.40` `0.36` | Tâm khung Cơ Duyên. Cao hơn tâm màn hình để không đè thanh giao diện đáy |
+| `FORTUNE_X` `FORTUNE_Y` | `0.40` `0.36` | Tâm khung Cơ Duyên. Cao hơn tâm màn hình để không đè thanh giao diện đáy |
 | `HOUSE_FROZEN` | `true` | Chốt Nhà Chính tại chỗ. `HOUSE_UNIT` là `Hmkg` — unit hero **có chân** thuộc slot máy, nên AI mặc định của Warcraft cho nó đi lang thang |
 | `WAVE_ONLY_WHEN_CLEAR` | `true` | Đợt mới chỉ ra khi đợt cũ đã dọn sạch. Tắt thì đồng hồ `WAVE_TIME` lại chồng đợt lên nhau |
 

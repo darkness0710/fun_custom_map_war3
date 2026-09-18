@@ -2,8 +2,8 @@
 
 > **Trạng thái:** Bản đồ đã chốt — **chưa cài lối chơi nào**
 > **Cập nhật:** 2026-09-16
-> **Code:** [1_config.lua](../../src/1_nen/1_config.lua) (`CFG.BLOCKS`),
-> [4_geometry.lua](../../src/1_nen/4_geometry.lua) (tra cứu),
+> **Code:** [1_config.lua](../../src/1_core/1_config.lua) (`CFG.BLOCKS`),
+> [4_geometry.lua](../../src/1_core/4_geometry.lua) (tra cứu),
 > [w3region.py](../../w3region.py) (sinh vùng)
 > **Khoá CFG:** `BLOCKS` `BLOCK_ROLE` `BLOCK_RGN_PREFIX`
 > **Xem kèm:** [ADR 0014](../05-quyet-dinh/0014-25-block-de-danh-cho-noi-dung-sau.md) ·

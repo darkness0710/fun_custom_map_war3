@@ -1,15 +1,10 @@
 -- ============================================================
---  LECH TEN, CO Y: file/bien ten "linhcan", nhan hien ra "Tu Vi".
+--  3_cultivation.lua  --  Tu Vi (bac tu luyen cua nguoi choi)
 --
---  "Linh Can" la TU CHAT bam sinh -- thu khong doi duoc. He nay thi
---  nguoc lai: no la bac tu luyen, len tung nac theo canh gioi. Dung tu
---  "Tu Vi" moi dung nghia, nen NHAN da doi (T.panel_root).
---
---  Dinh danh trong code van la linhCan / LINHCAN_* / 3_linhcan.lua:
---  doi ca ho la sua ~50 cho o 7 file ma khong doi mot hanh vi nao. Doi
---  rieng nhan thi re, va cho lech duy nhat nam o day, co ghi lai.
--- ============================================================
---  3_linhcan.lua  --  Linh Can (tu vi cua nguoi choi)
+--  Ten cu la "Linh Can". Doi vi sai nghia: "Linh Can" la TU CHAT bam
+--  sinh, thu khong doi duoc; he nay thi nguoc lai, no len tung nac
+--  theo canh gioi. Nhan doi truoc (T.panel_cult), dinh danh doi sau
+--  (cultRank / CFG.CULT_*) nen gio khong con cho nao lech nhau.
 --
 --  Nguon suc manh CHINH: EHP quai bam theo chinh he so cua no
 --  (docs/03-du-lieu/duong-cong-suc-manh.md). 20 bac, dung chung thang
@@ -43,7 +38,7 @@ end
 -- CONG THEM, khong nhan. Moi lan dot pha cong mot cuc chi so, va cuc do
 -- gap doi moi bac: +50, +100, +200, ...
 --
--- Ban truoc nhan ca chi so len LINHCAN_STEP^(r-1) roi giai nguoc de bu
+-- Ban truoc nhan ca chi so len CULT_STEP^(r-1) roi giai nguoc de bu
 -- phan sat thuong nen. Bo vi mot ly do giao dien chu khong phai toan:
 -- nguoi choi khong doc duoc "x1.17", ho doc duoc "+50 chi so". Con so
 -- cong them la thu nhin thay ngay tren bang hero sau khi bam.
@@ -51,53 +46,53 @@ end
 -- statBonusAt(r) = tong cong don sau (r-1) lan dot pha
 --                = GAIN x (STEP^(r-1) - 1) / (STEP - 1)
 local function statBonusAt(r)
-  local g, s = CFG.LINHCAN_STAT_GAIN, CFG.LINHCAN_STAT_STEP
+  local g, s = CFG.CULT_STAT_GAIN, CFG.CULT_STAT_STEP
   if r <= 1 then return 0.0 end
   if s == 1.0 then return g * (r - 1) end     -- tranh chia cho 0
   return g * (s ^ (r - 1) - 1) / (s - 1)
 end
 
 local function statAt(r)
-  return CFG.LINHCAN_STAT_BASE + statBonusAt(r)
+  return CFG.CULT_STAT_BASE + statBonusAt(r)
 end
 
 -- He so suc manh HIEN RA cho nguoi choi. Suy TU chi so chu khong phai
--- mot duong cong rieng: sat thuong = heSo x (DMG_BASE + chi so), nen
+-- mot duong cong rieng: sat thuong = factor x (DMG_BASE + chi so), nen
 -- day dung la ti le sat thuong giua bac r va bac 1. Ban truoc no la mot
--- hang so rieng (LINHCAN_STEP) va co the noi khac voi chi so that.
+-- hang so rieng (CULT_STEP) va co the noi khac voi chi so that.
 local function powerAt(r)
-  local b = CFG.LINHCAN_DMG_BASE
+  local b = CFG.CULT_DMG_BASE
   return (b + statAt(r)) / (b + statAt(1))
 end
 
 -- He so suy ra thanh chu. "x2.85" doc duoc, nhung bac 20 la
 -- x970,903 -- in no bang %.2f ra "x970903.00", dai va thua hai chu so
 -- le khong ai can.
-local function powerStr(r)
+local function powerText(r)
   local p = powerAt(r)
   if p < 1000.0 then return string.format("x%.2f", p) end
   return "x" .. API.num(math.floor(p + 0.5))
 end
 
--- PHANG: CFG.LINHCAN_COST_STEP = 1.0 nen moi bac deu 500. Van giu cong
+-- PHANG: CFG.CULT_COST_STEP = 1.0 nen moi bac deu 500. Van giu cong
 -- thuc mu de doi lai duong cong chi bang mot so.
 local function costOf(r)
-  return math.floor(CFG.LINHCAN_COST_BASE * CFG.LINHCAN_COST_STEP ^ (r - 1) + 0.5)
+  return math.floor(CFG.CULT_COST_BASE * CFG.CULT_COST_STEP ^ (r - 1) + 0.5)
 end
 
 -- Linh Can KHONG tu ghi chi so nua. No chi tra loi mot cau: "tu vi cong
 -- them bao nhieu diem so voi bac 1?"
 --
--- API.heroRecompute trong 7_hieuung.lua la cho DUY NHAT ghi chi so hero
+-- API.heroRecompute trong 7_effect.lua la cho DUY NHAT ghi chi so hero
 -- -- no cong nen + so nay, roi nhan % cua bi dong, roi ghi mot lan. Truoc
 -- day moi he tu cong vao, va hai he cung ghi mot thuoc tinh thi lech.
 --
--- CFG.LINHCAN_STAT_MODE quyet dinh cong vao chi so nao; phan do do
+-- CFG.CULT_STAT_MODE quyet dinh cong vao chi so nao; phan do do
 -- recompute lo.
 local function statBonus(pid)
   local d = S.p[pid]
   if d == nil then return 0 end
-  return math.floor(statBonusAt(d.linhCan) + 0.5)
+  return math.floor(statBonusAt(d.cultRank) + 0.5)
 end
 
 -- ---------- Noi dung the ----------
@@ -107,37 +102,37 @@ local function tabInfo(pid)
   local d = S.p[pid]
   if d == nil then return {} end
 
-  local cur = d.linhCan
+  local cur = d.cultRank
   local top = maxRank()
   local out = {
-    tieuDe = API.t("lc_rank", cur, top),
-    phu    = rankName(cur),
-    tienDo = cur / top,
+    title  = API.t("cult_rank", cur, top),
+    sub    = rankName(cur),
+    progress = cur / top,
   }
 
   if cur >= top then
-    out.dong = {
-      { API.t("lc_power"), powerStr(cur), "" },
-      { API.t("lc_stat"),
-        "+" .. API.num(statAt(cur) - CFG.LINHCAN_STAT_BASE), "" },
+    out.row = {
+      { API.t("cult_power"), powerText(cur), "" },
+      { API.t("cult_stat"),
+        "+" .. API.num(statAt(cur) - CFG.CULT_STAT_BASE), "" },
     }
-    out.ghiChu = API.t("lc_peak")
+    out.note = API.t("cult_peak")
     return out
   end
 
-  local gia = costOf(cur)
-  out.dong = {
-    { API.t("lc_power"),
-      powerStr(cur), powerStr(cur + 1) },
-    { API.t("lc_stat"),
-      "+" .. API.num(statAt(cur)     - CFG.LINHCAN_STAT_BASE),
-      "+" .. API.num(statAt(cur + 1) - CFG.LINHCAN_STAT_BASE) },
+  local price = costOf(cur)
+  out.row = {
+    { API.t("cult_power"),
+      powerText(cur), powerText(cur + 1) },
+    { API.t("cult_stat"),
+      "+" .. API.num(statAt(cur)     - CFG.CULT_STAT_BASE),
+      "+" .. API.num(statAt(cur + 1) - CFG.CULT_STAT_BASE) },
     { API.t("col_realm"), rankName(cur), rankName(cur + 1) },
   }
-  out.nut    = API.t("lc_next", rankName(cur + 1)) .. "     " ..
-               API.num(gia) .. " " .. API.t("cur_lk")
-  out.batNut = (API.getLinhKhi(pid) >= gia)
-  out.ghiChu = API.t("lc_have", API.num(API.getLinhKhi(pid)))
+  out.btn    = API.t("cult_next", rankName(cur + 1)) .. "     " ..
+               API.num(price) .. " " .. API.t("cur_qi")
+  out.btnOn = (API.getQi(pid) >= price)
+  out.note = API.t("cult_have", API.num(API.getQi(pid)))
   return out
 end
 
@@ -150,16 +145,16 @@ local function setRank(pid, newR, dev)
   if newR < 1 then newR = 1 end
   if newR > maxRank() then newR = maxRank() end
 
-  local old = d.linhCan
+  local old = d.cultRank
   if newR == old then return end
 
-  d.linhCan = newR
+  d.cultRank = newR
   API.heroRecompute(pid)
   API.panelRefresh(pid)
 
   if dev then
     API.msg(pid, CFG.C_GREY .. "[dev] Linh Can -> " .. rankName(newR) ..
-      " (bac " .. newR .. ", " .. powerStr(newR) .. ")" .. CFG.C_END)
+      " (bac " .. newR .. ", " .. powerText(newR) .. ")" .. CFG.C_END)
   end
 end
 
@@ -167,25 +162,25 @@ local function breakthrough(pid)
   local d = S.p[pid]
   if d == nil then return end
 
-  local r = d.linhCan
+  local r = d.cultRank
   if r >= maxRank() then
-    API.msg(pid, CFG.C_GREY .. API.t("lc_peak") .. CFG.C_END)
+    API.msg(pid, CFG.C_GREY .. API.t("cult_peak") .. CFG.C_END)
     return
   end
 
   local c = costOf(r)
-  if not API.spendLinhKhi(pid, c) then
+  if not API.spendQi(pid, c) then
     API.msg(pid, CFG.C_RED .. API.t("no_qi") .. CFG.C_END ..
-      API.t("need_have", API.num(c), API.num(API.getLinhKhi(pid))))
+      API.t("need_have", API.num(c), API.num(API.getQi(pid))))
     API.panelRefresh(pid)
     return
   end
 
   setRank(pid, r + 1, false)
-  API.msg(nil, API.t("lc_broke",
+  API.msg(nil, API.t("cult_broke",
     CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END,
     CFG.C_JADE .. rankName(r + 1) .. CFG.C_END) ..
-    " (" .. powerStr(r + 1) .. ")")
+    " (" .. powerText(r + 1) .. ")")
 
   if d.hero ~= nil then
     API.fx([[Abilities\Spells\Human\Resurrect\ResurrectTarget.mdl]],
@@ -197,7 +192,7 @@ end
 -- chi no tren may nguoi bam, nen chi gui mot tin -- 02b_sync lo phan con
 -- lai. breakthrough() ben duoi chay tren MOI may, cung mot nhip.
 local function tabAction(pid)
-  API.syncSend(pid, CFG.OP_LC_UP, 0)
+  API.syncSend(pid, CFG.OP_CULT_UP, 0)
 end
 
 -- "-lc" mo the Linh Can · "-lc up" dot pha · "-lc <so>" nhay bac (dev)
@@ -223,21 +218,21 @@ local function onChat(pid, raw)
     end
   end
 
-  API.panelOpenTab(pid, S.lcTabIndex or 1)
+  API.panelOpenTab(pid, S.cultTabIndex or 1)
 end
 
-local function startLinhCan()
-  S.lcTabIndex = API.panelAddTab({
-    ten    = API.t("panel_root"),
+local function startCult()
+  S.cultTabIndex = API.panelAddTab({
+    name    = API.t("panel_cult"),
     kind   = "focus",
     info   = tabInfo,
     action = tabAction,
   })
 
-  API.syncOn(CFG.OP_LC_UP,  function(pid) breakthrough(pid) end)
-  API.syncOn(CFG.OP_LC_SET, function(pid, arg) setRank(pid, arg, true) end)
+  API.syncOn(CFG.OP_CULT_UP,  function(pid) breakthrough(pid) end)
+  API.syncOn(CFG.OP_CULT_SET, function(pid, arg) setRank(pid, arg, true) end)
 
-  API.trace("linhcan: the so " .. S.lcTabIndex .. ", dong bo=" .. API.syncMode())
+  API.trace("cult: the so " .. S.cultTabIndex .. ", dong bo=" .. API.syncMode())
 end
 
 -- Goi khi hero vua duoc tao. Khong con lam gi rieng: recompute doc
@@ -246,11 +241,11 @@ local function applyToHero(pid, hero)
   API.heroRecompute(pid)
 end
 
-API.linhCanRank   = function(pid) return S.p[pid] and S.p[pid].linhCan or 1 end
-API.linhCanPower  = function(pid) return powerAt(API.linhCanRank(pid)) end
-API.linhCanCost   = costOf
-API.linhCanStatAt = statAt
-API.linhCanStatBonus = statBonus
-API.linhCanChat   = onChat
-API.linhCanApply  = applyToHero
-API.startLinhCan  = startLinhCan
+API.cultRank   = function(pid) return S.p[pid] and S.p[pid].cultRank or 1 end
+API.cultPower  = function(pid) return powerAt(API.cultRank(pid)) end
+API.cultCost   = costOf
+API.cultStatAt = statAt
+API.cultStatBonus = statBonus
+API.cultChat   = onChat
+API.cultApply  = applyToHero
+API.startCult  = startCult

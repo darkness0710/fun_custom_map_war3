@@ -2,7 +2,7 @@
 
 > **Trạng thái:** Đã chốt — luật xong, chỉ số chưa
 > **Ngày:** 2026-09-17
-> **Thay thế:** `CFG.TRANGBI` sáu ô *(đang `TRANGBI_LOCKED`)*
+> **Thay thế:** `CFG.GEAR` sáu ô *(đang `GEAR_LOCKED`)*
 
 ## Bối cảnh
 
@@ -80,7 +80,7 @@ buổi đo mã trường `.w3t`.
 
 ## Hệ quả
 
-**`CFG.QUAY_DA` từ giờ bám theo số món trang bị:** `≈ 2.5 × số món`. Một món → 3.
+**`CFG.FORTUNE_IRON` từ giờ bám theo số món trang bị:** `≈ 2.5 × số món`. Một món → 3.
 Bốn món → 10. Cách ra: một món đi trọn thang tốn ~300 đá (kỳ vọng 15 lần thử ×
 20 cảnh giới), cả ván có 140 lượt quay.
 
@@ -90,9 +90,9 @@ Bốn món → 10. Cách ra: một món đi trọn thang tốn ~300 đá (kỳ v
 **Shop bán đá 25 vàng/viên** — đối thủ đầu tiên của Vàng ngoài lọ thuốc, và là
 đường **gỡ khi đen** chứ không phải đường leo chính.
 
-**Chỉ số kiếm chưa chốt**, nên hệ **chưa cài được**. `CFG.TRANGBI` sáu ô vẫn nằm
-đó với `TRANGBI_LOCKED = true` cho tới khi kiếm thay được nó.
+**Chỉ số kiếm chưa chốt**, nên hệ **chưa cài được**. `CFG.GEAR` sáu ô vẫn nằm
+đó với `GEAR_LOCKED = true` cho tới khi kiếm thay được nó.
 
-**Còn nợ:** chưa ai chơi thử. Con số đáng đo nhất là `CFG.QUAY_DA` — nó quyết
+**Còn nợ:** chưa ai chơi thử. Con số đáng đo nhất là `CFG.FORTUNE_IRON` — nó quyết
 định kiếm *dính trần* hay *tụt sau trần*, mà hệ chỉ vui khi qua lại giữa hai
 trạng thái đó.

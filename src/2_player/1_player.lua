@@ -17,12 +17,12 @@ local function initPlayers()
        and GetPlayerController(p) == MAP_CONTROL_USER then
       S.p[pid] = { active = true, hero = nil, heroCount = 0,
                    slots = {},
-                   linhKhi = 0, linhKhiTotal = 0,
-                   linhCan = 1, fctGold = 0,
+                   qi = 0, qiTotal = 0,
+                   cultRank = 1, fctGold = 0,
 
-                   da = 0,        -- Da Huyen Thiet
-                   tb = {},       -- [so thu tu mon] = { canh, cap }
-                   pk = {} }      -- [ma phap khi] = true
+                   iron = 0,        -- Da Huyen Thiet
+                   gear = {},       -- [so thu tu mon] = { canh, cap }
+                   relic = {} }      -- [ma phap khi] = true
       S.pids[#S.pids + 1] = pid
     end
   end
@@ -236,46 +236,46 @@ end
 -- duoc. Xem docs/02-he-thong/kinh-te.md
 
 -- ---------- Linh Khi ----------
-local function addLinhKhi(pid, amount)
+local function addQi(pid, amount)
   if amount == nil or amount == 0 then return end
   local d = S.p[pid]
   if d == nil then return end
-  d.linhKhi = (d.linhKhi or 0) + amount
-  if d.linhKhi < 0 then d.linhKhi = 0 end
+  d.qi = (d.qi or 0) + amount
+  if d.qi < 0 then d.qi = 0 end
   if amount > 0 then
-    d.linhKhiTotal = (d.linhKhiTotal or 0) + amount
-    API.fctOnLinhKhi(pid, amount)
+    d.qiTotal = (d.qiTotal or 0) + amount
+    API.fctOnQi(pid, amount)
   end
 end
 
-local function getLinhKhi(pid)
+local function getQi(pid)
   local d = S.p[pid]
-  return (d ~= nil) and (d.linhKhi or 0) or 0
+  return (d ~= nil) and (d.qi or 0) or 0
 end
 
-local function spendLinhKhi(pid, amount)
-  if getLinhKhi(pid) < amount then return false end
-  addLinhKhi(pid, -amount)
+local function spendQi(pid, amount)
+  if getQi(pid) < amount then return false end
+  addQi(pid, -amount)
   return true
 end
 
 -- ---------- Vang (thanh tai nguyen) ----------
-local function addVang(pid, amount)
+local function addGold(pid, amount)
   if amount == nil or amount == 0 then return end
   local p = Player(pid)
   local cur = GetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD)
-  local moi = cur + amount
-  if moi < 0 then moi = 0 end
-  SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, moi)
+  local newVal = cur + amount
+  if newVal < 0 then newVal = 0 end
+  SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, newVal)
 end
 
-local function getVang(pid)
+local function getGold(pid)
   return GetPlayerState(Player(pid), PLAYER_STATE_RESOURCE_GOLD)
 end
 
-local function spendVang(pid, amount)
-  if getVang(pid) < amount then return false end
-  addVang(pid, -amount)
+local function spendGold(pid, amount)
+  if getGold(pid) < amount then return false end
+  addGold(pid, -amount)
   return true
 end
 
@@ -287,43 +287,43 @@ end
 --
 -- Truoc 2026-09-17 ba cho tu cong thang vao d.da. Gom lai mot cua de
 -- them cho tieu khong phai nho sua may noi.
-local function addDa(pid, amount)
+local function addIron(pid, amount)
   if amount == nil or amount == 0 then return end
   local d = S.p[pid]
   if d == nil then return end
-  local moi = (d.da or 0) + amount
-  if moi < 0 then moi = 0 end
-  d.da = moi
+  local newVal = (d.iron or 0) + amount
+  if newVal < 0 then newVal = 0 end
+  d.iron = newVal
 end
 
-local function getDa(pid)
+local function getIron(pid)
   local d = S.p[pid]
-  return (d ~= nil) and (d.da or 0) or 0
+  return (d ~= nil) and (d.iron or 0) or 0
 end
 
-local function spendDa(pid, amount)
-  if getDa(pid) < amount then return false end
-  addDa(pid, -amount)
+local function spendIron(pid, amount)
+  if getIron(pid) < amount then return false end
+  addIron(pid, -amount)
   return true
 end
 
 -- ---------- Go (thanh tai nguyen) ----------
-local function addGo(pid, amount)
+local function addLumber(pid, amount)
   if amount == nil or amount == 0 then return end
   local p = Player(pid)
   local cur = GetPlayerState(p, PLAYER_STATE_RESOURCE_LUMBER)
-  local moi = cur + amount
-  if moi < 0 then moi = 0 end
-  SetPlayerState(p, PLAYER_STATE_RESOURCE_LUMBER, moi)
+  local newVal = cur + amount
+  if newVal < 0 then newVal = 0 end
+  SetPlayerState(p, PLAYER_STATE_RESOURCE_LUMBER, newVal)
 end
 
-local function getGo(pid)
+local function getLumber(pid)
   return GetPlayerState(Player(pid), PLAYER_STATE_RESOURCE_LUMBER)
 end
 
-local function spendGo(pid, amount)
-  if getGo(pid) < amount then return false end
-  addGo(pid, -amount)
+local function spendLumber(pid, amount)
+  if getLumber(pid) < amount then return false end
+  addLumber(pid, -amount)
   return true
 end
 
@@ -335,18 +335,18 @@ local function activeCount()
   return n
 end
 
-API.addLinhKhi       = addLinhKhi
-API.getLinhKhi       = getLinhKhi
-API.spendLinhKhi     = spendLinhKhi
-API.addVang          = addVang
-API.getVang          = getVang
-API.spendVang        = spendVang
-API.addDa            = addDa
-API.getDa            = getDa
-API.spendDa          = spendDa
-API.addGo            = addGo
-API.getGo            = getGo
-API.spendGo          = spendGo
+API.addQi       = addQi
+API.getQi       = getQi
+API.spendQi     = spendQi
+API.addGold          = addGold
+API.getGold          = getGold
+API.spendGold        = spendGold
+API.addIron            = addIron
+API.getIron            = getIron
+API.spendIron          = spendIron
+API.addLumber            = addLumber
+API.getLumber            = getLumber
+API.spendLumber          = spendLumber
 API.grantSkillPoints = grantSkillPoints
 API.lockHero      = lockHero
 API.sweepHeroes   = sweepHeroes

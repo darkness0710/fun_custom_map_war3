@@ -22,7 +22,7 @@
 
 > **Trạng thái:** Khung đã cài — **thân boss chưa có**
 > **Cập nhật:** 2026-09-16
-> **Code:** [2_wave.lua](../../src/3_tran_dau/2_wave.lua)
+> **Code:** [2_wave.lua](../../src/3_battle/2_wave.lua)
 > **Khoá CFG:** `BOSS_EHP` `BOSS_DMG` `BOSS_SCALE` `TINHTHACH_BOSS_*`
 
 > **Đã cài tới đâu.** Stage `11 × r` sinh đúng một con, chỉ số theo `BOSS_EHP` /
@@ -132,8 +132,8 @@ dần chứ không bị ném vào một trận boss ba cơ chế ngay từ Phàm
 | `BOSS_DMG` | Gấp mấy lần lính cùng stage | Giữ thấp (3). Xem L3 |
 | `BOSS_SCALE` | Cỡ model | Thuần hình ảnh, nhưng là thứ báo "đây là boss" trước cả thanh máu |
 | `SCALE_BOSS_EHP_PER_PLAYER` | Nhân máu theo số người | Cao hơn lính — [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) |
-| `THUONG_BOSS_LINHKHI` `THUONG_BOSS_GO` | Boss rơi ra | `100` + `5`, **phẳng** — không theo cảnh giới. Gỗ chỉ rơi từ tinh anh và boss, nên nó bị chặn bởi **nội dung** chứ không phải bởi ví — [kinh-te.md](kinh-te.md) |
-| `QUAY_BOSS` | Số lượt Cơ Duyên boss cho | `3` *(tinh anh cho `1`)* — [quay-thuong.md](quay-thuong.md) |
+| `REWARD_BOSS_QI` `REWARD_BOSS_LUMBER` | Boss rơi ra | `100` + `5`, **phẳng** — không theo cảnh giới. Gỗ chỉ rơi từ tinh anh và boss, nên nó bị chặn bởi **nội dung** chứ không phải bởi ví — [kinh-te.md](kinh-te.md) |
+| `FORTUNE_BOSS` | Số lượt Cơ Duyên boss cho | `3` *(tinh anh cho `1`)* — [quay-thuong.md](quay-thuong.md) |
 
 **Chưa tồn tại — thiết kế cho L4–L6:**
 
@@ -149,7 +149,7 @@ dần chứ không bị ném vào một trận boss ba cơ chế ngay từ Phàm
 ## Ràng buộc kỹ thuật
 
 **Thanh máu boss phải tự vẽ.** Warcraft III không có thanh máu boss sẵn. Hoặc
-`BlzCreateFrame` như [3_skillframe.lua](../../src/4_giao_dien/3_skillframe.lua) đã làm,
+`BlzCreateFrame` như [3_skillframe.lua](../../src/4_ui/3_skillframe.lua) đã làm,
 hoặc dùng multiboard, hoặc chấp nhận chỉ có thanh máu nhỏ trên đầu unit. Cái thứ
 ba là chấp nhận được ở bản đầu — đừng chặn hệ boss vì cái thanh máu.
 

@@ -42,13 +42,13 @@ Nhưng gốc rễ không phải kích thước. Bốn hệ không cùng hình d�
 
 ```lua
 -- kind = "list"   ->  Ky Nang, Trang Bi, Phap Khi  (3/4 the)
-{ ten, kind = "list", soMuc,
-  items      = function(pid) -> { {icon, ten, mota, trangThai, nut, batNut} }
+{ ten, kind = "list", rows,
+  items      = function(pid) -> { {icon, ten, mota, status, nut, btnOn} }
   itemAction = function(pid, i) }
 
 -- kind = "focus"  ->  Linh Can  (1/4 the)
 { ten, kind = "focus",
-  info   = function(pid) -> { tieuDe, phu, dong, tienDo, ghiChu, nut, batNut }
+  info   = function(pid) -> { titleF, phu, dong, progress, note, nut, btnOn }
   action = function(pid) }
 ```
 
@@ -91,7 +91,7 @@ trên màn hình 0.6 chứa vừa. Thanh cuộn trong `BlzFrameSetSize` phải t
 `CFG.PANEL_H` vẫn không tồn tại — chiều cao **suy ra** từ số mục của thẻ dài
 nhất, tính lúc `startPanel()`. Thêm một hệ 9 mục thì bảng tự rộng ra.
 
-`API.backdrop` và `API.frameScale` nằm ở [2_state.lua](../../src/1_nen/2_state.lua),
+`API.backdrop` và `API.frameScale` nằm ở [2_state.lua](../../src/1_core/2_state.lua),
 dùng chung với bảng chọn hero. Bảng chọn kỹ năng
-([3_skillframe.lua](../../src/4_giao_dien/3_skillframe.lua)) **vẫn dùng ô màu
+([3_skillframe.lua](../../src/4_ui/3_skillframe.lua)) **vẫn dùng ô màu
 phẳng** — đổi sang `API.backdrop` là một dòng, chưa làm.

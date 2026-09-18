@@ -27,7 +27,7 @@ CFG.VERSION = "0.2.0"
 
 -- Tieng hien cho nguoi choi: "en" hoac "vi".
 -- build.py --lang en|vi ghi de len dong nay, nen mot bo nguon xuat ra
--- duoc hai ban map. Xem src/1_nen/6_lang.lua
+-- duoc hai ban map. Xem src/1_core/6_i18n.lua
 CFG.LANG = "en"
 CFG.DEBUG   = false     -- bat: in so do luoi, ping minimap, bao cao chi tiet
 
@@ -48,7 +48,7 @@ CFG.NAT_FIELD_MAX = 20
 -- ---------- Dong bo nhieu nguoi choi ----------
 --
 -- Bam nut frame chi no tren may nguoi bam. Doi trang thai game ngay o do
--- la lech tran. Xem docs/05-quyet-dinh/0012 va src/1_nen/3_sync.lua.
+-- la lech tran. Xem docs/05-quyet-dinh/0012 va src/1_core/3_sync.lua.
 --
 --   "auto"  -- uu tien blz, roi cache, roi local  (nen dung)
 --   "blz"   -- BlzSendSyncData, can 1.31 tro len
@@ -63,18 +63,18 @@ CFG.SYNC_TEST_WAIT = 3.0 -- doi bao lau roi ket luan ping co ve khong
 CFG.OP_PING   = 1   -- tu kiem duong dong bo
 CFG.OP_HERO   = 2   -- arg = so thu tu trong CFG.HEROES
 CFG.OP_SKILL  = 3   -- arg = slot * 100 + so thu tu trong choices
-CFG.OP_LC_UP  = 4   -- arg = 0
-CFG.OP_LC_SET = 5   -- arg = bac Linh Can muon nhay toi (dev)
+CFG.OP_CULT_UP  = 4   -- arg = 0
+CFG.OP_CULT_SET = 5   -- arg = bac Linh Can muon nhay toi (dev)
 -- OP_SKILL_UP = 6, khai bao canh bang CFG.SKILLS ben duoi.
-CFG.OP_TB_UP  = 7   -- arg = so thu tu o trang bi trong CFG.TRANGBI
-CFG.OP_PK_BUY = 8   -- arg = so thu tu phap khi trong CFG.PHAPKHI
+CFG.OP_GEAR_UP  = 7   -- arg = so thu tu o trang bi trong CFG.GEAR
+CFG.OP_RELIC_BUY = 8   -- arg = so thu tu phap khi trong CFG.RELIC
 CFG.OP_SHOP   = 9   -- arg = so thu tu mon trong CFG.SHOP
 CFG.OP_ITEM   = 10  -- arg = o tui 0..5, dung do bang phim so
-CFG.OP_QUAY   = 11  -- arg = so thu tu the 1..3 trong luot quay
-CFG.OP_TB_TIEN = 12 -- arg = so thu tu mon trong CFG.TRANGBI (Tien Giai)
+CFG.OP_FORTUNE   = 11  -- arg = so thu tu the 1..3 trong luot quay
+CFG.OP_GEAR_DISMANTLE = 12 -- arg = so thu tu mon trong CFG.GEAR (Tien Giai)
 -- Opcode KHONG bi chan o mot chu so: unpackMsg dung math.floor(v/10^7)
 -- nen op 10, 11... van giai duoc. Thu bi chan la arg (< 10^5) va seq
--- (< 100). Xem src/1_nen/3_sync.lua.
+-- (< 100). Xem src/1_core/3_sync.lua.
 
 -- ---------- Mau chu ----------
 CFG.C_GOLD = "|cffffcc00"
@@ -186,7 +186,7 @@ CFG.LOCK_HERO_XP = true
 --
 -- "frame" THU NGHIEM. Giao dien tu ve bang BlzCreateFrame: co icon, tu
 --         nhom theo slot, khong dung Object Editor. Xem file rieng
---         src/4_giao_dien/3_skillframe.lua -- hong thi xoa file do la xong.
+--         src/4_ui/3_skillframe.lua -- hong thi xoa file do la xong.
 --
 -- Ca "learn" va "pick" deu giu hero o cap 1: LOCK_HERO_XP khong doi,
 -- diem ky nang do code phat chu khong do len cap.
@@ -262,16 +262,16 @@ CFG.HEROES = {
   -- yeu moi lam nguoi choi phai nghi xem nen chon con nao.
   { id = id('H001'), name = "Hart", role = "Warrior - Tanker", abilities = {}, skills = nil,
     icon = [[ReplaceableTextures\CommandButtons\BTNHeroPaladin.blp]],
-    mota    = { "Don quai dong", "Chiu don khoe", "Yeu truoc boss" },
-    mota_en = { "Clears crowds", "Very tanky", "Weak vs bosses" } },
+    desc_vi    = { "Don quai dong", "Chiu don khoe", "Yeu truoc boss" },
+    desc_en = { "Clears crowds", "Very tanky", "Weak vs bosses" } },
   { id = id('H002'), name = "Hvwd", role = "Shooter - Carry", abilities = {}, skills = nil,
     icon = [[ReplaceableTextures\CommandButtons\BTNHeroMoonPriestess.blp]],
-    mota    = { "Sat thuong cao nhat", "Danh tu xa", "Rat mong" },
-    mota_en = { "Top damage", "Long range", "Very fragile" } },
+    desc_vi    = { "Sat thuong cao nhat", "Danh tu xa", "Rat mong" },
+    desc_en = { "Top damage", "Long range", "Very fragile" } },
   { id = id('H003'), name = "Hkal", role = "Mage - Support", abilities = {}, skills = nil,
     icon = [[ReplaceableTextures\CommandButtons\BTNHeroBloodElfPrince.blp]],
-    mota    = { "Hoi mau, tiep suc", "Lam cham quai", "Mot minh thi yeu" },
-    mota_en = { "Heals and buffs", "Slows the wave", "Weak alone" } },
+    desc_vi    = { "Hoi mau, tiep suc", "Lam cham quai", "Mot minh thi yeu" },
+    desc_en = { "Heals and buffs", "Slows the wave", "Weak alone" } },
 }
 
 -- Ky nang gan cho MOI hero, khong rieng con nao.
@@ -360,7 +360,7 @@ CFG.REVEAL_MAP = true
 -- "dialog" popup chu cua Warcraft III -- xau hon nhung chac chan chay
 CFG.HERO_PICK_MODE = "frame"
 
--- CFG.PICK_TITLE da chuyen sang 6_lang.lua, khoa "pick_title".
+-- CFG.PICK_TITLE da chuyen sang 6_i18n.lua, khoa "pick_title".
 
 -- ---------- Bang chon hero ----------
 -- Toa do man hinh: X 0.0..0.8, Y 0.0..0.6.
@@ -446,26 +446,26 @@ CFG.HERO_SPAWN_OFFSET = 500.0
 -- Latin Extended nen chu co dau hien ra o vuong.
 -- 'coi' 1..4 = Pham / Yeu / Tien / Than -- quyet dinh model va nhip wave.
 CFG.REALMS = {
-  { ten = "Pham Nhan", en = "Mortal", coi = 1 },
-  { ten = "Luyen Khi", en = "Qi Refining", coi = 1 },
-  { ten = "Truc Co", en = "Foundation", coi = 1 },
-  { ten = "Kim Dan", en = "Golden Core", coi = 1 },
-  { ten = "Nguyen Anh", en = "Nascent Soul", coi = 1 },
-  { ten = "Hoa Than", en = "Spirit Severing", coi = 2 },
-  { ten = "Luyen Hu", en = "Void Refining", coi = 2 },
-  { ten = "Hop The", en = "Body Integration", coi = 2 },
-  { ten = "Dai Thua", en = "Great Ascension", coi = 2 },
-  { ten = "Do Kiep", en = "Tribulation", coi = 2 },
-  { ten = "Chan Tien", en = "True Immortal", coi = 3 },
-  { ten = "Thien Tien", en = "Heavenly Immortal", coi = 3 },
-  { ten = "Kim Tien", en = "Golden Immortal", coi = 3 },
-  { ten = "Thai At", en = "Taiyi", coi = 3 },
-  { ten = "Dai La", en = "Great Luo", coi = 3 },
-  { ten = "Tien De", en = "Immortal Emperor", coi = 4 },
-  { ten = "Thanh Nhan", en = "Saint", coi = 4 },
-  { ten = "Dao To", en = "Dao Ancestor", coi = 4 },
-  { ten = "Hon Don Than", en = "Primordial God", coi = 4 },
-  { ten = "Sang The Than", en = "World Creator", coi = 4 },
+  { vi = "Pham Nhan", en = "Mortal", world = 1 },
+  { vi = "Luyen Khi", en = "Qi Refining", world = 1 },
+  { vi = "Truc Co", en = "Foundation", world = 1 },
+  { vi = "Kim Dan", en = "Golden Core", world = 1 },
+  { vi = "Nguyen Anh", en = "Nascent Soul", world = 1 },
+  { vi = "Hoa Than", en = "Spirit Severing", world = 2 },
+  { vi = "Luyen Hu", en = "Void Refining", world = 2 },
+  { vi = "Hop The", en = "Body Integration", world = 2 },
+  { vi = "Dai Thua", en = "Great Ascension", world = 2 },
+  { vi = "Do Kiep", en = "Tribulation", world = 2 },
+  { vi = "Chan Tien", en = "True Immortal", world = 3 },
+  { vi = "Thien Tien", en = "Heavenly Immortal", world = 3 },
+  { vi = "Kim Tien", en = "Golden Immortal", world = 3 },
+  { vi = "Thai At", en = "Taiyi", world = 3 },
+  { vi = "Dai La", en = "Great Luo", world = 3 },
+  { vi = "Tien De", en = "Immortal Emperor", world = 4 },
+  { vi = "Thanh Nhan", en = "Saint", world = 4 },
+  { vi = "Dao To", en = "Dao Ancestor", world = 4 },
+  { vi = "Hon Don Than", en = "Primordial God", world = 4 },
+  { vi = "Sang The Than", en = "World Creator", world = 4 },
 }
 
 -- Doi so nay la doi tong so stage. Moi cong thuc suy ra tu no, khong
@@ -482,13 +482,13 @@ CFG.TIERS_PER_REALM = 4
 -- Ten bon tang trong mot canh gioi. So phan tu PHAI bang
 -- TIERS_PER_REALM -- wave.lua lui ve danh so neu thieu.
 CFG.TIER_NAMES = {
-  { ten = "So Ki",    en = "Early" },
-  { ten = "Trung Ki", en = "Middle" },
-  { ten = "Hau Ki",   en = "Late" },
-  { ten = "Vien Man", en = "Perfection" },
+  { vi = "So Ki",    en = "Early" },
+  { vi = "Trung Ki", en = "Middle" },
+  { vi = "Hau Ki",   en = "Late" },
+  { vi = "Vien Man", en = "Perfection" },
 }
 
--- CFG.TIER_VIEN_MAN da chuyen sang 6_lang.lua, khoa "tier_full". Ten
+-- CFG.TIER_PERFECTION da chuyen sang 6_i18n.lua, khoa "tier_perfection". Ten
 -- tang cuoi la CHU HIEN THI chu khong phai tham so, ma chu hien thi
 -- phai co ca hai thu tieng. Cung ly do voi CFG.PICK_TITLE truoc day.
 
@@ -592,7 +592,7 @@ CFG.WAVE_TICK = 2.0
 -- Voi 20 mau nhu truoc thi Chuong mot phat giet ba con -- khong con
 -- cam giac danh nhau nao o nhung wave dau.
 CFG.MOB_EHP_BASE       = 120.0
--- Voi MOB_EHP_THEO_LINHCAN: mu la (TANG - 1), tuc 0..3 trong mot canh
+-- Voi MOB_EHP_FOLLOW_CULT: mu la (TANG - 1), tuc 0..3 trong mot canh
 -- gioi -- mot doc nho de tang 4 khac tang 1. Khong con mu theo stage
 -- toan cuc, vi phan do da nam trong he so Linh Can roi.
 CFG.MOB_EHP_GROWTH     = 1.018
@@ -614,14 +614,14 @@ CFG.MOB_EHP_GROWTH     = 1.018
 --
 -- Hop dong ngam: nguoi choi len dung MOT bac moi canh gioi -- va do
 -- chinh la giao keo 500 Linh Khi/canh gioi = 500 mot lan dot pha.
-CFG.MOB_EHP_THEO_LINHCAN = true
+CFG.MOB_EHP_FOLLOW_CULT = true
 
--- Chi con dung khi MOB_EHP_THEO_LINHCAN = false.
+-- Chi con dung khi MOB_EHP_FOLLOW_CULT = false.
 CFG.MOB_EHP_REALM_STEP = 1.22    -- moi canh gioi. Mu 19
 
 -- Mu cua he so Linh Can dung cho SAT THUONG quai (< 1 = quai doc cham
--- hon hero khoe len). Chi dung khi MOB_EHP_THEO_LINHCAN bat.
-CFG.MOB_DMG_THEO_MU    = 0.85
+-- hon hero khoe len). Chi dung khi MOB_EHP_FOLLOW_CULT bat.
+CFG.MOB_DMG_FOLLOW_POW    = 0.85
 
 CFG.MOB_DMG_BASE       = 6.0
 CFG.MOB_DMG_GROWTH     = 1.016
@@ -656,32 +656,32 @@ CFG.BOSS_SCALE = 2.2
 -- danh luon an dung mot phan mau that du giap bao nhieu.
 
 -- Boss song duoc bao nhieu giay duoi hoa luc CA DOI.
-CFG.BOSS_GIAY = 40.0
+CFG.BOSS_SECONDS = 40.0
 
 -- Uoc luong sat thuong moi giay cua mot hero = he so x (DMG_BASE + chi
 -- so cao nhat).
 --
 -- 1.0 vi do duoc: 1 Str = 1 sat thuong don danh, va don thuong ~1.6
 -- giay mot nhat -- cong voi ky nang thi tong xap xi dung bang chi so.
-CFG.BOSS_DPS_HE_SO = 1.0
+CFG.BOSS_DPS_FACTOR = 1.0
 
 -- Boss ha mot hero dung yen trong bao nhieu don.
-CFG.BOSS_SO_DON = 12.0
+CFG.BOSS_HITS_TO_KILL = 12.0
 
 -- Duoi bao nhieu % mau thi boss CUONG: sat thuong x he so, danh nhanh
 -- hon. Giai doan hai cua tran, de tran boss co nhip chu khong phai mot
 -- thanh mau dai.
-CFG.BOSS_CUONG_NGUONG = 0.30
-CFG.BOSS_CUONG_DMG    = 1.60
+CFG.BOSS_ENRAGE_AT = 0.30
+CFG.BOSS_ENRAGE_DMG    = 1.60
 
 -- ---------- Ky nang boss ----------
 -- Viet bang Lua, khong phai ability Object Editor: ta khong mo duoc
 -- World Editor tu day, va viet bang Lua thi so lieu bam duoc vao chinh
 -- phep do suc manh cua doi o tren.
 CFG.BOSS_SKILL_CD    = 9.0     -- giay giua hai lan ra don
-CFG.BOSS_SKILL_TAM   = 420.0   -- ban kinh don chan dia
-CFG.BOSS_SKILL_HESO  = 2.5     -- sat thuong = he so x mot don thuong
-CFG.BOSS_HUT_MAU     = 0.25    -- hut lai % sat thuong gay ra
+CFG.BOSS_SKILL_RADIUS   = 420.0   -- ban kinh don chan dia
+CFG.BOSS_SKILL_FACTOR  = 2.5     -- sat thuong = he so x mot don thuong
+CFG.BOSS_LIFESTEAL     = 0.25    -- hut lai % sat thuong gay ra
 
 -- ---------- HAI MUOI BOSS, moi canh gioi mot con ----------
 --
@@ -693,59 +693,59 @@ CFG.BOSS_HUT_MAU     = 0.25    -- hut lai % sat thuong gay ra
 -- Ma nao sai, biet bay, hoac khong phai hero thi startBoss() BAO RO
 -- luc VAO MAP -- khong doi den canh gioi 16 moi phat hien.
 --
--- 'co' = danh sach co che. Moi co che mot ham trong 3_boss.lua; con so
+-- 'mech' = danh sach co che. Moi co che mot ham trong 3_boss.lua; con so
 -- di kem nam ngay trong bang nay de doc mot cho la thay het.
 --
---   chandia    don AoE quanh boss
---   hutmau     hut lai % sat thuong gay ra
---   cuong      duoi nguong mau -> sat thuong x he so
---   xegiap     moi don danh TRU GIAP vinh vien cua muc tieu
---   trieuhoi   goi thuoc ha
---   lao        lao toi hero XA NHAT
---   khien      dinh ky tao khien hap thu
---   phandon    phan lai % sat thuong nhan vao
+--   slam       don AoE quanh boss
+--   lifesteal  hut lai % sat thuong gay ra
+--   enrage     duoi nguong mau -> sat thuong x he so
+--   shred      moi don danh TRU GIAP vinh vien cua muc tieu
+--   summon     goi thuoc ha
+--   charge     lao toi hero XA NHAT
+--   shield     dinh ky tao khien hap thu
+--   reflect    phan lai % sat thuong nhan vao
 --
--- xegiap la co che tra loi cho mot loi do duoc: cuoi van hero co 8,070
+-- shred la co che tra loi cho mot loi do duoc: cuoi van hero co 8,070
 -- giap, giam 99.79% sat thuong. Boss xe giap thi tran cang keo dai hero
 -- cang de vo -- nguoc han nhip thong thuong.
 --
--- Moi con mot file mo ta rieng: docs/02-he-thong/boss/NN-<ten>.md
+-- Moi con mot file mo ta rieng: docs/02-he-thong/boss/NN-<slug>.md
 CFG.BOSSES = {
-  { r = 1,  ten = "Thi Giai Lao To",    en = "Corpse-Shed Elder",   unit = id('Hmkg'), co = { "chandia" } },
-  { r = 2,  ten = "Dan Khi Chan Nhan",  en = "Qi-Gathering Adept",  unit = id('Hpal'), co = { "chandia", "khien" } },
-  { r = 3,  ten = "Truc Co Thach Linh", en = "Foundation Stonesoul",unit = id('Ucrl'), co = { "chandia", "phandon" } },
-  { r = 4,  ten = "Kim Dan Ma Quan",    en = "Golden Core Warlord", unit = id('Obla'), co = { "lao", "cuong" } },
-  { r = 5,  ten = "Nguyen Anh Quy Mau", en = "Nascent Soul Matron", unit = id('Udre'), co = { "hutmau", "trieuhoi" } },
+  { r = 1,  vi = "Thi Giai Lao To",    en = "Corpse-Shed Elder",   unit = id('Hmkg'), mech = { "slam" } },
+  { r = 2,  vi = "Dan Khi Chan Nhan",  en = "Qi-Gathering Adept",  unit = id('Hpal'), mech = { "slam", "shield" } },
+  { r = 3,  vi = "Truc Co Thach Linh", en = "Foundation Stonesoul",unit = id('Ucrl'), mech = { "slam", "reflect" } },
+  { r = 4,  vi = "Kim Dan Ma Quan",    en = "Golden Core Warlord", unit = id('Obla'), mech = { "charge", "enrage" } },
+  { r = 5,  vi = "Nguyen Anh Quy Mau", en = "Nascent Soul Matron", unit = id('Udre'), mech = { "lifesteal", "summon" } },
 
-  { r = 6,  ten = "Hoa Than Vo Tuong",  en = "Spirit-Sever Formless",unit = id('Ewar'), co = { "lao", "xegiap" } },
-  { r = 7,  ten = "Luyen Hu Dao Nhan",  en = "Void-Refiner",        unit = id('Hamg'), co = { "khien", "trieuhoi" } },
-  { r = 8,  ten = "Hop The Cuong Ma",   en = "Body-Integration Fiend",unit = id('Otch'), co = { "chandia", "cuong" } },
-  { r = 9,  ten = "Dai Thua Ton Gia",   en = "Great Ascension Arhat",unit = id('Ekee'), co = { "trieuhoi", "phandon" } },
-  { r = 10, ten = "Do Kiep Loi Chu",    en = "Tribulation Thunderlord",unit = id('Ofar'), co = { "chandia", "lao", "cuong" } },
+  { r = 6,  vi = "Hoa Than Vo Tuong",  en = "Spirit-Sever Formless",unit = id('Ewar'), mech = { "charge", "shred" } },
+  { r = 7,  vi = "Luyen Hu Dao Nhan",  en = "Void-Refiner",        unit = id('Hamg'), mech = { "shield", "summon" } },
+  { r = 8,  vi = "Hop The Cuong Ma",   en = "Body-Integration Fiend",unit = id('Otch'), mech = { "slam", "enrage" } },
+  { r = 9,  vi = "Dai Thua Ton Gia",   en = "Great Ascension Arhat",unit = id('Ekee'), mech = { "summon", "reflect" } },
+  { r = 10, vi = "Do Kiep Loi Chu",    en = "Tribulation Thunderlord",unit = id('Ofar'), mech = { "slam", "charge", "enrage" } },
 
-  { r = 11, ten = "Chan Tien Kiem Khach",en = "True Immortal Swordsman",unit = id('Edem'), co = { "lao", "hutmau" } },
-  { r = 12, ten = "Thien Tien Tinh Quan",en = "Heavenly Star Marshal",unit = id('Emoo'), co = { "khien", "xegiap" } },
-  { r = 13, ten = "Kim Tien Bat Hoai",  en = "Golden Immortal Adamant",unit = id('Hpal'), co = { "phandon", "khien" } },
-  { r = 14, ten = "Thai At Cuu Chuyen", en = "Taiyi Ninefold",      unit = id('Ulic'), co = { "trieuhoi", "chandia" } },
-  { r = 15, ten = "Dai La Thien Ma",    en = "Great Luo Demon",     unit = id('Udea'), co = { "hutmau", "cuong", "xegiap" } },
+  { r = 11, vi = "Chan Tien Kiem Khach",en = "True Immortal Swordsman",unit = id('Edem'), mech = { "charge", "lifesteal" } },
+  { r = 12, vi = "Thien Tien Tinh Quan",en = "Heavenly Star Marshal",unit = id('Emoo'), mech = { "shield", "shred" } },
+  { r = 13, vi = "Kim Tien Bat Hoai",  en = "Golden Immortal Adamant",unit = id('Hpal'), mech = { "reflect", "shield" } },
+  { r = 14, vi = "Thai At Cuu Chuyen", en = "Taiyi Ninefold",      unit = id('Ulic'), mech = { "summon", "slam" } },
+  { r = 15, vi = "Dai La Thien Ma",    en = "Great Luo Demon",     unit = id('Udea'), mech = { "lifesteal", "enrage", "shred" } },
 
-  { r = 16, ten = "Tien De Kim Than",   en = "Immortal Emperor",    unit = id('Hblm'), co = { "chandia", "khien", "cuong" } },
-  { r = 17, ten = "Thanh Nhan Vo Nga",  en = "Selfless Saint",      unit = id('Oshd'), co = { "phandon", "hutmau" } },
-  { r = 18, ten = "Dao To Huyen Vi",    en = "Dao Ancestor",        unit = id('Nbrn'), co = { "xegiap", "trieuhoi", "lao" } },
-  { r = 19, ten = "Hon Don Than Ma",    en = "Primordial God-Fiend", unit = id('Nfir'), co = { "chandia", "phandon", "cuong" } },
-  { r = 20, ten = "Sang The Than",      en = "World Creator",       unit = id('Npbm'), co = { "chandia", "lao", "xegiap", "cuong" } },
+  { r = 16, vi = "Tien De Kim Than",   en = "Immortal Emperor",    unit = id('Hblm'), mech = { "slam", "shield", "enrage" } },
+  { r = 17, vi = "Thanh Nhan Vo Nga",  en = "Selfless Saint",      unit = id('Oshd'), mech = { "reflect", "lifesteal" } },
+  { r = 18, vi = "Dao To Huyen Vi",    en = "Dao Ancestor",        unit = id('Nbrn'), mech = { "shred", "summon", "charge" } },
+  { r = 19, vi = "Hon Don Than Ma",    en = "Primordial God-Fiend", unit = id('Nfir'), mech = { "slam", "reflect", "enrage" } },
+  { r = 20, vi = "Sang The Than",      en = "World Creator",       unit = id('Npbm'), mech = { "slam", "charge", "shred", "enrage" } },
 }
 
 -- Con so dung chung cho tung co che.
-CFG.BOSS_CO = {
-  chandia  = { cd = 9.0,  tam = 420.0, heSo = 2.5 },
-  hutmau   = { ti = 0.25 },
-  cuong    = { nguong = 0.30, dmg = 1.60 },
-  xegiap   = { moiDon = 0.02 },   -- tru 2% giap HIEN CO moi don
-  trieuhoi = { cd = 20.0, so = 4 },
-  lao      = { cd = 11.0, heSo = 3.0 },
-  khien    = { cd = 15.0, ti = 0.12 },  -- khien = 12% mau toi da
-  phandon  = { ti = 0.15 },
+CFG.BOSS_MECH = {
+  slam  = { cd = 9.0,  radius = 420.0, factor = 2.5 },
+  lifesteal   = { ratio = 0.25 },
+  enrage    = { at = 0.30, dmg = 1.60 },
+  shred   = { perHit = 0.02 },   -- tru 2% giap HIEN CO moi don
+  summon = { cd = 20.0, count = 4 },
+  charge      = { cd = 11.0, factor = 3.0 },
+  shield    = { cd = 15.0, ratio = 0.12 },  -- khien = 12% mau toi da
+  reflect  = { ratio = 0.15 },
 }
 
 -- Bang cu, giu lai cho 3_boss.lua lui ve khi CFG.BOSSES thieu mot bac.
@@ -812,14 +812,14 @@ CFG.HOUSE_REGEN_PER_WAVE = 0.20
 -- Ca van: Linh Khi 10,000 | Vang 4,000 | Go 260
 --
 -- Doi lai: gia cua moi he cung phai phang theo, khong con duong cong mu
--- nao bam theo thu nhap duoc nua. Do la ly do LINHCAN_COST_STEP tut tu
+-- nao bam theo thu nhap duoc nua. Do la ly do CULT_COST_STEP tut tu
 -- 1.412 xuong 1.08.
-CFG.THUONG_MOB_LINHKHI = 1
-CFG.THUONG_MOB_VANG    = 1
-CFG.THUONG_ELITE_LINHKHI = 50
-CFG.THUONG_BOSS_LINHKHI  = 100
-CFG.THUONG_ELITE_GO    = 2
-CFG.THUONG_BOSS_GO     = 5
+CFG.REWARD_MOB_QI = 1
+CFG.REWARD_MOB_GOLD    = 1
+CFG.REWARD_ELITE_QI = 50
+CFG.REWARD_BOSS_QI  = 100
+CFG.REWARD_ELITE_LUMBER    = 2
+CFG.REWARD_BOSS_LUMBER     = 5
 
 -- Khong co cong tac "chia theo nguoi ket lieu". Da do: cach do lam ba
 -- nguoi choi moi nguoi thieu 41% so tien can. Xem ADR 0013.
@@ -855,8 +855,8 @@ CFG.THUONG_BOSS_GO     = 5
 -- va voi 13 go moi canh gioi thi MAX HET O STAGE 27 -- roi 73 stage
 -- cuoi go chi tang chu khong tieu duoc. Phan du (190) de danh cho Phap
 -- Khi khi he do mo lai; tu gio den luc do no la con so chet.
-CFG.SKILL_GO_UNLOCK = 1    -- mo khoa mot ky nang
-CFG.SKILL_GO_UP     = 1    -- nang mot bac
+CFG.SKILL_LUMBER_UNLOCK = 1    -- mo khoa mot ky nang
+CFG.SKILL_LUMBER_UP     = 1    -- nang mot bac
 CFG.SKILL_MAX_LEVEL  = 10
 
 -- ---------- TAT hieu ung goc cua ability ban sao ----------
@@ -877,7 +877,7 @@ CFG.SKILL_MAX_LEVEL  = 10
 --   A001 sat thuong  -> fxLine
 --   A002 hoi mau     -> fxHeal
 -- (A003 va A007 KHONG con o day: giap cua chung chuyen sang
---  CFG.SKILL_CHO_GOC -- ghi so vao truong goc thay vi tat.)
+--  CFG.SKILL_CARRY_BASE -- ghi so vao truong goc thay vi tat.)
 --
 -- CHUA tat duoc, van con cong chong:
 --   A005 Chem Lan   -- "-nat spell" chua ra ten hang: ma goc ACce khop
@@ -886,7 +886,7 @@ CFG.SKILL_MAX_LEVEL  = 10
 --   A006 Da Sat     -- ban sao cua Attribute Bonus va KHONG duoc zero
 --                      trong war3map.w3a (A004 thi co, A006 thi khong).
 --   A007 mau toi da -- khong thay hang so HAV2 trong ban nay.
-CFG.SKILL_TAT_GOC = {
+CFG.SKILL_ZERO_BASE = {
   [id('A001')] = { "ABILITY_RLF_DAMAGE_OSH1", "ABILITY_RLF_MAXIMUM_DAMAGE_OSH2" },
   [id('A002')] = { "ABILITY_RLF_AMOUNT_HEALED_DAMAGED_HHB1" },
   [id('A007')] = { "ABILITY_RLF_DAMAGE_BONUS_HAV3",
@@ -895,7 +895,7 @@ CFG.SKILL_TAT_GOC = {
 
 -- ---------- Truong goc dung lam VAT MANG ----------
 --
--- Nguoc voi SKILL_TAT_GOC: thay vi tat hieu ung goc roi tu cong bang
+-- Nguoc voi SKILL_ZERO_BASE: thay vi tat hieu ung goc roi tu cong bang
 -- Lua, GHI THANG so can bang cua ta vao truong cua ability, roi de
 -- Warcraft cong.
 --
@@ -916,11 +916,11 @@ CFG.SKILL_TAT_GOC = {
 --
 -- Khong phai ta can tinh THEM, ma la ta can THOI SO HUU.
 --
---   nguon = "giap"     -> giapAt(sk, lv), duong cong giap cua bang
---   nguon = "buffgiap" -> CFG.FX_BUFF_ARMOR theo bac
-CFG.SKILL_CHO_GOC = {
-  [id('A003')] = { truong = "ABILITY_RLF_ARMOR_BONUS_HAD1",   nguon = "giap" },
-  [id('A007')] = { truong = "ABILITY_RLF_DEFENSE_BONUS_HAV1", nguon = "buffgiap" },
+--   source = "armor"     -> armorAt(sk, lv), duong cong giap cua bang
+--   source = "buffarmor" -> CFG.FX_BUFF_ARMOR theo bac
+CFG.SKILL_CARRY_BASE = {
+  [id('A003')] = { field = "ABILITY_RLF_ARMOR_BONUS_HAD1",   source = "armor" },
+  [id('A007')] = { field = "ABILITY_RLF_DEFENSE_BONUS_HAV1", source = "buffarmor" },
 }
 
 -- Cung viec, nhung truong SO NGUYEN -- phai goi
@@ -932,7 +932,7 @@ CFG.SKILL_CHO_GOC = {
 -- A004 da duoc zero san trong war3map.w3a (Iagi/Istr/Iint = 0 moi bac),
 -- A006 thi KHONG. Ghi ca hai o day cho deu: neu mai nay sinh lai file
 -- w3a thi khong phu thuoc vao viec ai da zero cai nao.
-CFG.SKILL_TAT_GOC_INT = {
+CFG.SKILL_ZERO_BASE_INT = {
   [id('A004')] = { "ABILITY_ILF_STRENGTH_BONUS_ISTR",
                    "ABILITY_ILF_AGILITY_BONUS",
                    "ABILITY_ILF_INTELLIGENCE_BONUS" },
@@ -944,7 +944,7 @@ CFG.SKILL_TAT_GOC_INT = {
 -- ---------- Mo khoa ky nang ----------
 --
 -- Hero vao map TAY KHONG -- command card chi co Move/Stop/Hold/Attack/
--- Patrol -- nhung cam san mot it Go (CFG.GO_START).
+-- Patrol -- nhung cam san mot it Go (CFG.LUMBER_START).
 --
 -- Mot diem do la quyet dinh dau tien cua van, va no la quyet dinh that:
 -- mo cai nao truoc? Khac han "vao map da co du bay cai", luc do giay dau
@@ -959,11 +959,11 @@ CFG.SKILL_START_COUNT = 0
 
 -- Go cam san luc vao map. Du dung MOT ky nang.
 -- 2 go: du mo MOT ky nang sat thuong VA Luyen The ngay giay dau.
-CFG.GO_START = 2
+CFG.LUMBER_START = 2
 
 -- ---------- Bay ky nang cua tung hero ----------
 --
--- heSo : sat thuong/hoi mau = heSo x (LINHCAN_DMG_BASE + chi so CAO NHAT
+-- factor : sat thuong/hoi mau = factor x (CULT_DMG_BASE + chi so CAO NHAT
 --        cua hero). An theo chi so cao nhat nen skill khong bao gio phe,
 --        va bam dung duong cong Linh Can.
 -- pct  : ky nang bi dong tinh theo PHAN TRAM. Cong thang mot luong co
@@ -974,7 +974,7 @@ CFG.GO_START = 2
 -- Cach ra he so 1.32 cua A001: docs/03-du-lieu/nang-cap-ky-nang.md
 CFG.SKILLS = {}
 
--- 'fx' la LOAI HIEU UNG, do src/2_nguoi_choi/7_hieuung.lua doc.
+-- 'fx' la LOAI HIEU UNG, do src/2_player/7_effect.lua doc.
 --
 -- Vi sao co o nay thay vi viet rieng cho tung ability: bay loai hieu ung
 -- duoi day dung lai duoc cho Hvwd va Hkal. Them hero moi la khai bao
@@ -995,22 +995,22 @@ CFG.SKILLS[id('H001')] = {
   -- 'goc' = ma ability GOC ma cai nay nhan ban tu do. Doc duoc tu
   -- war3map.w3a, nhung code luc chay khong thay -- ma no la thu can de
   -- tra ten hang so ABILITY_*LF_* cua tung skill ("-nat spell").
-  { id = id('A005'), goc = "ACce", ten = "Chem Lan", en = "Cleaving Blow",   loai = "bidong",  pct = 0.20, fx = "cleave",
-    mota = "Don danh van %s sat thuong sang muc tieu ben canh.",
-    mota_en = "Attacks splash %s damage to nearby targets." },
+  { id = id('A005'), baseAbil = "ACce", vi = "Chem Lan", en = "Cleaving Blow",   kind = "passive",  pct = 0.20, fx = "cleave",
+    desc_vi = "Don danh van %s sat thuong sang muc tieu ben canh.",
+    desc_en = "Attacks splash %s damage to nearby targets." },
   -- 50 mana, khong phai 25: hero bac 1 co 75 mana nen 50 = mot phat roi
   -- phai cho hoi. (Con so 100 nhin thay trong game khong den tu day --
   -- do la mana goc cua Shockwave, lo ra vi nhanh MO KHOA quen goi
   -- applyLevel; da sua.)
-  { id = id('A001'), goc = "AOsh", ten = "Chuong", en = "Palm Strike",       loai = "chudong", heSo = 1.32, cd = 8.0, mana = 50, fx = "line", phim = "Q",
-    mota = "Gay %s sat thuong len mot duong thang.",
-    mota_en = "Deals %s damage in a line." },
+  { id = id('A001'), baseAbil = "AOsh", vi = "Chuong", en = "Palm Strike",       kind = "active" , factor = 1.32, cd = 8.0, mana = 50, fx = "line", hotkey = "Q",
+    desc_vi = "Gay %s sat thuong len mot duong thang.",
+    desc_en = "Deals %s damage in a line." },
 
   -- Nam cai duoi mo sau, THU TU NAO CUNG DUOC: gia mo khoa phang nen
   -- nguoi choi chi phai chon thu tu, khong phai tinh toan.
-  { id = id('A002'), goc = "AHhb", ten = "Ho The", en = "Guarding Light",    loai = "chudong", heSo = 2.20, cd = 10.0, mana = 30, fx = "heal", phim = "W",
-    mota = "Hoi %s mau cho ban than hoac dong doi.",
-    mota_en = "Heals %s to yourself or an ally." },
+  { id = id('A002'), baseAbil = "AHhb", vi = "Ho The", en = "Guarding Light",    kind = "active" , factor = 2.20, cd = 10.0, mana = 30, fx = "heal", hotkey = "W",
+    desc_vi = "Hoi %s mau cho ban than hoac dong doi.",
+    desc_en = "Heals %s to yourself or an ally." },
   -- 'giap' chu khong phai 'pct': Warcraft dung GIAP PHANG, khong phai
   -- phan tram. Giam sat thuong = giap x 0.06 / (1 + giap x 0.06), chinh
   -- la CFG.ARMOR_DR_PER_POINT ma he dot quai dang dung.
@@ -1018,9 +1018,9 @@ CFG.SKILLS[id('H001')] = {
   -- Ban cu la "+15% giap": tren mot hero co 3 giap thi do la +0.45 giap,
   -- tuc +2.6% mau hieu dung -- gan nhu bang khong. Gio +3 giap phang
   -- (bac 10: +6), tuong duong +18% -> +36% mau hieu dung.
-  { id = id('A003'), goc = "AHad", ten = "Hieu Lenh", en = "Rallying Order", loai = "aura",    giap = 3.0, fx = "aura",
-    mota = "Ca doi duoc %s giap.",
-    mota_en = "The whole party gains %s armor." },
+  { id = id('A003'), baseAbil = "AHad", vi = "Hieu Lenh", en = "Rallying Order", kind = "aura",    armor = 3.0, fx = "aura",
+    desc_vi = "Ca doi duoc %s giap.",
+    desc_en = "The whole party gains %s armor." },
   -- 'chiso' chu khong phai 'pct': cong PHANG, khong phai phan tram.
   --
   -- Ban cu la "+12% ca ba chi so". Do duoc: bac Tu Vi 1 no cong +2, bac
@@ -1032,22 +1032,22 @@ CFG.SKILLS[id('H001')] = {
   -- manh cua skill do TU VI quyet dinh, khong phai do bac skill. Nguoi
   -- choi bo 10 Go ra ma gan nhu khong thay gi.
   --
-  -- Gio: chiso x SKILL_PASSIVE_STEP^(bac skill-1) x LINHCAN_STAT_STEP^(bac Tu Vi-1)
+  -- Gio: chiso x SKILL_PASSIVE_STEP^(bac skill-1) x CULT_STAT_STEP^(bac Tu Vi-1)
   -- Hai truc deu co nghia: bac skill doi x2 (tra Go thi thay duoc), bac
   -- Tu Vi giu no khong bi bo lai. Ti le so voi mot lan dot pha dung yen
   -- o 16% moi bac.
   --
-  -- Dung CHINH LINHCAN_STAT_STEP nhu he quay, nen doi duong cong Tu Vi
+  -- Dung CHINH CULT_STAT_STEP nhu he quay, nen doi duong cong Tu Vi
   -- thi ca ba he tu co theo.
-  { id = id('A004'), goc = "Aamk", ten = "Luyen The", en = "Body Forging",   loai = "bidong",  chiso = 4.0, fx = "stat",
-    mota = "%s ca ba chi so, nhan them theo bac Tu Vi.",
-    mota_en = "%s to all three attributes, scaled by Cultivation rank." },
-  { id = id('A006'), goc = "Aamk", ten = "Da Sat", en = "Ironhide",          loai = "bidong",  pct = 0.05, fx = "reduce",
-    mota = "Giam %s sat thuong nhan vao. Tran cung 10%%.",
-    mota_en = "Reduces incoming damage by %s. Hard cap 10%%." },
-  { id = id('A007'), goc = "AHav", ten = "Bat Hoai", en = "Indestructible",  loai = "chudong", heSo = 0.0, cd = 60.0, mana = 60, fx = "buff", phim = "E",
-    mota = "Tang manh giap trong thoi gian ngan.",
-    mota_en = "Greatly raises armor for a short time." },
+  { id = id('A004'), baseAbil = "Aamk", vi = "Luyen The", en = "Body Forging",   kind = "passive",  statVal = 4.0, fx = "stat",
+    desc_vi = "%s ca ba chi so, nhan them theo bac Tu Vi.",
+    desc_en = "%s to all three attributes, scaled by Cultivation rank." },
+  { id = id('A006'), baseAbil = "Aamk", vi = "Da Sat", en = "Ironhide",          kind = "passive",  pct = 0.05, fx = "reduce",
+    desc_vi = "Giam %s sat thuong nhan vao. Tran cung 10%%.",
+    desc_en = "Reduces incoming damage by %s. Hard cap 10%%." },
+  { id = id('A007'), baseAbil = "AHav", vi = "Bat Hoai", en = "Indestructible",  kind = "active" , factor = 0.0, cd = 60.0, mana = 60, fx = "buff", hotkey = "E",
+    desc_vi = "Tang manh giap trong thoi gian ngan.",
+    desc_en = "Greatly raises armor for a short time." },
 }
 
 -- ---------- Hang so hieu ung ky nang ----------
@@ -1060,7 +1060,7 @@ CFG.SKILLS[id('H001')] = {
 -- (docs/06-object-editor/sua-va-clone-ability.md), ma du an nay co luat
 -- khong doan -- doan sai mot ma truong la file hong am tham.
 --
--- Nen 7_hieuung.lua bat su kien cast va TU gay sat thuong bang
+-- Nen 7_effect.lua bat su kien cast va TU gay sat thuong bang
 -- UnitDamageTarget. Sat thuong goc cua Warcraft van con, nhung o bac 10
 -- voi Linh Can bac 20 thi no la sai so lam tron.
 --
@@ -1094,7 +1094,7 @@ CFG.OP_SKILL_UP = 6   -- arg = so thu tu ky nang trong CFG.SKILLS cua hero
 -- ro con so dang hien la thiet ke chu chua co hieu luc -- bang ma hien
 -- so dep nhung sai thi te hon la khong hien.
 --
--- Bat tu 2026-09-16: src/2_nguoi_choi/7_hieuung.lua tu gay sat thuong
+-- Bat tu 2026-09-16: src/2_player/7_effect.lua tu gay sat thuong
 -- theo dung CFG.SKILLS, va w3obj.py da dat alev = 10 cho ca bay ability.
 CFG.SKILL_DATA_LIVE = true
 
@@ -1141,18 +1141,18 @@ CFG.SKILL_MANA_STEP = 1.05   -- x1.55 sau 9 lan nang
 --  docs/02-he-thong/kinh-te.md · bang-nhan-vat.md
 --
 --  Nguon suc manh CHINH: EHP quai dinh nghia bang chinh he so cua no
---  (CFG.MOB_EHP_THEO_LINHCAN), nen mot minh no du bam quai.
+--  (CFG.MOB_EHP_FOLLOW_CULT), nen mot minh no du bam quai.
 --  Dung chung thang ten voi 20 canh gioi cua phe dich -- nguoi choi va
 --  ke dich tu tien tren cung mot con duong.
 -- ============================================================
 
--- KHOA CFG.LINHCAN_STEP DA BO (2026-09-17), cung voi ca cach nghi
+-- KHOA CFG.CULT_STEP DA BO (2026-09-17), cung voi ca cach nghi
 -- "ngan sach x967". Ghi lai vi day la thay doi de bi lat nguoc:
 --
 --   Ban cu: bon he nhan nhau phai ra x967, va x967 do la duong cong
 --   EHP cua quai -- hai ve dung rieng nen phai deo nhau bang tay.
 --
---   Ban nay: CFG.MOB_EHP_THEO_LINHCAN = true. EHP quai DINH NGHIA
+--   Ban nay: CFG.MOB_EHP_FOLLOW_CULT = true. EHP quai DINH NGHIA
 --   bang chinh he so Linh Can, nen hai ve co cung thua so va no triet
 --   tieu. Khong con ngan sach nao phai khop ca.
 --
@@ -1183,8 +1183,8 @@ CFG.SKILL_MANA_STEP = 1.05   -- x1.55 sau 9 lan nang
 --   1.30 -> 24,199 chi so, quai 113,589 mau   (dang dung)
 --   1.25 -> 13,688 chi so, quai  64,259 mau
 --   1.45 -> 129,234 chi so, quai 606,000 mau
-CFG.LINHCAN_STAT_GAIN = 50.0   -- cong them o lan dot pha DAU TIEN
-CFG.LINHCAN_STAT_STEP = 1.30   -- moi lan sau x1.30 lan truoc
+CFG.CULT_STAT_GAIN = 50.0   -- cong them o lan dot pha DAU TIEN
+CFG.CULT_STAT_STEP = 1.30   -- moi lan sau x1.30 lan truoc
 
 -- Gia dot pha bac r = BASE x STEP^(r-1).
 -- 1.412 = 1.0319^11 = thu nhap tron mot canh gioi, nen gia luon dang
@@ -1198,8 +1198,8 @@ CFG.LINHCAN_STAT_STEP = 1.30   -- moi lan sau x1.30 lan truoc
 -- Nguoi choi khong phai tinh gi ca: het canh gioi thi bam dot pha.
 -- 19 lan x 500 = 9,500 tren 10,000 kiem duoc -- 500 du ra la dem cho
 -- nguoi bo lo vai con.
-CFG.LINHCAN_COST_BASE = 500.0
-CFG.LINHCAN_COST_STEP = 1.0
+CFG.CULT_COST_BASE = 500.0
+CFG.CULT_COST_STEP = 1.0
 
 -- Hai so de GIAI NGUOC ra chi so can dat.
 --
@@ -1207,12 +1207,12 @@ CFG.LINHCAN_COST_STEP = 1.0
 -- sat thuong nen + chi so chinh, phan nen lam loang nhan so. Do thang
 -- chi so x19.7 chi cho x10.4 sat thuong -- thieu mot nua.
 --
---   chiSo(r) = (DMG_BASE + STAT_BASE) x STEP^(r-1) - DMG_BASE
+--   stat(r) = (DMG_BASE + STAT_BASE) x STEP^(r-1) - DMG_BASE
 --
 -- Doi hai so nay cho khop hero that trong Object Editor thi nhan so moi
 -- dung. Bang "-lc" trong game in ra nhan so THUC DO duoc de doi chieu.
-CFG.LINHCAN_DMG_BASE  = 17.0   -- sat thuong hero khi chi so = 0
-CFG.LINHCAN_STAT_BASE = 10.0   -- chi so hero luc bac 1
+CFG.CULT_DMG_BASE  = 17.0   -- sat thuong hero khi chi so = 0
+CFG.CULT_STAT_BASE = 10.0   -- chi so hero luc bac 1
 
 -- Cong vao chi so nao:
 --
@@ -1230,7 +1230,7 @@ CFG.LINHCAN_STAT_BASE = 10.0   -- chi so hero luc bac 1
 -- Gameplay Constants cua map, va chua choi thu wave nao. Bat dau bang
 -- "all" vi no phuc vu nhieu hop dong cung luc; doi sang "primary" neu
 -- do thay hero manh vuot duong cong.
-CFG.LINHCAN_STAT_MODE = "all"
+CFG.CULT_STAT_MODE = "all"
 
 
 -- ============================================================
@@ -1260,23 +1260,23 @@ CFG.LINHCAN_STAT_MODE = "all"
 -- KHIEN dang muon tam icon Talisman vi trong sau duong dan da chung
 -- minh khong co cai nao la khien. Sua trong World Editor -> Object
 -- Editor -> mot item bat ky -> Art - Icon, chep duong dan that vao day.
-CFG.TRANGBI = {
-  { ten = "Kiem",       en = "Sword",    icon = [[ReplaceableTextures\CommandButtons\BTNSteelMelee.blp]] },
-  { ten = "Giap",       en = "Armor",    icon = [[ReplaceableTextures\CommandButtons\BTNSteelArmor.blp]] },
-  { ten = "Khien",      en = "Shield",   icon = [[ReplaceableTextures\CommandButtons\BTNTalisman.blp]] },
-  { ten = "Giay",       en = "Boots",    icon = [[ReplaceableTextures\CommandButtons\BTNBootsOfSpeed.blp]] },
-  { ten = "Day Chuyen", en = "Necklace", icon = [[ReplaceableTextures\CommandButtons\BTNPendantOfEnergy.blp]] },
-  { ten = "Nhan",       en = "Ring",     icon = [[ReplaceableTextures\CommandButtons\BTNRingSkull.blp]] },
+CFG.GEAR = {
+  { vi = "Kiem",       en = "Sword",    icon = [[ReplaceableTextures\CommandButtons\BTNSteelMelee.blp]] },
+  { vi = "Giap",       en = "Armor",    icon = [[ReplaceableTextures\CommandButtons\BTNSteelArmor.blp]] },
+  { vi = "Khien",      en = "Shield",   icon = [[ReplaceableTextures\CommandButtons\BTNTalisman.blp]] },
+  { vi = "Giay",       en = "Boots",    icon = [[ReplaceableTextures\CommandButtons\BTNBootsOfSpeed.blp]] },
+  { vi = "Day Chuyen", en = "Necklace", icon = [[ReplaceableTextures\CommandButtons\BTNPendantOfEnergy.blp]] },
+  { vi = "Nhan",       en = "Ring",     icon = [[ReplaceableTextures\CommandButtons\BTNRingSkull.blp]] },
 }
 
--- Nam cap trong MOT canh gioi. So phan tu PHAI bang #CFG.TRANGBI_XS.
+-- Nam cap trong MOT canh gioi. So phan tu PHAI bang #CFG.GEAR_ODDS.
 -- Cung hinh dang voi CFG.TIER_NAMES cua he dot quai.
-CFG.TRANGBI_CAP = {
-  { ten = "So Cap",     en = "Basic" },
-  { ten = "Trung Cap",  en = "Fine" },
-  { ten = "Cao Cap",    en = "Superior" },
-  { ten = "Thuong Cap", en = "Exalted" },
-  { ten = "Hoan Hao",   en = "Perfect" },
+CFG.GEAR_CAP = {
+  { vi = "So Cap",     en = "Basic" },
+  { vi = "Trung Cap",  en = "Fine" },
+  { vi = "Cao Cap",    en = "Superior" },
+  { vi = "Thuong Cap", en = "Exalted" },
+  { vi = "Hoan Hao",   en = "Perfect" },
 }
 
 -- Xac suat LEN cap thu i. XS[1] la lan dau (mo khoa mon do), luon 100%.
@@ -1285,10 +1285,10 @@ CFG.TRANGBI_CAP = {
 --   1 + 1/0.75 + 1/0.50 + 1/0.25 + 1/0.15 = 15.0 lan
 --
 -- That bai KHONG mat gi ngoai vien da -- khong tut cap, khong vo mon.
-CFG.TRANGBI_XS = { 1.00, 0.75, 0.50, 0.25, 0.15 }
+CFG.GEAR_ODDS = { 1.00, 0.75, 0.50, 0.25, 0.15 }
 
 -- Da moi lan thu nang cap. Phang, moi bac nhu nhau.
-CFG.TRANGBI_GIA = 1
+CFG.GEAR_PRICE = 1
 
 -- ---------- Tien Giai ----------
 --
@@ -1301,9 +1301,9 @@ CFG.TRANGBI_GIA = 1
 --
 -- DIEU KIEN: Tu Vi cua nguoi choi phai DA toi canh gioi dich. Day la
 -- cho cai tran that su co hieu luc.
-CFG.TRANGBI_TIEN_GIAI = 10
+CFG.GEAR_DISMANTLE = 10
 
--- Trang Bi khong con khoa. (CFG.TRANGBI_LOCKED, _MAX_LEVEL, _PCT,
+-- Trang Bi khong con khoa. (CFG.GEAR_LOCKED, _MAX_LEVEL, _PCT,
 -- _COST_BASE, _COST_STEP cua he 6 o x 10 cap da bo cung he do.)
 
 -- ============================================================
@@ -1335,13 +1335,13 @@ CFG.TRANGBI_TIEN_GIAI = 10
 -- mua duoc gi, va moi hieu ung tra ve false. Them mon moi la them dong
 -- vao bang nay VA viet cho doc 'ma' cua no -- khong co bang dieu phoi
 -- tu dong nao ca.
--- KHOA TAM THOI, cung ly do voi CFG.TRANGBI_LOCKED.
-CFG.PHAPKHI_LOCKED = true
+-- KHOA TAM THOI, cung ly do voi CFG.GEAR_LOCKED.
+CFG.RELIC_LOCKED = true
 
-CFG.PHAPKHI = {}
+CFG.RELIC = {}
 
 
--- (CFG.PHAPKHI_LIVE da bo: khong file nao doc no.)
+-- (CFG.RELIC_LIVE da bo: khong file nao doc no.)
 
 
 -- ---------- Quay thuong: the VI ----------
@@ -1354,23 +1354,23 @@ CFG.PHAPKHI = {}
 -- o canh gioi 10 -- khong ai cam thay gi. It ma dam hon nhieu ma nhat.
 -- Vi tri khung Co Duyen (tam khung). Dat cao hon tam man hinh mot chut
 -- de khong de len thanh giao dien duoi.
-CFG.QUAY_X = 0.40
-CFG.QUAY_Y = 0.36
+CFG.FORTUNE_X = 0.40
+CFG.FORTUNE_Y = 0.36
 
-CFG.QUAY_ELITE = 1
-CFG.QUAY_BOSS  = 3
+CFG.FORTUNE_ELITE = 1
+CFG.FORTUNE_BOSS  = 3
 
 -- Gia tri MOT the o bac 1. Cac bac sau nhan theo CHINH
--- CFG.LINHCAN_STAT_STEP, nen quay tu bam theo Tu Vi: doi duong cong Tu
+-- CFG.CULT_STAT_STEP, nen quay tu bam theo Tu Vi: doi duong cong Tu
 -- Vi thi quay tu co theo, khong phai chinh lai o day.
 --
 -- 2.2 chon de 7 luot mot canh gioi dang gia ~31% mot lan dot pha, va ca
 -- van (140 luot) cong ~9,700 chi so = 40% cua Tu Vi.
-CFG.QUAY_GIA_TRI = 2.2
+CFG.FORTUNE_VALUE = 2.2
 
 -- Dai ngau nhien quanh gia tri do: 0.7 .. 1.3 lan.
-CFG.QUAY_DAI_MIN = 0.70
-CFG.QUAY_DAI_MAX = 1.30
+CFG.FORTUNE_RANGE_MIN = 0.70
+CFG.FORTUNE_RANGE_MAX = 1.30
 
 -- The 3: VANG, khong phai mau/mana.
 --
@@ -1415,8 +1415,8 @@ CFG.QUAY_DAI_MAX = 1.30
 --
 -- Doi chieu voi tien quai: quai cho 200 vang mot canh gioi, 7 luot the
 -- 3 cho ~420 -- gap doi, du de no la lua chon that.
-CFG.QUAY_VANG_MIN = 30
-CFG.QUAY_VANG_MAX = 90
+CFG.FORTUNE_GOLD_MIN = 30
+CFG.FORTUNE_GOLD_MAX = 90
 
 -- The 1: da Huyen Thiet, PHANG, khong nhan theo bac.
 --
@@ -1424,12 +1424,12 @@ CFG.QUAY_VANG_MAX = 90
 --
 -- CON SO NAY BAM THEO SO MON TRANG BI, quy tac:
 --
---     QUAY_DA ~= 2.5 x so mon
+--     FORTUNE_IRON ~= 2.5 x so mon
 --
 -- Cach ra: mot mon di tron thang 100 bac ton ~300 da (ky vong 15 lan
 -- thu moi canh gioi x 20). Ca van co 140 luot quay, nen:
---     1 mon  ->  300 da can  ->  QUAY_DA = 3   (140x3 = 420)
---     4 mon  -> 1,200 da can ->  QUAY_DA = 10  (140x10 = 1,400)
+--     1 mon  ->  300 da can  ->  FORTUNE_IRON = 3   (140x3 = 420)
+--     4 mon  -> 1,200 da can ->  FORTUNE_IRON = 10  (140x10 = 1,400)
 --
 -- Hien moi co MOT mon (Kiem) nen de 3. THEM MON LA PHAI SUA SO NAY --
 -- de nguyen 10 thi da thua 4.7 lan, ma da thua thi bam mai cung trung,
@@ -1438,7 +1438,7 @@ CFG.QUAY_VANG_MAX = 90
 -- Va no phai HOI THIEU mot chut so voi nhu cau: co thieu thi vang moi
 -- co viec (shop ban da), va shop moi dung vai "go khi den" thay vi
 -- thanh duong leo chinh.
-CFG.QUAY_DA = 3
+CFG.FORTUNE_IRON = 3
 
 -- The 2 cong vao MOT chi so ngau nhien trong ba.
 --
@@ -1448,7 +1448,7 @@ CFG.QUAY_DA = 3
 -- mana.
 --
 -- Giu nguyen, khong bu he so: canh bac co chu dich -- chu du an chot.
-CFG.QUAY_CHISO = { "str", "agi", "int" }
+CFG.FORTUNE_STATS = { "str", "agi", "int" }
 
 -- ---------- Shop: the V ----------
 --
@@ -1466,22 +1466,22 @@ CFG.QUAY_CHISO = { "str", "agi", "int" }
 -- Neu ma sai thi UnitAddItemById tra ve nil, va 6_shop.lua BAO RO chu
 -- khong nuot im -- xem ADR 0012.
 CFG.SHOP = {
-  { ma = "hp", ten = "Lo Hoi Mau",  en = "Healing Potion",
-    item = id('phea'), gia = 10,
+  { code = "hp", vi = "Lo Hoi Mau",  en = "Healing Potion",
+    item = id('phea'), price = 10,
     icon = [[ReplaceableTextures\CommandButtons\BTNPotionGreenSmall.blp]],
-    mota    = "Hoi mau ngay. Dung duoc mot lan.",
-    mota_en = "Restores health instantly. One use." },
+    desc_vi    = "Hoi mau ngay. Dung duoc mot lan.",
+    desc_en = "Restores health instantly. One use." },
 
-  { ma = "mp", ten = "Lo Hoi Mana", en = "Mana Potion",
-    item = id('pman'), gia = 10,
+  { code = "mp", vi = "Lo Hoi Mana", en = "Mana Potion",
+    item = id('pman'), price = 10,
     icon = [[ReplaceableTextures\CommandButtons\BTNPotionBlueSmall.blp]],
-    mota    = "Hoi mana ngay. Dung duoc mot lan.",
-    mota_en = "Restores mana instantly. One use." },
+    desc_vi    = "Hoi mana ngay. Dung duoc mot lan.",
+    desc_en = "Restores mana instantly. One use." },
 
   -- Da Huyen Thiet: mon DUY NHAT trong shop khong phai item.
   --
   -- 'da' thay cho 'item': buy() cong thang vao S.p[pid].da chu khong bo
-  -- gi vao tui. Nen no khong ton o tui, khong can conCho(), va khong bi
+  -- gi vao tui. Nen no khong ton o tui, khong can hasRoom(), va khong bi
   -- probeItems() do (khong co ma item de do).
   --
   -- VAI CUA MON NAY LA GO KHI DEN, khong phai duong leo chinh. The 1 cua
@@ -1489,11 +1489,11 @@ CFG.SHOP = {
   -- lien tiep o cap 15%. Gia 25 dat co y: 3 da cua the 1 = 75 vang, ma
   -- mot luot the 3 chi cho 30-90 -- nen mua da bang vang luon LO hon
   -- nhat the 1, chi duoc cai la chu dong duoc.
-  { ma = "da", ten = "Da Huyen Thiet", en = "Black Iron",
-    da = 1, gia = 25,
+  { code = "iron", vi = "Da Huyen Thiet", en = "Black Iron",
+    iron = 1, price = 25,
     icon = [[ReplaceableTextures\CommandButtons\BTNStaffOfSanctuary.blp]],
-    mota    = "Mot vien da, dung de nang cap trang bi.",
-    mota_en = "One stone, used to upgrade equipment." },
+    desc_vi    = "Mot vien da, dung de nang cap trang bi.",
+    desc_en = "One stone, used to upgrade equipment." },
 
   -- 500 vang = 10 wave thu nhap cua mot nguoi (50 vang/wave). Dat cao
   -- hon hai lo kia hai bac do vi no mua thu khac han: khong phai mot
@@ -1502,11 +1502,11 @@ CFG.SHOP = {
   -- Ma 'ankh' la phong doan nhu 'phea'/'pman'. Khong sao: startShop()
   -- tao thu moi item luc vao map, ma sai thi CreateItem tra ve nil va
   -- no bao do ngay -- khong doi toi luc ai do bo ra 500 vang moi biet.
-  { ma = "ankh", ten = "Ankh Hoi Sinh", en = "Ankh of Reincarnation",
-    item = id('ankh'), gia = 500,
+  { code = "ankh", vi = "Ankh Hoi Sinh", en = "Ankh of Reincarnation",
+    item = id('ankh'), price = 500,
     icon = [[ReplaceableTextures\CommandButtons\BTNAnkh.blp]],
-    mota    = "Tu hoi sinh tai cho khi chet.",
-    mota_en = "Revives you on the spot when you die." },
+    desc_vi    = "Tu hoi sinh tai cho khi chet.",
+    desc_en = "Revives you on the spot when you die." },
 }
 
 -- Tui do cua hero co 6 o. Mua khi day tui thi item roi xuong dat ngay
@@ -1543,8 +1543,8 @@ CFG.SHOP_STACK_MAX = 10
 -- 10 lo moi loai = dung bang CFG.SHOP_STACK_MAX, nen goi gon trong MOT o
 -- moi loai, het hai o tren sau.
 CFG.START_ITEMS = {
-  { ma = "hp", so = 10 },
-  { ma = "mp", so = 10 },
+  { code = "hp", count = 10 },
+  { code = "mp", count = 10 },
 }
 
 -- ---------- Phan vung 25 block ----------
@@ -1592,13 +1592,13 @@ CFG.START_ITEMS = {
 --    3 cach 2 + 4
 --    5 cach 4 + 4                  -- xa nhat, kho nhat
 CFG.BLOCKS = {
-  [21] = { vai = "nha" },
-  [16] = { vai = "cua" },
+  [21] = { role = "sect" },
+  [16] = { role = "gate" },
 
-  [17] = { vai = "linhmach" },
-  [13] = { vai = "tamthe" },
-  [3]  = { vai = "tamdao" },
-  [5]  = { vai = "tranma" },
+  [17] = { role = "qivein" },
+  [13] = { role = "threebody" },
+  [3]  = { role = "threepaths" },
+  [5]  = { role = "pagoda" },
 }
 
 -- Block khong co trong bang tren = "hoang" (chua giao viec). De trong
@@ -1609,33 +1609,33 @@ CFG.BLOCKS = {
 -- 'tien' la dong tien vung do sinh ra.
 -- 'mau'  dung cho ping minimap cua lenh "-vung".
 CFG.BLOCK_ROLE = {
-  nha  = { ten = "Tong Mon", en = "Sect",       mau = {255, 220,  80} },
-  cua  = { ten = "Ma Mon",   en = "Demon Gate", mau = {255,  80,  80} },
+  sect  = { vi = "Tong Mon", en = "Sect",       color = {255, 220,  80} },
+  gate  = { vi = "Ma Mon",   en = "Demon Gate", color = {255,  80,  80} },
 
-  tamthe = { ten = "Tam The Tran", en = "Three-Body Array",
-             mau = {255, 140, 255}, tien = "Go",
+  threebody = { vi = "Tam The Tran", en = "Three-Body Array",
+             color = {255, 140, 255}, currency = "Go",
              coop = "Boss chia ba than o ba goc. Than nao chet le thi hai" ..
                     " than kia hoi sinh no. Phai ha ca ba trong mot cua so" ..
                     " thoi gian -- ba nguoi, ba cho, mot nhip." },
 
-  linhmach = { ten = "Linh Mach", en = "Qi Vein",
-               mau = {255, 200, 120}, tien = "Linh Khi",
+  qivein = { vi = "Linh Mach", en = "Qi Vein",
+               color = {255, 200, 120}, currency = "Linh Khi",
                coop = "Ba tru dan khi. Mach chi chay khi CA BA tru deu co" ..
                       " nguoi dung. Quai lien tuc ra de day nguoi khoi tru." },
 
-  tamdao = { ten = "Tam Dao Mon", en = "Three Paths",
-             mau = {120, 255, 160}, tien = "Go",
+  threepaths = { vi = "Tam Dao Mon", en = "Three Paths",
+             color = {120, 255, 160}, currency = "Go",
              coop = "Ba cua, moi cua chi mot VAI qua duoc: Kim can nguoi" ..
                     " chiu don, Moc can nguoi giai, Hoa can nguoi pha nhanh." ..
                     " Dung ba hero cua CFG.HEROES." },
 
-  tranma = { ten = "Tran Ma Thap", en = "Warding Pagoda",
-             mau = {120, 200, 255}, tien = "Go",
+  pagoda = { vi = "Tran Ma Thap", en = "Warding Pagoda",
+             color = {120, 200, 255}, currency = "Go",
              coop = "Mot nguoi phai dung yen dan phap, khong danh khong" ..
                     " chay duoc. Hai nguoi con lai gong ca tran. Doi phien" ..
                     " nhau khi nguoi dang dan sap guc." },
 
-  hoang = { ten = "Hoang Dia", en = "Wilds", mau = {130, 130, 130},
+  wilds = { vi = "Hoang Dia", en = "Wilds", color = {130, 130, 130},
             coop = "Chua co y tuong. De rong cho toi khi co -- xem ADR 0018." },
 }
 
@@ -1674,7 +1674,7 @@ CFG.PANEL_KEY = nil
 
 -- Giay chan trung cho ESC. Hai duong dang ky nam chung mot trigger nen
 -- mot lan bam no hai lan; xem chu thich trong bindEsc().
-CFG.PANEL_ESC_KHOA = 0.25
+CFG.PANEL_ESC_LOCK = 0.25
 
 -- ---------- Dung do bang hang so tren (canh Esc) ----------
 --
@@ -1768,7 +1768,7 @@ CFG.PANEL_BTN_BORDER = 0.0016
 -- o mau dac dung la thu can, khac han truong hop dung no lam nen bang.
 CFG.PANEL_BAR_BG   = [[ReplaceableTextures\TeamColor\TeamColor27]]
 CFG.PANEL_BAR_FILL = [[ReplaceableTextures\TeamColor\TeamColor04]]
--- Cao cua bang SUY RA tu so dong trong 4_giao_dien/1_panel.lua, khong
+-- Cao cua bang SUY RA tu so dong trong 4_ui/1_panel.lua, khong
 -- go tay o day -- de o day thi them mot dong la tran ra ngoai khung.
 
 -- Ke vach xen ke cho de doc. Tat neu thay roi mat.

@@ -105,13 +105,13 @@ end
 -- ---------- Dang ky the ----------
 --
 -- kind = "list":
---   items(pid) -> { { icon, ten, mota, trangThai, nut, batNut }, ... }
+--   items(pid) -> { { icon, name, desc, status, btn, btnOn }, ... }
 --   itemAction(pid, i)
---   trong  -- chu hien khi items rong
+--   empty  -- chu hien khi items rong
 --
 -- kind = "focus":
---   info(pid) -> { tieuDe, phu, dong = { {nhan, truoc, sau}, ... },
---                  tienDo (0..1), ghiChu, nut, batNut }
+--   info(pid) -> { title, sub, row = { {lbl, before, after}, ... },
+--                  progress (0..1), note, btn, btnOn }
 --   action(pid)
 
 local function addTab(tab)
@@ -122,12 +122,12 @@ end
 
 -- The chua lam: hien ro la chua lam thay vi de trong. Mot the trong
 -- khien nguoi choi tuong giao dien hong.
-local function placeholderTab(ten, mota)
+local function placeholderTab(name, desc)
   return {
-    ten   = ten,
+    name   = name,
     kind  = "list",
     items = function() return {} end,
-    trong = CFG.C_GREY .. API.t("panel_empty") .. CFG.C_END .. "  " .. mota,
+    empty = CFG.C_GREY .. API.t("panel_empty") .. CFG.C_END .. "  " .. desc,
   }
 end
 
@@ -159,29 +159,29 @@ local function refreshList(st, pid, tab)
     local it = items[i]
     local w  = st.item[i]
     if w ~= nil then
-      local co = (it ~= nil)
-      show(w.bg, co and (i % 2 == 0))
-      show(w.name, co)
-      show(w.state, co)
-      show(w.sub, co)
-      show(w.icon, co and it.icon ~= nil)
-      show(w.btn, co and it.nut ~= nil)
+      local has = (it ~= nil)
+      show(w.bg, has and (i % 2 == 0))
+      show(w.name, has)
+      show(w.state, has)
+      show(w.sub, has)
+      show(w.icon, has and it.icon ~= nil)
+      show(w.btn, has and it.btn ~= nil)
 
-      if co then
+      if has then
         if it.icon ~= nil then BlzFrameSetTexture(w.icon, it.icon, 0, true) end
-        BlzFrameSetText(w.name,  CFG.C_GOLD .. (it.ten or "?") .. CFG.C_END)
-        BlzFrameSetText(w.state, it.trangThai or "")
-        BlzFrameSetText(w.sub,   CFG.C_GREY .. (it.mota or "") .. CFG.C_END)
-        if it.nut ~= nil then
+        BlzFrameSetText(w.name,  CFG.C_GOLD .. (it.name or "?") .. CFG.C_END)
+        BlzFrameSetText(w.state, it.status or "")
+        BlzFrameSetText(w.sub,   CFG.C_GREY .. (it.desc or "") .. CFG.C_END)
+        if it.btn ~= nil then
           -- Chu XAM khi khong du tien. Vien va ruot la o mau tu ve nen
           -- BlzFrameSetEnable khong doi mau chung -- khong lam gi thi
           -- nut bam duoc va nut mo trong y het nhau.
-          BlzFrameSetText(w.btnTxt, (it.batNut ~= false) and it.nut
-                                    or (CFG.C_GREY .. it.nut .. CFG.C_END))
+          BlzFrameSetText(w.btnTxt, (it.btnOn ~= false) and it.btn
+                                    or (CFG.C_GREY .. it.btn .. CFG.C_END))
           -- Nut mo di khi khong du tien: van THAY duoc gia, chi khong
           -- bam duoc. An han nut thi nguoi choi khong biet mon do ton
           -- bao nhieu de ma de danh.
-          setEnabled(w.btn, it.batNut ~= false)
+          setEnabled(w.btn, it.btnOn ~= false)
         end
       end
     end
@@ -190,7 +190,7 @@ local function refreshList(st, pid, tab)
   -- Dong "chua co gi" cho the giu cho.
   show(st.empty, #items == 0)
   if #items == 0 and st.empty ~= nil then
-    BlzFrameSetText(st.empty, tab.trong or "")
+    BlzFrameSetText(st.empty, tab.empty or "")
   end
 end
 
@@ -199,28 +199,28 @@ local function refreshFocus(st, pid, tab)
   if f == nil then return end
   local d = (tab.info and tab.info(pid)) or {}
 
-  BlzFrameSetText(f.tieuDe, CFG.C_GOLD .. (d.tieuDe or "") .. CFG.C_END)
-  BlzFrameSetText(f.phu,    CFG.C_JADE .. (d.phu or "") .. CFG.C_END)
+  BlzFrameSetText(f.titleF, CFG.C_GOLD .. (d.title or "") .. CFG.C_END)
+  BlzFrameSetText(f.sub,    CFG.C_JADE .. (d.sub or "") .. CFG.C_END)
 
-  local dong = d.dong or {}
-  for i = 1, #f.dong do
-    local r = f.dong[i]
-    local v = dong[i]
-    show(r.ke, v ~= nil)
-    show(r.nhan, v ~= nil)
-    show(r.truoc, v ~= nil)
-    show(r.sau, v ~= nil)
+  local row = d.row or {}
+  for i = 1, #f.row do
+    local r = f.row[i]
+    local v = row[i]
+    show(r.alt, v ~= nil)
+    show(r.lbl, v ~= nil)
+    show(r.before, v ~= nil)
+    show(r.after, v ~= nil)
     if v ~= nil then
-      BlzFrameSetText(r.nhan,  CFG.C_GREY .. (v[1] or "") .. CFG.C_END)
-      BlzFrameSetText(r.truoc, v[2] or "")
+      BlzFrameSetText(r.lbl,  CFG.C_GREY .. (v[1] or "") .. CFG.C_END)
+      BlzFrameSetText(r.before, v[2] or "")
       -- Mui ten nam trong cung frame voi gia tri sau, de khong phai do
       -- be ngang cua gia tri truoc moi biet dat mui ten o dau.
-      BlzFrameSetText(r.sau,   CFG.C_GREY .. "->  " .. CFG.C_END ..
+      BlzFrameSetText(r.after,   CFG.C_GREY .. "->  " .. CFG.C_END ..
                                CFG.C_JADE .. (v[3] or "") .. CFG.C_END)
     end
   end
 
-  local p = d.tienDo or 0.0
+  local p = d.progress or 0.0
   if p < 0.0 then p = 0.0 elseif p > 1.0 then p = 1.0 end
   local full = CFG.PANEL_W - 2 * PAD()
   -- NEN phai hien -- backdropFrame() tao ra o trang thai an, va truoc
@@ -232,13 +232,13 @@ local function refreshFocus(st, pid, tab)
   show(f.barFill, p > 0.01)
   if p > 0.01 then BlzFrameSetSize(f.barFill, full * p, 0.010) end
 
-  BlzFrameSetText(f.ghiChu, CFG.C_GREY .. (d.ghiChu or "") .. CFG.C_END)
+  BlzFrameSetText(f.note, CFG.C_GREY .. (d.note or "") .. CFG.C_END)
 
-  show(f.btn, d.nut ~= nil)
-  if d.nut ~= nil then
-    BlzFrameSetText(f.btnTxt, (d.batNut ~= false) and d.nut
-                              or (CFG.C_GREY .. d.nut .. CFG.C_END))
-    setEnabled(f.btn, d.batNut ~= false)
+  show(f.btn, d.btn ~= nil)
+  if d.btn ~= nil then
+    BlzFrameSetText(f.btnTxt, (d.btnOn ~= false) and d.btn
+                              or (CFG.C_GREY .. d.btn .. CFG.C_END))
+    setEnabled(f.btn, d.btnOn ~= false)
   end
 end
 
@@ -253,24 +253,24 @@ local function refresh(pid)
   for i = 1, #S.panel.tabs do
     local t = st.tabBtn[i]
     if t ~= nil and t.txt ~= nil then
-      local nm = (ROMAN[i] or i) .. ". " .. S.panel.tabs[i].ten
+      local nm = (ROMAN[i] or i) .. ". " .. S.panel.tabs[i].name
       BlzFrameSetText(t.txt,
         (i == st.tab and CFG.C_GOLD or CFG.C_GREY) .. nm .. CFG.C_END)
     end
   end
 
   if st.money ~= nil then
-    local tien = {
-      { API.t("panel_linhkhi"), API.getLinhKhi(pid),  CFG.C_JADE },
-      { API.t("panel_vang"),    API.getVang(pid),     CFG.C_GOLD },
-      { API.t("panel_go"),      API.getGo(pid),       CFG.C_GOLD },
-      { API.t("panel_da"),      API.getDa(pid),       CFG.C_GREY },
+    local money = {
+      { API.t("panel_qi"), API.getQi(pid),  CFG.C_JADE },
+      { API.t("panel_gold"),    API.getGold(pid),     CFG.C_GOLD },
+      { API.t("panel_lumber"),      API.getLumber(pid),       CFG.C_GOLD },
+      { API.t("panel_iron"),      API.getIron(pid),       CFG.C_GREY },
     }
-    for i = 1, #tien do
+    for i = 1, #money do
       local m = st.money[i]
       if m ~= nil then
-        BlzFrameSetText(m.nhan, CFG.C_GREY .. tien[i][1] .. CFG.C_END)
-        BlzFrameSetText(m.so,   tien[i][3] .. API.num(tien[i][2]) .. CFG.C_END)
+        BlzFrameSetText(m.lbl, CFG.C_GREY .. money[i][1] .. CFG.C_END)
+        BlzFrameSetText(m.amt,   money[i][3] .. API.num(money[i][2]) .. CFG.C_END)
       end
     end
   end
@@ -315,7 +315,7 @@ local function build(pid)
   -- Khong dat kich thuoc thi Warcraft can giua chu quanh diem neo va
   -- chu dai tran deu hai ben -- do la loi "chu de len cot ben canh"
   -- cua ban truoc.
-  local function text(name, parentF, dx, dy, w, scale, phai, h)
+  local function text(name, parentF, dx, dy, w, scale, right, h)
     local t = BlzCreateFrameByType("TEXT", name, parentF, "", pid)
     if t == nil then return nil end
     local s = scale or 1.0
@@ -341,11 +341,11 @@ local function build(pid)
     -- biet tam no o dau -- va doan sai la lech vai pixel, dung cai lam
     -- dong "1/10" khong thang voi nut ben canh.
     BlzFrameSetSize(t, w / s, (h or LINE) / s)
-    local doc = (h ~= nil and TEXT_JUSTIFY_MIDDLE ~= nil)
+    local mid = (h ~= nil and TEXT_JUSTIFY_MIDDLE ~= nil)
                 and TEXT_JUSTIFY_MIDDLE or TEXT_JUSTIFY_TOP
     if BlzFrameSetTextAlignment ~= nil and TEXT_JUSTIFY_TOP ~= nil then
-      BlzFrameSetTextAlignment(t, doc,
-        phai and TEXT_JUSTIFY_RIGHT or TEXT_JUSTIFY_LEFT)
+      BlzFrameSetTextAlignment(t, mid,
+        right and TEXT_JUSTIFY_RIGHT or TEXT_JUSTIFY_LEFT)
     end
     API.frameScale(t, scale)
     API.frameDead(t)   -- chu nam de len nut se NUOT cu bam
@@ -373,8 +373,8 @@ local function build(pid)
     --
     -- Vi sao khong dung backdrop co san: xem CFG.PANEL_BTN_EDGE.
     local d = CFG.PANEL_BTN_BORDER or 0.0016
-    local function o(ten, dx2, dy2, w2, h2, tex)
-      local f = BlzCreateFrameByType("BACKDROP", ten, b, "", pid)
+    local function o(name, dx2, dy2, w2, h2, tex)
+      local f = BlzCreateFrameByType("BACKDROP", name, b, "", pid)
       if f == nil then return end
       BlzFrameSetSize(f, w2, h2)
       BlzFrameSetPoint(f, FRAMEPOINT_TOPLEFT, b, FRAMEPOINT_TOPLEFT, dx2, -dy2)
@@ -410,7 +410,7 @@ local function build(pid)
   local n  = #S.panel.tabs
   local tw = (W - 2 * P - (n - 1) * GAP) / n
   for i = 1, n do
-    st.tabBtn[i] = button("CharTab" .. i, S.panel.tabs[i].ten,
+    st.tabBtn[i] = button("CharTab" .. i, S.panel.tabs[i].name,
                           P + (i - 1) * (tw + GAP), tabTop(), tw, TAB_H)
   end
 
@@ -436,9 +436,9 @@ local function build(pid)
   for i = 1, SO_TIEN do
     local x = P + (i - 1) * colW
     st.money[i] = {
-      nhan = text("CharMoneyL" .. i, st.panel, x, moneyY, colW * 0.58,
+      lbl = text("CharMoneyL" .. i, st.panel, x, moneyY, colW * 0.58,
                   CFG.PANEL_SCALE_SUB, false),
-      so   = text("CharMoneyV" .. i, st.panel, x + colW * 0.58, moneyY,
+      amt   = text("CharMoneyV" .. i, st.panel, x + colW * 0.58, moneyY,
                   colW * 0.42 - 0.008, CFG.PANEL_SCALE_SUB, true),
     }
   end
@@ -491,7 +491,7 @@ local function build(pid)
 
   -- ----- Than kieu "focus" -----
   do
-    local f = { dong = {} }
+    local f = { row = {} }
     local fh = bodyH()
 
     -- Frame goc CHI de bat/tat ca cum bang MOT loi goi -- no khong ve gi.
@@ -522,24 +522,24 @@ local function build(pid)
       show(f.root, false)
 
       local fw = W - 2 * P
-      f.tieuDe = text("CharFTitle", f.root, 0.004, 0.006, fw * 0.55,
+      f.titleF = text("CharFTitle", f.root, 0.004, 0.006, fw * 0.55,
                       CFG.PANEL_SCALE_HEAD, false)
-      f.phu    = text("CharFSub",   f.root, fw * 0.45, 0.008, fw * 0.55 - 0.004,
+      f.sub    = text("CharFSub",   f.root, fw * 0.45, 0.008, fw * 0.55 - 0.004,
                       CFG.PANEL_SCALE_NAME, true)
 
       -- Ba dong so lieu, moi dong mot vach ke rieng -- cung cach the
       -- kieu "list" ke dong chan, de hai kieu than trong nhu mot bang.
       for i = 1, 3 do
         local y = 0.044 + (i - 1) * 0.024
-        f.dong[i] = {
-          ke    = (CFG.PANEL_GRID and i % 2 == 0)
+        f.row[i] = {
+          alt    = (CFG.PANEL_GRID and i % 2 == 0)
                   and backdropFrame("CharFRow" .. i, 0.0, y - 0.004, fw, 0.022,
                                     CFG.PANEL_GRID_TEX, f.root) or nil,
-          nhan  = text("CharFL" .. i, f.root, 0.010, y, fw * 0.34,
+          lbl  = text("CharFL" .. i, f.root, 0.010, y, fw * 0.34,
                        CFG.PANEL_SCALE_NAME, false),
-          truoc = text("CharFA" .. i, f.root, fw * 0.36, y, fw * 0.22,
+          before = text("CharFA" .. i, f.root, fw * 0.36, y, fw * 0.22,
                        CFG.PANEL_SCALE_NAME, true),
-          sau   = text("CharFB" .. i, f.root, fw * 0.60, y, fw * 0.38 - 0.010,
+          after   = text("CharFB" .. i, f.root, fw * 0.60, y, fw * 0.38 - 0.010,
                        CFG.PANEL_SCALE_NAME, false),
         }
       end
@@ -565,7 +565,7 @@ local function build(pid)
                        fw * 0.80, btnH, f.root)
       if b ~= nil then f.btn, f.btnTxt = b.btn, b.txt end
 
-      f.ghiChu = text("CharFNote", f.root, 0.010, noteY, fw - 0.020,
+      f.note = text("CharFNote", f.root, 0.010, noteY, fw - 0.020,
                       CFG.PANEL_SCALE_SUB, false)
     end
     st.focus = f
@@ -622,7 +622,7 @@ end
 -- bam thi von da dang bat, nen bat lai luon dung trang thai; va cac
 -- duong ben duoi deu goi refresh() ngay sau do, refresh dat lai trang
 -- thai bat/tat theo du tien hay khong.
-local function nhaFocus(f)
+local function releaseFocus(f)
   if f == nil or BlzFrameSetEnable == nil then return end
   BlzFrameSetEnable(f, false)
   BlzFrameSetEnable(f, true)
@@ -631,7 +631,7 @@ end
 local function onClick()
   local f = BlzGetTriggerFrame()
   if f == nil then return end
-  nhaFocus(f)
+  releaseFocus(f)
 
   for pid, st in pairs(S.panel.byPid) do
     if GetLocalPlayer() == Player(pid) then
@@ -699,7 +699,7 @@ local function bindEsc()
   -- Con phim chu thi ESC chi TAT: luc do bam ESC de huy chon quan ma
   -- bang bat len la mot cai bay nho dat dung cho ai cung bam theo phan
   -- xa.
-  local batTat = (CFG.PANEL_KEY == nil)
+  local canToggle = (CFG.PANEL_KEY == nil)
 
   -- CHAN LAN NO THU HAI.
   --
@@ -713,18 +713,18 @@ local function bindEsc()
   --
   -- Van giu ca hai duong dang ky chu khong bo bot mot: khong ai biet
   -- ban sau con du ca hai khong, va chan trung o day re hon la doan.
-  local khoa = {}
+  local escLock = {}
   TriggerAddAction(t, function()
     local pid = GetPlayerId(GetTriggerPlayer())
-    if khoa[pid] then return end
+    if escLock[pid] then return end
     -- Khung Co Duyen dang mo thi ESC khong dong no, va cung khong mo
     -- bang nhan vat de len tren. Phai chon mot the moi di tiep.
-    if API.quayFrameDangMo ~= nil and API.quayFrameDangMo(pid) then return end
-    khoa[pid] = true
-    API.after(CFG.PANEL_ESC_KHOA or 0.25, function() khoa[pid] = nil end)
+    if API.fortuneFrameShown ~= nil and API.fortuneFrameShown(pid) then return end
+    escLock[pid] = true
+    API.after(CFG.PANEL_ESC_LOCK or 0.25, function() escLock[pid] = nil end)
 
     if stateOf(pid).shown then hide(pid)
-    elseif batTat then toggle(pid) end
+    elseif canToggle then toggle(pid) end
   end)
 
   API.trace("panel: ESC dang ky qua " .. n .. " duong")
@@ -732,15 +732,15 @@ local function bindEsc()
 end
 
 local function bindKey()
-  local ten = CFG.PANEL_KEY
-  if ten == nil then
+  local name = CFG.PANEL_KEY
+  if name == nil then
     API.trace("panel: khong gan phim chu (CFG.PANEL_KEY = nil), chi ESC")
     return false
   end
-  local key = _G["OSKEY_" .. ten]
+  local key = _G["OSKEY_" .. name]
   if BlzTriggerRegisterPlayerKeyEvent == nil or key == nil then
     API.trace("panel: KHONG co BlzTriggerRegisterPlayerKeyEvent/OSKEY_" ..
-              ten .. " -- chi con -c")
+              name .. " -- chi con -c")
     return false
   end
   local t = CreateTrigger()
@@ -748,7 +748,7 @@ local function bindKey()
     BlzTriggerRegisterPlayerKeyEvent(t, Player(S.pids[i]), key, 0, true)
   end
   TriggerAddAction(t, function() toggle(GetPlayerId(GetTriggerPlayer())) end)
-  API.trace("panel: da gan phim " .. ten)
+  API.trace("panel: da gan phim " .. name)
   return true
 end
 
@@ -757,7 +757,7 @@ local function startPanel()
   -- mot he 9 muc thi bang tu rong ra, khong phai nho sua hang so.
   for i = 1, #S.panel.tabs do
     local t = S.panel.tabs[i]
-    if t.soMuc ~= nil and t.soMuc > MAX_ITEMS then MAX_ITEMS = t.soMuc end
+    if t.rows ~= nil and t.rows > MAX_ITEMS then MAX_ITEMS = t.rows end
   end
 
   S.panel.trig = CreateTrigger()
