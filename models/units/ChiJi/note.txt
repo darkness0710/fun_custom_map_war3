@@ -1,0 +1,18 @@
+# Duong dan DOC TU chunk texture cua chinh file .mdx, khong phai doan.
+#   python -c "import re,io;print(re.findall(rb'[ -~]{3,120}?\.blp',io.open(F,'rb').read()))"
+# Dat sai cho thi model ra o XANH LA va khong co loi nao bao.
+
+File: Chi-Ji.mdx
+Path: war3mapImported/Chi-Ji.mdx
+
+File: CraneGod.BLP
+Path: CraneGod.BLP
+
+File: CraneGodGlow.BLP
+Path: CraneGodGlow.BLP
+
+# Model con tham chieu 4 texture co san cua game, KHONG import:
+#   ReplaceableTextures\TeamColor\TeamColor00.blp
+#   Textures\Flare.blp
+#   Textures\Shockwave11.blp
+#   Textures\Dust3x.blp

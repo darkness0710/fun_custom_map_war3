@@ -1,0 +1,21 @@
+# Duong dan DOC TU chunk texture cua chinh file .mdx, khong phai doan.
+#   python -c "import re,io;print(re.findall(rb'[ -~]{3,120}?\.blp',io.open(F,'rb').read()))"
+# Dat sai cho thi model ra o XANH LA va khong co loi nao bao.
+
+File: Yu'lon.mdx
+Path: war3mapImported/Yu'lon.mdx
+
+File: PandarenSerpentGod_Green.blp
+Path: PandarenSerpentGod_Green.blp
+
+File: PandarenSerpentGod_Green_Glow.blp
+Path: PandarenSerpentGod_Green_Glow.blp
+
+File: DRAGONHAIR.BLP
+Path: DRAGONHAIR.BLP
+
+File: BIGGLOW.BLP
+Path: bigglow.blp
+
+# Ten file .mdx co dau nhay don -- go y nguyen vao Import Manager.
+# BIGGLOW.BLP tren dia, duong dan trong .mdx viet thuong -- theo .mdx.

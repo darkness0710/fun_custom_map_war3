@@ -3,6 +3,12 @@
 * text=auto eol=lf
 
 # File nhị phân của World Editor — git không được đụng vào nội dung
+#
+# .mdx trước đây chỉ có `text=auto`, tức git TỰ ĐOÁN nhị phân bằng cách dò
+# byte NUL. Nó đoán trúng, nhưng một model hỏng chỉ lộ ra khi vào game nhìn
+# thấy — kiểu hỏng im lặng. Ghim cứng thay vì dựa vào suy đoán.
+*.mdx binary
+*.mdl binary
 *.blp binary
 *.doo binary
 *.mmp binary

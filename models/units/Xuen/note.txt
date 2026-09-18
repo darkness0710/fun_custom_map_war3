@@ -1,0 +1,21 @@
+# Duong dan DOC TU chunk texture cua chinh file .mdx, khong phai doan.
+#   python -c "import re,io;print(re.findall(rb'[ -~]{3,120}?\.blp',io.open(F,'rb').read()))"
+# Dat sai cho thi model ra o XANH LA va khong co loi nao bao.
+
+File: Xuen.mdx
+Path: war3mapImported/Xuen.mdx
+
+File: SiberianTigerGod.blp
+Path: SiberianTigerGod.blp
+
+File: SiberianTigerGodAuraDark.BLP
+Path: SiberianTigerGodAuraDark.BLP
+
+File: SiberianTigerGodParticle.BLP
+Path: SiberianTigerGodParticle.BLP
+
+File: SiberianTigerGodWiskers.BLP
+Path: SiberianTigerGodWiskers.BLP
+
+File: SiberianTigerGodWiskersGlow.BLP
+Path: SiberianTigerGodWiskersGlow.BLP

@@ -1,0 +1,29 @@
+# Duong dan DOC TU chunk texture cua chinh file .mdx, khong phai doan.
+#   python -c "import re,io;print(re.findall(rb'[ -~]{3,120}?\.blp',io.open(F,'rb').read()))"
+# Dat sai cho thi model ra o XANH LA va khong co loi nao bao.
+
+File: Niuzao.mdx
+Path: war3mapImported/Niuzao.mdx
+
+File: YAKGODWHITE.blp
+Path: YAKGODWHITE.blp
+
+File: YAKGODRUNEGLOWALPHAT.blp
+Path: YAKGODRUNEGLOWALPHAT.blp
+
+File: YAKGODRUNEGLOWCOLOR.blp
+Path: YAKGODRUNEGLOWCOLOR.blp
+
+File: SMOKE01_FLIP.blp
+Path: SMOKE01_FLIP.blp
+
+File: helm_plateraidwarrior_h_01particle.blp
+Path: HELM_PLATERAIDWARRIOR_H_01PARTICLE.blp
+
+File: DIRTCLUMPS.blp
+Path: DIRTCLUMPS.blp
+
+File: GLOWBALL02.blp
+Path: GLOWBALL02.blp
+
+# Ten file tren dia viet thuong, duong dan trong .mdx viet HOA -- theo .mdx.
