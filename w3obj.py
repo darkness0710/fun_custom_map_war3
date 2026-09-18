@@ -211,6 +211,14 @@ FIELD_TYPE = {
     # dump ra int o ca ba hero.
     "umdl": TYPE_STRING,   "unam": TYPE_STRING,  "upro": TYPE_STRING,
     "uagi": TYPE_INT,      "uint": TYPE_INT,     "ustr": TYPE_INT,
+    # uico = "Art - Icon - Game Interface". Kieu SUY RA, chua do duoc:
+    # World Editor chua ghi truong nay ra w3u cua map nay lan nao. Suy tu
+    # umdl -- cung la duong dan, cung phai la string.
+    #
+    # Sai kieu thi "w3obj.py checkall" bao ngay (doc lai khong khop tung
+    # byte). Sai MA truong thi game lang le bo qua, khong doi icon --
+    # do la thu chi nhin trong game moi biet.
+    "uico": TYPE_STRING,
 }
 
 

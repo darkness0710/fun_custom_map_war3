@@ -384,13 +384,27 @@ def build_block(sources, lang=None):
     return "\n".join(parts) + "\n"
 
 
+# Bien dich SAN, va dung pat.match(text, i) chu KHONG re.match(pat,
+# text[i:]). Cat chuoi o moi ky tu la sao chep lai ca 451 KB moi vong --
+# do la ly do build tung mat 84 giay.
+RE_LONG_COMMENT = re.compile(r"--\[(=*)\[")
+RE_LONG_STRING = re.compile(r"\[(=*)\[")
+
+# strip_lua_noise() bi goi bon lan tren cung mot van ban. Nho MOT ban
+# gan nhat la du -- build.py luon hoi cung mot chuoi bon lan lien tiep.
+_NOISE_CACHE = (None, None)
+
+
 def strip_lua_noise(text):
     """Bo comment va chuoi de dem tu khoa cho dung."""
+    global _NOISE_CACHE
+    if _NOISE_CACHE[0] is not None and _NOISE_CACHE[0] == text:
+        return _NOISE_CACHE[1]
     out, i, n = [], 0, len(text)
     while i < n:
         c = text[i]
         if c == "-" and text.startswith("--", i):
-            m = re.match(r"--\[(=*)\[", text[i:])
+            m = RE_LONG_COMMENT.match(text, i)
             if m:
                 close = "]" + m.group(1) + "]"
                 j = text.find(close, i)
@@ -399,7 +413,7 @@ def strip_lua_noise(text):
                 j = text.find("\n", i)
                 i = n if j < 0 else j
             continue
-        m = re.match(r"\[(=*)\[", text[i:])
+        m = RE_LONG_STRING.match(text, i)
         if m:
             close = "]" + m.group(1) + "]"
             j = text.find(close, i)
@@ -413,7 +427,9 @@ def strip_lua_noise(text):
             continue
         out.append(c)
         i += 1
-    return "".join(out)
+    res = "".join(out)
+    _NOISE_CACHE = (text, res)
+    return res
 
 
 def block_balance_check(text):
@@ -450,7 +466,7 @@ def check_escapes(text):
     while i < n:
         c = text[i]
         if c == "-" and text.startswith("--", i):
-            m = re.match(r"--\[(=*)\[", text[i:])
+            m = RE_LONG_COMMENT.match(text, i)
             if m:
                 close = "]" + m.group(1) + "]"
                 j = text.find(close, i)
@@ -459,7 +475,7 @@ def check_escapes(text):
                 j = text.find(NEWLN, i)
                 i = n if j < 0 else j
             continue
-        m = re.match(r"\[(=*)\[", text[i:])
+        m = RE_LONG_STRING.match(text, i)
         if m:
             close = "]" + m.group(1) + "]"
             j = text.find(close, i)
