@@ -21,10 +21,15 @@
 --  truong nao ca. Sat thuong goc cua Warcraft van con, nhung o bac 10
 --  voi Linh Can bac 20 thi no la sai so lam tron.
 --
---  TAM LOAI HIEU UNG, khai bao bang truong 'fx' trong CFG.SKILLS:
---    line chain heal buff  chu dong, bat qua su kien cast
---    cleave burn reduce    bi dong, bat qua su kien sat thuong
---    stat                  bi dong, tinh lai khi bac ky nang doi
+--  CHIN LOAI HIEU UNG, khai bao bang truong 'fx' trong CFG.SKILLS:
+--    line chain heal hot buff  chu dong, bat qua su kien cast
+--    cleave burn reduce        bi dong, bat qua su kien sat thuong
+--    stat                      bi dong, tinh lai khi bac ky nang doi
+--
+--  'heal' hoi MOT CUC ngay; 'hot' rai deu trong thoi luong cua chinh
+--  ability. Hai cai khac nhau that, va A010 tung dung nham 'heal' --
+--  nguoi lam map dat 6 giay trong World Editor ma trong game no hoi
+--  tuc thi, nhin ra nhu loi.
 --
 --  ('aura' KHONG con la hieu ung o day -- con so cua no nam trong chinh
 --  ability va Warcraft tu cong. No chi con la nhan de bang phim R loc.)
@@ -56,6 +61,7 @@ local busy = false
 -- Bao THIEU BlzGetEventDamageType dung mot lan, khong phai moi don --
 -- mot dong moi cu danh la file vet khong con doc duoc.
 local dmgTypeWarned = false
+local hotWarned     = false
 
 -- ---------- Tra cuu ----------
 
@@ -263,21 +269,99 @@ local function burnApply(pid, tgt, total)
   end
 end
 
-local function burnTick()
-  if S.burn == nil then return end
+-- ---------- "hot": hoi mau keo dai (A010, Hvwd) ----------
+--
+-- BANG RIENG voi burn chu khong chung mot bang. Khoa la GetHandleId
+-- cua muc tieu; burn bam vao QUAI con hot bam vao HERO nen chung
+-- "khong bao gio" dam nhau -- nhung do la mot gia dinh ve luat choi,
+-- khong phai ve ma nguon. Hai bang thi khong ai phai nho gia dinh do.
+--
+-- Dung chung MOT dong ho voi burn, vi cung mot nhip.
+local function hotApply(pid, tgt, total, secs)
+  if total < 1.0 or tgt == nil or not API.alive(tgt) then return end
+  if S.hot == nil then S.hot = {} end
+
+  local step  = CFG.FX_BURN_TICK or 0.5
+  local ticks = math.floor(secs / step + 0.5)
+  if ticks < 1 then ticks = 1 end
+
+  S.hot[GetHandleId(tgt)] = { u = tgt, per = total / ticks, left = secs }
+  API.fx(CFG.FX_HIT_HEAL, GetUnitX(tgt), GetUnitY(tgt))
+end
+
+-- Doc mot truong REAL cua ability bang MA TRUONG 4 ky tu.
+--
+-- Ma truong chu khong ten hang so, va day la do chu khong phai so
+-- thich: ban 1.31.1 THIEU rat nhieu ABILITY_RLF_* -- file vet ghi ro
+-- OCL1, OCL2, CR21 deu khong co. ConvertAbilityRealLevelField nhan
+-- FourCC nen di duong vong duoc; day cung la duong A003 da phai di.
+local function abilReal(pid, abilId, code, level)
+  local h = (S.p[pid] or {}).hero
+  if h == nil or BlzGetUnitAbility == nil
+     or BlzGetAbilityRealLevelField == nil then return nil end
+  local conv = _G["ConvertAbilityRealLevelField"]
+  if conv == nil then return nil end
+  local ab = BlzGetUnitAbility(h, abilId)
+  if ab == nil then return nil end
+  return BlzGetAbilityRealLevelField(ab, conv(FourCC(code)), (level or 1) - 1)
+end
+
+-- "hot": hoi mau RAI DEU, khong phai mot cuc.
+--
+-- Thoi luong lay tu CHINH ability ('adur' -- doc duoc trong w3obj.py
+-- dump, 6.0 cho A010). World Editor giu con so do; khai them mot
+-- CFG.FX_HOT_TIME co dinh la hai noi cung khai mot thu, va mot ngay se
+-- chi sua mot noi. CFG chi la duong lui khi doc khong ra.
+local function fxHot(pid, u, sk, lv)
+  local t = (GetSpellTargetUnit ~= nil) and GetSpellTargetUnit() or nil
+  if t == nil then t = u end
+
+  local secs = abilReal(pid, sk.id, sk.durField or "adur", lv)
+  if secs == nil or secs <= 0.0 then
+    secs = CFG.FX_HOT_TIME or 6.0
+    if not hotWarned then
+      hotWarned = true
+      API.trace("effect: khong doc duoc thoi luong '" ..
+                tostring(sk.durField or "adur") .. "' cua " ..
+                API.idToStr(sk.id) .. " -- lui ve " .. secs .. "s")
+    end
+  end
+  hotApply(pid, t, API.skillDamage(u, API.skillFactor(sk, lv)), secs)
+end
+
+-- Mot nhip cho CA HAI bang. Gan nil cho chinh khoa dang duyet la hop
+-- le trong Lua; them khoa moi thi khong, va vong nay khong them.
+local function overTick()
   local step = CFG.FX_BURN_TICK or 0.5
-  -- Gan nil cho CHINH khoa dang duyet la hop le trong Lua; them khoa
-  -- moi thi khong, va vong nay khong them.
-  for k, b in pairs(S.burn) do
-    local d   = S.p[b.pid]
-    local src = d and d.hero or nil
-    if b.u == nil or not API.alive(b.u) or b.left <= 0.0
-       or src == nil or not API.alive(src) then
-      S.burn[k] = nil
-    else
-      hit(src, b.u, b.per, nil)
-      b.left = b.left - step
-      if b.left <= 0.0 then S.burn[k] = nil end
+
+  if S.burn ~= nil then
+    for k, b in pairs(S.burn) do
+      local d   = S.p[b.pid]
+      local src = d and d.hero or nil
+      if b.u == nil or not API.alive(b.u) or b.left <= 0.0
+         or src == nil or not API.alive(src) then
+        S.burn[k] = nil
+      else
+        hit(src, b.u, b.per, nil)
+        b.left = b.left - step
+        if b.left <= 0.0 then S.burn[k] = nil end
+      end
+    end
+  end
+
+  if S.hot ~= nil then
+    for k, b in pairs(S.hot) do
+      if b.u == nil or not API.alive(b.u) or b.left <= 0.0 then
+        S.hot[k] = nil
+      else
+        -- Khong di qua hit(): day la HOI MAU, va no phai dung o mau
+        -- toi da chu khong tran qua.
+        local hp = GetUnitState(b.u, UNIT_STATE_LIFE) + b.per
+        local mx = GetUnitState(b.u, UNIT_STATE_MAX_LIFE)
+        SetUnitState(b.u, UNIT_STATE_LIFE, (hp > mx) and mx or hp)
+        b.left = b.left - step
+        if b.left <= 0.0 then S.hot[k] = nil end
+      end
     end
   end
 end
@@ -337,7 +421,8 @@ local function onOrder()
   S.p[pid].burnOn = (o == BURN_ON)
 end
 
-local FX_CAST = { line = fxLine, chain = fxChain, heal = fxHeal }
+local FX_CAST = { line = fxLine, chain = fxChain, heal = fxHeal,
+                  hot = fxHot }
 
 local function onSpell()
   local u = GetTriggerUnit()
@@ -482,7 +567,7 @@ local function onDamaged()
   -- rieng nao de bi bo lai.
   --
   -- 'tp == nil' de khong dot dong doi neu mai nay map co sat thuong
-  -- cheo phe. burnTick() goi hit(), ma hit() bat 'busy' nen lop dot
+  -- cheo phe. overTick() goi hit(), ma hit() bat 'busy' nen lop dot
   -- khong tu de ra lop dot moi.
   if sp ~= nil and tgt ~= nil and tp == nil and burnOn(sp) then
     local sk, lv = skillByFx(sp, "burn")
@@ -651,9 +736,9 @@ local function startSkillFx()
   end
 
   -- MOT dong ho cho moi lop dot cua ca map -- xem burnApply().
-  S.burn = {}
+  S.burn, S.hot = {}, {}
   S.burnTimer = CreateTimer()
-  TimerStart(S.burnTimer, CFG.FX_BURN_TICK or 0.5, true, burnTick)
+  TimerStart(S.burnTimer, CFG.FX_BURN_TICK or 0.5, true, overTick)
 
   API.trace("effect: san sang (cast + damage + burn)")
 end

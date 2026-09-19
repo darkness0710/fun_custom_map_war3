@@ -1563,16 +1563,27 @@ CFG.SKILL_ZERO_BASE = {
   [id('A007')] = { "ABILITY_RLF_DAMAGE_BONUS_HAV3",
                    "ABILITY_RLF_MAGIC_DAMAGE_REDUCTION_HAV4" },
 
-  -- Hvwd. HAI TEN DUOI DAY SUY TU QUY LUAT, CHUA DO.
+  -- Hvwd. BA TEN DUOI DAY DA DO: CHUNG KHONG TON TAI o ban 1.31.1.
   --
-  -- Quy luat doc duoc tu ba dong tren: ma ability AOsh -> truong Osh1 ->
-  -- hang so ABILITY_RLF_<TEN TRUONG>_OSH1. Ap cho AOcl (Chain Lightning)
-  -- ra OCL1/OCL2, cho ACr2 (Rejuvenation) ra CR21.
+  -- File vet, 2026-09-19:
+  --   skill: KHONG co hang so ABILITY_RLF_DAMAGE_OCL1 -- hieu ung goc VAN CHAY
+  --   skill: KHONG co hang so ABILITY_RLF_DAMAGE_REDUCTION_PER_TARGET_OCL2
+  --   skill: KHONG co hang so ABILITY_RLF_HIT_POINTS_GAINED_CR21
   --
-  -- Go sai thi KHONG im lang: zeroField() ghi vet "KHONG co hang so ...
-  -- hieu ung goc VAN CHAY". Hau qua cung nhe -- sat thuong goc la so
-  -- PHANG nen no chi cong them mot it o nhung wave dau roi teo dan.
-  -- Nhung van phai sua: do dung bang "-nat spell" roi thay ten o day.
+  -- Toi suy chung tu quy luat cua ba dong tren (AOsh -> Osh1 ->
+  -- ABILITY_RLF_<TEN>_OSH1) va suy SAI ca ba. Giu lai chu khong xoa: cai
+  -- ten sai van la mot dong ghi vet moi van, tuc mot loi nhac rang cho
+  -- nay chua xong.
+  --
+  -- HAU QUA DANG CHIU: hieu ung goc van chay chong len Lua. Voi A008 la
+  -- mot it sat thuong phang; voi A010 la mot lop hoi mau 6 giay nua.
+  -- Ca hai deu la so PHANG nen teo dan (ADR 0024) -- kho chiu o wave
+  -- dau, vo nghia tu canh gioi 5.
+  --
+  -- CACH SUA THAT: khong phai doan tiep ten hang so, ma la doc MA
+  -- TRUONG 4 ky tu roi di qua ConvertAbilityRealLevelField -- dung
+  -- duong ma A003 da phai di va fxHot() dang dung cho 'adur'. Can
+  -- "-nat spell" trong game de lay ma truong that.
   [id('A008')] = { "ABILITY_RLF_DAMAGE_OCL1",
                    "ABILITY_RLF_DAMAGE_REDUCTION_PER_TARGET_OCL2" },
   [id('A010')] = { "ABILITY_RLF_HIT_POINTS_GAINED_CR21" },
@@ -1827,9 +1838,21 @@ CFG.SKILLS[id('H002')] = {
   --
   -- 2.00 chu khong 2.20 nhu Ho The cua Hart: xa thu khong phai nguoi di
   -- hoi mau, va Hkal moi la ho tro that su.
-  { id = id('A010'), baseAbil = "ACr2", vi = "Hoi Xuan", en = "Rejuvenation", kind = "active", factor = 2.00, cd = 12.0, mana = 40, fx = "heal", hotkey = "W",
-    desc_vi = "Hoi %s mau cho ban than hoac dong doi.",
-    desc_en = "Heals %s to yourself or an ally." },
+  -- 'hot' chu KHONG 'heal'. Hai cai khac nhau that:
+  --   heal  hoi MOT CUC ngay       (Ho The cua Hart)
+  --   hot   rai deu trong 'adur'   (Hoi Xuan)
+  --
+  -- LOI DA SHIP: ban dau dung 'heal' cho tien, vi fxHeal() co san.
+  -- Nguoi lam map dat 6 giay trong World Editor ma trong game no hoi
+  -- tuc thi -- nhin ra nhu loi, va con so 6 giay thanh vo nghia.
+  --
+  -- 'durField' noi cho fxHot() biet DOC thoi luong o dau, chu khong
+  -- khai thoi luong. Khai tuong minh du "adur" da la mac dinh: doc mot
+  -- dong nay la biet ngay 6 giay den tu World Editor, khong phai di
+  -- tim trong code.
+  { id = id('A010'), baseAbil = "ACr2", vi = "Hoi Xuan", en = "Rejuvenation", kind = "active", factor = 2.00, cd = 12.0, mana = 40, fx = "hot", hotkey = "W", durField = "adur",
+    desc_vi = "Hoi %s mau, rai deu trong thoi gian hieu luc.",
+    desc_en = "Restores %s health, spread over the duration." },
   -- Trueshot Aura: WE giu so, va o day do la DUNG -- no von la PHAN
   -- TRAM sat thuong tam xa, nen tu bam theo hero, khong teo.
   --
@@ -1915,6 +1938,16 @@ CFG.FX_BURN_TICK = 0.5     -- giay giua hai nhip dot
 -- thi toc danh tu nhan voi chinh no -- hero cuoi van danh rat nhanh se
 -- co hang chuc lop dot chong len nhau.
 CFG.FX_BURN_STACK = false
+
+-- ---------- "hot": hoi mau keo dai (A010, Hvwd) ----------
+--
+-- DUONG LUI, khong phai nguon su that. Thoi luong that lay tu CHINH
+-- ability -- truong 'adur' trong war3map.w3a, hien la 6.0 va do World
+-- Editor dat. Khai mot con so co dinh o day roi dung no la hai noi
+-- cung khai mot thu, va mot ngay se chi sua mot noi.
+--
+-- Chi dung khi doc khong ra, va luc do fxHot() ghi vet mot lan.
+CFG.FX_HOT_TIME = 6.0
 
 -- HAI DUONG DAN NAY LA DUONG DA CHUNG MINH, khong phai duong dep nhat.
 --

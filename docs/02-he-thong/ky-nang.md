@@ -233,13 +233,54 @@ chiều đều khác `0` thì lấy, và ghi vết kết quả.
 Đo không ra thì **luôn bật**, không phải luôn tắt: một kỹ năng im lặng không làm
 gì là kiểu hỏng tệ nhất ([ADR 0012](../05-quyet-dinh/0012-mot-kenh-dong-bo-duy-nhat.md)).
 
+### `heal` và `hot` là hai thứ khác nhau — A010 từng dùng nhầm
+
+| `fx` | Hồi thế nào | Dùng ở |
+|---|---|---|
+| `heal` | **một cục ngay** | A002 Hộ Thể *(Hart)* |
+| `hot` | **rải đều** trong thời lượng của chính ability | A010 Hồi Xuân |
+
+**Lỗi đã ship:** A010 ban đầu dùng `heal` cho tiện vì `fxHeal()` có sẵn. Người
+làm map đặt **6 giây** trong World Editor, trong game nó hồi tức thì — nhìn ra
+như lỗi, và con số 6 giây thành vô nghĩa.
+
+`fxHot()` **đọc thời lượng từ chính ability**, trường `adur`, chứ không khai một
+`CFG.FX_HOT_TIME` cố định. World Editor giữ con số đó, một nơi duy nhất; khoá
+`CFG` chỉ là đường lui và khi phải dùng tới thì nó ghi vết.
+
+Dòng `durField = "adur"` khai tường minh trong `CFG.SKILLS` dù `"adur"` đã là
+mặc định — đọc một dòng đó là biết ngay 6 giây đến từ đâu.
+
+### Ba hằng số đã đo: chúng KHÔNG tồn tại
+
+File vết 2026-09-19:
+
+```
+skill: KHONG co hang so ABILITY_RLF_DAMAGE_OCL1 -- hieu ung goc VAN CHAY
+skill: KHONG co hang so ABILITY_RLF_DAMAGE_REDUCTION_PER_TARGET_OCL2
+skill: KHONG co hang so ABILITY_RLF_HIT_POINTS_GAINED_CR21
+```
+
+Cả ba suy từ quy luật `AOsh → Osh1 → ABILITY_RLF_<TÊN>_OSH1`, và **sai cả ba**.
+Bản 1.31.1 thiếu rất nhiều `ABILITY_RLF_*` — đúng chuyện A003 đã gặp.
+
+**Hậu quả đang chịu:** hiệu ứng gốc vẫn chạy chồng lên Lua. Với `A008` là một ít
+sát thương phẳng; với `A010` là thêm một lớp hồi máu nữa. Cả hai là số **phẳng**
+nên teo dần ([ADR 0024](../05-quyet-dinh/0024-cong-thi-leo-nhan-thi-phang.md)) —
+khó chịu ở wave đầu, vô nghĩa từ cảnh giới 5.
+
+**Cách sửa thật không phải đoán tiếp tên hằng số**, mà là đọc **mã trường 4 ký
+tự** rồi đi qua `ConvertAbilityRealLevelField` — đúng đường A003 đã đi và
+`fxHot()` đang dùng cho `adur`. Cần `-nat spell` trong game để lấy mã trường
+thật.
+
+> Giữ ba tên sai trong `SKILL_ZERO_BASE` chứ không xoá: mỗi ván chúng đẻ ra một
+> dòng ghi vết, tức một lời nhắc rằng chỗ này chưa xong.
+
 ### Hai thứ còn phải đo
 
-- **Tên hằng số trong `CFG.SKILL_ZERO_BASE`** cho `A008` và `A010`, và
-  `fromAbil`/`fromField` của `A009`, đều **suy từ quy luật, chưa đo**. Quy luật:
-  ability `AOsh` → trường `Osh1` → hằng số `ABILITY_RLF_<TÊN>_OSH1`. Gõ sai thì
-  **không im lặng** — `zeroField()` ghi vết *"KHÔNG có hằng số … hiệu ứng gốc VẪN
-  CHẠY"*. Đo lại bằng `-nat spell`.
+- **Mã trường thật** cho `A008`/`A010` *(xem mục trên — ba hằng số đã đo và
+  không tồn tại)* và `fromAbil`/`fromField` của `A009`. Đo bằng `-nat spell`.
 - **Hai đường dẫn model** `FX_HIT_BURN` / `FX_HIT_CHAIN` đang mượn lại model của
   `line`/`cleave`. Trông không đúng lắm, nhưng một đường dẫn **sai** thì không vẽ
   ra gì mà vẫn "thành công" — cùng lớp lỗi với `AddWeatherEffect`. Đổi sang model
