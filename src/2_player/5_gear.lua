@@ -49,6 +49,12 @@ local function levelNameOf(c)
   return (t ~= nil) and API.pick(t) or tostring(c)
 end
 
+-- Ten canh gioi, cho dong "can canh gioi X" cua o Canh.
+local function realmNameOf(r)
+  local t = CFG.REALMS[r]
+  return (t ~= nil) and API.pick(t) or tostring(r)
+end
+
 local function tierNameOf(r)
   local t = CFG.REALMS[r]
   return (t ~= nil) and API.pick(t) or tostring(r)
@@ -558,6 +564,52 @@ local function tabItems(pid)
 
     out[i] = it
   end
+
+  -- ----- HAI O KHONG PHAI TRANG BI, o cuoi danh sach -----
+  --
+  -- Di qua dung may moc o luoi (icon + nhan + nut) thay vi ve khung
+  -- rieng. Chi so cua chung la #CFG.GEAR+1 va +2, khop voi hai o
+  -- { 1, 5 } va { 3, 5 } them vao CFG.GEAR_SLOTS.
+  --
+  -- tabItemAction() dinh tuyen chung sang OP_WING / OP_PET.
+  local n = itemCount()
+
+  local wn = (API.wingOwned ~= nil) and API.wingOwned(pid) or 0
+  local wl = (API.wingLabel ~= nil) and API.wingLabel(pid) or nil
+  local wi = { icon = CFG.GEAR_WING_ICON, name = API.t("gear_wing") }
+  if wn <= 0 then
+    -- Chua co bo nao: noi RO can canh gioi may, khong de o trong.
+    local need = (API.wingNext ~= nil) and API.wingNext(pid) or nil
+    wi.status = CFG.C_GREY .. API.t("st_locked") .. CFG.C_END
+    wi.desc   = (need ~= nil) and API.t("wing_need", realmNameOf(need)) or ""
+    wi.btn    = API.t("wing_need_short")
+    wi.btnOn  = false
+    wi.btnWhy = "locked"
+  else
+    wi.status = CFG.C_GREY .. wn .. "/" .. #(CFG.WINGS or {}) .. CFG.C_END
+    wi.desc   = CFG.C_JADE .. (wl or "--") .. CFG.C_END
+    wi.btn    = API.t("btn_swap")
+    wi.btnOn  = (wn > 1)
+  end
+  out[n + 1] = wi
+
+  local pn = (API.petOwned ~= nil) and API.petOwned(pid) or 0
+  local pl = (API.petLabel ~= nil) and API.petLabel(pid) or nil
+  local pi = { icon = CFG.GEAR_PET_ICON, name = API.t("gear_pet") }
+  if pn <= 0 then
+    pi.status = CFG.C_GREY .. API.t("st_locked") .. CFG.C_END
+    pi.desc   = API.t("pet_need")
+    pi.btn    = API.t("pet_need_short")
+    pi.btnOn  = false
+    pi.btnWhy = "locked"
+  else
+    pi.status = CFG.C_GREY .. pn .. "/" .. #(CFG.SIDE_QUESTS or {}) .. CFG.C_END
+    pi.desc   = CFG.C_JADE .. (pl or "--") .. CFG.C_END
+    pi.btn    = API.t("btn_swap")
+    pi.btnOn  = (pn > 1)
+  end
+  out[n + 2] = pi
+
   return out
 end
 
@@ -577,6 +629,11 @@ local function tabToggleAction(pid)
 end
 
 local function tabItemAction(pid, i)
+  -- Hai o cuoi khong phai trang bi -- xem tabItems().
+  local n = itemCount()
+  if i == n + 1 then API.syncSend(pid, CFG.OP_WING, 0); return end
+  if i == n + 2 then API.syncSend(pid, CFG.OP_PET,  0); return end
+
   if CFG.GEAR[i] == nil then return end
   if canRefine(pid, i) then
     API.syncSend(pid, isAllIn(pid) and CFG.OP_GEAR_UP
@@ -637,10 +694,11 @@ local function startGear()
   })
   -- Lech so o va so mon thi bang se VE THIEU mot mon ma khong bao gi --
   -- dung kieu sai im lang cua ADR 0012. Bat o day, luc vao map.
+  -- +2 cho hai o Canh va Thanh Thu o hang 5 (xem tabItems).
   local nslot = (CFG.GEAR_SLOTS ~= nil) and #CFG.GEAR_SLOTS or 0
-  if nslot ~= itemCount() then
-    API.trace("gear: LECH -- " .. itemCount() .. " mon nhung " .. nslot ..
-              " o trong CFG.GEAR_SLOTS; bang se ve thieu")
+  if nslot ~= itemCount() + 2 then
+    API.trace("gear: LECH -- " .. itemCount() .. " mon + 2 o rieng nhung " ..
+              nslot .. " o trong CFG.GEAR_SLOTS; bang se ve thieu")
   end
 
   API.syncOn(CFG.OP_GEAR_UP,   refine)

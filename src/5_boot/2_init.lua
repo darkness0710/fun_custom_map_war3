@@ -142,6 +142,7 @@ local function bootstrap()
   API.startFortuneFrame()
   API.startGameFrame()      -- bang tran dau, phim R
   API.startCamera()         -- lenh -zoom
+  API.startWing()           -- canh theo moc canh gioi
   API.startQuest()          -- trang huong dan phim tat o F9
   API.startSkillPicking()
   API.startPicking()

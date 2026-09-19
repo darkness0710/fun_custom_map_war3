@@ -43,6 +43,14 @@ local function groups()
     -- A003 doi sang Endurance Aura, bang so nam tron trong war3map.w3a.
     -- Bang ky nang muon HIEN so that thi phai doc bang hang so nay --
     -- ten do "-nat oae" xac nhan, khong doan.
+    { name = "Canh gan vao hero (-wing)", entries = {
+      { "AddSpecialEffectTarget", AddSpecialEffectTarget,
+        "khong deo duoc canh" },
+      { "BlzSetSpecialEffectScale", BlzSetSpecialEffectScale,
+        "khong chinh duoc ti le canh" },
+      { "DestroyEffect", DestroyEffect, "" },
+    } },
+
     { name = "Canh cheat (13_cheatguard)", entries = {
       { "BlzIsUnitInvulnerable", BlzIsUnitInvulnerable,
         "khong bat duoc whosyourdaddy -- so cai tien van chay" },

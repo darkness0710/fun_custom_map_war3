@@ -138,6 +138,53 @@ end
 
 -- ---------- Khoi dong ----------
 
+-- Doi sang con KE TIEP trong so nhung con da thu phuc. Vong lai.
+--
+-- Chay tu syncOn nen co tren MOI may: pet la unit that, khong phai thu
+-- cuc bo -- tao tren mot may thi chi may do thay.
+local function cycle(pid)
+  local d = S.p[pid]
+  local list = CFG.SIDE_QUESTS or {}
+  if d == nil or d.petOwn == nil or #list == 0 then return end
+
+  -- Tu con DANG deo tro di, tim con tiep theo da thu phuc.
+  local from = 0
+  for i = 1, #list do
+    if list[i].unit == d.petUnit then from = i end
+  end
+  for k = 1, #list do
+    local i = ((from - 1 + k) % #list) + 1
+    if d.petOwn[i] then
+      d.petUnit = list[i].unit
+      spawn(pid)
+      API.panelRefresh(pid)
+      return
+    end
+  end
+end
+
+-- Ten con dang di theo, cho the Trang Bi. nil = chua co con nao.
+local function label(pid)
+  local d = S.p[pid]
+  if d == nil or d.petUnit == nil then return nil end
+  for i = 1, #(CFG.SIDE_QUESTS or {}) do
+    if CFG.SIDE_QUESTS[i].unit == d.petUnit then
+      return API.pick(CFG.SIDE_QUESTS[i])
+    end
+  end
+  return nil
+end
+
+local function ownedCount(pid)
+  local d = S.p[pid]
+  if d == nil or d.petOwn == nil then return 0 end
+  local n = 0
+  for i = 1, #(CFG.SIDE_QUESTS or {}) do
+    if d.petOwn[i] then n = n + 1 end
+  end
+  return n
+end
+
 local function startPet()
   if CFG.PET == nil then
     API.trace("pet: CFG.PET khong co -- bo qua")
@@ -162,9 +209,13 @@ local function startPet()
   end
   S.petTimer = CreateTimer()
   TimerStart(S.petTimer, CFG.PET.tick, true, follow)
+  API.syncOn(CFG.OP_PET, function(pid) cycle(pid) end)
   API.trace("pet: san sang, nhip " .. CFG.PET.tick .. "s")
 end
 
+API.petCycle  = cycle
+API.petLabel  = label
+API.petOwned  = ownedCount
 API.petSpawn  = spawn
 API.petRemove = remove
 API.startPet  = startPet

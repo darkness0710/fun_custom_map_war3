@@ -219,6 +219,8 @@ local function breakthrough(pid)
   -- Canh gioi vua tang -- co the vua mo mot pho ban. Kiem o day chu
   -- khong bat nguoi choi tu nho moc nao la moc nao.
   if API.sideQuestCheck ~= nil then API.sideQuestCheck(pid) end
+  -- Canh gioi vua tang -- co the vua cham mot moc canh.
+  if API.wingCheck ~= nil then API.wingCheck(pid) end
 end
 
 -- Nut "Dot pha" tren bang: KHONG doi trang thai o day. Su kien bam frame

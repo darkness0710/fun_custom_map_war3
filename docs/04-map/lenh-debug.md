@@ -108,6 +108,8 @@ Cần `CFG.DEV_COMMANDS = true`.
 | `-wave <số>` | Nhảy thẳng tới stage 1–100 | `-wave 50` → boss Độ Kiếp |
 | `-mod <số>` | Ép **tu chính** số N và bật kiểu trời của nó ngay | `-mod` *(không số)* liệt kê cả 5 |
 | `-sky <số>` | Bật **một mã thời tiết** để nhìn — cách duy nhất kiểm được mã | `-sky off` tắt hết |
+| `-wing <số>` | Đeo **thử** một bộ cánh, bỏ qua mốc cảnh giới | `-wing` liệt kê 6 bộ kèm cảnh giới + điểm gắn · `-wing off` gỡ |
+| `-wing <số> <điểm>` | Đeo ở **điểm gắn** chỉ định — cách duy nhất biết Hart có điểm đó không | `-wing 3 origin` |
 | `-vang <số>` | Thêm **Vàng** *(thanh tài nguyên)* | `-vang 5000` |
 | `-go <số>` | Thêm **Gỗ** *(thanh tài nguyên)* | `-go 100` |
 | `-lc <số>` | Nhảy tới bậc Tu Vi 1–20 | `-lc 15` → Đại La |

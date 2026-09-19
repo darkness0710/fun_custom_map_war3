@@ -1,0 +1,147 @@
+# CANH GAN VAO HERO -- 6 bo
+#
+# Goi "Ethereal Wings" cua Xecutor_ShamanX
+#   hiveworkshop.com/threads/373249
+#   Ban goc HTML giu o Ethereal/_source/readme.html
+#
+#   Blizzard  Darkness  Divine  Holy  Storm  Sun
+#   14-16 KB moi bo. Animation: Birth, Death, Stand.
+#
+# DIEM GAN: "origin" -- DA DO, khong phai doan.
+#
+# ============================================================
+#  WARCRAFT CO HO TRO GAN CANH KHONG?  -- CO
+# ============================================================
+#
+#   local e = AddSpecialEffectTarget(path, unit, "origin")
+#   ...
+#   DestroyEffect(e)          -- KHONG quen, neu khong ro ri handle
+#
+# Ten diem gan thong dung:
+#   origin  overhead  head  chest  hand left  hand right
+#   foot left  foot right  weapon  sprite first .. sprite sixth
+#
+# DIEM GAN LA THUOC TINH CUA MODEL, KHONG PHAI CUA MAP. CFG.WING_ATTACH
+# chi la mac dinh; tung bo ghi de duoc bang truong 'attach'. Hien ca
+# sau bo cung mot goi nen khong ai can ghi de.
+#
+# NUA SO DIEM GAN CO DAU CACH ("hand left", "foot right", "sprite
+# first"). Bo phan tich lenh "-wing" ban dau dung "%S*" nen
+# "-wing 7 foot left" chi bat duoc "foot" -- mot diem khong ton tai, va
+# Warcraft im lang. Tuc nua bang khong go duoc va tuong la deu hong.
+# Da sua: lay TRON phan con lai cua dong lam ten diem.
+#
+# ============================================================
+#  BA CAI BAY IM LANG
+# ============================================================
+#
+# 1. DIEM GAN KHONG CO THI KHONG BAO LOI. Khong co native nao hoi duoc
+#    "diem nay co ton tai khong". Gan sai thi canh roi xuong goc unit,
+#    hoac khong hien.
+#
+# 2. THIEU TEXTURE THI MODEL KHONG VE RA GI -- va van "thanh cong".
+#    AddSpecialEffectTarget VAN TRA VE HANDLE.
+#
+# 3. KHONG DESTROY THI RO RI. Mot van 100 stage ma doi canh nhieu lan
+#    se de lai hang tram effect. Giu handle trong S.p[pid].
+#
+# ============================================================
+#  TEXTURE -- VA MOT CAU TOI DA VIET SAI
+# ============================================================
+#
+# Ban dau toi viet "moi texture deu la duong dan co san cua Warcraft,
+# chi can import .mdx". SAI. Toi kiem rang duong dan TRONG GIONG duong
+# dan goc (bat dau bang "Textures\"), chu chua he kiem chung CO TON TAI.
+#
+#   "Trong dung" khong phai "la dung".
+#
+# Cung lop loi voi AddWeatherEffect tra ve handle cho ma rac. Khong co
+# cach nao kiem tu ngoai -- chi vao game NHIN moi biet.
+#
+# Texture cua 6 bo hien tai (ca 6 deu HIEN DUOC, tuc deu co that):
+#
+#   Textures\Flare.blp             ca 6 bo
+#   Textures\GenericGlow1.blp      Blizzard Divine Holy Sun
+#   Textures\RibbonNE1_White.blp   Blizzard Divine Holy Sun
+#   Textures\Clouds8x8.blp         Storm
+#   Textures\Clouds8x8Fade.blp     Blizzard
+#   Textures\Clouds8x8Mod.blp      Darkness
+#   Textures\snowflake2.blp        Blizzard
+#
+# Doc lai bang (ky thuat ghi o models/units/ChiJi/note.txt):
+#   python -c "import re,io;print(re.findall(rb'[ -~]{3,120}?\.blp',io.open(F,'rb').read()))"
+#
+# ============================================================
+#  GOI "Cosmic Elven Wings" DA BO HAN -- 2026-09-19
+# ============================================================
+#
+# Vinz, hiveworkshop 315167. Bo ca 6 bo lan file nguon.
+#
+# KHONG phai vi chat luong: ba bo Chaos/Cosmic/Divine chay tot. Ly do
+# la GOC MODEL khac nhau --
+#
+#   CosmicElven  gan "chest"   moi nam dung lung
+#   Ethereal     gan "chest"   thi VOT LEN TREN DAU, phai gan "origin"
+#
+# Giu ca hai la giu hai quy uoc gan khac nhau trong mot bang. Cong them
+# hai bo Nature/Void cua goi do khong bao gio hien duoc (duoi), nen bo
+# han goi la gon hon.
+#
+# Goi do con nang gap bay lan: 113 KB / 61 KB moi bo, so voi 14-16 KB.
+# Moi bo co hai ban, thuong va "Borderless" (khong vien, nhe mot nua,
+# cung texture, khac hinh hoc).
+#
+# Tien to "eth_" trong duong dan la DI SAN cua thoi con hai goi: ca hai
+# deu co mot bo ten "Divine" nen phai tach. Giu nguyen vi doi ten duong
+# dan la sua ba cho (CFG, war3map.imp, file tren dia) doi lay khong gi.
+#
+# ============================================================
+#  HAI BO Nature va Void -- KHONG BAO GIO HIEN DUOC
+# ============================================================
+#
+# Thuoc goi CosmicElven. Da loai tru gan het nguyen nhan truoc khi bo,
+# ghi lai de khong ai do lai tu dau:
+#
+#   diem gan        KHONG phai. Ba bo con lai cung goi dung "chest" va
+#                   nam dung lung.
+#   dinh dang       KHONG. Ca nam VERS=800, cung danh sach chunk
+#                   VERS MODL SEQS GLBS MTLS TEXS TXAN GEOS GEOA
+#                   BONE HELP ATCH PIVT PRE2.
+#   TEXS khai la    KHONG. Ca nam id=0, duong dan tuong minh, khong
+#                   dung replaceable texture id.
+#   khong vao MPQ   KHONG. w3mpq.py has xac nhan co trong archive;
+#                   hash table 512 o cho 248 file, khong dung do.
+#   lenh -wing hong KHONG. File vet ghi AddSpecialEffectTarget TRA VE
+#                   handle -- model nap duoc, chi khong ve ra gi.
+#   texture         KHONG. Da VA duong dan trong chinh .mdx, doi
+#                   'Textures\white.blp' (chi hai bo nay can) sang
+#                   'Textures\star5tga.blp' ma ba bo kia dung tot.
+#                   VAN khong hien.
+#
+# Con lai: hinh hoc hoac vat lieu ben trong model (GEOS/MTLS). Dao vao
+# do cho mot model tai ve khong dang bo thoi gian.
+#
+# ============================================================
+#  CACH THU
+# ============================================================
+#
+#   -wing              liet ke, kem diem gan, danh dau bo dang deo
+#   -wing 3            deo bo so 3
+#   -wing 3 chest      deo o diem gan khac
+#   -wing off          go ra
+#
+#   1 blizzard   2 darkness   3 divine
+#   4 holy       5 storm      6 sun
+#
+# ============================================================
+#  CHUA CHOT -- DANG BAN
+# ============================================================
+#
+# Canh dung de LAM GI van chua quyet. Vai huong da nhac toi:
+#   - moc canh gioi (Hoa Than / Chan Tien / Tien De doi canh)
+#   - phan thuong Thanh Thu
+#   - thuan trang tri, nguoi choi tu chon
+#
+# Hien la THUAN TRANG TRI: da import va co lenh dev "-wing", nhung
+# chua gan vao he nao. Code o src/4_ui/9_wing.lua.
+# Quy trinh import: docs/06-object-editor/import-model.md

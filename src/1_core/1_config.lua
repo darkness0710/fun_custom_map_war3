@@ -33,6 +33,102 @@ CFG.DEBUG   = true     -- bat: in so do luoi, ping minimap, bao cao chi tiet
 
 -- Lenh "-debug" day ca bon dong tien len con so nay. Chi co khi
 -- CFG.DEBUG bat. De thu mot he o bac cao ma khong phai cay ca van.
+-- ---------- Canh gan vao hero ----------
+--
+-- THUAN TRANG TRI (2026-09-19). Chua gan vao he nao -- chua thuong,
+-- chua moc canh gioi, chua ban. Co lenh "-wing" de nhin thu.
+--
+-- Nguon: "Cosmic Elven Wings" cua Vinz, hiveworkshop 315167.
+-- Xem models/wings/note.txt.
+--
+-- KHONG PHAI IMPORT TEXTURE NAO: da doc chunk texture ca 10 file, moi
+-- duong dan deu la texture CO SAN cua Warcraft. Chi .mdx phai import.
+--
+-- 'b' = ban Borderless (khong vien): 61 KB thay vi 113 KB, cung bo
+-- animation, khac o hinh hoc.
+-- Goi "Ethereal Wings" cua Xecutor_ShamanX, hiveworkshop 373249.
+-- Xem models/wings/note.txt.
+--
+-- 14-16 KB moi bo. Animation: Birth, Death, Stand.
+--
+-- Tien to "eth_" trong duong dan la di san cua thoi con goi thu hai
+-- (CosmicElven, da bo): hai goi deu co mot bo ten "Divine" nen phai
+-- tach. Giu nguyen vi doi ten duong dan trong map la sua ba cho
+-- (CFG, war3map.imp, file tren dia) doi lay khong gi ca.
+CFG.WINGS = {
+  -- XEP THEO DO CHOI TANG DAN, va 'rank' la canh gioi mo khoa.
+  --
+  -- Hinh dang: HAI cai nhanh trong coi Pham, roi MOI COI mot cai, roi
+  -- dinh. Khoang cach 10 -> 10 -> 25 -> 25 -> 20 stage: dau van don
+  -- dap, cuoi van thua.
+  --
+  --   canh gioi 2   stage 6    ngay sau boss dau tien
+  --   canh gioi 4   stage 16   van trong coi Pham
+  --   canh gioi 6   stage 26   vao coi YEU   -- quai doi mau
+  --   canh gioi 11  stage 51   vao coi TIEN
+  --   canh gioi 16  stage 76   vao coi THAN
+  --   canh gioi 20  stage 96   dinh
+  --
+  -- Ba moc giua trung ranh gioi bon coi la CO Y: do la luc MOB_UNIT
+  -- doi, quai nhin khac han. Chuong moi cua map da co dau hieu thi
+  -- giac san, gan canh vao do lam no nang them.
+  --
+  -- U MINH dung thu hai du nhin hoanh trang nhat (sai rong nhat). Ly
+  -- do: nen map toi, canh den doc rat yeu o tam zoom 2000. No an tuong
+  -- luc dung ngam, nhung giua tran thi nhat hon Thanh Quang va Thai
+  -- Duong nhieu. Cam giac "canh minh xin dan" phai thang su hop chu de.
+  { code = "eth_storm",    rank =  2, vi = "Loi Dinh",    en = "Storm",
+    path = [[wings\eth_storm.mdx]],    attach = "origin" },
+  { code = "eth_darkness", rank =  4, vi = "U Minh",      en = "Darkness",
+    path = [[wings\eth_darkness.mdx]], attach = "origin" },
+  { code = "eth_divine",   rank =  6, vi = "Thien Dao",   en = "Divine",
+    path = [[wings\eth_divine.mdx]],   attach = "origin" },
+  { code = "eth_blizzard", rank = 11, vi = "Bang Nguyet", en = "Blizzard",
+    path = [[wings\eth_blizzard.mdx]], attach = "origin" },
+  { code = "eth_holy",     rank = 16, vi = "Thanh Quang", en = "Holy",
+    path = [[wings\eth_holy.mdx]],     attach = "origin" },
+  { code = "eth_sun",      rank = 20, vi = "Thai Duong",  en = "Sun",
+    path = [[wings\eth_sun.mdx]],      attach = "origin" },
+}
+
+
+-- GOI "Cosmic Elven Wings" (Vinz, hiveworkshop 315167) DA BO HAN
+-- 2026-09-19, ca 6 bo lan file nguon.
+--
+-- Ly do khong phai chat luong: ba bo Chaos/Cosmic/Divine chay tot. Ly
+-- do la GOC MODEL. Goi do gan "chest" moi dung lung; goi Ethereal gan
+-- "chest" thi vot len tren dau, phai gan "origin". Giu ca hai la giu
+-- hai quy uoc gan khac nhau trong mot bang -- va hai bo con lai cua
+-- goi do (Nature, Void) thi khong bao gio hien duoc.
+--
+-- Mot goi, mot diem gan, khong ngoai le. Lich su do do giu o
+-- models/wings/note.txt.
+
+-- Diem gan mac dinh -- DA DO, khong phai doan.
+--
+-- "origin" chu khong "chest": goc cua model Ethereal lech len, nen gan
+-- vao "chest" thi canh vot len tren dau. Thu bang mat qua "-wing N
+-- <diem>", vi khong co ham nao tra loi "diem nay co ton tai khong" --
+-- gan sai thi Warcraft im lang.
+--
+-- Ca sau bo o tren KHAI THANG attach = "origin" chu khong dua vao
+-- mac dinh nay. Nhin thi thua, nhung no lam moi dong TU NOI diem gan
+-- cua no -- va do dung la bai hoc: diem gan la thuoc tinh cua MODEL,
+-- khong phai cua map. Them mot goi khac vao bang la thay ngay no gan
+-- kieu khac.
+--
+-- Mac dinh nay chi con la duong lui cho dong nao quen khai.
+CFG.WING_ATTACH = "origin"
+
+-- Cac diem gan de thu, theo thu tu THAP DAN tren than nguoi.
+--
+-- Canh nam qua CAO thi doi xuong diem thap hon, va nguoc lai -- goc
+-- cua model quyet dinh, khong phai ten diem.
+CFG.WING_POINTS = { "origin", "foot left", "chest", "overhead", "head" }
+
+-- Ti le. nil = de nguyen co model.
+CFG.WING_SCALE = nil
+
 CFG.DEBUG_MONEY = 999999
 
 -- ---------- Canh cheat co san cua Warcraft ----------
@@ -119,6 +215,8 @@ CFG.OP_GEAR_UP_ONE = 14 -- arg = so thu tu mon. Luyen DUNG MOT lan
 CFG.OP_SIDEQUEST = 15  -- arg = so thu tu trong CFG.SIDE_QUESTS
 CFG.OP_GO_HOME   = 16  -- arg = 0. Nut Ve Nha tren bang tran dau
 CFG.OP_HOUSE_UP  = 17  -- arg = so thu tu duong nang cap trong CFG.HOUSE_UP
+CFG.OP_WING      = 18  -- arg = 0. Nut doi canh o the Trang Bi
+CFG.OP_PET       = 19  -- arg = 0. Nut doi Thanh Thu di theo
 -- Opcode KHONG bi chan o mot chu so: unpackMsg dung math.floor(v/10^7)
 -- nen op 10, 11... van giai duoc. Thu bi chan la arg (< 10^5) va seq
 -- (< 100). Xem src/1_core/3_sync.lua.
@@ -2010,6 +2108,18 @@ CFG.GEAR_SLOTS = {
   { 3, 2 },   -- Ao Choang
   { 3, 4 },   -- Giay
   { 1, 4 },   -- Nhan
+
+  -- HANG 5: hai o KHONG phai trang bi.
+  --
+  -- Di qua dung may moc o luoi san co (icon + nhan + nut) thay vi ve
+  -- khung rieng -- them mot loai o moi la them mot cho co the lech
+  -- hang voi tam o kia.
+  --
+  -- Chi so 9 va 10 KHONG tra vao CFG.GEAR. tabItems() cua 5_gear.lua
+  -- noi them hai muc o cuoi, va tabItemAction() dinh tuyen chung sang
+  -- op khac. Xem chu thich o do.
+  { 1, 5 },   -- CANH      (doi bo dang deo)
+  { 3, 5 },   -- THANH THU (doi con di theo)
 }
 
 -- O Pet: CHO DANH SAN, chua co he nao dung toi.
@@ -2068,7 +2178,16 @@ CFG.PET = {
 
 CFG.GEAR_TOGGLE_SLOT = { 2, 4 }
 
-CFG.GEAR_PET_SLOT = { 2, 4 }
+-- O Pet TRANG TRI cu da bo: gio Canh va Thanh Thu la hai O THAT o
+-- hang 5, di qua may moc o luoi nhu tam mon trang bi. Khong con o nao
+-- "ve cho dep ma khong bam duoc".
+CFG.GEAR_PET_SLOT = nil
+
+-- Icon hai o hang 5. Dung chan dung Thanh Thu cho o pet -- anh DA
+-- IMPORT that (w3import.py list thay avatar\B001..B004.blp), khong
+-- phai duong dan BTN* go tu tri nho.
+CFG.GEAR_WING_ICON = [[ReplaceableTextures\CommandButtons\BTNMonsoon.blp]]
+CFG.GEAR_PET_ICON  = [[avatar\B001.blp]]
 
 -- Cot giua cua luoi = ly lich hero (icon + ten + canh gioi). nil = bo.
 --

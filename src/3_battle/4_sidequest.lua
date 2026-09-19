@@ -499,6 +499,15 @@ local function onDeath()
       end
 
       if API.alive(d.hero) then
+        -- SUU TAM, khong ghi de. Truoc day "d.petUnit = q.unit" lam
+        -- ha con thu thu hai la mat con thu nhat -- bon chien loi pham
+        -- ma chi giu duoc mot.
+        --
+        -- Co la CUA CHUNG (S.sideDone) nhung con DANG DI THEO la cua
+        -- rieng tung nguoi: hai nguoi trong mot doi chon hai con khac
+        -- nhau duoc.
+        if d.petOwn == nil then d.petOwn = {} end
+        d.petOwn[b.idx] = true
         d.petUnit = q.unit
         if API.petSpawn ~= nil then API.petSpawn(pid) end
         if API.goHome ~= nil then API.goHome(pid) end

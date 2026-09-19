@@ -28,6 +28,7 @@ thiết kế, và là chỗ mọi con số quy về —
 | Canh cheat | [13_cheatguard.lua](../src/2_player/13_cheatguard.lua) | **Không chặn được, chỉ đo hậu quả** — sổ cái vàng/gỗ + bất tử — [canh-cheat.md](02-he-thong/canh-cheat.md) |
 | Tu chính của đợt quái | [5_modifier.lua](../src/3_battle/5_modifier.lua) | 5 tu chính, bốc ngẫu nhiên mỗi stage thường. Báo bằng **chữ + màu quái + kiểu trời** |
 | Camera | [8_camera.lua](../src/4_ui/8_camera.lua) | Mặc định `2000` cho mọi người lúc vào map; `-zoom <số>` để đổi |
+| **Cánh** | [9_wing.lua](../src/4_ui/9_wing.lua) | 6 bộ, mở ở cảnh giới **2 · 4 · 6 · 11 · 16 · 20**. Thuần trang trí — [canh.md](02-he-thong/canh.md) |
 | Khoá kinh nghiệm & điểm kỹ năng | [1_player.lua](../src/2_player/1_player.lua) | Quét lại toàn map mỗi `HERO_XP_SWEEP` giây |
 | **100 đợt quái** | [2_wave.lua](../src/3_battle/2_wave.lua) | Đường cong chỉ số, tinh anh, boss, tiền thưởng |
 | **Tu Vi** — tu vi người chơi | [3_cultivation.lua](../src/2_player/3_cultivation.lua) | 20 bậc, ×19.7 — mua bằng **Linh Khí** |

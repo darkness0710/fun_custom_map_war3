@@ -229,9 +229,25 @@ câu hỏi có thật**: điều kiện Tiến Hoá là `cultRank ≥ tier + 1`,
 Icon lấy từ `CFG.HEROES` của chính người chơi đó. Cỡ `0.090` (162px @1080p) chứ
 không lấp đầy cột: lấp đầy là phóng 3,9 lần từ 64px và nhìn ra bệt.
 
-**Ô Pet** ở `{2,4}` — chỗ dành sẵn, chưa hệ nào dùng. Vẽ **y hệt một ô thật**
-(cùng ô vuông cỡ icon, cùng phép tính vị trí) nhưng **không có nút**. Đó là khác
-biệt duy nhất.
+### Hàng 5: Cánh và Thánh Thú *(2026-09-19)*
+
+Hai ô **không phải trang bị**, ở `{1,5}` và `{3,5}`:
+
+| Ô | Nút | Làm gì |
+|---|---|---|
+| **Cánh** | `ĐỔI` | Xoay vòng qua các bộ cánh đã mở — [canh.md](canh.md) |
+| **Thánh Thú** | `ĐỔI` | Xoay vòng qua các con đã thu phục |
+
+Chúng đi qua **đúng máy móc ô lưới sẵn có** (icon + nhãn + nút), không vẽ khung
+riêng — thêm một loại ô mới là thêm một chỗ có thể lệch hàng với tám ô kia.
+`tabItems()` nối hai mục vào cuối danh sách, `tabItemAction()` định tuyến chỉ số
+`#GEAR+1` và `+2` sang `OP_WING` / `OP_PET`.
+
+Ràng buộc kiểm lúc vào map đổi theo: `#GEAR_SLOTS` phải bằng `#CFG.GEAR + 2`.
+
+**Ô Pet trang trí cũ ở `{2,4}` đã bỏ** (`GEAR_PET_SLOT = nil`). Nó từng được vẽ
+y hệt một ô thật nhưng **không có nút** — một chỗ giữ sẵn. Giờ không còn ô nào
+"vẽ cho đẹp mà bấm không được".
 
 **Bảng không cao thêm.** Lưới 4 dòng = 0.288, thẻ Kỹ Năng 7 dòng = 0.336;
 `bodyH()` lấy max cả ba kiểu nên khung giữ nguyên kích thước. Bảng phải cao bằng
