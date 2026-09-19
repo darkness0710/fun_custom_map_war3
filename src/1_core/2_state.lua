@@ -116,7 +116,9 @@ API.frameScale = frameScale
 
 -- ---------- Tien ich ----------
 
-local function msg(pid, text)
+-- Duong RA man hinh, khong dan nhan gi. Moi kenh ben duoi deu di qua
+-- day; chi khac nhau o cai dan TRUOC khi goi.
+local function raw(pid, text)
   if pid == nil then
     for i = 0, bj_MAX_PLAYERS - 1 do
       DisplayTimedTextToPlayer(Player(i), 0, 0, CFG.MSG_TIME, text)
@@ -124,6 +126,31 @@ local function msg(pid, text)
   else
     DisplayTimedTextToPlayer(Player(pid), 0, 0, CFG.MSG_TIME, text)
   end
+end
+
+-- NHAN "[He Thong]".
+--
+-- API.t o day phai tra MUON: 2_state.lua nap TRUOC 6_i18n.lua, nen luc
+-- file nay chay thi bang chuoi chua ton tai. Tra luc GOI thi khong sao
+-- -- tru vai dong bao rat som truoc khi i18n san sang, va do la ly do
+-- co nhanh lui.
+local function sysTag()
+  local t = (API.t ~= nil) and API.t("sys_tag") or nil
+  if t == nil or t == "sys_tag" then t = "System" end
+  return (CFG.C_SYS or CFG.C_GREY) .. "[" .. t .. "]" .. CFG.C_END .. " "
+end
+
+-- CHU CUA NGUOI CHOI. Luon co nhan.
+--
+-- Vi sao dan nhan o DAY chu khong sua ~100 cho goi: mot cho sua, khong
+-- cho nao sot, va khong co duong nao lo ra mot dong khong nhan. Dong
+-- nao la cua mot NGUOI thi di qua say() va mang ten nguoi do thay vi
+-- "[He Thong]".
+--
+-- warn/info/dbg KHONG di qua day: chung la chan doan cua nguoi lam map,
+-- dan nhan "He Thong" vao la noi doi ve doi tuong doc.
+local function msg(pid, text)
+  raw(pid, sysTag() .. text)
 end
 
 -- CHAN DOAN CHO NGUOI LAM MAP -- khong phai chu cua nguoi choi.
@@ -142,18 +169,39 @@ end
 -- kiem duoc chinh xac: chuoi cung trong API.msg la LOI, trong API.warn
 -- la binh thuong.
 local function warn(pid, text)
-  msg(pid, CFG.C_RED .. text .. CFG.C_END)
+  raw(pid, CFG.C_RED .. text .. CFG.C_END)
 end
 
 -- Bao cao cho nguoi lam map: KHONG mau, nhieu dong, doc nhu mot bang.
 -- Y het msg() ve hanh vi -- ton tai chi de i18n_hardcode.py phan biet
 -- duoc "chu cua nguoi choi" voi "bao cao cua cong cu".
 local function info(pid, text)
-  msg(pid, text)
+  raw(pid, text)
+end
+
+-- TIN NHAN CHUNG -- viec mot nguoi lam ma ca ban do nen biet.
+--
+--   [Ten nguoi choi] noi dung
+--
+-- Dung cho hanh dong co the so sanh duoc giua nguoi choi: nang ky nang,
+-- nang trang bi, mua do, di chuyen bang bang R. Muc dich la de mot van
+-- nhieu nguoi co nhip -- thay nguoi khac len tay thi minh biet minh dang
+-- o dau.
+--
+-- PHAI goi trong handler cua API.syncOn, KHONG phai trong callback cua
+-- frame. Frame click chi chay tren may nguoi bam; goi o do thi "tin
+-- chung" chi mot minh nguoi do doc duoc, va loi nay khong bao gio hien
+-- ra khi test mot minh.
+--
+-- Phan noi dung van phai qua API.t() nhu moi chu cua nguoi choi -- chi
+-- cai ngoac vuong la ky hieu.
+local function say(pid, text)
+  raw(nil, CFG.C_GOLD .. "[" .. GetPlayerName(Player(pid)) .. "]" ..
+    CFG.C_END .. " " .. text)
 end
 
 local function dbg(text)
-  if CFG.DEBUG then msg(nil, CFG.C_GREY .. "[dbg] " .. text .. CFG.C_END) end
+  if CFG.DEBUG then raw(nil, CFG.C_GREY .. "[dbg] " .. text .. CFG.C_END) end
 end
 
 local function clamp(v, lo, hi)
@@ -232,6 +280,7 @@ API.msg   = msg
 API.dbg   = dbg
 API.warn  = warn
 API.info  = info
+API.say   = say
 -- Hieu ung roi tu huy sau khi dien xong.
 local function fx(model, x, y)
   if model == nil then return end

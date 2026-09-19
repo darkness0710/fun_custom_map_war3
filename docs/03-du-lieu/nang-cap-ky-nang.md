@@ -154,10 +154,10 @@ kiểm `BlzSetUnitArmor` có trên bản này không — gõ `-nat` trong game.
 |---|---|---|---|---|
 | `A001` | `AOsh` Shockwave | **Chưởng** — chủ động, sát thương | hệ số | ×1,03 · hồi chiêu ×0,956 |
 | `A002` | `AHhb` Holy Light | chủ động, hồi máu | hệ số | ×1,03 · hồi chiêu ×0,956 |
-| `A003` | `AHad` Devotion Aura | bị động, aura giáp | **cộng thẳng** | ⚠ teo dần — xem dưới |
+| `A003` | `AOae` Endurance Aura | bị động, aura tốc đánh + tốc chạy | **World Editor** | — *(đổi 2026-09-19)* |
 | `A004` | `Aamk` Attribute Bonus | bị động, cộng cả ba chỉ số | **cộng thẳng** | ⚠ teo dần — xem dưới |
 | `A005` | `ACce` Cleaving Attack *(lấy từ unit)* | bị động, đánh lan | phần trăm | % ×1,08 |
-| `A006` | `Aamk` Attribute Bonus *(làm vật mang)* | bị động, giảm % sát thương | phần trăm | % ×1,08 |
+| `A006` | `AOre` Hồi Sinh | bị động, chết thì sống lại | **World Editor** | — *(đổi 2026-09-19)* |
 | `A007` | `AHav` Avatar | chủ động, tăng chỉ số | hệ số | ×1,03 · hồi chiêu ×0,956 |
 
 ### Cộng thẳng thì chết, phần trăm thì sống
@@ -217,7 +217,8 @@ nằm trong bảng Lua — chỉnh cân bằng không cần build lại file nh�
 
 ## Mở khóa: tay không, nhưng cầm sẵn 1 điểm
 
-**Chốt 2026-09-16:** `CFG.SKILL_START_COUNT = 0` và `CFG.NGOTINH_START = 1`.
+**Chốt 2026-09-16:** `CFG.SKILL_START_COUNT = 0` và `CFG.LUMBER_START = 2`
+*(khoá cũ tên `NGOTINH_START`, đã đổi)*.
 Hero vào map với command card trống, ví có đúng **một** Ngộ Tính — vừa đủ mở một
 kỹ năng ngay giây đầu. Mở khoá 1 điểm, đôn một bậc 1 điểm, trọn bảy cái là
 `7 × (1 + 9) = 70` điểm.
@@ -307,7 +308,8 @@ Kiểm ngược ở cuối game (Tu Vi bậc 20, kỹ năng bậc 10, ×12 trang
 
 ## Lỗ hổng đã vá: Tu Vi thiếu một nửa
 
-Phát hiện khi đi gán số gốc. `CFG.CULT_STEP` đang là **1,17**:
+Phát hiện khi đi gán số gốc. Bậc Tu Vi lúc đó nhân **1,17** mỗi bậc
+*(khoá `CFG.CULT_STEP`, nay đã xoá — đường cong tính trong `cultPowerAt()`)*:
 
 | | Nhân |
 |---|---|

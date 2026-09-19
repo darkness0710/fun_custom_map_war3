@@ -554,8 +554,7 @@ local function onSideQuest(pid, i)
   -- sinh (vao map) ca doi con o canh gioi 1.
   if API.sideQuestArm ~= nil then API.sideQuestArm(i) end
 
-  API.msg(nil, API.t("sq_entered",
-    CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END,
+  API.say(pid, API.t("sq_entered",
     CFG.C_JADE .. API.pick(q) .. CFG.C_END))
   API.trace("sidequest: pid " .. pid .. " -> nhiem vu " .. i)
 end
@@ -578,6 +577,10 @@ local function onGoHome(pid, _)
   if PanCameraToTimedForPlayer ~= nil then
     PanCameraToTimedForPlayer(Player(pid), x, y, 0.0)
   end
+
+  -- Bao CA DOI. Ai dang o dau la thong tin chung: mot nguoi ve nha giua
+  -- luot boss thi ca doi nen biet minh dang thieu mot tay.
+  API.say(pid, API.t("sq_wenthome"))
   API.trace("gohome: pid " .. pid)
 end
 

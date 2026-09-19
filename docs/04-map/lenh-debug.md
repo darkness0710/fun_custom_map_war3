@@ -47,6 +47,29 @@ Không phụ thuộc công tắc nào. Đây là lối chơi, không phải debu
 |---|---|
 | `E` | Mở bảng nhân vật (4 thẻ) |
 | `-c` | Như phím R — đường lui nếu phím không gán được |
+| `-zoom` | Tầm nhìn camera về **mặc định** (`2000`) |
+| `-zoom <số>` | Đặt tầm nhìn, chặn trong `900..4500` |
+
+### Camera — ba điều đáng nhớ
+
+**Mọi người vào map đã ở `2000` sẵn**, không phải tự gõ. `1650` là mặc định của
+Warcraft, nhưng map này là thủ trận: 50 con lọt một lúc thì ở tầm đó không thấy
+được đầu đàn quái với nhà chính cùng lúc. Và **một cái phải gõ mỗi ván thì 9/10
+ván sẽ không ai gõ.**
+
+**Zoom ra xa thì phải nới `FARZ`.** Warcraft cắt cảnh ở một khoảng nhất định;
+kéo `TARGET_DISTANCE` ra 4500 mà để nguyên far-Z thì **địa hình phía xa biến
+mất** thay vì hiện ra — triệu chứng nhìn ra *"map bị thủng"*, rất dễ tưởng là
+lỗi terrain. Nên mỗi lần đặt zoom đều đặt kèm `CFG.ZOOM_FARZ = 10000`.
+
+**Camera là cục bộ, và đó chính là lý do nó an toàn.** `SetCameraField` chỉ đổi
+camera của máy đang chạy — không một chút trạng thái game nào đổi theo, nên
+không có cửa desync. Nhưng chiều ngược lại cũng đúng: gọi thẳng mà không lọc
+người chơi thì **cả đội bị zoom theo**. Dùng `SetCameraFieldForPlayer` nếu bản
+này có, không thì lọc bằng `GetLocalPlayer()`.
+
+*(Lúc áp mặc định thì `secs = 0` — cho camera **trượt** ra lúc vào map thì người
+chơi thấy màn hình tự lùi, đọc như lỗi.)*
 | `-lc` | Mở thẳng thẻ Tu Vi |
 | `-lc up` | Đột phá một bậc, không cần mở bảng |
 | `-sync` | Đường đồng bộ nào đang chạy, native nào có, ping có về không |
@@ -83,6 +106,8 @@ Cần `CFG.DEV_COMMANDS = true`.
 | Lệnh | Làm gì | Ví dụ |
 |---|---|---|
 | `-wave <số>` | Nhảy thẳng tới stage 1–100 | `-wave 50` → boss Độ Kiếp |
+| `-mod <số>` | Ép **tu chính** số N và bật kiểu trời của nó ngay | `-mod` *(không số)* liệt kê cả 5 |
+| `-sky <số>` | Bật **một mã thời tiết** để nhìn — cách duy nhất kiểm được mã | `-sky off` tắt hết |
 | `-vang <số>` | Thêm **Vàng** *(thanh tài nguyên)* | `-vang 5000` |
 | `-go <số>` | Thêm **Gỗ** *(thanh tài nguyên)* | `-go 100` |
 | `-lc <số>` | Nhảy tới bậc Tu Vi 1–20 | `-lc 15` → Đại La |

@@ -97,7 +97,7 @@ riêng (`CFG.HOUSE_SUSPEND_XP`) chứ không dựa vào bộ quét.
 
 **Bộ quét duyệt toàn bộ unit trong vùng chơi được** mỗi lần chạy. Hiện map có
 vài unit nên không đáng kể. Khi có đợt quái đông, cân nhắc nâng `HERO_XP_SWEEP`
-lên hoặc bỏ hẳn bộ quét và gọi `API.lockHeroXP` ngay tại chỗ sinh quái — lúc đó
+lên hoặc bỏ hẳn bộ quét và khoá ngay tại chỗ sinh quái — lúc đó
 đã kiểm soát được mọi nguồn tạo hero rồi.
 
 **Dùng `FirstOfGroup` + `GroupRemoveUnit`** để duyệt, không dùng `ForGroup` —

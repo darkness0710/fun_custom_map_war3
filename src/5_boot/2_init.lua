@@ -24,13 +24,6 @@ local function reportGrid()
 end
 
 -- Ping minimap tam moi block de nhin thay luoi ngay khi vao map.
-local function pingBlocks()
-  API.forEachBlock(function(col, row, idx, x0, y0, x1, y1)
-    local cx, cy = (x0 + x1) * 0.5, (y0 + y1) * 0.5
-    PingMinimapEx(cx, cy, 8.0, 255, 200, 0, false)
-  end)
-end
-
 -- Ket thuc van. Doi 3 giay cho nguoi choi doc duoc ly do truoc khi
 -- man hinh ket qua che mat.
 local function endGame(win, reason)
@@ -130,6 +123,7 @@ local function bootstrap()
   API.startGear()   -- III. Da Huyen Thiet
   API.startRelic()   -- IV.  (tam khoa)
   API.startShop()      -- V.   Vang
+  API.startHouseUp()   -- VI.  Vang -- nang cap nha chinh
   API.startFortune()      -- Co Duyen (khung rieng, khong phai the)
   API.startUseItem()
   API.startPet()            -- pet di theo hero
@@ -140,11 +134,13 @@ local function bootstrap()
   API.startSkillFx()
   API.startFct()
   API.startBoss()
+  API.startModifier()      -- tu chinh cua tung stage thuong
   API.startWaves()
   API.startHeroFrame()
   API.startSkillFrame()
   API.startFortuneFrame()
   API.startGameFrame()      -- bang tran dau, phim R
+  API.startCamera()         -- lenh -zoom
   API.startQuest()          -- trang huong dan phim tat o F9
   API.startSkillPicking()
   API.startPicking()
@@ -157,8 +153,12 @@ local function bootstrap()
   API.trace("BOOTSTRAP HOAN TAT")
 
   if CFG.DEBUG then
+    -- KHONG ping 25 block o day nua. Lenh "-vung" da ping ca 25 o, va
+    -- con to mau theo vai tro -- ban o day vua thua vua ban minimap
+    -- ngay giay dau tien, luc nguoi choi con chua chon hero.
+    --
+    -- Muon xem luoi thi go "-vung".
     reportGrid()
-    pingBlocks()
     API.report()
     API.heroPickReport()
     API.dbg(n .. " nguoi choi vao map.")
@@ -167,7 +167,6 @@ end
 
 API.endGame    = endGame
 API.reportGrid = reportGrid
-API.pingBlocks = pingBlocks
 API.bootstrap  = bootstrap
 
 -- ---------- Moc vao vong doi cua map ----------

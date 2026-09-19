@@ -419,6 +419,35 @@ local function registerEvents()
     API.nativeChat(GetPlayerId(GetTriggerPlayer()), GetEventPlayerChatString())
   end)
 
+  -- "-mod N" ep mot tu chinh de XEM kieu troi cua no ngay, thay vi doi
+  -- RNG boc trung. Cung la cach tra loi "troi khong chay hay chay ma mo".
+  if CFG.DEV_COMMANDS then
+    local tMod = CreateTrigger()
+    for i = 1, #S.pids do
+      TriggerRegisterPlayerChatEvent(tMod, Player(S.pids[i]), "-mod", false)
+    end
+    TriggerAddAction(tMod, function()
+      if API.modifierDevSet ~= nil then
+        API.modifierDevSet(GetPlayerId(GetTriggerPlayer()),
+                           GetEventPlayerChatString())
+      end
+    end)
+  end
+
+  -- "-sky N" bat MOT ma thoi tiet de nhin. Xem chu thich devSky().
+  if CFG.DEV_COMMANDS then
+    local tSky = CreateTrigger()
+    for i = 1, #S.pids do
+      TriggerRegisterPlayerChatEvent(tSky, Player(S.pids[i]), "-sky", false)
+    end
+    TriggerAddAction(tSky, function()
+      if API.modifierDevSky ~= nil then
+        API.modifierDevSky(GetPlayerId(GetTriggerPlayer()),
+                           GetEventPlayerChatString())
+      end
+    end)
+  end
+
   -- "-reg" DO hoi mau that cua hero. Lenh dev: no ha mau hero xuong nua
   -- va doi chi so trong luc do, khong phai thu de go giua tran.
   if CFG.DEV_COMMANDS then

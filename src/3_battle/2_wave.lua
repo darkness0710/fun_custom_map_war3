@@ -227,6 +227,9 @@ local function spawnOne(stage, realm, kind, ex, ey)
   -- Quai don lai qua nhieu wave (do duoc: stage 6 con 174 con song),
   -- nen tra theo stage hien tai la tu thuong them cho viec giet cham.
   S.mobStage[u] = stage
+  -- Tu chinh gan SAU applyStats: no doi mau con quai, ma tinh anh cung
+  -- doi mau -- de tu chinh thang thi ca dot doc ra mot mau duy nhat.
+  if API.modifierApply ~= nil then API.modifierApply(u) end
   S.alive = S.alive + 1
   sendToHouse(u)
   return u
@@ -277,7 +280,36 @@ local function rescaleHouse(stage, realm)
     if API.relicAnyHas("nhahp")    then bonusMax   = 0.30 end
     if API.relicAnyHas("nharegen") then bonusRegen = 0.15 end
   end
-  newMax = math.floor(newMax * (1 + bonusMax) + 0.5)
+
+  newMax = newMax * (1 + bonusMax)
+
+  -- Nang cap nha chinh (the VI, tra bang vang) cong SUC MANH.
+  --
+  -- Dat Str THAT len unit roi moi dat max: nguoi choi bam vao nha thay
+  -- con so do tren bang chi so, chu khong phai mot con so chi ton tai
+  -- trong dau ta. Nhung max thi van do CONG THUC NAY quyet dinh --
+  -- BlzSetUnitMaxHP goi SAU cung nen no thang, du Warcraft co tu tinh
+  -- lai max theo Str hay khong. Mot nguon duy nhat, khong tranh chap.
+  --
+  -- Day la duong DUY NHAT dung: ham nay chay lai moi wave va tinh
+  -- newMax tu dau, nen ai goi BlzSetUnitMaxHP ngoai day deu bi xoa o
+  -- wave sau -- va xoa im lang.
+  if API.houseUpStr ~= nil then
+    local str = API.houseUpStr()
+    if str > 0 then
+      if SetHeroStr ~= nil and GetHeroStr ~= nil then
+        local base = S.houseStrBase
+        if base == nil then
+          base = GetHeroStr(S.house, false)
+          S.houseStrBase = base
+        end
+        SetHeroStr(S.house, base + str, true)
+      end
+      newMax = newMax + str * (API.houseUpStrHp and API.houseUpStrHp() or 25.0)
+    end
+  end
+
+  newMax = math.floor(newMax + 0.5)
   if newMax < 1 then newMax = 1 end
 
   BlzSetUnitMaxHP(S.house, newMax)
@@ -286,12 +318,32 @@ local function rescaleHouse(stage, realm)
   SetUnitState(S.house, UNIT_STATE_LIFE, newMax * heal)
 end
 
+-- Tinh lai NGAY, khong doi wave sau.
+--
+-- 12_houseup.lua goi cai nay luc mua Kien Co: mua giua mot wave dang bi
+-- don ma phai cho het wave moi thay gi la mua trong bong toi, va dung
+-- luc do thi nguoi choi can no NGAY.
+--
+-- Doc stage/realm tu S chu khong nhan tham so: ben goi khong co ly do
+-- gi phai biet minh dang o stage may, va hai noi cung giu mot con so
+-- thi som muon lech.
+local function rescaleNow()
+  local stage = S.stage
+  if stage == nil then return end
+  local realm = decode(stage)
+  rescaleHouse(stage, realm)
+end
+
 local function spawnStage(stage)
   local realm, tier, isBoss = decode(stage)
 
   S.stage = stage
   S.wave.players = playerCount()
   S.wave.spawnFail = 0
+  -- Stage boss KHONG co tu chinh: boss da co bang co che rieng
+  -- (CFG.BOSS_MECH), chong them mot lop nua la khong ai doc ra cai gi
+  -- dang giet minh. clear() tat ca thoi tiet.
+  if API.modifierClear ~= nil then API.modifierClear() end
   rescaleHouse(stage, realm)
 
   if isBoss then
@@ -310,10 +362,18 @@ local function spawnStage(stage)
     end
     API.msg(nil, CFG.C_RED .. API.t("boss_coming", realmName(realm)) .. CFG.C_END)
   else
+    -- BOC TRUOC KHI SINH: spawnOne() hoi tu chinh de gan len tung con.
+    --
+    -- Goi o day la mot rang buoc dong bo, khong phai tien tay: ham nay
+    -- chay tu duong da dong bo nen GetRandomInt quay cung thu tu tren
+    -- moi may. Boc trong callback cua frame la lech ban game (ADR 0012).
+    if API.modifierPick ~= nil then API.modifierPick(stage) end
+
     for _ = 1, CFG.WAVE_MOB_COUNT do spawnOne(stage, realm, "mob") end
     for _ = 1, CFG.WAVE_ELITE_COUNT do spawnOne(stage, realm, "elite") end
     API.msg(nil, CFG.C_GOLD .. "[" .. stage .. "/" .. totalStages() .. "] " ..
       stageLabel(stage) .. CFG.C_END)
+    if API.modifierAnnounce ~= nil then API.modifierAnnounce() end
 
     -- Ghi ro wave nay gom NHUNG GI, bang dung cai ten dang nam tren con
     -- quai. Mot wave co hai loai ma dong bao chi noi mot cau chung thi
@@ -440,6 +500,12 @@ local function rewardAll(stage, kind)
   --   Linh Khi -> Linh Can   Vang -> Shop   Go -> Ky Nang
   --
   -- Xem docs/02-he-thong/kinh-te.md
+  -- Tu chinh "Trung Linh" nhan MOI phan thuong cua stage nay.
+  --
+  -- Nhan ca Go va luot Co Duyen chu khong chi tien: chot 2026-09-19 vi
+  -- Go se co them cho tieu. Ky vong ca van: Go 260 -> ~292, luot quay
+  -- 169 -> ~185.
+  local mult = (API.modifierRewardMult ~= nil) and API.modifierRewardMult() or 1.0
   local qi, gold, lumber, cards = 0, 0, 0, 0
   if kind == "boss" then
     qi   = CFG.REWARD_BOSS_QI
@@ -452,6 +518,13 @@ local function rewardAll(stage, kind)
   else
     qi   = CFG.REWARD_MOB_QI
     gold = CFG.REWARD_MOB_GOLD
+  end
+
+  if mult ~= 1.0 then
+    qi     = math.floor(qi     * mult + 0.5)
+    gold   = math.floor(gold   * mult + 0.5)
+    lumber = math.floor(lumber * mult + 0.5)
+    cards  = math.floor(cards  * mult + 0.5)
   end
 
   for i = 1, #S.pids do
@@ -673,6 +746,7 @@ API.waveNow        = waveNow
 API.waveWaiting    = function() return S.waitNext end
 API.waveCallState  = callState
 API.onMobDeath     = onMobDeath
+API.waveRescaleHouse = rescaleNow
 API.startWaves     = startWaves
 API.stopWaves      = stopWaves
 API.jumpToStage    = jumpTo

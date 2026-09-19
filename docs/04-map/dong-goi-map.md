@@ -27,6 +27,23 @@ giờ kết thúc.
 
 Bộ đóng gói này **chép thư mục nguyên trạng**, không đụng vào `war3map.lua`.
 
+**Đo được 2026-09-19:** một cú Save trong World Editor rút `war3map.lua` từ
+**14 635 dòng xuống 106 dòng** — chỉ còn `CreateRegions()` do WE tự sinh. Không
+báo lỗi, không hỏi gì. Map vẫn mở được, chỉ là **không có tí code game nào**.
+
+Nên thứ tự làm việc chỉ có một chiều đúng:
+
+```
+sửa dữ liệu trong WE  ->  ĐÓNG WE  ->  python build.py --pack
+```
+
+Ngược lại (build trước, Save sau) là mất trắng bản build. Dấu hiệu nhận ra ngay:
+`ls -l test2.w3x/war3map.lua` ra vài KB thay vì vài trăm KB.
+
+Cái **không** mất: `src/` nằm ngoài thư mục map nên WE không với tới
+([ADR 0001](../05-quyet-dinh/0001-src-nam-ngoai-map.md)) — dựng lại là xong. Đó
+chính là lý do của quyết định đó.
+
 ### 2. Tên file import được ghi bằng dấu gạch khác nhau
 
 | | Tên trong archive |

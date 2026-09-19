@@ -161,25 +161,30 @@ có ai đặt chân tới.
 ### Và quãng đường đó từng ngắn tới mức làm hỏng một cơ chế
 
 Phép đo này là thứ lôi ra [ADR 0018](../05-quyet-dinh/0018-nghi-giua-hai-canh-gioi.md).
-`WAVE_TIME` đã sửa; bảng dưới là **sau khi sửa**:
 
-| Cõi | Mẫu lính | Tốc | Đi hết | `WAVE_TIME` | Còn lại để đánh |
-|---|---|---|---|---|---|
-| 1 Phàm | Footman | 270 | 19.9s | **32.0s** *(trước: 20)* | 12.1s |
-| 2 Yêu | Ghoul | 350 | 15.3s | 28.0s | 12.7s |
-| 3 Tiên | Abomination | 190 | 28.2s | **40.0s** *(trước: 36)* | 11.8s |
-| 4 Thần | Frost Wyrm | 200 | 26.8s | 45.0s | 18.2s |
+| Cõi | Mẫu lính | Tốc | Đi hết vùng địch → nhà |
+|---|---|---|---|
+| 1 Phàm | Footman | 270 | **19.9s** |
+| 2 Yêu | Ghoul | 350 | 15.3s |
+| 3 Tiên | Abomination | 190 | **28.2s** |
+| 4 Thần | Frost Wyrm | 200 | 26.8s |
 
-Trước khi sửa, cõi 1 có **0.1 giây** để giết 50 con. Nghĩa là map không bao giờ
-sạch, `S.alive` không bao giờ về 0, nên cả `WAVE_AUTO_NEXT` lẫn `-next` **chết
-hẳn suốt 55 đợt đầu** — cơ chế nằm đó mà không với tới được.
+> **Cột `WAVE_TIME` đã bỏ khỏi bảng này (2026-09-19).** Hệ đợt theo đồng hồ
+> không còn — đợt chỉ ra khi người chơi bấm nút, và chỉ bấm được khi đã dọn
+> sạch ([ADR 0026](../05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md)). Lỗi
+> cũ mà phép đo này phát hiện — cõi 1 chỉ còn 0,1 giây để giết 50 con nên map
+> không bao giờ sạch — **tự biến mất** khi bỏ đồng hồ.
+
+**Nhưng quãng đường vẫn là con số đáng biết**, vì nó là sàn thời gian của một
+đợt: không ai dọn xong trước khi con lính đầu tiên đi hết đường. Đổi
+`CFG.MOB_UNIT` là phải đo lại bảng này.
 
 > **Đính chính.** Bản trước của trang này khuyên "dời `MyEmenyRegion` **xa hơn**".
 > Sai ngược: xa hơn là đi lâu hơn, càng ít thời gian đánh. Muốn có chỗ thở thì
 > phải **gần hơn**, hoặc tăng `WAVE_TIME` — và đó là cách đã chọn.
 
 Cái phải trả: ván dài thêm **16 phút** (118 → 134). Xem
-[dot-quai.md](dot-quai.md#nhịp).
+[dot-quai.md](dot-quai.md#nhịp-do-người-chơi-bấm-không-có-đồng-hồ).
 
 ## Chưa làm
 

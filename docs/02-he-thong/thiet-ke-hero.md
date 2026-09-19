@@ -1,7 +1,7 @@
 # Thiết kế hero
 
 > **Trạng thái:** Hart **đã chốt, vỏ đã sinh**. Hvwd và Hkal ⏸ **trống — chờ thiết kế lại**
-> **Cập nhật:** 2026-09-16
+> **Cập nhật:** 2026-09-19
 > **Code:** [4_skill.lua](../../src/2_player/4_skill.lua) ·
 > [7_effect.lua](../../src/2_player/7_effect.lua) ·
 > [w3skill.py](../../w3skill.py)
@@ -40,17 +40,107 @@ Chọn Hvwd hoặc Hkal thì thẻ Kỹ Năng trong bảng phím R hiện đúng
 | **(2,1)** | **Hộ Thể** *(Guarding Light)* | chủ động · hồi máu | ×2.20 · 10.0s · 30 mana | ×2.93 · 6.7s · 46 mana |
 | **(3,1)** | **Bất Hoại** *(Indestructible)* | chủ động · tự buff | **+30 giáp**, 12 giây · 60.0s · 60 mana | 40.0s · 93 mana |
 | **(0,2)** | **Chém Lan** *(Cleaving Blow)* | bị động · trên mỗi đòn | 20% văng sang bên | **40%** |
-| **(1,2)** | **Hiệu Lệnh** *(Rallying Order)* | bị động · aura đồng đội | **+3 giáp** *(phẳng)* | **+6 giáp** |
+| **(1,2)** | **Hiệu Lệnh** *(Rallying Order)* | bị động · aura đồng đội | **+5% tốc đánh, +5% tốc chạy** · bán kính 850 | **+50%** cả hai · bán kính 1350 |
 | **(2,2)** | **Luyện Thể** *(Body Forging)* | bị động · chỉ số | **+4 phẳng** cả ba chỉ số *(×bậc Tu Vi)* | **+8** |
-| **(3,2)** | **Da Sắt** *(Ironhide)* | bị động · giảm sát thương | −5% *(trần 10%)* | **−10%** — chạm trần |
+| **(3,2)** | **Da Sắt** *(Ironhide)* | bị động · **hồi sinh** | chết thì tự sống lại · hồi chiêu **270s** | hồi chiêu **45s** |
 
 **Không cái nào phát sẵn** *(`CFG.SKILL_START_COUNT = 0`)*, nhưng hero **cầm sẵn
-1 Ngộ Tính** *(`CFG.NGOTINH_START = 1`)* — vừa đủ mở một kỹ năng ngay giây đầu.
+2 Ngộ Tính** *(`CFG.LUMBER_START = 2`)* — vừa đủ mở **một** kỹ năng sát thương
+**và** Luyện Thể ngay giây đầu.
 Mở khoá 1 điểm, đôn một bậc 1 điểm, thứ tự nào cũng được; trọn bảy cái là
 `7 × (1 + 9) = 70` điểm trên 300 kiếm được cả ván.
 
-**Da Sắt chạm trần đúng ở bậc 10** — `0.05 × 1.0801⁹ = 10.0%` = `CFG.FX_REDUCE_CAP`.
-Không bậc nào bị phí; trần và đích đến khớp nhau.
+## Hai kỹ năng đổi bản chất *(2026-09-19)*
+
+`A003` và `A006` không còn là bản sao tự tính nữa. Chúng là **bản sao ability
+gốc của Warcraft**, và **World Editor giữ toàn bộ bảng 10 bậc**:
+
+| Ô | Kỹ năng | Ability gốc | Code đọc số bằng |
+|---|---|---|---|
+| (1,2) | Hiệu Lệnh | `AOae` Endurance Aura | `BlzGetUnitAbility` + `BlzGetAbilityRealLevelField` |
+| (3,2) | Da Sắt | `AOre` Reincarnation | `BlzGetAbilityCooldown` |
+
+Code **không** tự tính lại. Tự tính là có **hai nơi** cùng khai một con số, và
+hai nơi thì sớm muộn lệch — người chơi đọc một đằng, đánh ra một nẻo. Xem
+[nang-cap-ky-nang.md](../03-du-lieu/nang-cap-ky-nang.md).
+
+### Bảng thật, đọc từ `war3map.w3a`
+
+**Hiệu Lệnh** — `Oae2` tốc đánh, `Oae1` tốc chạy, `aare` bán kính:
+
+| Bậc | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| tốc đánh `Oae2` | *5%* | *10%* | *15%* | 20% | 25% | 30% | 35% | **50%** ⚠ | 45% | 50% |
+| tốc chạy `Oae1` | 5% | 10% | 15% | 20% | 25% | 31% | 35% | 40% | 45% | 50% |
+| bán kính `aare` | 850 | 950 | 1000 | 1050 | 1100 | 1150 | 1200 | 1250 | 1300 | 1350 |
+
+**Da Sắt** — `acdn` hồi chiêu; `Ore1` phẳng 5.0 và `acas` phẳng 3.0 ở mọi bậc:
+
+| Bậc | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| hồi chiêu | 270s | 250s | 210s | 180s | 150s | 120s | 90s | 75s | 60s | 45s |
+
+### Một ô lệch — cần sửa trong World Editor
+
+**Tốc đánh bậc 8 = 50%** trong khi bậc 7 = 35% và bậc 9 = 45%. Dãy đang đi lên
+thì bậc 8 nhảy vọt **qua** bậc 9 rồi tụt lại — gần như chắc là gõ nhầm `0.40`
+thành `0.50`.
+
+Đây là số **trong Object Editor**, không sửa bằng Lua được — xem
+[ADR 0008](../05-quyet-dinh/0008-ky-nang-hero-phai-sua-o-object-editor.md). Đọc lại
+sau khi sửa: `python w3obj.py dump test2.w3x/war3map.w3a`.
+
+### Ô in nghiêng = không nằm trong map
+
+Ba ô *5% / 10% / 15%* của tốc đánh bậc 1–3 **không có entry trong
+`war3map.w3a`**. World Editor vẫn hiện số cho chúng, vì giá trị rơi về ability
+**gốc** `AOae` — WE chỉ ghi vào map những ô anh đặt **khác** gốc.
+
+Nên "ô trống trong dump" *không* có nghĩa là hỏng. Cách duy nhất để ghim một giá
+trị vào map là đặt nó **khác** gốc; đặt đúng bằng gốc thì WE không lưu, và bậc
+đó sẽ đi theo ability gốc nếu Blizzard đổi.
+
+### Hai trường này giống hệt nhau trừ hai bậc — nên có một phép thử
+
+Tốc đánh và tốc chạy trùng số ở 8/10 bậc. Chúng chỉ khác ở:
+
+| Bậc | tốc đánh `Oae2` | tốc chạy `Oae1` |
+|---|---|---|
+| 6 | 30% | **31%** |
+| 8 | **50%** | 40% |
+
+Hai bậc lệch nhau này là cái **phân biệt được hai trường**, và nhờ đó phát hiện
+ra tên hằng số của Blizzard đặt ngược.
+
+`CFG.SKILLS` khai `fromAbil = "ABILITY_RLF_ATTACK_SPEED_INCREASE_OAE1"` — theo
+tên thì `Oae1` là tốc đánh. **Sai.** Đối chiếu Object Editor với dump
+`war3map.w3a`: bậc 8 tốc đánh = 0.50, tốc chạy = 0.40; file ghi `Oae2` = 0.5,
+`Oae1` = 0.4. Tooltip gốc nói cùng một điều — `DataA` là *movement*, `DataB` là
+*attack*. Vậy **`Oae2` = tốc đánh**.
+
+### Hằng số đó không tồn tại ở 1.31.1 — đã đo
+
+Dòng `-nat` trong file vết:
+
+```
+native [Doc so cua Endurance Aura (A003)] co 2/4 -- THIEU
+    ABILITY_RLF_ATTACK_SPEED_INCREASE_OAE1
+    ABILITY_RLF_MOVEMENT_SPEED_INCREASE_OAE2
+```
+
+Hai **hằng số** vắng mặt; `BlzGetAbilityRealLevelField` thì **có** — nó chỉ
+thiếu cái handle trường để đưa vào. Hệ quả cũ: bảng `R` hiện *"bậc N"* thay vì
+`%` thật, tức toàn bộ bảng số anh gõ trong World Editor không hiện ra đâu cả.
+
+**Đường vòng đã cài:** `ConvertAbilityRealLevelField(FourCC("Oae2"))` dựng handle
+thẳng từ mã trường 4 ký tự, không cần hằng số có tên. Khoá mới
+`CFG.SKILLS[..].fromField = "Oae2"`. Bản nào không có hàm chuyển thì vẫn lui về
+*"bậc N"* và ghi `API.trace` — không nuốt.
+
+`A006` không dính lỗi này: nó đọc bằng `BlzGetAbilityCooldown`, và native đó có
+(2/4 còn lại chính là nó và `BlzGetAbilityRealLevelField`).
+
+Chạy `-nat oae` một lần để xem `ConvertAbilityRealLevelField` có mặt không.
 
 ## Phím tắt
 
@@ -205,10 +295,16 @@ Giáp thì suy ra được từ nền nên không bao giờ lệch.
 
 ---
 
-# Hvwd và Hkal — chưa có gì
+# Hvwd và Hkal — chưa có gì, và đang khoá
 
 Hai hero **có unit trong `war3map.w3u`**, có icon và vai trên thẻ chọn, nhưng
 `CFG.SKILLS` không có khoá cho chúng và `war3map.w3a` không có ability nào.
+
+**Từ 2026-09-19 chúng không ra bảng chọn nữa** — `locked = true` trong
+`CFG.HEROES`. Cho chọn một con không có bộ kỹ năng riêng là cho chọn một con
+dùng chung bộ của Hart: nó *chạy*, nên lỗi không lộ ra, chỉ lặng lẽ nhạt. Bỏ cờ
+đi là mở lại. Chi tiết và cái bẫy `HERO_UNIQUE` đi kèm:
+[chon-hero.md](chon-hero.md#hai-hero-đang-khoá-2026-09-19).
 
 Khi thiết kế lại, ba điều đã học được từ Hart đáng mang theo:
 

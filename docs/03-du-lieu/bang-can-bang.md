@@ -116,7 +116,7 @@ Chi tiết: [02-he-thong/dot-quai.md](../02-he-thong/dot-quai.md) ·
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-| `REALMS` | Bảng 20 cảnh giới `{ vi, en, world }` | Đúng 20 dòng, đúng thứ tự. `vi` **không dấu** — font WC3 thiếu glyph tiếng Việt. `world` 1–4 quyết định mẫu lính và `WAVE_TIME` |
+| `REALMS` | Bảng 20 cảnh giới `{ vi, en, world }` | Đúng 20 dòng, đúng thứ tự. `vi` **không dấu** — font WC3 thiếu glyph tiếng Việt. `world` 1–4 quyết định mẫu lính |
 | `TIERS_PER_REALM` | Tầng mỗi cảnh giới | `4`, mỗi tầng một tên trong `TIER_NAMES` *(Sơ Kì → Viên Mãn)*. Tổng stage = `20 × (TIERS_PER_REALM + 1)` = 100. Không hard-code số 5 ở đâu cả |
 | `WAVE_MOB_COUNT` `WAVE_ELITE_COUNT` | Lính / tinh anh mỗi wave | **Không** nhân theo số người chơi — [ADR 0009](../05-quyet-dinh/0009-so-luong-linh-co-dinh.md) |
 | `WAVE_REST` | Hai mốc nghỉ mỗi cảnh giới | `true`. Không còn là "dừng đồng hồ" — chúng là hai **nhãn** khác của nút gọi đợt: `TRIỆU BOSS` và `SANG <cảnh giới>`. [ADR 0026](../05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md) |
@@ -131,12 +131,11 @@ Chi tiết: [02-he-thong/dot-quai.md](../02-he-thong/dot-quai.md) ·
 | `SPAWN_JITTER` | Bán kính xê dịch điểm sinh | Đủ rộng để `WAVE_MOB_COUNT` con không chồng một chỗ |
 | `MOB_UNIT` | Mẫu lính mỗi cõi, tra theo `REALMS[r].world` | **Placeholder** — 4 unit gốc WC3. Thiết kế cần 4 cõi × 6 mẫu = 24 |
 | `ELITE_EHP` `ELITE_DMG` `ELITE_SCALE` | Tinh anh | `ELITE_DMG` phải thấp hơn nhiều `ELITE_EHP` — nhân 10 cả hai là giết hero một đòn |
-| `BOSS_EHP` `BOSS_DMG` `BOSS_SCALE` | Boss | Xem [boss.md](../02-he-thong/boss.md) |
+| `BOSS_SECONDS` `BOSS_HITS_TO_KILL` `BOSS_SCALE` | Boss | Chỉ số **đo từ đội**, không nhân từ lính. `BOSS_EHP`/`BOSS_DMG` đã bỏ — xem [boss.md](../02-he-thong/boss.md) |
 | `MOB_ARCHETYPES` | 6 mẫu lính | **(chưa có)** `Σ(tỉ lệ)` = 1.0 và `Σ(tỉ lệ × EHP mult)` ∈ [0.95, 1.05] |
 | `MODIFIERS` `TIER_MODIFIERS` | Tu chính, và tầng nào bật mấy cái | **(chưa có)** Cố định theo stage, **không random**. Thiếu nó thì 4 tầng của một cảnh giới giống hệt nhau |
-| `WAVE_BOSS_TIME_MULT` | Stage boss dài gấp mấy lần | **(chưa có)** Boss cần ~1.33 × `WAVE_TIME` |
 | `WAVE_SPAWN_BATCH` `WAVE_SPAWN_TICK` | Sinh rải thế nào | **(chưa có)** Hiện sinh cả 50 con trong một lượt |
-| `BOSS_CC_RESIST` `BOSS_PHASES` `BOSS_ENRAGE_*` `BOSS_ARMOR_BONUS` `BOSSES` | Thân boss | **(chưa có)** — [boss.md](../02-he-thong/boss.md) |
+| `BOSS_CC_RESIST` `BOSS_PHASES` `BOSS_ARMOR_BONUS` | Kháng khống chế · đổi giai đoạn · giáp cộng | **(chưa có)** — [boss.md](../02-he-thong/boss.md). *(`BOSSES` và `BOSS_MECH` thì **đã có**; `BOSS_ENRAGE_*` đã bỏ vào `BOSS_MECH.enrage`.)* |
 | `LEAK_COST_MOB` `LEAK_COST_ELITE` `HOUSE_LIVES` | Lọt một con thì mất mấy mạng | **(chưa từng có)** — đề xuất đã bị bác, [ADR 0011](../05-quyet-dinh/0011-nha-chinh-dem-mang.md). Thay bằng `HOUSE_HP_HITS` |
 
 ## Đường cong chỉ số
@@ -152,7 +151,6 @@ Chi tiết và bảng tra: [duong-cong-suc-manh.md](duong-cong-suc-manh.md).
 | `MOB_ARMOR_BASE` `MOB_ARMOR_PER_REALM` | Giáp theo cảnh giới | Đổi nó **không** đổi độ khó: máu thật tự chia lại. [ADR 0010](../05-quyet-dinh/0010-giap-khong-nam-trong-duong-cong.md) |
 | `SCALE_EHP_PER_PLAYER` | Nhân EHP mỗi người thêm | Phải < 1.0 — bằng 1.0 là phạt người chơi vì rủ bạn |
 | `SCALE_DMG_PER_PLAYER` | Nhân sát thương mỗi người thêm | Giữ nhỏ: sát thương đã tự loãng theo số mục tiêu |
-| `SCALE_BOSS_EHP_PER_PLAYER` | Riêng boss | Cao hơn lính — boss một thân, đông người tập trung hạ hiệu quả hơn |
 | `SCALE_RECOUNT_EACH_WAVE` | Tính lại số người mỗi wave | `true`. Đọc `#S.pids`, **không** đọc `CFG.PLAYER_SLOTS` |
 
 ## Kinh tế
@@ -220,11 +218,11 @@ Chi tiết: [02-he-thong/kinh-te.md](../02-he-thong/kinh-te.md) ·
 | `GEAR_MITIG_MAX` | `0.25` | Khiên (đòn đánh) và Áo Choàng (phép), mỗi món ở bậc 100. Cao hơn `DMG_MAX` vì mỗi món chỉ chạm **một phần** lượng sát thương vào. ⚠ Tỉ lệ 60/40 vật lý/phép là **giả định, chưa đo** |
 | `GEAR_LIFESTEAL_MAX` | `0.20` | Nhẫn ở bậc 100: % sát thương gây ra hồi thành máu. Bằng đúng `DMG_MAX` — hai món cùng ăn theo sát thương gây ra nên chung một thang đo |
 | `GEAR_ICON_PATH` | `gear\<key>\NN.blp` | Công thức dựng đường dẫn icon. Thêm cảnh giới = thả ảnh + chạy `w3gear_icons.py`, không sửa Lua |
-| `GEAR_ICON_MAX` | `1` | Cảnh giới cao nhất **đã có ảnh**. Trên mức này thì dùng ảnh của mức này |
+| `GEAR_ICON_MAX` | `20` | Cảnh giới cao nhất **đã có ảnh**. Trên mức này thì dùng ảnh của mức này |
 | `GEAR_MITIG_CAP` | `0.40` | Trần **cứng** cho tổng phần giảm sát thương. Khiên/Áo Choàng và bị động `reduce` **nhân** với nhau chứ không cộng, nên không bao giờ chạm 100% — trần này chặn thêm một lần nữa |
 | `GEAR_SLOTS` | `{cột, dòng}` mỗi món | Bố cục lưới ô trong bảng. Bảng chỉ **đọc** — đổi chỗ hai món là sửa một dòng ở đây, không đụng `1_panel.lua`. Lệch số ô/số món thì `API.trace` báo lúc vào map |
 | `GEAR_DOLL_COL` | `2` | Cột giữa lưới = lý lịch hero (icon + tên + cảnh giới). `nil` thì bỏ cột đó |
-| `GEAR_DOLL_ICON` | `0.090` | Cạnh ô icon hero, 162px @1080p — phóng 2,5 lần từ 64px. Lấp đầy cột (`0.1375`) là 3,9 lần và nhìn ra bệt |
+| `GEAR_DOLL_ICON` | `0.130` | Cạnh ô icon hero. Tăng từ `0.090` ngày 2026-09-18: ở cỡ cũ ô búp bê còn 75% là mảng đen |
 | `GEAR_PET_SLOT` | `{2,4}` | Ô Pet: chỗ dành sẵn, vẽ như ô thật nhưng **không có nút**. `nil` thì bỏ |
 
 Cộng vào **sát thương nền**, không cộng chỉ số — Tu Vi đã cộng chỉ số rồi, và
@@ -261,7 +259,7 @@ Chi tiết: [02-he-thong/quay-thuong.md](../02-he-thong/quay-thuong.md) ·
 | `SHOP` | Bốn món `{ code, vi, en, item/iron, price, icon, desc_vi }` | Món có `iron` thay cho `item` thì **không dùng túi đồ** — cộng thẳng vào bộ đếm |
 | `SHOP_CHECK_BAG` | Chặn mua khi đầy túi | `true`. Không có nó thì item rơi xuống đất và người chơi mất vàng mà không hiểu vì sao |
 | `SHOP_STACK_MAX` | Gộp mấy lượt vào một ô | `10`. Gộp bằng tay vì item có sẵn của game không do ta nắm thuộc tính tự gộp |
-| `START_ITEMS` | Quà phát sau khi chọn hero | Dùng **chung bảng** với `SHOP`, tra theo `code` — hai chỗ cùng tạo một thứ thì sớm muộn cũng lệch |
+| `START_ITEMS` · `TOWER_START` · `IRON_START` | Quà phát khi qua cổng `HeroMoveRegion` lần đầu | Dùng **chung bảng** với `SHOP`, tra theo `code` — hai chỗ cùng tạo một thứ thì sớm muộn cũng lệch |
 
 Giá định theo **tổng vàng cả ván ~12 400** *(quái 4 000 + Cơ Duyên ~8 400)*,
 không theo bậc. Đá Huyền Thiết `25` là đối thủ đầu tiên của Vàng ngoài lọ thuốc.
@@ -341,7 +339,7 @@ Bốn cái, **tắt hết trước khi phát hành** — [lenh-debug.md](../04-m
 | `MOB_EHP_FOLLOW_CULT` | `true` | Quái **bám theo** đường cong Tu Vi thay vì có đường cong riêng. Hệ số triệt tiêu ở cả hai vế nên tỉ lệ "mấy phát một con" phẳng theo định nghĩa — đổi `CULT_STAT_STEP` không phải chỉnh gì thêm |
 | `MOB_DMG_FOLLOW_POW` | `0.85` | Mũ của hệ số dùng cho **sát thương** quái. `< 1` = quái độc chậm hơn hero khoẻ lên |
 | `MOB_EHP_REALM_STEP` | `1.22` | Chỉ còn dùng khi `MOB_EHP_FOLLOW_CULT = false` |
-| `PANEL_W` | `0.68` | Năm thẻ. Ở `0.56` thì nhãn `IV. Treasures` tràn sang `V. Shop` |
+| `PANEL_W` | `0.74` | **Sáu** thẻ. Ở `0.56` thì nhãn `IV. Treasures` tràn sang `V. Shop`; nới lên `0.74` khi thêm thẻ `VI. Nhà Chính` |
 | `SKILL_ZERO_BASE` `_INT` | *(bảng)* | Tắt hiệu ứng gốc của ability bản sao. Xem [ability-ban-sao.md](ability-ban-sao.md) |
 | `SKILL_CARRY_BASE` | *(bảng)* | Mượn trường gốc làm **vật mang** cho giáp, thay vì tắt rồi tự cộng |
 | `FORTUNE_ELITE` `FORTUNE_BOSS` | `1` `3` | Lượt quay. 7/cảnh giới, 140 cả ván. `5`/`10` cho 600 lượt = 30 phút ngồi chọn menu |

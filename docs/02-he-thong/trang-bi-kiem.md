@@ -240,6 +240,41 @@ nhau ở mọi thẻ, nếu không đổi thẻ một cái là khung nhảy.
 **Một nút, hai việc:** chưa tới Hoàn Hảo thì nút là `LUYEN Hoan Hao  ~15`, tới
 rồi thì thành `TIEN GIAI  10`.
 
+### Nhãn tiến độ trên icon *(2026-09-19)*
+
+Mỗi ô có một dải chữ nhỏ **đè lên mép dưới icon**, ghi **tổng bậc đã đi trên
+tổng bậc**:
+
+```
+   +--------+
+   |  [##]  |      xám   0/100   chưa luyện
+   | 33/100 |      ngọc  33/100  đang leo
+   +--------+      vàng  100/100 kịch trần
+```
+
+**Lỗi đã ship:** lưới chỉ có icon và **nút**, mà nút ghi **giá**
+(`FORGE Hoan Hao  15`) chứ không ghi **trạng thái**. Tám ô trông y hệt nhau, nên
+người chơi không đọc ra món nào đã luyện tới đâu — phải suy ngược từ con số tiền,
+hoặc liếc sang bảng bên phải mà bảng đó thì dễ sót.
+
+**Vì sao là `33/100` chứ không phải `3/5`:**
+
+- `3/5` không phân biệt được Phàm Nhân cấp 3 với Tiên Đế cấp 3, mà hai cái đó
+  cách nhau cả một ván chơi.
+- Một con số duy nhất thì **tám món so sánh được với nhau bằng một cái liếc** —
+  đó đúng là câu hỏi *"món nào đang tụt lại"*.
+- Tên cấp (`Trung Cấp` / `Exalted`) không vừa bề ngang icon `0.036` (~74px).
+
+**Đè lên icon chứ không thêm một hàng.** Thêm hàng thì `cellH()` to ra, mà
+`bodyH()` lấy max nên **cả bốn thẻ** cùng cao lên theo — và bảng thì vừa bị chê
+là nhiều mảng đen quá.
+
+Tên cấp đầy đủ vẫn nằm ở bảng bên phải (`Áo Giáp - Trung Cấp`). **Cảnh giới**
+thì không nhét vào đó được: cột rộng `sw × 0.58`, mà `Necklace - Exalted` đã
+chiếm 164px — thêm `Sáng Thế Thần ` nữa là tràn sang cột chỉ số. Cảnh giới đọc
+gián tiếp qua tổng bậc trên nhãn, và đọc thẳng ở nhãn nút khi chạm trần
+(`CHO Kim Dan`).
+
 **Ô tích ở giữa (khe nút của ô Pet)** đổi nhãn cả tám nút cùng lúc:
 `[X] LUYEN GOP` → `LUYEN Hoan Hao  ~15`, `[ ] LUYEN LE` → `LUYEN  1`. Mặc định
 bật. Nó là trạng thái UI **cục bộ**, không đồng bộ — xem

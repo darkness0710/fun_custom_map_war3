@@ -503,7 +503,17 @@ end
 
 local function startBoss()
   S.boss = nil
-  probe()
+  -- Phep do NAY TON: no tao 20 unit roi xoa ngay, moi lan vao map.
+  --
+  -- No kiem "boss co phai hero khong, co biet bay khong" -- dieu chi doi
+  -- khi CFG.BOSSES doi, tuc luc DANG LAM MAP. Ban choi that thi bang do
+  -- khong doi giua chung, nen chay lai moi van la tra gia cho mot cau
+  -- tra loi da biet.
+  --
+  -- Danh doi, biet truoc: go nham mot ma boss o ban release thi khong
+  -- bao luc vao map nua, ma doi toi canh gioi do moi lo ra. Chap nhan --
+  -- doi lay khoi dong nhe hon cho moi van choi.
+  if CFG.DEBUG then probe() end
   if BlzGetEventDamageTarget ~= nil then
     local t = CreateTrigger()
     TriggerRegisterAnyUnitEventBJ(t, EVENT_PLAYER_UNIT_DAMAGED)

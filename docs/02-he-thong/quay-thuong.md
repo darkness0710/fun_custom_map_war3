@@ -27,8 +27,71 @@ cả thanh giao diện đáy (~0.12) lẫn mép trên.
 > quái chết, trên **mọi** máy; ở đây chỉ vẽ lại thứ đã có. Xem mục cuối tài liệu
 > này về lý do.
 
-Hạ **tinh anh** được 1 lượt, **boss** được 3 lượt. Mỗi lượt mở **hai thẻ**, chọn
-**một**.
+Mỗi lượt mở **hai thẻ**, chọn **một**. Ba nguồn cho lượt quay:
+
+| Nguồn | Lượt | Khoá `CFG` |
+|---|---|---|
+| Hạ **tinh anh** | 1 | `FORTUNE_ELITE` |
+| Hạ **boss** | 3 | `FORTUNE_BOSS` |
+| Qua cổng `HeroMoveRegion` về nhà **lần đầu** | 1 | `GATE_ROLL` |
+| Hạ **Thánh Thú** | 3 · 5 · 8 · 12 | `SIDE_QUESTS[i].rolls` |
+
+Nguồn thứ ba là quà làm quen, **một lần một người** — xem
+[nha-chinh.md](nha-chinh.md). Nó nằm ở cổng chứ không ở lúc pick hero vì cổng
+cách chỗ hero hiện ra vài bước: có quà thì đoạn đường đó có lý do.
+
+### Khung tự đóng bảng ESC *(2026-09-19)*
+
+**Lỗi đã ship:** đang mở `ESC` mà tinh anh hoặc boss chết thì khung Cơ Duyên bật
+lên **đè lên bảng** — hai khung cùng neo vào `ORIGIN_FRAME_GAME_UI`, không cái
+nào biết cái nào. Người chơi thấy chữ chồng chít và không bấm được gì cho ra hồn.
+
+`showFrame()` gọi `API.panelHide(pid)` trước khi hiện. **Khung Cơ Duyên là cái
+bật lên không xin phép** (từ sự kiện quái chết), nên nó là bên phải nhường đường
+— chứ không phải bắt bảng đi kiểm xem có khung nào sắp bật hay không.
+
+### Hiệu ứng chia bài *(2026-09-19)*
+
+Đổi thẻ giữa hai lượt trước đây là một cú **nhảy**: chữ và icon đổi tại chỗ
+trong cùng một khung hình, không có gì báo là vừa sang lượt mới. Có 12 lượt liên
+tiếp (Thanh Long) thì nó thành một cái bảng nhảy loạn.
+
+`dealIn()` chia **từng cột một**, cách nhau `CFG.FORTUNE_DEAL_STEP = 0.10` giây.
+Đặt `0` là tắt hẳn.
+
+Chỉ dùng `BlzFrameSetVisible` — **không** dùng alpha hay scale: hai thứ đó không
+chắc có ở mọi bản, mà một hiệu ứng trang trí thì không đáng để làm hỏng khung.
+Ẩn cả cột **lẫn nút**: để lại cái nút không thì nó lơ lửng một mình, nhìn ra lỗi
+vẽ chứ không ra hiệu ứng. Và kiểm lại `st.shown` **lúc đến giờ** — người chơi có
+thể đã đóng khung, bật lại một cái thẻ lẻ giữa màn hình là một lỗi nhìn thấy
+được.
+
+Không đồng bộ: nó không đổi một chút trạng thái nào, và mỗi máy có khung riêng.
+
+### Thánh Thú — phần thưởng của bốn cái mốc *(2026-09-19)*
+
+| Con | Mốc | Lượt |
+|---|---|---|
+| Chu Tước | Phàm Nhân (1) | **3** |
+| Huyền Vũ | Hoá Thần (6) | **5** |
+| Bạch Hổ | Chân Tiên (11) | **8** |
+| Thanh Long | Tiên Đế (16) | **12** |
+| | | **28** |
+
+So với tinh anh 1 / boss 3 thì đây rõ ràng là hạng khác. 28 lượt trên 140 lượt
+của cả ván — **+20%**, đáng kể mà không làm lệch nhịp.
+
+**Vì sao là lượt quay chứ không phải vàng.** Trận Thanh Long dài 240 giây. Kết
+thúc mà chỉ được một cục Linh Khí thì hụt: cả ván kiếm ~1,88 triệu Linh Khí, một
+cục 50 000 chỉ là làm tròn số. Lượt quay thì **nổ ngay trên màn hình** — khung
+Cơ Duyên tự bật, hai thẻ, chọn một. Phần thưởng của một cái mốc phải là thứ
+*không farm được bằng cách khác*.
+
+**Chỉ ai CÓ MẶT trong hang mới được.** Người đang ở nhà chính farm quái mà vẫn
+ăn thưởng thì một người đánh cả đội cùng giàu — và trận 240 giây mất hết ý
+nghĩa. Không đòi còn sống: **chết trong hang vẫn là đã đánh**, xác nằm ngay đó
+nên phép đo khoảng cách vẫn đúng. Ai đứng ngoài nhận một dòng xám nói rõ vì sao
+không có gì — im lặng thì người chơi tưởng hệ thưởng hỏng.
 
 | Thẻ | Nhận được | Phẳng hay leo |
 |---|---|---|

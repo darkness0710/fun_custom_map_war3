@@ -21,18 +21,21 @@
 
 
 > **Trạng thái:** Khung đã cài — **thân boss chưa có**
-> **Cập nhật:** 2026-09-16
-> **Code:** [2_wave.lua](../../src/3_battle/2_wave.lua)
-> **Khoá CFG:** `BOSSES` `BOSS_MECH` `BOSS_SECONDS` `BOSS_HITS_TO_KILL` `BOSS_SCALE` `REWARD_BOSS_*`
+> **Cập nhật:** 2026-09-19
+> **Code:** [3_boss.lua](../../src/3_battle/3_boss.lua) ·
+> [2_wave.lua](../../src/3_battle/2_wave.lua)
+> **Khoá CFG:** `BOSSES` `BOSS_MECH` `BOSS_SECONDS` `BOSS_HITS_TO_KILL` `BOSS_SCALE` `BOSS_DPS_FACTOR` `BOSS_SKILL_SHARE` `REWARD_BOSS_*`
 
-> **Đã cài tới đâu.** Stage `11 × r` sinh đúng một con, chỉ số theo `BOSS_EHP` /
-> `BOSS_DMG`, to hơn và đỏ hơn, tên `"<cảnh giới> - Ma Ton"`, hạ xong rơi Tinh
-> Thạch và cả đội cùng nhận. Hạ boss stage 100 là thắng.
+> **Viết lại 2026-09-19.** Trang này từng tả hệ chỉ số cũ — boss mạnh gấp
+> `BOSS_EHP` lần lính cùng stage — và một danh sách khoá `BOSS_CC_RESIST` /
+> `BOSS_PHASES` / `BOSS_ENRAGE_TIME` "sẽ làm". **Không khoá nào trong số đó còn
+> tồn tại.** Hệ hiện tại **đo sức mạnh thật của đội** rồi suy ngược ra chỉ số
+> boss, và các cơ chế nằm trong `CFG.BOSS_MECH`.
 >
-> **Phát cuồng thì đã có** (`BOSS_MECH.enrage`), và `CFG.BOSSES` là bảng 20
-> dòng có thật — mỗi cảnh giới một unit hero riêng. Vẫn **chưa có** kháng khống
-> chế và đổi giai đoạn: `BOSS_CC_RESIST`, `BOSS_PHASES`, `BOSS_ARMOR_BONUS`
-> nhắc dưới đây chưa tồn tại trong `CFG`.
+> **Đã cài tới đâu.** Stage thứ **5** của mỗi cảnh giới (`5r`, tức 5 · 10 · …
+> · 100) sinh đúng một con từ `CFG.BOSSES` — 20 dòng, mỗi cảnh giới một unit
+> hero riêng, to hơn và đỏ hơn. Hạ xong rơi Linh Khí + Gỗ + 3 lượt Cơ Duyên,
+> cả đội cùng nhận. Hạ boss stage 100 là thắng.
 > **Xem kèm:** [dot-quai.md](dot-quai.md) ·
 > [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md)
 
@@ -48,52 +51,73 @@ chỉ biết dọn đám đông.
 
 ## Luật
 
-**L1. Boss chiếm trọn stage `11 × r`, một mình.**
-Không lính thường, không tinh anh. Người chơi vừa dọn xong tầng viên mãn, màn
-hình lặng đi, rồi boss bước ra.
+**L1. Boss chiếm trọn stage thứ 5 của cảnh giới, một mình.**
+`TIERS_PER_REALM = 4` tầng lính + 1 boss = 5 stage mỗi cảnh giới, nên boss nằm ở
+stage `5r`. Không lính thường, không tinh anh. Người chơi vừa dọn xong tầng viên
+mãn, màn hình lặng đi, rồi boss bước ra.
 
-**L2. Boss mạnh gấp `BOSS_EHP` lần lính của chính stage đó.**
-`BOSS_EHP` = 80, so với 60 của cả một wave. Nghĩa là trận boss dài bằng
-`80/60 ≈ 1.33` lần thời gian dọn một wave — ở **mọi** cảnh giới, vì boss và lính
-trôi trên cùng một đường cong.
+**L2. Chỉ số boss ĐO TỪ ĐỘI, không suy từ đường cong quái.**
 
-Đó là lý do chọn 80 chứ không phải 100: 80 là số giữ cho mọi trận boss dài như
-nhau từ Phàm Nhân tới Sáng Thế Thần, không phải số cho đẹp.
+```lua
+dps, ehpAvg, n = measureParty()      -- hoả lực và máu hiệu dụng THẬT
+máu boss   = dps    × BOSS_SECONDS      (40)
+sát thương = ehpAvg ÷ BOSS_HITS_TO_KILL (12)
+```
 
-**L3. Đòn đánh thường của boss phải nhẹ. Mối đe doạ nằm ở kỹ năng.**
-`BOSS_DMG` = 3, không phải 10. Ở cảnh giới 20 con số đó là ~5 000 mỗi đòn,
-đúng 3 đòn là hero phải lùi.
+Nghĩa là **mọi trận boss dài đúng 40 giây hoả lực cả đội**, ở mọi cảnh giới và
+với mọi cách chơi — người farm kỹ và người chơi ẩu đều gặp một trận 40 giây.
+
+Đây là bài học phải trả giá mới có. Bản cũ suy chỉ số từ **cảnh giới**; đo lại
+thì ở cảnh giới 16 chỉ số thật của hero là **30 105** mà phần đến từ cảnh giới
+chỉ **511** — **1,7 %**. Trang bị và kỹ năng chiếm 98,3 %, gấp 59 lần. Một
+con boss suy từ cảnh giới vì thế hoặc vô hại hoặc bất khả thi, tuỳ người chơi
+farm nhiều hay ít.
+
+**Không nhân thêm theo số người.** `dps` ở trên đã là tổng của cả đội rồi; nhân
+hai lần là phạt người chơi vì rủ được bạn.
+
+**L3. Sát thương boss là số THÔ, và giáp boss bị ép về 0.**
+`ehpAvg` là **máu hiệu dụng** — đã chia cho phần giảm từ giáp. Nếu còn để boss
+có giáp nữa thì giáp bị đếm hai lần. Cuối ván hero có 8 070 giáp (giảm 99,79 %),
+nên đòn boss chạm tới chỉ còn 4 máu.
+Vì vậy `BlzSetUnitArmor(u, 0.0)` — xem
+[ADR 0010](../05-quyet-dinh/0010-giap-khong-nam-trong-duong-cong.md).
+
+**L4. Mối đe doạ nằm ở CƠ CHẾ, không ở đòn thường.**
+Mỗi con boss khai một danh sách `mech` trong `CFG.BOSSES`, lấy từ `CFG.BOSS_MECH`:
+
+| Cơ chế | Làm gì | Số |
+|---|---|---|
+| `slam` | Chấn địa: vẽ vòng, chờ rồi nổ | `cd 9s` · `cast 2s` · `radius 600` · `factor 10` |
+| `charge` | Lao tới hero **xa nhất** | `cd 11s` · `factor 3` |
+| `summon` | Triệu thuộc hạ | `cd 20s` · `count 4` |
+| `shield` | Khiên = 12 % máu tối đa | `cd 15s` · `ratio 0.12` |
+| `lifesteal` | Hút lại % sát thương gây ra | `ratio 0.25` |
+| `reflect` | Phản % sát thương nhận | `ratio 0.15` |
+| `shred` | Mỗi đòn trừ 2 % giáp **hiện có** | `perHit 0.02` |
+| `enrage` | Dưới 30 % máu thì ×1.60 sát thương | `at 0.30` · `dmg 1.60` |
 
 Cho boss đánh thường nặng là thiết kế lười: người chơi không có gì để đọc, không
 có gì để né, chỉ có so sánh hai con số máu. Sát thương phải đến từ thứ **báo
-trước được** — một kỹ năng có animation, có vùng, có thời gian chuẩn bị.
+trước được** — `slam` có vòng và có 2 giây chuẩn bị, đúng vì lý do đó.
 
-**L4. Boss kháng khống chế, không miễn nhiễm.**
-`BOSS_CC_RESIST` = 0.6 — mọi hiệu ứng khống chế chỉ còn 40 % thời gian.
+**L5. Phát cuồng kích theo NGƯỠNG MÁU, không theo đồng hồ.**
+`BOSS_MECH.enrage = { at = 0.30, dmg = 1.60 }` — xuống dưới 30 % máu thì sát
+thương ×1.60, một lần, không cộng dồn.
 
-Miễn nhiễm hoàn toàn thì mọi kỹ năng khống chế thành rác trong 20 trận boss, và
-người chơi học được rằng đừng bao giờ chọn chúng. Kháng một phần giữ chúng có
-ích mà không cho phép xích boss chết đứng.
+Theo đồng hồ thì đội chơi đúng mà chẳng may kéo dài vẫn bị phạt. Theo ngưỡng
+máu thì nó là **giai đoạn hai của trận**, ai cũng gặp, và gặp đúng lúc trận sắp
+kết thúc — chỗ mà một cú sai còn sửa được.
 
-**L5. Boss đổi giai đoạn ở các mốc `BOSS_PHASES`.**
-Mặc định 70 % và 40 % máu. Mỗi mốc: triệu thuộc hạ, và mở thêm một kỹ năng.
-
-Thuộc hạ là chỗ duy nhất boss có quái thường — và có mặt đúng để AoE lại có việc
-làm giữa một trận đơn mục tiêu.
-
-**L6. Boss phát điên nếu kéo quá dài.**
-Không hạ trong `BOSS_ENRAGE_TIME` giây thì cứ mỗi `BOSS_ENRAGE_STEP` giây boss
-cộng thêm `BOSS_ENRAGE_DMG` (100 %) sát thương, cộng dồn.
-
-Không có luật này thì một đội thiếu DPS nhưng thừa hồi máu sẽ đứng đó nửa tiếng,
-và ván game treo mà không ai thua. Phát điên biến "thiếu DPS" thành "thua trong
-hai phút" — thua rõ ràng tốt hơn treo vô hạn.
+**L6. `charge` chỉ nhắm hero ĐANG Ở TRONG TRẬN.**
+Lao tới một người đang đứng ở nhà chính là con boss bay nửa bản đồ và trận tự
+giải tán. Bán kính giới hạn bằng dây xích của chính nó.
 
 **L7. Boss chạm nhà chính là thua ngay.**
 Không trừ mạng — không có cơ chế mạng nào cả
-([ADR 0011](../05-quyet-dinh/0011-nha-chinh-dem-mang.md) đã bị lật). Boss đánh
-nhà bằng sát thương thường, mà `BOSS_DMG` = 3 lần lính thì nhà cạn máu trong
-khoảng `HOUSE_HP_HITS / 3` đòn. Trên thực tế là hết.
+([ADR 0011](../05-quyet-dinh/0011-nha-chinh-dem-mang.md) đã bị lật). Sát thương
+boss tính theo máu hiệu dụng của **hero**, mà nhà chính thì dai hơn hero nhiều,
+nên nhà không đổ trong một đòn — nhưng cũng không cầm được lâu.
 
 **L8. Hạ boss stage 100 là thắng.**
 Điều kiện thắng duy nhất của map.
@@ -124,27 +148,25 @@ dần chứ không bị ném vào một trận boss ba cơ chế ngay từ Phàm
 
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
-**Đã có trong `CFG`:**
-
-| Khoá | Ý nghĩa | Ràng buộc |
-|---|---|---|
-| `BOSS_EHP` | Gấp mấy lần lính cùng stage | 80. Đổi nó là đổi **thời lượng mọi trận boss cùng lúc** — tỉ lệ với `60` của một wave |
-| `BOSS_DMG` | Gấp mấy lần lính cùng stage | Giữ thấp (3). Xem L3 |
-| `BOSS_SCALE` | Cỡ model | Thuần hình ảnh, nhưng là thứ báo "đây là boss" trước cả thanh máu |
-| `SCALE_BOSS_EHP_PER_PLAYER` | Nhân máu theo số người | Cao hơn lính — [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md) |
-| `REWARD_BOSS_QI` `REWARD_BOSS_LUMBER` | Boss rơi ra | `100` + `5`, **phẳng** — không theo cảnh giới. Gỗ chỉ rơi từ tinh anh và boss, nên nó bị chặn bởi **nội dung** chứ không phải bởi ví — [kinh-te.md](kinh-te.md) |
+| `BOSS_SECONDS` | Trận boss dài mấy giây hoả lực cả đội | `40`. **Đây là nút chỉnh độ dài mọi trận boss cùng lúc** |
+| `BOSS_HITS_TO_KILL` | Boss hạ một hero đứng yên trong mấy đòn | `12`. Nhỏ hơn = boss đánh đau hơn |
+| `BOSS_DPS_FACTOR` | Hệ số hiệu chỉnh phép đo hoả lực | `1.0`. Chỉnh khi trận thật lệch hẳn so với 40 giây |
+| `BOSS_SKILL_SHARE` | Kỹ năng đóng góp thêm bao nhiêu vào hoả lực ước tính | `1.0` = kỹ năng cộng thêm 100 % so với đòn thường |
+| `BOSS_ATTACKS_FALLBACK` | Đòn/giây khi không đọc được hồi chiêu thật | `1.0`. Có `API.trace` khi phải lùi về số này |
+| `BOSS_SCALE` | Cỡ model | `2.2`. Thuần hình ảnh, nhưng là thứ báo "đây là boss" trước cả thanh máu |
+| `BOSS_MECH` | Bảng số của 8 cơ chế | Xem L4 |
+| `BOSSES` | Bảng 20 dòng `{ r, vi, en, unit, mech }` | Đúng 20 dòng, khớp thứ tự `REALMS`. Id phải qua `id()` — [ADR 0006](../05-quyet-dinh/0006-fourcc-tra-hai-gia-tri.md) |
+| `REWARD_BOSS_QI` `REWARD_BOSS_LUMBER` | Boss rơi ra | `100` + `5`, **phẳng** — không theo cảnh giới — [kinh-te.md](kinh-te.md) |
 | `FORTUNE_BOSS` | Số lượt Cơ Duyên boss cho | `3` *(tinh anh cho `1`)* — [quay-thuong.md](quay-thuong.md) |
 
-**Chưa tồn tại — thiết kế cho L4–L6:**
+**Đã xoá 2026-09-19** vì không file nào đọc: `BOSS_ENRAGE_AT`, `BOSS_ENRAGE_DMG`,
+`BOSS_SKILL_CD`, `BOSS_SKILL_RADIUS`, `BOSS_SKILL_FACTOR`, `BOSS_LIFESTEAL` —
+tất cả đã chuyển vào `CFG.BOSS_MECH`. Chúng nằm lại một mình sau đợt chuyển, và
+**trang này đọc chúng rồi tả cơ chế sai theo** suốt từ đó.
 
-| Khoá | Ý nghĩa | Ràng buộc |
-|---|---|---|
-| `BOSS_ARMOR_BONUS` | Giáp cộng thêm | Giáp là EHP trá hình — máu thật phải chia lại. [ADR 0010](../05-quyet-dinh/0010-giap-khong-nam-trong-duong-cong.md) |
-| `BOSS_CC_RESIST` | Giảm bao nhiêu phần thời gian khống chế | `0.0`–`1.0`. `1.0` là miễn nhiễm — **đừng** |
-| `BOSS_ENRAGE_TIME` | Giây trước khi phát điên | Phải lớn hơn hẳn thời gian hạ boss dự kiến (~1.33 × `WAVE_TIME`), nếu không đội chơi đúng cũng bị phạt |
-| `BOSS_ENRAGE_STEP` `BOSS_ENRAGE_DMG` | Cứ mấy giây thì cộng bao nhiêu | |
-| `BOSS_PHASES` | Mốc % máu đổi giai đoạn | Giảm dần, ví dụ `{0.70, 0.40}` |
-| `BOSSES` | Bảng 20 dòng `{ r, vi, en, unit, mech }` | Đúng 20 dòng, khớp thứ tự `REALMS`. Id phải qua `id()` — [ADR 0006](../05-quyet-dinh/0006-fourcc-tra-hai-gia-tri.md) |
+**Chưa bao giờ tồn tại**, dù bản cũ của trang này nhắc tới như thể sắp làm:
+`BOSS_CC_RESIST` *(kháng khống chế)*, `BOSS_PHASES` *(đổi giai đoạn theo mốc
+máu)*, `BOSS_ARMOR_BONUS`. Nếu muốn làm thì xem mục **Chưa làm**.
 
 ## Ràng buộc kỹ thuật
 

@@ -269,8 +269,7 @@ local function upgrade(pid, index)
       API.info(pid, CFG.C_RED .. "Khong gan duoc " .. API.idToStr(sk.id) ..
         CFG.C_END)
     end
-    API.msg(nil, API.t("skill_unlocked",
-      CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END,
+    API.say(pid, API.t("skill_unlocked",
       CFG.C_JADE .. API.pick(sk) .. CFG.C_END))
     API.panelRefresh(pid)
     return
@@ -287,14 +286,82 @@ local function upgrade(pid, index)
     API.msg(pid, CFG.C_RED ..
       API.t("skill_warn", API.pick(sk), real, cur + 1) .. CFG.C_END)
   end
-  API.msg(pid, API.t("skill_up", CFG.C_JADE .. API.pick(sk) .. CFG.C_END,
+  -- Tin CHUNG: ca ban do thay ai dang len tay. Cung ly do voi
+  -- skill_unlocked o nhanh tren.
+  API.say(pid, API.t("skill_up", CFG.C_JADE .. API.pick(sk) .. CFG.C_END,
                      cur + 1, ceil))
   API.panelRefresh(pid)
 end
 
 -- ---------- The "Ky Nang" trong bang phim E ----------
 
-local function fmt(sk, level, rank)
+-- DOC so tu chinh ability, khong tu tinh.
+--
+-- Hai ky nang (A003 Endurance Aura, A006 Hoi Sinh) co bang so nam tron
+-- trong war3map.w3a do World Editor dat. Tu tinh lai o day la co HAI
+-- noi cung khai mot con so, va hai noi thi som muon lech -- nguoi choi
+-- doc mot dang, danh ra mot dang.
+--
+-- Hang so co the vang mat o ban nay: TRACE roi lui ve hien bac, khong
+-- nuot. Do ten that bang lenh "-nat oae".
+local function fromAbility(pid, sk, level)
+  if sk.fromCooldown then
+    if BlzGetAbilityCooldown == nil then
+      API.trace("skill: khong co BlzGetAbilityCooldown -- " ..
+                API.idToStr(sk.id) .. " hien bac thay vi hoi chieu")
+      return nil
+    end
+    return string.format("%.0fs", BlzGetAbilityCooldown(sk.id, level - 1))
+  end
+
+  if sk.fromAbil == nil then return nil end
+  -- BlzGetAbilityRealLevelField nhan HANDLE ability, ma handle chi lay
+  -- duoc tu mot unit dang mang no. Chua co hero thi chiu.
+  local h = (S.p[pid] or {}).hero
+  if h == nil or BlzGetUnitAbility == nil
+     or BlzGetAbilityRealLevelField == nil then
+    return nil
+  end
+  local F = _G[sk.fromAbil]
+
+  -- DUONG VONG khi hang so vang mat.
+  --
+  -- Do duoc o 1.31.1 (dong "-nat" trong file vet): THIEU ca
+  -- ABILITY_RLF_ATTACK_SPEED_INCREASE_OAE1 lan
+  -- ABILITY_RLF_MOVEMENT_SPEED_INCREASE_OAE2 -- tuc bang ky nang cua
+  -- A003 chi hien duoc "bac N". Rieng BlzGetAbilityRealLevelField thi
+  -- CO, no chi thieu cai handle truong de dua vao.
+  --
+  -- ConvertAbilityRealLevelField dung ma truong 4 ky tu, nen dung duoc
+  -- ma khong can hang so co ten. Co ban co ham nay, co ban khong --
+  -- tra truoc khi goi, va van lui ve "bac N" neu khong co.
+  if F == nil and sk.fromField ~= nil then
+    local conv = _G["ConvertAbilityRealLevelField"]
+    if conv ~= nil then F = conv(FourCC(sk.fromField)) end
+  end
+
+  if F == nil then
+    API.trace("skill: khong co hang so " .. tostring(sk.fromAbil) ..
+              " (va khong chuyen duoc tu ma truong " ..
+              tostring(sk.fromField) .. ") -- " .. API.idToStr(sk.id) ..
+              " hien bac thay vi so that")
+    return nil
+  end
+  local ab = BlzGetUnitAbility(h, sk.id)
+  if ab == nil then return nil end
+  local v = BlzGetAbilityRealLevelField(ab, F, level - 1)
+  if v == nil then return nil end
+  return sk.fromPct and string.format("%.0f%%", v * 100.0)
+                     or string.format("%.2f", v)
+end
+
+local function fmt(pid, sk, level, rank)
+  local fromA = fromAbility(pid, sk, level)
+  if fromA ~= nil then return fromA end
+  -- Doc khong ra thi noi RO la bac may, chu khong bia mot con so.
+  if sk.fromAbil ~= nil or sk.fromCooldown then
+    return API.t("skill_rank_n", level)
+  end
   if sk.statVal ~= nil then
     return "+" .. API.num(math.floor(statAt(sk, level, rank) + 0.5))
   end
@@ -319,7 +386,7 @@ end
 
 -- Mot dong mo ta: hieu luc, roi hoi chieu / mana neu co.
 local function subOf(pid, sk, lv)
-  local s = fmt(sk, lv, API.cultRank and API.cultRank(pid) or 1)
+  local s = fmt(pid, sk, lv, API.cultRank and API.cultRank(pid) or 1)
   if sk.factor ~= nil and sk.factor > 0 then
     -- Ghi ro dang an theo chi so nao. Cong thuc lay chi so CAO NHAT, ma
     -- nguoi choi khong co cach nao biet do la cai nao neu khong noi.

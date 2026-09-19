@@ -167,6 +167,47 @@ local function sayOnce(b, key, msg)
   b[key] = true
   API.msg(nil, msg)
 end
+-- ---------- Nap chi so luc buoc vao ----------
+--
+-- Goi tu onSideQuest() ngay sau khi dich chuyen. CHI nap khi con do dang
+-- DAY MAU -- neu khong, nguoi thu hai buoc vao giua tran se hoi day mau
+-- con boss va xoa het cong danh cua nguoi dau.
+local function arm(i)
+  local b = (S.side or {})[i]
+  if b == nil or b.u == nil or not API.alive(b.u) then return end
+  if b.armed and GetUnitState(b.u, UNIT_STATE_LIFE)
+                 < GetUnitState(b.u, UNIT_STATE_MAX_LIFE) then
+    return
+  end
+
+  local hp, dmg, n = armStats(b.def)
+  if hp == nil then return end
+
+  if BlzSetUnitMaxHP ~= nil then
+    BlzSetUnitMaxHP(b.u, hp)
+    SetUnitState(b.u, UNIT_STATE_LIFE, GetUnitState(b.u, UNIT_STATE_MAX_LIFE))
+  end
+  if BlzSetUnitBaseDamage ~= nil then BlzSetUnitBaseDamage(b.u, dmg, 0) end
+  local was = b.maxHp or 0
+  b.maxHp, b.dmg, b.armed, b.age = hp, dmg, true, 0.0
+  b.enraged, b.shield = false, 0.0
+  SetUnitVertexColor(b.u, 255, 255, 255, 255)
+
+  -- CHI ghi vet khi con so DOI DANG KE. Ham nay chay moi nhip khi hang
+  -- trong -- 4 con x 1 giay, ghi moi lan thi file vet phinh vo han va
+  -- nuot mat nhung dong that su dang doc.
+  --
+  -- Nguong 10%: doi duoi muc do la doi vat va (mot hero hoi mau), tren
+  -- muc do la doi that (len canh gioi, mua trang bi, them nguoi choi).
+  if was <= 0 or math.abs(hp - was) > was * 0.10 then
+    API.trace(string.format(
+      "sidequest: %d %s NAP -- %d hero, mau %d (%.0fs hoa luc), don %d (%.0f don)",
+      i, API.pick(b.def), n, hp,
+      b.def.seconds or CFG.SIDE_QUEST_SECONDS or 60.0,
+      dmg, b.def.hits or CFG.SIDE_QUEST_HITS or 14.0))
+  end
+end
+
 
 -- ---------- Nhip ----------
 --
@@ -234,7 +275,26 @@ local function tick()
   local dt = CFG.SIDE_QUEST_TICK or 1.0
   for i = 1, #(S.side or {}) do
     local b = S.side[i]
-    if b ~= nil then tickOne(b, dt) end
+    if b ~= nil then
+      -- NAP CHI SO KHI KHONG CO AI TRONG HANG.
+      --
+      -- LOI DA SHIP: truoc day chi nap luc bam Tien Hanh, nen tu luc vao
+      -- map toi luc ai do buoc vao, ca bon con van la ban goc Hmkg --
+      -- GIONG HET NHAU. Nguoi choi nhin vao thay bon con y het, va
+      -- tuong he chi so khong chay.
+      --
+      -- Nap o day thi chung khac nhau ngay khi doi co hero dau tien, va
+      -- tu cap nhat khi doi manh len -- khong phai doi buoc vao moi dung.
+      --
+      -- arm() tu tu choi neu con do dang bi danh do (mau < toi da), nen
+      -- goi moi nhip khong xoa cong nguoi dang danh. Nhung van chan them
+      -- o day: co nguoi trong hang la KHONG nap, du mau con day.
+      --
+      -- b.pinned: da co nguoi bam "Tien Hanh" mot lan roi thi THOI theo
+      -- doi. Xem armPin() ben duoi.
+      if not b.pinned and not anyHeroNear(b) then arm(i) end
+      tickOne(b, dt)
+    end
   end
 end
 
@@ -377,37 +437,6 @@ local function spawnOne(i)
   return u
 end
 
--- ---------- Nap chi so luc buoc vao ----------
---
--- Goi tu onSideQuest() ngay sau khi dich chuyen. CHI nap khi con do dang
--- DAY MAU -- neu khong, nguoi thu hai buoc vao giua tran se hoi day mau
--- con boss va xoa het cong danh cua nguoi dau.
-local function arm(i)
-  local b = (S.side or {})[i]
-  if b == nil or b.u == nil or not API.alive(b.u) then return end
-  if b.armed and GetUnitState(b.u, UNIT_STATE_LIFE)
-                 < GetUnitState(b.u, UNIT_STATE_MAX_LIFE) then
-    return
-  end
-
-  local hp, dmg, n = armStats(b.def)
-  if hp == nil then return end
-
-  if BlzSetUnitMaxHP ~= nil then
-    BlzSetUnitMaxHP(b.u, hp)
-    SetUnitState(b.u, UNIT_STATE_LIFE, GetUnitState(b.u, UNIT_STATE_MAX_LIFE))
-  end
-  if BlzSetUnitBaseDamage ~= nil then BlzSetUnitBaseDamage(b.u, dmg, 0) end
-  b.maxHp, b.dmg, b.armed, b.age = hp, dmg, true, 0.0
-  b.enraged, b.shield = false, 0.0
-  SetUnitVertexColor(b.u, 255, 255, 255, 255)
-
-  API.trace(string.format(
-    "sidequest: %d %s NAP -- %d hero, mau %d (%.0fs hoa luc), don %d (%.0f don)",
-    i, API.pick(b.def), n, hp,
-    b.def.seconds or CFG.SIDE_QUEST_SECONDS or 60.0,
-    dmg, b.def.hits or CFG.SIDE_QUEST_HITS or 14.0))
-end
 
 -- ---------- Ha xong ----------
 --
@@ -420,20 +449,54 @@ local function onDeath()
   if b == nil then return end
 
   local q = b.def
+
+  -- Lay toa do TRUOC khi buong b: phan thuong chia theo ai dang dung
+  -- trong hang, ma biet ai dung trong hang thi phai biet hang o dau.
+  -- Doc toa do cua xac van duoc -- unit chua bi Remove.
+  local bx, by = GetUnitX(b.u), GetUnitY(b.u)
+  local reach  = (CFG.SIDE_QUEST_LEASH or 1400.0)
+
   S.side[b.idx] = nil
   API.trace(string.format("sidequest: %d %s CHET sau %.1fs (thiet ke %.0fs)",
     b.idx, API.pick(q), b.age or 0.0, CFG.SIDE_QUEST_SECONDS or 60.0))
   API.msg(nil, CFG.C_GOLD .. API.t("sq_tamed", API.pick(q)) .. CFG.C_END)
+
+  -- PHAN THUONG: luot Co Duyen, chia theo MOC.
+  --
+  -- Chi cho ai CO MAT trong hang. Nguoi dang o nha chinh farm quai ma
+  -- van an thuong thi mot nguoi danh ca doi cung giau -- va tran 240
+  -- giay cua Thanh Long mat het y nghia.
+  --
+  -- Khong doi con song: chet TRONG hang van la da danh. Xac nam ngay
+  -- do, nen phep do khoang cach van dung.
+  local rolls = q.rolls or 0
 
   -- Doi pet sang con vua ha, va dua nguoi choi ve. Dua ve la PHAN THUONG
   -- cho viec thang, va no cung tranh phai ve them mot vung cua ra.
   for k = 1, #S.pids do
     local pid = S.pids[k]
     local d = S.p[pid]
-    if d ~= nil and d.hero ~= nil and API.alive(d.hero) then
-      d.petUnit = q.unit
-      if API.petSpawn ~= nil then API.petSpawn(pid) end
-      if API.goHome ~= nil then API.goHome(pid) end
+    if d ~= nil and d.hero ~= nil then
+      local near = API.distXY(bx, by, GetUnitX(d.hero),
+                              GetUnitY(d.hero)) <= reach
+      if rolls > 0 then
+        if near and API.fortuneAddRolls ~= nil then
+          API.fortuneAddRolls(pid, rolls)
+          API.msg(pid, CFG.C_GOLD ..
+            API.t("sq_reward", API.pick(q), rolls) .. CFG.C_END)
+        elseif not near then
+          -- Noi RO vi sao khong co gi. Im lang thi nguoi choi tuong he
+          -- thuong hong, va lan sau van dung ngoai.
+          API.msg(pid, CFG.C_GREY ..
+            API.t("sq_noreward", API.pick(q)) .. CFG.C_END)
+        end
+      end
+
+      if API.alive(d.hero) then
+        d.petUnit = q.unit
+        if API.petSpawn ~= nil then API.petSpawn(pid) end
+        if API.goHome ~= nil then API.goHome(pid) end
+      end
     end
   end
 end
@@ -489,6 +552,30 @@ local function startSideQuest()
             " Thanh Thu, day xich " .. (CFG.SIDE_QUEST_LEASH or 1400.0))
 end
 
+-- NAP ROI GHIM -- goi dung mot lan, luc nguoi choi bam "Tien Hanh".
+--
+-- Truoc do tick() van nap lai moi nhip khi hang trong, de bon con khac
+-- nhau ngay tu dau van va lon len theo doi. Nhung tu giay nguoi choi
+-- buoc vao, con so phai DUNG LAI.
+--
+-- LOI DA SHIP: khong ghim thi rut lui la vo nghia. Danh khong lai, chay
+-- ve nha mua trang bi, quay lai -- con thu vua nap lai theo suc moi cua
+-- ta, manh len dung bay nhieu. Khong co duong nao thang mot con minh
+-- chua du suc, tru viec danh mot mach.
+--
+-- Ghim xong thi moc canh gioi moi co nghia that: con thu duoc do theo
+-- suc cua doi DUNG LUC CAM KET, va mo trang bi sau do la loi cua nguoi
+-- choi chu khong bi he thong doi lai.
+local function armPin(i)
+  arm(i)
+  local b = (S.side or {})[i]
+  if b ~= nil and b.armed then
+    b.pinned = true
+    API.trace("sidequest: " .. i .. " GHIM chi so (mau " ..
+              (b.maxHp or 0) .. ", don " .. (b.dmg or 0) .. ")")
+  end
+end
+
 API.startSideQuest = startSideQuest
-API.sideQuestArm   = arm
+API.sideQuestArm   = armPin
 API.sideQuestCheck = checkUnlock

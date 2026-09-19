@@ -17,19 +17,74 @@ python build.py --lang en --map test2en.w3x
 `CFG.LANG = "en"` vào cuối khối đã sinh. Nhờ vậy build hai bản khác tiếng không
 làm bẩn cây làm việc, và `git diff` không nhảy lên sau mỗi lần build.
 
-## Năm kênh hiện chữ, và chỉ ba kênh phải dịch
+## Tám kênh hiện chữ, và chỉ bốn kênh phải dịch
 
 Đây là thứ hay bị bỏ sót nhất, nên đặt lên đầu.
 
 | Kênh | Ai đọc | Luật |
 |---|---|---|
 | `API.msg` | **người chơi** | **bắt buộc** qua `API.t()` |
+| `API.say` | **cả bàn** | **bắt buộc** qua `API.t()` — xem dưới |
 | `BlzFrameSetText` | **người chơi** | **bắt buộc** qua `API.t()` / `API.pick()` |
 | `BlzSetUnitName` | **người chơi** | **bắt buộc** qua `API.t()` / `API.pick()` |
 | `API.warn` | người làm map | miễn — tiếng Việt không dấu |
 | `API.info` | người làm map | miễn — thân báo cáo, không màu |
 | `API.dbg` | chỉ khi `CFG.DEBUG` | miễn |
 | `API.trace` | file vết | miễn |
+
+### Mọi dòng của người chơi đều có nhãn *(2026-09-19)*
+
+```
+[He Thong] Boss lao vao hero o XA nhat!
+[WorldEdit] da mo khoa Luyen The.
+```
+
+Nhãn dán **ở một chỗ duy nhất** — trong `msg()` và `say()` của
+[2_state.lua](../../src/1_core/2_state.lua), không phải ở ~100 chỗ gọi. Một chỗ
+sửa, không chỗ nào sót, và không có đường nào lọt ra một dòng không nhãn.
+
+| Hàm | Nhãn | Màu nhãn |
+|---|---|---|
+| `API.say(pid, …)` | `[<tên người chơi>]` | vàng `C_GOLD` |
+| `API.msg(pid, …)` | `[Hệ Thống]` / `[System]` | xanh nhạt `C_SYS` |
+| `API.warn` · `API.info` · `API.dbg` | **không nhãn** | |
+
+Hai màu khác nhau để phân biệt được **ngay từ ký tự đầu**: dòng nào là việc một
+*người* làm, dòng nào là *map* nói.
+
+**`warn`/`info` cố ý không có nhãn.** Dán "Hệ Thống" vào đó là nói dối về đối
+tượng đọc — chúng là chẩn đoán cho người làm map, và một dòng đỏ trần giữa đám
+dòng có nhãn chính là tín hiệu "có gì đó sai", đúng như mong muốn.
+
+Chuỗi nhãn là khoá i18n `sys_tag`. `msg()` nằm ở `1_core/2_state.lua`, nạp
+**trước** `6_i18n.lua` — nên `API.t` phải tra **lúc gọi**, và vẫn có nhánh lùi
+cho vài dòng báo rất sớm trước khi bảng chuỗi sẵn sàng.
+
+### `API.say` — tin chung, dạng `[Tên] nội dung`
+
+`API.say(pid, text)` phát cho **mọi người chơi**, tự đặt tên người gây ra
+việc đó trong ngoặc vuông:
+
+```
+[Darkness] Luyen 8 lan, ton 64 da -- gio la Kiem Tien Thien bac 4.
+```
+
+Nó là `API.msg(nil, ...)` cộng cái ngoặc vuông — không phải kênh mới về kỹ
+thuật, nhưng là kênh mới về **luật gọi**:
+
+- Phần nội dung vẫn **bắt buộc** qua `API.t()`. Chỉ cặp ngoặc vuông là ký hiệu.
+- Chuỗi i18n của tin chung **không chứa `%s` tên người chơi** nữa — `say()` tự
+  đặt. Lúc chuyển sáu chuỗi cũ (`gear_became`, `gear_dismantled`,
+  `skill_unlocked`, `sq_entered`…) phải bỏ tham số đầu, nếu không tên hiện
+  **hai lần**.
+- **Phải gọi trong handler của `API.syncOn`**, không phải trong callback của
+  frame. Frame click chỉ chạy trên máy người bấm; gọi ở đó thì "tin chung"
+  chỉ một mình người đó đọc được — và lỗi này **không bao giờ** lộ ra khi
+  test một mình.
+
+Việc nào dùng `say`: nâng kỹ năng, nâng/tiến giai trang bị, mua đồ, và hai
+nút dịch chuyển của bảng `R`. Việc **thất bại** (không đủ gỗ, túi đầy) thì
+vẫn `API.msg` riêng — túi tiền là chuyện của một người.
 
 **Vì sao phần `warn`/`info` không dịch.** Nội dung của nó là tên khoá `CFG`, tên
 native, tên file: *"Kiểm tra `CFG.HOUSE_UNIT`"*. Dịch sang tiếng Anh vẫn là một

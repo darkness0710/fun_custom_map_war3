@@ -222,6 +222,43 @@ local function refresh(pid)
   end
 end
 
+-- ---------- Hieu ung chia bai ----------
+--
+-- Truoc day doi the giua hai luot la mot cu NHAY: chu va icon doi tai
+-- cho trong cung mot khung hinh, khong co gi bao la vua sang luot moi.
+-- Co 12 luot lien tiep (Thanh Long) thi no thanh mot cai bang nhay
+-- loan.
+--
+-- Chia tung cot mot, cach nhau FORTUNE_DEAL_STEP giay. Chi dung
+-- BlzFrameSetVisible -- khong dung alpha hay scale: hai thu do khong
+-- chac co o moi ban, ma mot hieu ung trang tri thi khong dang de lam
+-- hong khung.
+--
+-- KHONG dong bo. No khong doi mot chut trang thai nao, va moi may co
+-- khung rieng -- nen chay cuc bo la dung.
+local function dealIn(pid)
+  local st = stateOf(pid)
+  if st.root == nil then return end
+  local step = CFG.FORTUNE_DEAL_STEP or 0.10
+  if step <= 0.0 or API.after == nil then return end
+
+  for i = 1, #st.col do
+    local c = st.col[i]
+    if c ~= nil then
+      -- An ca cot LAN nut: de lai cai nut khong thi no lo lung mot
+      -- minh, nhin ra loi ve chu khong ra hieu ung.
+      show(c.card, false); show(c.btn, false)
+      API.after(step * i, function()
+        -- Kiem lai LUC DEN GIO: nguoi choi co the da dong khung, va
+        -- bat lai mot cai the le giua man hinh la mot loi nhin thay
+        -- duoc.
+        if not st.shown then return end
+        show(c.card, true); show(c.btn, true)
+      end)
+    end
+  end
+end
+
 -- ---------- Bat / tat ----------
 
 local function setVisible(pid, want)
@@ -237,8 +274,22 @@ end
 local function showFrame(pid)
   if not API.fortuneHasRolls(pid) then return end
   if not build(pid) then return end
+
+  -- DONG BANG NHAN VAT TRUOC.
+  --
+  -- LOI DA SHIP: dang mo ESC ma tinh anh hoac boss chet thi khung Co
+  -- Duyen bat len DE LEN bang -- hai khung cung neo vao
+  -- ORIGIN_FRAME_GAME_UI, khong cai nao biet cai nao. Nguoi choi thay
+  -- chu chong chit va khong bam duoc gi cho ra hon.
+  --
+  -- Khung nay la cai bat len KHONG XIN PHEP (tu su kien quai chet), nen
+  -- no la ben phai nhuong duong -- chu khong phai bat bang di kiem xem
+  -- co khung nao sap bat hay khong.
+  if API.panelHide ~= nil then API.panelHide(pid) end
+
   refresh(pid)
   setVisible(pid, true)
+  dealIn(pid)
 end
 
 local function hideFrame(pid)
@@ -247,6 +298,7 @@ end
 
 local function refreshFrame(pid)
   refresh(pid)
+  dealIn(pid)
 end
 
 -- Bang nhan vat hoi ham nay truoc khi xu ly ESC.

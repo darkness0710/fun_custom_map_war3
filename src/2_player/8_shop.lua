@@ -75,9 +75,16 @@ local function hasRoom(u, itemId)
 end
 
 -- Chay tren MOI may, tu kenh dong bo.
+-- Mua THANH CONG thi bao CA DOI ("[Ten] da mua ..."), that bai thi bao
+-- RIENG. Loi la chuyen cua tui tien mot nguoi; con mon vua mua la thu
+-- ca doi nen thay, vi no noi len doi phuong dang manh len theo huong
+-- nao. Ham nay chay trong syncOn nen API.say hien o moi may.
 local function buy(pid, i)
   local item = CFG.SHOP[i]
   if item == nil then return end
+  -- Mon phat cung khong mua duoc, ke ca khi op toi bang duong khac.
+  -- Ben NHAN kiem lai, khong tin cu bam: ben gui la cuc bo.
+  if item.forSale == false then return end
 
   local d = S.p[pid]
   if d == nil then return end
@@ -98,7 +105,7 @@ local function buy(pid, i)
       return
     end
     d.iron = (d.iron or 0) + item.iron
-    API.msg(pid, API.t("shop_bought",
+    API.say(pid, API.t("shop_bought",
       CFG.C_JADE .. API.pick(item) .. CFG.C_END, API.num(item.price)))
     flash("ok")
     API.panelRefresh(pid)
@@ -128,7 +135,7 @@ local function buy(pid, i)
   if old ~= nil then
     local c = GetItemCharges(old) + 1
     SetItemCharges(old, c)
-    API.msg(pid, API.t("shop_stack",
+    API.say(pid, API.t("shop_stack",
       CFG.C_JADE .. API.pick(item) .. CFG.C_END, c, API.num(item.price)))
     flash("ok")
     API.panelRefresh(pid)
@@ -149,7 +156,7 @@ local function buy(pid, i)
     return
   end
 
-  API.msg(pid, API.t("shop_bought",
+  API.say(pid, API.t("shop_bought",
     CFG.C_JADE .. API.pick(item) .. CFG.C_END, API.num(item.price)))
   flash("ok")
   API.panelRefresh(pid)
@@ -213,24 +220,34 @@ local function tabItems(pid)
   local out  = {}
   for i = 1, #CFG.SHOP do
     local item = CFG.SHOP[i]
-    local room = hasRoom(hero, item.item)
-    -- Icon da: lay cai 10_fortune.lua DO DUOC luc vao map, khong go tay.
-    -- Doc o day chu khong o startShop vi shop khoi dong TRUOC quay.
-    local ic = item.icon
-    if isIronItem(item) and API.fortuneIcon ~= nil then
-      ic = API.fortuneIcon("iron") or ic
+    -- Mon phat cung (thap thu) khong bay ban.
+    --
+    -- BO TRONG o do chu KHONG don danh sach lai: buy(pid, i) tra
+    -- CFG.SHOP[i] bang chinh chi so nay. Don lai thi chi so lech mot va
+    -- moi cu bam mua nham mon ben canh -- kieu sai im lang, nguoi choi
+    -- chi biet khi thay minh mua phai thu khac.
+    --
+    -- Than kieu "list" tu an dong nao out[i] == nil (xem refreshList).
+    if item.forSale ~= false then
+      local room = hasRoom(hero, item.item)
+      -- Icon da: lay cai 10_fortune.lua DO DUOC luc vao map, khong go
+      -- tay. Doc o day chu khong o startShop vi shop khoi dong TRUOC quay.
+      local ic = item.icon
+      if isIronItem(item) and API.fortuneIcon ~= nil then
+        ic = API.fortuneIcon("iron") or ic
+      end
+      out[i] = {
+        icon      = ic,
+        name       = API.pick(item),
+        desc      = descOf(item),
+        -- Trang thai la CHO TRONG TUI, khong phai gia: gia da nam tren
+        -- nut roi, in hai lan la thua.
+        status = room and "" or (CFG.C_RED .. API.t("shop_full") .. CFG.C_END),
+        btn       = API.t("btn_buy") .. "  " .. API.num(item.price) .. " " ..
+                    API.t("cur_gold"),
+        btnOn    = (gold >= item.price) and room,
+      }
     end
-    out[i] = {
-      icon      = ic,
-      name       = API.pick(item),
-      desc      = descOf(item),
-      -- Trang thai la CHO TRONG TUI, khong phai gia: gia da nam tren
-      -- nut roi, in hai lan la thua.
-      status = room and "" or (CFG.C_RED .. API.t("shop_full") .. CFG.C_END),
-      btn       = API.t("btn_buy") .. "  " .. API.num(item.price) .. " " ..
-                  API.t("cur_gold"),
-      btnOn    = (gold >= item.price) and room,
-    }
   end
   return out
 end

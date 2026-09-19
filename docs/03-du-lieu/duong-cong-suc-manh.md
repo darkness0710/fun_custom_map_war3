@@ -214,22 +214,31 @@ người.
 | 19 | Hỗn Độn Thần | 199–209 | 24 523 | 28 794 | 13 843 | 18 | 1 233 | 287 937 | 2 344 956 | 3 759 | 38 392 |
 | 20 | Sáng Thế Thần | 210–100 | 36 404 | 42 745 | 19 974 | 19 | 1 645 | 427 447 | 3 481 129 | 5 013 | 56 993 |
 
-Cột **DPS đội cần** = `60 × EHP viên mãn / WAVE_TIME`. Đây là con số phải nhìn:
-nó là hợp đồng, không phải kết quả.
+Cột **DPS đội cần** trước đây = `60 × EHP viên mãn / WAVE_TIME`.
 
-Ba chỗ cột đó **chững lại** (cảnh giới 5, 11, 17 — chỉ tăng ~6–19 % thay vì ~48 %)
-không phải lỗi: đó là lúc `WAVE_TIME` nhảy lên bậc mới, wave dài ra nên DPS cần
-tăng chậm hẳn. Đúng chỗ để thở sau một quãng leo dốc, và nó rơi đúng vào đầu mỗi
-cõi mới.
+> ⚠ **Mẫu số đã biến mất (2026-09-19).** Đồng hồ `WAVE_TIME` không còn — đợt chỉ
+> ra khi người chơi bấm nút. Không còn một "số giây mỗi đợt" do thiết kế ấn
+> định, nên **không tính trước được DPS đội cần** nữa.
+>
+> Cái thay thế nó là một hợp đồng khác, đo được bằng tay: **thời gian dọn một
+> đợt phải gần như đứng yên** từ cảnh giới 1 tới 20. Đo bằng `-wave N` ở stage
+> 1 · 25 · 50 · 75 · 100 rồi bấm giờ. Lệch là đường cong quái và đường cong sức
+> mạnh người chơi không song song — sửa công thức, đừng chỉnh số để che.
 
-## Ngân sách thời lượng
+## Ngân sách thời lượng — *(mục này đã vô hiệu)*
 
-`WAVE_TIME` theo cõi. Một cảnh giới tốn `10 × T` (wave thường) `+ 2 × T`
-(stage boss, `WAVE_BOSS_TIME_MULT` = 2) = `12 × T`.
-
-> `WAVE_BOSS_TIME_MULT` **chưa tồn tại trong `CFG`**: hiện stage boss dùng đúng
-> `WAVE_TIME` như wave thường. Ngân sách dưới đây tính theo thiết kế, nên nó
-> **hơi dài hơn** thời lượng thật đang chạy.
+> ⛔ **Toàn bộ mục này dựng trên `WAVE_TIME`, và khoá đó đã bỏ 2026-09-18.**
+> Nhịp ván giờ do nút `GỌI ĐỢT` quyết định
+> ([ADR 0026](../05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md)), nên độ dài
+> một ván = tốc độ đội dọn quái, **không tính trước được**.
+>
+> Giữ lại vì phần lập luận vẫn đúng và vẫn đáng đọc: *"map co-op quá 90 phút là
+> người chơi rời trận, mà mất một người là hỏng cả ván"* vẫn là ràng buộc thật.
+> Chỉ có **cách đo** là phải làm lại — bấm giờ một ván thật thay vì cộng
+> `WAVE_TIME`.
+>
+> Các con số phút bên dưới đọc như **ước lượng cận trên**: chúng giả định đội
+> dùng hết đồng hồ, mà giờ không còn đồng hồ để dùng hết.
 
 | Cõi | Cảnh giới | `WAVE_TIME` | 50 đợt thường |
 |---|---|---|---|
@@ -319,9 +328,7 @@ kinh tế trước.
 | `MOB_ARMOR_BASE` `MOB_ARMOR_PER_REALM` | Giáp theo cảnh giới | Tuyến tính, không mũ. Đổi nó **không** đổi độ khó — máu thật tự chia lại. [ADR 0010](../05-quyet-dinh/0010-giap-khong-nam-trong-duong-cong.md) |
 | `SCALE_EHP_PER_PLAYER` | Nhân EHP mỗi người thêm | Phải < 1.0. Bằng 1.0 là phạt người chơi vì rủ bạn |
 | `SCALE_DMG_PER_PLAYER` | Nhân sát thương mỗi người thêm | Giữ nhỏ — sát thương đã tự loãng theo số mục tiêu |
-| `SCALE_BOSS_EHP_PER_PLAYER` | Riêng cho boss | Cao hơn lính: boss là một thân, đông người tập trung hạ hiệu quả hơn nhiều |
 | `SCALE_RECOUNT_EACH_WAVE` | Tính lại `P` mỗi wave | `true` — người thoát giữa chừng không khoá cứng ván của người ở lại |
-| `WAVE_TIME` | Giây mỗi wave, theo cõi | Xem ngân sách thời lượng. Đây là nút chỉnh **thời lượng ván**, và nó cũng chỉnh DPS cần — hai thứ dính nhau |
 
 ## Hợp đồng đã thực hiện tới đâu
 

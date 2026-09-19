@@ -24,7 +24,8 @@ Cảnh giới và tầng đều **suy ra** từ nó. Giữ hai biến song song 
 nhau. Công thức ở [canh-gioi.md](../03-du-lieu/canh-gioi.md).
 
 **L2. Một cảnh giới là 5 stage: 4 tầng + 1 boss.**
-Số 11 là `TIERS_PER_REALM + 1`, không hard-code ở đâu cả.
+Số 5 là `TIERS_PER_REALM + 1`, không hard-code ở đâu cả. 20 cảnh giới × 5 =
+**100 stage**.
 
 **L3. Thành phần wave cố định: 50 lính + 1 tinh anh.**
 Không đổi theo số người chơi, không đổi theo cảnh giới. Số lượng cố định thì mọi
@@ -35,11 +36,9 @@ thứ khác đoán được: hiệu năng, thời gian dọn, thu nhập.
 Không lính đi kèm. Xem [boss.md](boss.md).
 
 **L5. Có trần số unit sống.**
-Đồng hồ wave chạy bất kể wave trước đã dọn chưa — đó là áp lực chính. Nhưng nếu
-trên map đã quá `WAVE_MAX_ALIVE` con thì **hoãn** wave mới thay vì chồng thêm.
-
-Đỉnh điểm dự kiến ~300 unit. Warcraft III chịu được, nhưng không có trần thì một
-lần vỡ trận sẽ kéo theo dây chuyền và không bao giờ gỡ lại được.
+Quá `WAVE_MAX_ALIVE` (300) con trên map thì **hoãn** wave mới thay vì chồng
+thêm. Với luật "chỉ gọi khi đã sạch" ở dưới thì trần này gần như không chạm tới
+— nó là lưới an toàn cho trường hợp quái kẹt không chết.
 
 **L2b. Tầng có TÊN, không đánh số.**
 `CFG.TIER_NAMES` — **Sơ Kì · Trung Kì · Hậu Kì · Viên Mãn**. "Trúc Cơ Sơ Kì" đọc
@@ -51,108 +50,270 @@ thêm tên thì vẫn chạy, chỉ là tên xấu.
 Trong một cảnh giới, chỉ số chỉ nhích ×1.054 suốt 4 tầng — gần như không cảm
 thấy. Thứ làm Hậu Kì khác Sơ Kì là **tu chính**, xem phần dưới.
 
-## Nhịp
+## Nhịp — do người chơi bấm, KHÔNG có đồng hồ
 
-**Một cảnh giới = 4 tầng có đồng hồ, rồi hai lần dừng hẳn** —
-[ADR 0018](../05-quyet-dinh/0018-nghi-giua-hai-canh-gioi.md):
+**Không có `WAVE_TIME`, không có đồng hồ đếm ngược, không có đợt tự đến.** Mỗi
+đợt bắt đầu khi người chơi bấm nút trên bảng `R` —
+[ADR 0026](../05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md).
 
 ```
-tầng 1…10          đồng hồ chạy          ← áp lực, đợt chồng được
-tầng 10 dọn sạch → DỪNG đồng hồ          ← nghỉ
-     -next       → BOSS
-boss chết        → DỪNG đồng hồ          ← nghỉ, tiêu Tinh Thạch vừa rơi
-     -next       → cảnh giới sau, tầng 1
+tầng 1..4      [GỌI ĐỢT n]          bấm là đợt sau ra
+tầng 4 sạch  → [TRIỆU BOSS]
+boss chết    → [SANG CẢNH GIỚI SAU]
 ```
 
-`WAVE_TIME` theo cõi, không theo stage:
+Ba nhãn, **một nút**. Từ 2026-09-18 cả 5 stage đều cho gọi, nên hai mốc sau
+không còn là "đứng đồng hồ" — chúng chỉ là hai nhãn khác của cùng cái nút. Vẫn
+giữ biến riêng (`S.waitNext`) vì ba trạng thái làm ba việc khác nhau, và mốc thứ
+hai là chỗ **Lôi Kiếp** sẽ gắn vào.
 
-| Cõi | Cảnh giới | Giây/wave | Quãng đường | Vì sao |
-|---|---|---|---|---|
-| Phàm | 1–5 | **32** | Footman đi 19.9s | Chậm nhất, nên cần nhiều giây nhất |
-| Yêu | 6–10 | 28 | Ghoul đi 15.3s | |
-| Tiên | 11–15 | **40** | Abomination đi 28.2s | |
-| Thần | 16–20 | 45 | Frost Wyrm đi 26.8s | Wave nặng, cần thời gian hồi chiêu |
+### Chỉ gọi được khi đã dọn sạch
 
-> **Ràng buộc, không phải số chỉnh tự do:**
-> ```
-> WAVE_TIME[cõi] > quãng đường/tốc độ + thời gian giết hết một đợt
-> ```
-> Thiếu vế phải thì map **không bao giờ sạch**, nên `S.alive` không bao giờ về 0,
-> nên cả `WAVE_AUTO_NEXT` lẫn `-next` đều chết. Cõi 1 từng đặt 20s trong khi
-> quãng đường đã ăn 19.9s — nhánh gọi sớm nằm đó suốt 55 đợt mà không dùng được.
->
-> Vì thế cõi 1 (32s) **dài hơn** cõi 2 (28s) dù dễ hơn: `WAVE_TIME` bị chặn dưới
-> bởi **tốc độ mẫu lính**, không thuần là độ khó. Đổi `CFG.MOB_UNIT` là phải tính
-> lại bảng này.
+`CFG.WAVE_ONLY_WHEN_CLEAR = true`. Gọi sớm là **bỏ qua phần khó của đợt này mà
+vẫn lấy tiền của đợt sau**; và hai đợt chồng lên nhau thì đợt sau lại kéo dài
+đợt đang dở — một dây chuyền người chơi không ngắt được.
 
-Tổng: **134 phút** — 121 phút đợt thường + 13 phút boss. Cửa sổ nghỉ do người
-chơi điều khiển, gõ `-next` ngay là mất 0 giây.
+Đặt `false` thì nút bật mọi lúc — nhưng lúc đó
+[ADR 0009](../05-quyet-dinh/0009-so-luong-linh-co-dinh.md) (50 lính cố định)
+mất nghĩa, vì người chơi tự chọn số quái trên map.
 
-> **Đây là con số đáng lo nhất của cả thiết kế, và nó vừa nặng thêm 16 phút.**
-> Map co-op quá 90 phút là người chơi rời trận, mà mất một người là hỏng cả ván.
->
-> Phần tăng đến từ việc sửa `WAVE_TIME` cõi 1 (20→32, +10 phút) — bắt buộc, vì
-> không sửa thì cơ chế gọi sớm không dùng được.
->
-> Lập luận bênh vực: **134 phút chia thành 20 khối 6–8 phút, mỗi khối có
-> mở–thân–kết, đọc rất khác 118 phút một mạch không cho thở.** Nếu chơi thử vẫn
-> thấy dài thì chỗ cắt là `TIERS_PER_REALM` 10 → 5, không phải bỏ nhịp nghỉ.
->
-> **Đã chọn: gọi wave sớm.** Cài bằng hai cơ chế:
->
-> - `WAVE_AUTO_NEXT` — con cuối cùng của wave chết là vào wave sau ngay, sau
->   `WAVE_CLEAR_DELAY` giây để kịp đọc chữ.
-> - `-next` — gọi tay. **Chỉ gọi được khi đã dọn sạch**; nếu không thì đó là bỏ
->   qua phần khó của wave này mà vẫn lấy tiền của wave sau.
->
-> Đồng hồ **vẫn chạy song song**. Hai cơ chế không thay thế nhau: dọn sạch sớm
-> thì vào sớm, dọn không kịp thì quái dồn lại đúng như trước. Áp lực giữ nguyên,
-> chỉ mất phần ngồi nhìn đồng hồ.
->
-> **Không có thưởng thêm cho việc gọi sớm.** Thu nhập bám đường cong ×967
-> ([kinh-te.md](kinh-te.md)); cộng thêm là lệch khỏi chính đường cong đó.
->
-> **Lưu tiến độ** vẫn để ngỏ, làm sau nếu 134 phút vẫn quá dài.
+### Đếm lại số quái sống, không tin con số đang giữ
+
+`CFG.WAVE_RECOUNT = 10.0` — cứ 10 giây đếm lại `S.mobs`.
+
+**Lỗi thật đã xảy ra** ([ADR 0018](../05-quyet-dinh/0018-nghi-giua-hai-canh-gioi.md)):
+`S.alive` kẹt trên 0 thì **mọi** lối thoát cùng chết — cả đường "dọn sạch" lẫn
+lệnh gọi tay, vì cả hai đều hỏi cùng con số. Kẹt thì kẹt vĩnh viễn, không lỗi
+nào báo.
+
+Đếm qua `S.mobs` chứ **không** quét map theo chủ sở hữu: `S.mobs` chỉ được ghi
+ở hai chỗ sinh quái của hệ wave, nên quái **đặt sẵn** ở các vùng đặt sau này
+không bao giờ lọt vào. Đếm theo `GetOwningPlayer == S.enemy` thì vơ luôn chúng,
+và `S.alive` không bao giờ về 0 — đúng cái bẫy phép đo này định chữa.
+
+### Độ dài một ván
+
+**Không tính trước được nữa, và đó là chủ đích.** Bản cũ của trang này tính ra
+"134 phút" từ `WAVE_TIME` theo cõi rồi lo map quá dài. Khi nhịp do người chơi
+bấm thì độ dài ván = tốc độ đội dọn quái, cộng đúng số giây họ chọn để đứng lại
+tiêu tiền.
+
+Đội chơi nhanh đi nhanh; đội muốn ngắm bảng thì đứng lâu — và không ai phải
+ngồi nhìn đồng hồ đếm ngược trong một đợt đã dọn xong từ lâu.
 
 ## Tu chính
 
-Mỗi tầng trong cảnh giới gắn một **tu chính** — một sửa đổi nhỏ lên cả wave. Đây
-là thứ làm 4 tầng khác nhau, vì chỉ số thì gần như đứng yên (L6).
+**Đã cài 2026-09-19** — [5_modifier.lua](../../src/3_battle/5_modifier.lua).
 
-| Tầng | Tu chính | Ảnh hưởng lối chơi |
+Mỗi stage **thường** bốc một tu chính: một sửa đổi lên cả đợt. Đây là thứ làm 4
+tầng khác nhau, vì chỉ số thì gần như đứng yên (L6). **Stage boss không có** —
+boss đã có `BOSS_MECH` riêng, chồng thêm một lớp nữa thì không ai đọc ra cái gì
+đang giết mình.
+
+| Tu chính | Màu quái | Trời | Quái đổi gì | Người chơi buộc phải đổi gì |
+|---|---|---|---|---|
+| **Hút Máu** | đỏ | giông bão + sét | Ability hút máu gốc của Warcraft | **Dồn từng con**, đừng rải — rải thì mỗi con tự lành |
+| **Chắn Phép** | tím | **mái vòm phép** *(Dalaran Shield)* | Kỹ năng chỉ còn **50%** sát thương | **Đánh tay** |
+| **Dày Da** | xanh thép | tuyết nặng | Đòn thường chỉ còn **50%** | **Xả chiêu** |
+| **Nổ Tan** | cam | bão tuyết | Chết thì nổ, bán kính 300 | **Đừng đứng chụm** |
+| **Trùng Linh** | vàng | **trời quang** *(không hiệu ứng)* | *(không có gì)* | Không phải đổi gì — thưởng **×2** |
+
+> Một con quái **dày gấp rưỡi** thì người chơi vẫn bấm đúng ngần ấy nút. Một con
+> quái **tự hồi máu** thì buộc phải đổi thứ tự bấm. Chỉ cái sau mới là lối chơi.
+
+### 50% là con số đo được, không phải chọn cho đẹp
+
+`CFG.BOSS_SKILL_SHARE = 1.0` — kỹ năng đóng góp ~100% so với đòn thường, tức sát
+thương chia đôi hai kênh. Chặn 50% một kênh ≈ **−25% tổng DPS**: đủ đau để phải
+đổi cách đánh, chưa đủ để bế tắc.
+
+Và hai cái ngược nhau (Chắn Phép ↔ Dày Da) đặt cạnh nhau tạo nhịp thật.
+
+### Bốn ràng buộc kỹ thuật
+
+**1. Bốc là một ràng buộc đồng bộ.** `GetRandomInt` phải chạy trên **mọi máy
+cùng thứ tự**, nếu không hai bản game lệch nhau. `pick()` gọi từ `spawnStage()`
+— đường đã đồng bộ. Tuyệt đối không bốc trong callback của frame
+([ADR 0012](../05-quyet-dinh/0012-mot-kenh-dong-bo-duy-nhat.md)).
+
+**2. Không dùng giáp để giảm sát thương.**
+[ADR 0010](../05-quyet-dinh/0010-giap-khong-nam-trong-duong-cong.md): đường cong
+sinh ra **EHP**, máu thật suy ngược ra *từ giáp*. Sờ vào giáp là lặng lẽ đổi cả
+đường cong độ khó. Hai tu chính "giảm 50%" vì thế nhân ở **sự kiện sát thương**,
+dùng đúng cách phân biệt phép/đòn mà Áo Choàng đã dùng:
+
+```lua
+spell = (BlzGetEventDamageType() ~= DAMAGE_TYPE_NORMAL)
+```
+
+Mọi kỹ năng hero đánh ra `DAMAGE_TYPE_MAGIC`; đòn thường là `NORMAL`. Native đó
+**có mặt** ở 1.31.1 — file vết ghi `native [Su kien sat thuong] co 7/7`.
+
+**3. Mã ability thì ĐO, không gõ.** `UnitAddAbility` trả `false` khi mã sai và
+hàm **im lặng không làm gì**. `probeAbility()` thử lần lượt `AUav` → `ANvc` →
+`Avam` trên con quái **đầu tiên** của đợt, giữ mã nào nhận, rồi dùng cho 49 con
+còn lại. Không mã nào nhận thì ghi vết và lùi về đường sự kiện sát thương.
+
+**4. Sát thương vụ nổ tính theo sát thương của chính con đó**
+(`BlzGetUnitBaseDamage × 4`), không phải một con số phẳng — số phẳng sẽ thành vô
+nghĩa ở cảnh giới 15. Và **chỉ đánh hero**: nổ lan sang chính đồng quái của nó
+thì tu chính này thành một món quà cho người chơi.
+
+### Trời đổi theo tu chính *(2026-09-19)*
+
+Lớp báo thứ **ba**, cạnh dòng chữ (trôi mất) và màu quái (phải nhìn vào quái).
+**Trời thì thấy mà không cần nhìn đâu cả.**
+
+**Không cần region.** Cả 5 kiểu thời tiết gắn vào **cùng một rect**
+(`bj_mapInitialPlayableArea` — đã dùng ở ba chỗ khác trong map), rồi bật/tắt
+từng cái. `AddWeatherEffect` cho phép nhiều hiệu ứng trên một rect; chỉ một cái
+được **bật** tại một lúc.
+
+**Tạo một lần lúc vào map**, không tạo lại mỗi stage: mỗi `AddWeatherEffect` là
+một handle mới, mà handle Warcraft thì không tự dọn — một ván 100 stage sẽ rò rỉ
+100 cái.
+
+**Tắt trước rồi bật sau**, nếu không có một khung hình hai kiểu trời chồng nhau
+— mưa với bão cát cùng lúc nhìn ra lỗi vẽ.
+
+**Stage boss tắt hẳn trời** (`modifierClear()`): boss đã có bảng cơ chế riêng,
+thêm một kiểu trời nữa là người chơi không biết trời đang nói về cái gì.
+
+#### Mã thời tiết thì ĐO, không gõ
+
+`CFG.MODIFIERS[i].weather` là một **danh sách ứng viên**, không phải một mã:
+
+```lua
+weather = { 'RLhr', 'RAhr', 'RLlr' },   -- giông bão Lordaeron
+```
+
+`AddWeatherEffect` trả `nil` khi mã sai rồi **im lặng**. `makeWeather()` thử lần
+lượt, giữ cái nào dựng được, và ghi vết **cả hai trường hợp**:
+
+```
+modifier: thoi tiet lifesteal = 'RLhr'
+modifier: KHONG ma thoi tiet nao dung duoc cho resist_phys (WNcw WOcw WHwd)
+```
+
+### ⚠ `AddWeatherEffect` trả về handle KHÔNG chứng minh mã đúng
+
+**Lỗi đã ship.** `makeWeather()` thử lần lượt, giữ mã nào "dựng được", rồi ghi
+vết `modifier: thoi tiet resist_phys = 'WNcw'`. Trông như bằng chứng. **Không
+phải** — `AddWeatherEffect` nhận cả mã rác và vẫn trả về handle bình thường.
+Dòng vết đó chỉ nghĩa là *"gọi hàm không lỗi"*.
+
+Khác hẳn ability: `UnitAddAbility` trả `false` khi mã sai, nên phép dò `AUav`
+**có** giá trị chứng minh.
+
+**Không có cách nào kiểm mã thời tiết bằng code.** Phép đo duy nhất là **con
+mắt** — lệnh `-sky N`.
+
+### Đo xong 2026-09-19: chỉ 4 trong 22 mã hiện ra
+
+Thử trên **1.31.1, tileset `L` (Lordaeron Summer)**:
+
+| Mã | Kiểu trời | |
 |---|---|---|
-| 1 | *(không)* | Mốc chuẩn của cảnh giới |
-| 2 | Nhanh chân | Tốc chạy +25% — ít thời gian phản ứng hơn |
-| 3 | Dày da | Giáp +50% — ép dùng sát thương phép |
-| 4 | Chia đàn | Ra từ 2 cửa thay vì 1 — không đứng một chỗ chặn được |
-| 5 | Hồi phục | Tự hồi máu — ép dồn sát thương, không rỉ rả |
-| 6 | Nổ tan | Chết thì gây sát thương vùng — phạt việc đứng chụm |
-| 7 | Chắn phép | Kháng phép cao — ép đánh tay |
-| 8 | Bầy đàn | Tinh anh thành 3 con, mỗi con 1/3 sức | 
-| 9 | Vội vã | `WAVE_TIME` giảm 30% riêng tầng này |
-| 10 | **Viên mãn** | Gộp tu chính của tầng 3 và 5 |
+| `RLhr` | Lordaeron mưa rào + sét | ✅ |
+| `SNbs` | Northrend bão tuyết | ✅ |
+| `SNhs` | Northrend tuyết nặng | ✅ |
+| `MEds` | Dalaran Shield — mái vòm tím | ✅ |
 
-Tu chính **chọn từ một bảng chung**, không phải mỗi cảnh giới viết riêng 10 cái.
-Nên thêm một tu chính mới là cả 20 cảnh giới cùng có.
+**Không hiện gì:** cả **8 kiểu sương mù** (xanh/lục/đỏ/trắng × nặng/nhẹ), mọi
+kiểu mưa và tuyết **nhẹ**, `RAhr`/`RAlr` (Ashenvale), và cả 6 ứng viên gió / bão
+cát.
 
-> Vì sao tu chính quan trọng hơn chỉ số: một con quái dày gấp rưỡi thì người chơi
-> vẫn bấm đúng ngần ấy nút. Một con quái *tự hồi máu* thì buộc phải đổi thứ tự
-> bấm. Chỉ cái sau mới là lối chơi.
+Chưa rõ vì sao — có thể phụ thuộc tileset, có thể asset không có trong bản này.
+Không đoán tiếp: `CFG.SKY_PROBE` giữ nguyên cả 22 mã làm **tư liệu**, và `-sky`
+vẫn dùng để đo lại trên bản Warcraft khác.
+
+### Bốn mã cho năm tu chính — nên một cái đi tay không
+
+Cho **Trùng Linh**, và đó là chủ đích: đợt nghỉ + hái tiền thì **trời quang** là
+dấu hiệu đúng nhất. **Vắng mặt cũng là một tin.**
+
+Cặp dễ nhầm nhất là hai kiểu tuyết (Dày Da ↔ Nổ Tan), nên màu quái phải kéo
+chúng ra xa hết cỡ: **xanh thép** ↔ **cam**. Nâu với cam thì vẫn gần nhau.
+
+Mái vòm Dalaran rơi vào Chắn Phép là may: trong bốn mã còn dùng được thì nó vừa
+**hợp chủ đề nhất** (một cái khiên phép phủ cả vùng) vừa **khác hẳn** ba cái kia
+— không thể nhầm với mưa hay tuyết.
+
+### Hai lệnh dev
+
+| Lệnh | Làm gì |
+|---|---|
+| `-mod N` | Ép **tu chính** N, bật luôn trời của nó. `-mod` không số = liệt kê |
+| `-sky N` | Bật **một mã thời tiết** bất kỳ trong `CFG.SKY_PROBE` để nhìn. `-sky off` = tắt |
+
+`-sky` tắt luôn trời của tu chính trước khi bật cái mới — hai kiểu trời chồng
+nhau thì không biết mình đang nhìn cái nào.
+
+### Báo cho người chơi — ba kênh
+
+Chat trôi sau vài giây, mà tu chính kéo dài cả đợt. Nên có ba:
+
+```
+[He Thong] [47/100] Hoa Than Trung Ki
+[He Thong] Tu chinh: Hut Mau  |  troi: giong bao
+           Quai tu lanh khi danh trung. Don tung con, dung rai.
+```
+
+**Gọi tên kiểu trời ra**, không để người chơi tự đoán. Một số kiểu (sương mù) rất
+mờ nhạt — không nói thì người chơi không biết trời có vừa đổi hay không, mà một
+dấu hiệu không chắc chắn thì không dùng được.
+
+…cộng **màu quái** (`SetUnitVertexColor`) và **kiểu trời**. Ba lớp cho cùng một
+tin, vì mỗi lớp hỏng theo một kiểu: chữ thì trôi, màu thì phải nhìn vào quái,
+trời thì không nói được *phải làm gì*.
+
+Câu chữ nói **quái làm gì** *và* **mình phải làm gì**. Nói mỗi tên thì người chơi
+phải tự đoán — và một tu chính người chơi không biết thì không phải cơ chế, nó
+là **độ khó vô hình**, thứ chỉ gây ức chế.
+
+### Bốc ngẫu nhiên, nhưng không trùng cái vừa rồi
+
+Chốt 2026-09-19. Bảng chỉ có 5 cái nên xác suất trùng liên tiếp là 1/5 — đủ cao
+để gặp thường xuyên, và hai stage liên tiếp giống nhau thì người chơi tưởng hệ
+hỏng. `pick()` bốc lại cho tới khi khác `S.waveModCode` trước đó.
+
+> **Còn lặp ở tầm cảnh giới.** 5 tu chính trải trên 80 stage nghĩa là người chơi
+> gặp đúng 5 thứ này ~16 lần mỗi thứ. Nó chữa *"bốn tầng giống hệt nhau"*, chưa
+> chữa *"hai mươi cảnh giới giống nhau"*. Cách rẻ để đỡ là **thêm tu chính vào
+> bảng** — thêm một dòng `CFG.MODIFIERS` là cả 20 cảnh giới cùng có.
+
+### Thưởng ×2 — nhân cả bốn thứ
+
+Chốt 2026-09-19: **Linh Khí, Vàng, Gỗ và lượt Cơ Duyên đều ×2**, không chừa thứ
+nào. Kỳ vọng cả ván (~16 stage trúng tu chính này):
+
+| | Trước | Sau |
+|---|---|---|
+| Gỗ *(Ngộ Tính)* | 260 | **~292** |
+| Lượt Cơ Duyên | 169 | **~185** |
+| Vàng từ quái | 4 000 | **~4 800** |
+
+Gỗ là đồng tiền hiếm nhất map, nhưng nó **sẽ có thêm chỗ tiêu** *(Pháp Khí)* nên
+hào phóng được. Khi thiết kế Pháp Khí thì lấy **292** làm ngân sách, không phải
+260.
 
 ## Chỉ số
 
 Đường cong ở [duong-cong-suc-manh.md](../03-du-lieu/duong-cong-suc-manh.md). Tóm
 tắt phần đợt quái cần biết:
 
-| | Khoá | Nhân so với lính thường cùng stage |
+| | Khoá | Chỉ số lấy từ đâu |
 |---|---|---|
-| Lính | — | ×1 |
-| Tinh anh | `ELITE_EHP` `ELITE_DMG` | EHP ×10, sát thương ×2.5 |
-| Boss | `BOSS_EHP` `BOSS_DMG` | EHP ×80, sát thương ×3 |
+| Lính | `MOB_EHP_*` `MOB_DMG_*` | Đường cong theo cảnh giới — ×1 |
+| Tinh anh | `ELITE_EHP` `ELITE_DMG` | Nhân lên từ lính cùng stage: EHP ×10, sát thương ×2.5 |
+| Boss | `BOSS_SECONDS` `BOSS_HITS_TO_KILL` | **Không** nhân từ lính. Đo sức mạnh thật của đội — xem [boss.md](boss.md) |
 
-Một wave = `50 + 10 = 60` đơn vị EHP. Boss = 80 — nhỉnh hơn cả wave gộp lại, nên
-trận boss dài hơn một wave một chút, nhưng cảm giác hoàn toàn khác vì chỉ có một
-mục tiêu.
+Một wave = `50 + 10 = 60` đơn vị EHP lính.
+
+**Boss thì không nằm trên thang đó.** Máu boss = `hoả lực đo được của đội × 40
+giây`, nên trận boss dài đúng 40 giây ở mọi cảnh giới bất kể người chơi mạnh
+yếu. Bản cũ của trang này ghi "EHP ×80" — đó là hệ cũ, đã bỏ cùng hai khoá
+`BOSS_EHP` / `BOSS_DMG`.
 
 **Giáp không nằm trong đường cong.** Đường cong sinh ra EHP; máu thật suy ngược ra
 từ giáp. Đổi giáp **không** đổi độ khó.
@@ -167,8 +328,11 @@ từ giáp. Đổi giáp **không** đổi độ khó.
 |---|---|---|
 | `SCALE_EHP_PER_PLAYER` | EHP lính nhân thêm mỗi người | Phải **< 1.0**. Bằng 1.0 là phạt người chơi vì rủ bạn |
 | `SCALE_DMG_PER_PLAYER` | Sát thương nhân thêm | Giữ **nhỏ**. Ba người có gấp ba sát thương, nhưng mỗi người vẫn chỉ có **một** thân — quái đánh đau gấp ba thì ba người chết nhanh như một |
-| `SCALE_BOSS_EHP_PER_PLAYER` | Riêng boss | Cao hơn lính: boss một thân, đông người dồn hạ hiệu quả hơn hẳn |
 | `SCALE_RECOUNT_EACH_WAVE` | Tính lại `P` mỗi wave | `true` — người thoát giữa chừng không khoá cứng ván của người ở lại |
+
+**Boss không dùng bảng này.** Khoá `SCALE_BOSS_EHP_PER_PLAYER` đã bỏ: hoả lực
+đo được (`measureParty`) đã là **tổng của cả đội** rồi, nhân thêm lần nữa là
+phạt người chơi vì rủ được bạn.
 
 ## Đường đi
 
@@ -240,7 +404,7 @@ lọt bao nhiêu cũng không sao).
 | `WAVE_TICK` | Giây giữa hai lần ra lệnh lại cho quái | Quái bị đánh lạc hướng phải quay về nhà |
 | `SPAWN_JITTER` | Bán kính xê dịch điểm sinh | Đủ rộng để 50 con không chồng một chỗ |
 | `MOB_UNIT` | Mẫu lính mỗi cõi, tra theo `REALMS[r].coi` | **Placeholder** — 4 unit gốc WC3. Thiết kế cần 24 |
-| `TIERS_PER_REALM` | `10` | Đổi là đổi tổng stage; mọi thứ suy ra từ nó |
+| `TIERS_PER_REALM` | `4` | Đổi là đổi tổng stage; mọi thứ suy ra từ nó. 4 tầng + 1 boss = 5 stage/cảnh giới, ×20 = **100 stage** |
 
 ## Chưa làm
 

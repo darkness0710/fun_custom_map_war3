@@ -26,7 +26,8 @@ trong `applyLevel()`.
 | A001 Chưởng | `ABILITY_RLF_DAMAGE_OSH1`, `MAXIMUM_DAMAGE_OSH2` | `fxLine` |
 | A002 Hộ Thể | `ABILITY_RLF_AMOUNT_HEALED_DAMAGED_HHB1` | `fxHeal` |
 | A007 Bất Hoại | `ABILITY_RLF_DAMAGE_BONUS_HAV3`, `MAGIC_DAMAGE_REDUCTION_HAV4` | *(không dùng)* |
-| A004 / A006 | `ABILITY_ILF_STRENGTH_BONUS_ISTR`, `AGILITY_BONUS`, `INTELLIGENCE_BONUS` | `fx = "stat"` |
+| A004 | `ABILITY_ILF_STRENGTH_BONUS_ISTR`, `AGILITY_BONUS`, `INTELLIGENCE_BONUS` | `fx = "stat"` |
+| ~~A006~~ | — | **đã rút khỏi bảng** — xem dưới |
 
 Số nguyên phải gọi `BlzSetAbilityIntegerLevelField`, không phải bản Real.
 
@@ -37,7 +38,7 @@ cân bằng của mình vào trường** rồi để engine cộng.
 
 | Kỹ năng | Trường | Nguồn số |
 |---|---|---|
-| A003 Hiệu Lệnh | `ABILITY_RLF_ARMOR_BONUS_HAD1` | `armorAt(sk, lv)` |
+| ~~A003 Hiệu Lệnh~~ | — | **đã rút khỏi bảng** — xem dưới |
 | A007 Bất Hoại | `ABILITY_RLF_DEFENSE_BONUS_HAV1` | `FX_BUFF_ARMOR` theo bậc |
 
 ## Vì sao giáp phải dùng cách B — và nó sửa một lỗi khác

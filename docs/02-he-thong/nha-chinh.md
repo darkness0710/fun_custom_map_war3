@@ -1,9 +1,9 @@
 # Hệ thống: Nhà chính & vùng địch
 
 > **Trạng thái:** Đã cài — vùng đã có trong map
-> **Cập nhật:** 2026-09-16
+> **Cập nhật:** 2026-09-19
 > **Code:** [1_house.lua](../../src/3_battle/1_house.lua), [4_geometry.lua](../../src/1_core/4_geometry.lua)
-> **Khoá CFG:** `RGN_HOUSE` `RGN_ENEMY` `HOUSE_*`
+> **Khoá CFG:** `RGN_HOUSE` `RGN_ENEMY` `HOUSE_*` `RGN_HERO_START` `RGN_HERO_MOVE` `START_ITEMS` `TOWER_START` `GATE_ROLL`
 > **Code thêm:** [1_events.lua](../../src/5_boot/1_events.lua), [1_player.lua](../../src/2_player/1_player.lua)
 
 ## Nó là gì
@@ -93,6 +93,56 @@ Chặn ở **hai tầng**, vì tầng thứ nhất đáng ra đã đủ mà th�
 `CFG.HOUSE_INVULNERABLE = false`. Bật `true` thì nhà không bao giờ chết, nên điều
 kiện thua không bao giờ chạy — chỉ dùng khi cần test mà không sợ thua. Báo cáo
 lúc vào map ghi rõ đang ở trạng thái nào.
+
+## Cổng đầu ván: `HeroStartRegion` → `HeroMoveRegion`
+
+Hero **không** hiện ra cạnh nhà. Nó hiện ở `HeroStartRegion`, và phải **tự đi
+bộ** vào `HeroMoveRegion` thì mới được dịch chuyển về nhà chính.
+
+```
+   pick hero                 đi bộ vào vòng               về nhà chính
+   ---------                 --------------               ------------
+HeroStartRegion   ------->   HeroMoveRegion   ------->   MyHouseRegion
+                                                          + quà khởi đầu
+                                                          + 1 lượt Cơ Duyên
+```
+
+Lúc bước qua cổng **lần đầu**, người chơi nhận một lượt:
+
+| Nhận được | Khoá `CFG` |
+|---|---|
+| Gỗ khởi đầu | `LUMBER_START` |
+| 10 bình máu, 10 bình mana | `START_ITEMS` |
+| **3 Tháp Canh** *(không mua thêm được)* | `TOWER_START` |
+| **2 Đá Rèn** | `IRON_START` |
+| **1 lượt Cơ Duyên** | `GATE_ROLL` |
+
+Ba tháp và hai bình dùng chung **một ô túi** mỗi loại — `SHOP_STACK_MAX = 10`
+nên chúng gộp lượt, hết 3 trên 6 ô.
+
+**Hai viên đá không phải để nâng được gì** — `GEAR_PRICE = 1` nên nó đúng hai cú
+Luyện. Nó ở đó để người chơi **bấm thử** cái nút đó một lần trong phút đầu, thấy
+nó làm gì, rồi mới biết mình đang đi gom cái gì.
+
+Câu thông báo **đọc số thật từ `CFG.START_ITEMS`**, không gõ cứng: đổi
+`TOWER_START` từ 2 lên 3 mà câu chữ nằm im thì nó nói dối, và nói dối im lặng.
+
+**Vì sao quà nằm ở cổng chứ không ở lúc pick.** Hero sinh ra ở một góc bản đồ,
+xa nhà. Để quà ở cổng là cho người chơi một **lý do để đi** — chứ không phải
+một đoạn đường trống đi cho hết. Câu nhắc (`gate_hint`) hiện ngay lúc pick.
+
+**Một cờ duy nhất canh cả ba phần quà** — `d.gateGift`. Cổng này nằm ngay dưới
+chỗ hero hiện ra: đi ra đi vào mất ba giây. Phát mỗi lần là một cái máy in lượt
+quay và bình thuốc vô hạn, và lúc đó hệ Cơ Duyên mất hết ý nghĩa.
+
+## Nâng cấp được bằng vàng *(2026-09-19)*
+
+Bấm `ESC` rồi chọn **thẻ VI** — **Kiên Cố**, cộng Sức Mạnh cho nhà, trả bằng
+vàng, 10 cấp. Cấp là **của chung** cả đội, và số điểm leo theo cảnh giới cao
+nhất trong đội.
+
+Lý do và ràng buộc kỹ thuật (nhất là *"không được đặt máu ngoài
+`rescaleHouse()`"*): [nang-cap-nha-chinh.md](nang-cap-nha-chinh.md).
 
 ## Nó là hero, không phải công trình
 

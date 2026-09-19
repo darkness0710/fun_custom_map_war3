@@ -71,13 +71,15 @@ Mọi con số trong [03-du-lieu/](03-du-lieu/) là suy luận — **chưa ai ch
 giây nào**. Ba chỗ dễ sai nhất, theo thứ tự:
 
 1. **DPS thật của hero ở stage 1.** Cả đường cong dựng trên phỏng đoán ~60.
-2. **Thời gian quái đi bộ từ vùng địch tới nhà.** `WAVE_TIME` phải lớn hơn con
-   số đó, mà chưa ai đo.
+2. **Thời gian quái đi bộ từ vùng địch tới nhà.** Đã đo — xem
+   [phan-vung.md](02-he-thong/phan-vung.md). Không còn ràng buộc `WAVE_TIME`
+   *(đồng hồ đã bỏ)*, nhưng nó vẫn là sàn thời gian của một đợt.
 3. **`MOB_EHP_BASE`** — nút chỉnh độ khó tổng thể.
 
 Cách đo: dùng `-wave N` nhảy tới stage 1, 25, 50, 75, 100, bấm giờ xem hạ một
-đợt mất bao lâu, rồi so với `WAVE_TIME`. Lệch là **công thức sai — đừng chỉnh số
-để che**.
+đợt mất bao lâu. Ba mốc đó phải **gần bằng nhau** — đường cong quái và đường
+cong sức mạnh người chơi đi song song thì thời gian dọn một đợt mới đứng yên.
+Lệch là **công thức sai — đừng chỉnh số để che**.
 
 Hai thứ từng chặn bước này **đã xong**: cả bảy ability đã có `Stats - Levels =
 10`, và `CFG.SKILL_DATA_LIVE` đã bật — sát thương ăn theo chỉ số thật qua
@@ -153,8 +155,10 @@ có tên riêng, vị trí ô, tooltip 10 bậc — sinh bằng
 [w3skill.py](../w3skill.py) từ `CFG.SKILLS`, nên tooltip không thể nói khác bảng
 phím R.
 
-**Hvwd và Hkal vẫn trống.** Chọn được nhưng **không có kỹ năng nào**. Thiết kế cũ
-đã xoá để làm lại — [thiet-ke-hero.md](02-he-thong/thiet-ke-hero.md).
+**Hvwd và Hkal vẫn trống, và từ 2026-09-19 đã khoá.** `locked = true` nên chúng
+không ra bảng chọn nữa — trước đó chọn được nhưng **không có kỹ năng nào**.
+Thiết kế cũ đã xoá để làm lại — [thiet-ke-hero.md](02-he-thong/thiet-ke-hero.md).
+Mở lại chỉ là bỏ cờ đó đi.
 
 **Chặn bởi một câu hỏi không phải cân bằng:** bộ mặt của map. Icon và hiệu ứng đều
 lấy từ kho có sẵn của Warcraft, nên mỗi kỹ năng trông giống ability gốc mà nó nhân
@@ -194,8 +198,9 @@ Thứ tự:
 
 Vẽ cả 8 con trước khi biết cảm giác là vẽ mù.
 
-> Bước này không chặn Bước 6 nữa (quái đi thẳng tới nhà, phương án A), nhưng nó
-> chặn việc đo `WAVE_TIME` cho đúng — đường đi có sông sẽ dài hơn hẳn.
+> Bước này không chặn Bước 6 nữa (quái đi thẳng tới nhà, phương án A), nhưng
+> đường đi có sông sẽ dài hơn hẳn, nên bảng quãng đường ở
+> [phan-vung.md](02-he-thong/phan-vung.md) phải đo lại.
 
 ---
 

@@ -209,26 +209,24 @@ local function refine(pid, i, once)
   else
     local up  = (st.level > from)
     local top = (st.level >= levelMax())
-    local who = CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END
-
     if once then
       -- Bam le: bao y NHU CU -- mot lan quay, mot cau. Doi sang dong
       -- tong ket o day thi "Luyen 1 lan, ton 1 da" khong noi duoc rang
       -- no THAT BAI.
       if up then
-        API.msg(top and nil or pid, API.t("gear_became", who, name))
+        API.say(pid, API.t("gear_became", name))
       else
         API.msg(pid, CFG.C_RED .. API.t("gear_failed", lastPct) .. CFG.C_END)
       end
     else
       -- Bam gop: MOT dong tong ket thay cho 15 dong "that bai". Nguoi
       -- choi can biet CAI GIA da tra, khong can nhat ky tung lan quay.
-      API.msg(pid, API.t("gear_batch", tries, API.num(spent), name))
-      -- Cham Hoan Hao la moc that -- no mo duong Tien Giai. Bao cho CA
-      -- DOI: ba nguoi cung leo mot thang thi viec so nhau chinh la noi
-      -- dung. (Cap thap bao rieng, neu khong ca van se co 300 dong khoe
-      -- cap So Cap.)
-      if top then API.msg(nil, API.t("gear_became", who, name)) end
+      --
+      -- Dong nay di CHUNG ca doi. Truoc day chi cham Hoan Hao moi bao
+      -- chung, con lai bao rieng -- nhung mot van nhieu nguoi thi viec
+      -- so nhau chinh la noi dung, va gear_batch da noi ket qua cuoi
+      -- ("gio la %s") nen khong can them dong moc rieng nua.
+      API.say(pid, API.t("gear_batch", tries, API.num(spent), name))
     end
 
     flash((not up) and "fail" or (top and "big" or "ok"))
@@ -263,8 +261,7 @@ local function dismantle(pid, i)
   st.tier = st.tier + 1
   st.level  = 1
 
-  API.msg(nil, API.t("gear_dismantled",
-    CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END,
+  API.say(pid, API.t("gear_dismantled",
     CFG.C_JADE .. fullName(pid, i) .. CFG.C_END))
 
   if S.p[pid] ~= nil and S.p[pid].hero ~= nil then
@@ -464,6 +461,21 @@ local function tabItems(pid)
     -- 'short' + 'stat' la cua bang thong ke ben phai luoi; 'status' la
     -- cua kieu than "list" cu. Giu ca hai de doi kieu bay khong phai
     -- sua lai cho nay.
+    -- NHAN tren icon (luoi). Xem chu thich o 1_panel.lua ve cho dat.
+    --
+    -- Ghi TONG BAC DA DI tren tong bac ("33/100"), khong ghi "3/5".
+    -- Ba ly do:
+    --   - "3/5" khong phan biet duoc Pham Nhan cap 3 voi Tien De cap 3,
+    --     ma hai cai do cach nhau ca mot van choi.
+    --   - Mot con so duy nhat thi TAM MON SO SANH DUOC VOI NHAU bang
+    --     mot cai liec -- do dung la cau hoi "mon nao dang tut lai".
+    --   - Ten cap ("Trung Cap" / "Exalted") khong vua be ngang icon
+    --     0.036, va cot ten ben phai thi da chat san.
+    local steps, smax = stepsOf(pid, i), stepsMax()
+    it.tag = ((steps <= 0) and CFG.C_GREY
+              or (steps >= smax) and CFG.C_GOLD or CFG.C_JADE) ..
+             steps .. "/" .. smax .. CFG.C_END
+
     if st.tier <= 0 then
       it.status = CFG.C_GREY .. API.t("gear_not_refined") .. CFG.C_END
       it.short  = API.pick(item)
@@ -476,6 +488,10 @@ local function tabItems(pid)
       -- Bang thong ke ben phai luoi: cot hep nen KHONG nhet ca canh
       -- gioi vao. Ghi TEN CAP chu khong ghi "1-4" -- con so do khong
       -- noi len gi, ma nguoi choi thi doc "So Cap / Trung Cap".
+      -- KHONG nhet canh gioi vao day. Da do: cot nay rong sw*0.58 va
+      -- "Necklace - Exalted" da chiem 164px; them "Sang The Than " nua
+      -- la tran sang cot chi so. Canh gioi doc o nhan icon (tong bac)
+      -- va o nhan nut khi cham tran.
       it.short  = API.pick(item) .. " - " .. levelNameOf(st.level)
       it.stat   = CFG.C_JADE .. bonusLabel(pid, i) .. CFG.C_END
     end

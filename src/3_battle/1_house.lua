@@ -225,6 +225,18 @@ end
 -- Su kien vao vung ban tren MOI may cung luc, nen viec doi vi tri o day
 -- la dong bo san -- khong phai di qua kenh syncSend. Rieng keo camera
 -- moi la viec cuc bo, va PanCameraToTimedForPlayer da nhan pid san.
+-- Bao nhieu mon 'code' trong qua khoi dau. De cau thong bao doc duoc
+-- so THAT thay vi go cung mot con so roi de no cu.
+local function startCount(code)
+  if CFG.START_ITEMS == nil then return 0 end
+  for k = 1, #CFG.START_ITEMS do
+    if CFG.START_ITEMS[k].code == code then
+      return CFG.START_ITEMS[k].count or 0
+    end
+  end
+  return 0
+end
+
 local function startHeroGate()
   local rMove, moveName = API.findRegion(CFG.RGN_HERO_MOVE)
   if rMove == nil then
@@ -272,6 +284,46 @@ local function startHeroGate()
     if PanCameraToTimedForPlayer ~= nil then
       PanCameraToTimedForPlayer(Player(pid), x, y, 0.0)
     end
+
+    -- Qua khoi dau -- CHI LAN DAU moi nguoi.
+    --
+    -- Cong nay nam ngay duoi cho hero hien ra: di ra di vao mat ba
+    -- giay. Phat moi lan la mot cai may in luot quay va binh thuoc vo
+    -- han, va luc do he Co Duyen mat het y nghia. Mot co duy nhat
+    -- (d.gateGift) canh ca hai phan qua.
+    if d ~= nil and not d.gateGift then
+      d.gateGift = true
+
+      if CFG.LUMBER_START ~= nil and CFG.LUMBER_START > 0
+         and API.addLumber ~= nil then
+        API.addLumber(pid, CFG.LUMBER_START)
+      end
+
+      local iron = CFG.IRON_START or 0
+      if iron > 0 and API.addIron ~= nil then API.addIron(pid, iron) end
+
+      -- Vat pham truoc, luot quay sau: neu tui day thi shopGive bao
+      -- ngay, con nguoi choi van thay dong thuong quay o duoi.
+      if CFG.START_ITEMS ~= nil and API.shopGive ~= nil then
+        for k = 1, #CFG.START_ITEMS do
+          local q = CFG.START_ITEMS[k]
+          API.shopGive(pid, q.code, q.count)
+        end
+        -- DOC lai so that tu CFG.START_ITEMS chu khong go vao cau chu.
+        -- Go vao chu thi doi CFG.TOWER_START tu 2 len 3 la cau thong
+        -- bao noi doi -- va no noi doi IM LANG, khong ai kiem duoc.
+        API.msg(pid, CFG.C_JADE .. API.t("gate_gift",
+          startCount("hp"), startCount("mp"),
+          startCount("tower"), iron) .. CFG.C_END)
+      end
+
+      local n = CFG.GATE_ROLL or 0
+      if n > 0 and API.fortuneAddRolls ~= nil then
+        API.fortuneAddRolls(pid, n)
+        API.msg(pid, CFG.C_GOLD .. API.t("gate_roll", n) .. CFG.C_END)
+      end
+    end
+
     API.trace("gate: pid " .. pid .. " tu " .. moveName .. " -> nha chinh")
   end)
   S.heroGate = t

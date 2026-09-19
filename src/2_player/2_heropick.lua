@@ -10,11 +10,30 @@
 -- ============================================================
 
 -- Nhung hero chua ai lay.
+-- Hero mo khoa: bo cac con dang 'locked' (cay ky nang chua thiet ke).
+local function unlockedCount()
+  local n = 0
+  for i = 1, #CFG.HEROES do
+    if not CFG.HEROES[i].locked then n = n + 1 end
+  end
+  return n
+end
+
+-- Luat "moi nguoi mot con" chi co nghia khi con NHIEU HON MOT con.
+--
+-- Con mot con ma van ep duy nhat thi nguoi thu hai khong co hero nao,
+-- va khong co thao tac nao cuu duoc -- ho chi ngoi nhin. Suy tu so hero
+-- mo khoa chu khong doc thang CFG.HERO_UNIQUE, de mo khoa lai la luat
+-- tu bat ma khong phai nho sua cho nao.
+local function uniqueOn()
+  return CFG.HERO_UNIQUE and unlockedCount() > 1
+end
+
 local function available()
   local out = {}
   for i = 1, #CFG.HEROES do
     local h = CFG.HEROES[i]
-    if not (CFG.HERO_UNIQUE and S.heroTaken[h.id]) then
+    if not h.locked and not (uniqueOn() and S.heroTaken[h.id]) then
       out[#out + 1] = h
     end
   end
@@ -234,7 +253,7 @@ local function applyHeroPick(pid, uid)
   end
 
   -- Hai nguoi bam cung mot con: nguoi den sau roi vao day.
-  if CFG.HERO_UNIQUE and S.heroTaken[uid] then
+  if uniqueOn() and S.heroTaken[uid] then
     API.msg(pid, CFG.C_RED .. API.t("pick_taken", heroNameOf(uid)) .. CFG.C_END)
     pickerShow(pid)
     return false
@@ -256,7 +275,7 @@ local function applyHeroPick(pid, uid)
   -- con luon mo san tu giay dau tien -- khong nhac thi nguoi choi khong
   -- co ly do nao de mo the Nhiem Vu Phu.
   if API.sideQuestCheck ~= nil then API.sideQuestCheck(pid) end
-  if CFG.HERO_UNIQUE then S.heroTaken[uid] = true end
+  if uniqueOn() then S.heroTaken[uid] = true end
   pickerHide(pid)
 
   -- Qua khoi dau, phat SAU KHI CO HERO chu khong luc vao map.
@@ -267,16 +286,15 @@ local function applyHeroPick(pid, uid)
   --
   -- Chi phat cho lan pick DAU TIEN. Doi hero (heroCount > 1) ma phat
   -- lai la mot duong de nhan qua vo han.
+  --
+  -- KHONG phat qua o day nua -- CA go LAN vat pham deu doi den cong.
+  -- Xem startHeroGate() trong 3_battle/1_house.lua.
+  --
+  -- Hero hien ra o HeroStartRegion chu khong phai trong nha. De tron bo
+  -- qua o cong la cho nguoi choi mot ly do de di doan duong do, thay vi
+  -- mot doan duong trong di cho het.
   if d.heroCount == 1 then
-    if CFG.LUMBER_START ~= nil and CFG.LUMBER_START > 0 then
-      API.addLumber(pid, CFG.LUMBER_START)
-    end
-    if CFG.START_ITEMS ~= nil and API.shopGive ~= nil then
-      for k = 1, #CFG.START_ITEMS do
-        local q = CFG.START_ITEMS[k]
-        API.shopGive(pid, q.code, q.count)
-      end
-    end
+    API.msg(pid, CFG.C_JADE .. API.t("gate_hint") .. CFG.C_END)
   end
 
   API.msg(nil, API.t("pick_done",
@@ -477,7 +495,7 @@ local function report()
   API.info(nil, CFG.C_GOLD .. "=== Chon hero ===" .. CFG.C_END)
   API.info(nil, #CFG.HEROES .. " hero  |  moi nguoi toi da " ..
     CFG.HERO_MAX_PER_PLAYER .. "  |  " ..
-    (CFG.HERO_UNIQUE and "khong trung nhau" or "duoc trung nhau"))
+    (uniqueOn() and "khong trung nhau" or "duoc trung nhau"))
   API.info(nil, "Popup hien sau " .. CFG.PICK_DELAY .. "s, hero sinh cach nha chinh " ..
     API.num(CFG.HERO_SPAWN_OFFSET))
 end

@@ -1,9 +1,9 @@
 # Hệ thống: Chọn hero bằng popup
 
 > **Trạng thái:** Đã cài
-> **Cập nhật:** 2026-09-16
+> **Cập nhật:** 2026-09-19
 > **Code:** [2_heropick.lua](../../src/2_player/2_heropick.lua), [2_heroframe.lua](../../src/4_ui/2_heroframe.lua)
-> **Khoá CFG:** `HEROES` `PICK_*` `HERO_*` `CARD_*`
+> **Khoá CFG:** `HEROES` `PICK_*` `HERO_*` `CARD_*` — kể cả `HEROES[i].locked`
 
 ## Nó là gì
 
@@ -48,11 +48,39 @@ máy, nên một bảng dùng chung sẽ bị người thứ hai huỷ mất.
 
 Cùng kiến trúc với [ky-nang.md](ky-nang.md) và vì cùng lý do.
 
-| Nhãn trên nút | ID | Vai |
-|---|---|---|
-| Hart - Warrior | `H001` | Cận chiến |
-| Hvwd - Shooter | `H002` | Đánh xa |
-| Hkal - Mage | `H003` | Phép |
+| Nhãn trên nút | ID | Vai | Trạng thái |
+|---|---|---|---|
+| Hart - Warrior | `H001` | Cận chiến | **chơi được** |
+| Hvwd - Shooter | `H002` | Đánh xa | **khoá** — `locked = true` |
+| Hkal - Mage | `H003` | Phép | **khoá** — `locked = true` |
+
+## Hai hero đang khoá *(2026-09-19)*
+
+Chỉ **Hart** ra được bảng chọn. Hai con kia vẫn còn nguyên trong `CFG.HEROES`,
+chỉ thêm một cờ:
+
+```lua
+{ id = id('H002'), ..., locked = true },
+```
+
+**Vì sao khoá chứ không xoá.** Bộ bảy kỹ năng ở
+[thiet-ke-hero.md](thiet-ke-hero.md) mới thiết kế xong cho Hart. Cho chọn Hvwd
+lúc này là cho chọn một con dùng chung bộ kỹ năng của người khác — nó *chạy*,
+nên lỗi sẽ không lộ ra, chỉ lặng lẽ nhạt. Xoá khỏi bảng thì mất luôn icon, mô
+tả, ba gạch đầu dòng đã viết; cờ `locked` giữ hết, bỏ đi là mở lại.
+
+**`HERO_UNIQUE` phải tắt theo.** Đây là chỗ suýt hỏng: `HERO_UNIQUE = true`
+nghĩa là *không ai lấy trùng*, mà giờ chỉ còn **một** hero mở — người thứ hai
+sẽ **không có hero nào cả**. Nên luật độc quyền giờ đi qua `uniqueOn()`:
+
+```lua
+local function uniqueOn()
+  return CFG.HERO_UNIQUE and unlockedCount() > 1
+end
+```
+
+Độc quyền chỉ bật khi có **từ hai hero mở trở lên**. Mở lại hero thứ hai là nó
+tự bật lại, không phải nhớ sửa cờ ở đâu nữa.
 
 Đây là **unit tự tạo trong Object Editor**, không còn là hero gốc. Nghĩa là mọi
 thứ về chúng — chỉ số, kỹ năng, giá, requirement — đều sửa được ở Object Editor,
@@ -114,7 +142,8 @@ gì thêm ngoài một dòng thông báo.
 | `PICK_TITLE` | Tiêu đề popup | |
 | `PICK_DELAY` | Giây trước khi hiện popup | Quá nhỏ thì bị màn hình chuyển cảnh nuốt |
 | `HERO_MAX_PER_PLAYER` | Mỗi người tối đa | `0` = không giới hạn |
-| `HERO_UNIQUE` | Không ai lấy trùng | |
+| `HERO_UNIQUE` | Không ai lấy trùng | Tự **vô hiệu** khi chỉ còn 1 hero mở — xem `uniqueOn()` |
+| `HEROES[i].locked` | Ẩn hero khỏi bảng chọn | `true` = không ra bảng. H002, H003 đang bật |
 | `HERO_SPAWN_OFFSET` | Hero sinh cách nhà chính bao xa | |
 
 ## Ràng buộc kỹ thuật
@@ -152,6 +181,8 @@ Vào map, đợi 2 giây. Cần thấy:
 | Hart | Warrior — **Tanker** | Dọn quái đông · Chịu đòn khỏe · *Yếu trước boss* |
 | Hvwd | Shooter — **Carry** | Sát thương cao nhất · Đánh từ xa · *Rất mỏng* |
 | Hkal | Mage — **Support** | Hồi máu, tiếp sức · Làm chậm quái · *Một mình thì yếu* |
+
+Hai dòng dưới **chưa ra bảng** — đang `locked`. Chữ giữ sẵn cho lúc mở lại.
 
 **Gạch thứ ba luôn là điểm yếu**, tô đỏ. Thế nào cũng có cái mạnh — chỉ điểm yếu
 mới làm người chơi phải nghĩ xem nên chọn con nào.

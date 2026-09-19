@@ -56,13 +56,60 @@ giờ đo theo đội nên tự co giãn.
 **Độ khó** khai riêng từng con, đọc thẳng ra được: bao nhiêu **giây hoả lực cả
 đội** để hạ, và bao nhiêu **đòn** để hạ một hero đứng yên.
 
-| Con | Giây hoả lực | Số đòn |
-|---|---|---|
-| Chu Tước | 45 | 16 |
-| Huyền Vũ | 70 | 13 |
-| Bạch Hổ | 95 | 10 |
-| Thanh Long | 130 | 8 |
+| Con | Mốc | Giây hoả lực | Số đòn | So với boss thường |
+|---|---|---|---|---|
+| Chu Tước | Phàm Nhân (1) | 45 | 16 | ×1.1 máu, đánh nhẹ hơn |
+| Huyền Vũ | Hoá Thần (6) | 85 | 12 | ×2.1 máu |
+| Bạch Hổ | Chân Tiên (11) | 150 | 9 | ×3.8 máu |
+| Thanh Long | Tiên Đế (16) | 240 | 7 | ×6.0 máu, đánh mạnh nhất |
 
 Boss đợt thường là **40 giây / 12 đòn** — đó là mốc để so.
+
+*(Nới rộng 2026-09-19: trước là 45/70/95/130 và 16/13/10/8 — chênh nhau chỉ
+2.9×, quá phẳng cho bốn cái mốc cách nhau 15 cảnh giới.)*
+
+### Phần thưởng
+
+| Con | Mốc | Lượt Cơ Duyên |
+|---|---|---|
+| Chu Tước | Phàm Nhân (1) | 3 |
+| Huyền Vũ | Hoá Thần (6) | 5 |
+| Bạch Hổ | Chân Tiên (11) | 8 |
+| Thanh Long | Tiên Đế (16) | 12 |
+
+Chi tiết và lý do chọn lượt quay thay vì tiền:
+[quay-thuong.md](../../quay-thuong.md#thánh-thú-phần-thưởng-của-bốn-cái-mốc-2026-09-19).
+Chỉ ai **có mặt trong hang** lúc con thú chết mới được; chết trong hang vẫn tính.
+
+Ngoài ra con vừa hạ thành **pet đi theo** — trang trí, không có chỉ số.
+
+> ⏸ **Còn để ngỏ:** mỗi con mở khoá một **Pháp Khí** trong thẻ IV. `CFG.RELIC`
+> đang rỗng và ngân sách còn **190 Ngộ Tính** không có gì để tiêu — bốn con thú
+> là nội dung mà bảng đó đang chờ. Chưa chốt.
+
+### Vì sao độ khó là số **tương đối**, không phải số máu
+
+Máu tuyệt đối của Thánh Thú **không đoán trước được**, vì sức mạnh người chơi
+do **trang bị** quyết định chứ không do cảnh giới: đo được ở cảnh giới 16, chỉ
+số thật 30 105 thì phần đến từ cảnh giới chỉ **511** — 1,7%. Một con số máu gõ
+cứng sẽ hoặc vô hại hoặc bất khả thi, tuỳ người chơi farm nhiều hay ít.
+
+Nên hai cột trên là **thời lượng** và **số đòn chịu được** — hai thứ *cảm nhận
+được* và không phụ thuộc người chơi giàu hay nghèo. Máu thật tính lúc bấm Tiến
+Hành, từ hoả lực đo được của cả đội.
+
+### Ghim lúc bước vào
+
+Chỉ số **nạp một lần, đúng lúc bấm "Tiến Hành", rồi đứng yên** (`b.pinned`).
+
+Trước đó bốn con vẫn tự cập nhật theo đội mỗi giây — để ngay từ đầu ván chúng
+khác nhau và trông đúng tầm. Nhưng từ giây người chơi cam kết thì số phải dừng.
+
+**Lỗi đã ship:** không ghim thì rút lui là vô nghĩa. Đánh không lại, chạy về nhà
+mua trang bị, quay lại — con thú vừa nạp lại theo sức mới, mạnh lên đúng bấy
+nhiêu. Không có đường nào thắng một con mình chưa đủ sức, trừ việc đánh một mạch.
+
+Ghim xong thì mốc cảnh giới mới có nghĩa thật: con thú đo theo sức của đội
+**đúng lúc cam kết**, và trang bị mở sau đó là lời của người chơi.
 
 ← [Thiết kế boss chung](../../boss.md) · [20 boss thường](../normal-boss/README.md)

@@ -414,14 +414,20 @@ local function refreshGrid(st, pid, tab)
     local it, c = items[i], g.cell[i]
     local has = (it ~= nil)
     local hasBtn = has and it.btn ~= nil
+    local hasTag = has and it.tag ~= nil
     show(c.edge, has)
     show(c.icon, has and it.icon ~= nil)
     show(c.btn,  hasBtn)
+    show(c.tagBg, hasTag); show(c.tag, hasTag)
     -- Co nut thi khong co chu, va nguoc lai -- hai thu dung CHUNG mot
     -- cho nen bat ca hai la chung de len nhau.
     show(c.note, has and not hasBtn)
     if has then
       if it.icon ~= nil then BlzFrameSetTexture(c.icon, it.icon, 0, true) end
+      -- 'tag' da mang mau cua chinh no tu 5_gear.lua -- khong boc them
+      -- mot lop mau o day (Warcraft khong co ngan xep mau: mot |r dong
+      -- het ca hai).
+      if hasTag and c.tag ~= nil then BlzFrameSetText(c.tag, it.tag) end
       if not hasBtn and c.note ~= nil then
         BlzFrameSetText(c.note, CFG.C_GREY .. (it.note or "") .. CFG.C_END)
       end
@@ -1135,14 +1141,50 @@ local function buildBody(pid)
         c.note = text("CharGridNote" .. i, g.root, cx, by + 0.004, colW,
                       CFG.PANEL_SCALE_SUB, false)
 
+        -- NHAN CAP tren icon: mon nay dang o cap may.
+        --
+        -- LOI DA SHIP: ca luoi chi co icon va NUT, ma nut ghi GIA
+        -- ("FORGE Hoan Hao  15") chu khong ghi TRANG THAI. Tam o trong y
+        -- het nhau, nen nguoi choi khong doc ra mon nao da luyen toi dau
+        -- -- phai suy nguoc tu con so tien, hoac liec sang bang ben phai
+        -- ma bang do thi de sot.
+        --
+        -- PHU LEN icon chu khong them mot hang: them hang thi cellH() to
+        -- ra, ma bodyH() lay max nen CA BON the cung cao len theo -- va
+        -- bang thi vua bi che la nhieu mang den qua.
+        --
+        -- Noi dung nhan do 5_gear.lua quyet dinh ("33/100"). O day chi
+        -- lo CHO DAT: icon rong 0.036 (~74px), o scale 0.70 vua khoang
+        -- 10 ky tu -- du cho mot phan so, khong du cho mot ten cap.
+        local tagH = 0.010
+        local ty   = cy + ICON() - tagH
+        c.tagBg = backdropFrame("CharGridTagBg" .. i, ix, ty,
+                                ICON(), tagH, CFG.PANEL_GRID_TEX, g.root)
+        if c.tagBg ~= nil then
+          -- CAN GIUA bang CENTER-toi-CENTER: text() khong can giua duoc
+          -- (tham so thu 7 la 'right'), va Warcraft khong co native nao
+          -- do be ngang chuoi de tu tinh. Cung cach mid() lam o cot giua.
+          local t = BlzCreateFrameByType("TEXT", "CharGridTag" .. i,
+                                         g.root, "", pid)
+          if t ~= nil then
+            BlzFrameSetPoint(t, FRAMEPOINT_CENTER, c.tagBg,
+                             FRAMEPOINT_CENTER, 0.0, 0.0)
+            API.frameScale(t, 0.70)
+            API.frameDead(t)
+            c.tag = t
+          end
+        end
+
         -- LOP NHAY: phu len icon, thuong xuyen AN. Tao SAU icon de no
-        -- nam TREN -- thu tu tao chinh la thu tu ve.
+        -- nam TREN -- thu tu tao chinh la thu tu ve. Tao sau ca nhan cap
+        -- nen luc nhay no phu kin ca nhan, dung y muon.
         c.flash = backdropFrame("CharGridFlash" .. i, ix - d, cy - d,
                                 ICON() + 2 * d, ICON() + 2 * d,
                                 CFG.PANEL_FLASH_OK, g.root)
 
         show(c.edge, false); show(c.icon, false)
         show(c.btn, false); show(c.note, false)
+        show(c.tagBg, false); show(c.tag, false)
         g.cell[i] = c
       end
 
@@ -1477,5 +1519,19 @@ API.panelToggle      = toggle
 API.panelHide        = hide
 API.panelFlash       = panelFlash
 API.panelGearFlash   = panelFlash   -- ten cu, giu cho 5_gear.lua
+-- Ten cac the, theo dung thu tu va so La Ma dang hien.
+--
+-- De trang F9 doc duoc thay vi go tay mot danh sach roi de no cu -- do
+-- la luat rieng cua 7_quest.lua ("noi dung SUY TU CFG"). Them mot the
+-- moi la trang F9 tu co.
+local function tabNames()
+  local out = {}
+  for i = 1, #S.panel.tabs do
+    out[i] = (ROMAN[i] or i) .. ". " .. (S.panel.tabs[i].name or "?")
+  end
+  return out
+end
+
+API.panelTabNames    = tabNames
 API.panelOpenTab     = openTab
 API.startPanel       = startPanel

@@ -40,6 +40,28 @@ local function groups()
     --
     -- Khong doan -- do. UnitRemoveAbility di kem vi bo da hero cung phai
     -- go luon vang sang, va do la nua con lai cua cau hoi.
+    -- A003 doi sang Endurance Aura, bang so nam tron trong war3map.w3a.
+    -- Bang ky nang muon HIEN so that thi phai doc bang hang so nay --
+    -- ten do "-nat oae" xac nhan, khong doan.
+    { name = "Phan Sat cua Nha Chinh (the VI)", entries = {
+      { "GetEventDamageSource", GetEventDamageSource,
+        "Phan Sat se khong phan gi" },
+      { "UnitDamageTarget", UnitDamageTarget, "" },
+    } },
+
+    { name = "Doc so cua Endurance Aura (A003)", entries = {
+      { "ABILITY_RLF_ATTACK_SPEED_INCREASE_OAE1",
+        ABILITY_RLF_ATTACK_SPEED_INCREASE_OAE1,
+        "bang ky nang se hien 'bac N' thay vi % that" },
+      { "ABILITY_RLF_MOVEMENT_SPEED_INCREASE_OAE2",
+        ABILITY_RLF_MOVEMENT_SPEED_INCREASE_OAE2, "" },
+      { "BlzGetAbilityRealLevelField", BlzGetAbilityRealLevelField, "" },
+      { "ConvertAbilityRealLevelField", ConvertAbilityRealLevelField,
+        "duong vong khi thieu hai hang so tren" },
+      { "BlzGetAbilityCooldown", BlzGetAbilityCooldown,
+        "A006 se hien 'bac N' thay vi hoi chieu" },
+    }},
+
     { name = "Doi da unit luc CHAY (pet Tu Thanh Thu)", entries = {
       { "BlzSetUnitSkin", BlzSetUnitSkin,
         "moi thu mot unit rieng -- 4 unit chu khong 1" },

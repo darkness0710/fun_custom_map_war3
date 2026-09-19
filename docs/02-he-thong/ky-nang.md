@@ -1,14 +1,19 @@
 # Hệ thống: Kỹ năng hero
 
-> **Trạng thái:** Hart **đủ vỏ và ruột**; Hvwd/Hkal **trống**
-> **Cập nhật:** 2026-09-16
+> **Trạng thái:** Hart **đủ vỏ và ruột**; Hvwd/Hkal **trống, đang khoá**
+> **Cập nhật:** 2026-09-19
 
 > **Hart đã hoàn chỉnh.** Bảy kỹ năng, đủ 10 bậc, hiệu ứng chạy thật, và từ
 > 2026-09-16 có cả **tên riêng, vị trí ô, tooltip 10 bậc** sinh bằng
 > [w3skill.py](../../w3skill.py). Trước đó 6/7 ability hiện nguyên tên Blizzard.
 >
 > **Hvwd và Hkal vẫn trống** — `CFG.SKILLS` chỉ có `H001`. Thiết kế cho hai hero
-> này đã bị xoá để làm lại, xem [thiet-ke-hero.md](thiet-ke-hero.md).
+> này đã bị xoá để làm lại, xem [thiet-ke-hero.md](thiet-ke-hero.md). Từ
+> 2026-09-19 chúng mang `locked = true` nên không ra bảng chọn nữa.
+>
+> **Hai kỹ năng của Hart đổi bản chất 2026-09-19** — `A003` Hiệu Lệnh thành bản
+> sao **Endurance Aura**, `A006` Da Sắt thành bản sao **Reincarnation**. Bảng số
+> 10 bậc nằm trong World Editor, code **đọc** chứ không tính lại.
 >
 > **Mọi chỉ số hero đi qua một cửa duy nhất** — `API.heroRecompute`. Mỗi hệ chỉ
 > khai báo nó đóng góp bao nhiêu; không hệ nào tự ghi lên unit. Xem

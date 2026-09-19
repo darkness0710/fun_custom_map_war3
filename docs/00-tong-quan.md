@@ -23,7 +23,10 @@ thiết kế, và là chỗ mọi con số quy về —
 | Kênh đồng bộ nhiều người | [3_sync.lua](../src/1_core/3_sync.lua) | blz → cache → local, tự dò |
 | Hai thứ tiếng | [6_i18n.lua](../src/1_core/6_i18n.lua) | `build.py --lang en\|vi` |
 | Nhà chính, chết là thua | [1_house.lua](../src/3_battle/1_house.lua) | Máu tính lại mỗi đợt theo `HOUSE_HP_HITS` |
-| Chọn hero lúc vào map | [2_heropick.lua](../src/2_player/2_heropick.lua) | 3 hero, mỗi người 1, không ai trùng |
+| Chọn hero lúc vào map | [2_heropick.lua](../src/2_player/2_heropick.lua) | 3 hero trong bảng, **1 mở** — Hvwd/Hkal đang `locked` |
+| Nâng cấp Nhà Chính | [12_houseup.lua](../src/2_player/12_houseup.lua) | Thẻ VI, trả bằng vàng — Kiên Cố (+Sức Mạnh) × 10 cấp |
+| Tu chính của đợt quái | [5_modifier.lua](../src/3_battle/5_modifier.lua) | 5 tu chính, bốc ngẫu nhiên mỗi stage thường. Báo bằng **chữ + màu quái + kiểu trời** |
+| Camera | [8_camera.lua](../src/4_ui/8_camera.lua) | Mặc định `2000` cho mọi người lúc vào map; `-zoom <số>` để đổi |
 | Khoá kinh nghiệm & điểm kỹ năng | [1_player.lua](../src/2_player/1_player.lua) | Quét lại toàn map mỗi `HERO_XP_SWEEP` giây |
 | **100 đợt quái** | [2_wave.lua](../src/3_battle/2_wave.lua) | Đường cong chỉ số, tinh anh, boss, tiền thưởng |
 | **Tu Vi** — tu vi người chơi | [3_cultivation.lua](../src/2_player/3_cultivation.lua) | 20 bậc, ×19.7 — mua bằng **Linh Khí** |
@@ -101,8 +104,9 @@ giao kèo `CULT_COST_BASE = 500` phẳng + một cảnh giới kiếm đúng 500
 `SKILL_DATA_LIVE` **đã bật** từ 2026-09-16: cả bảy ability có 10 bậc thật, và
 sát thương ăn theo chỉ số qua [7_effect.lua](../src/2_player/7_effect.lua).
 
-> **Nhưng chỉ Hart có kỹ năng.** Ba người chọn ba hero thì hai người có **0 kỹ
-> năng** — đây là khoảng trống lớn nhất còn lại.
+> **Chỉ Hart có kỹ năng, nên từ 2026-09-19 chỉ Hart ra bảng chọn.** Hvwd và
+> Hkal mang cờ `locked = true`. Trước đó ba người chọn ba hero thì hai người có
+> **0 kỹ năng** — khoá lại là cách trung thực hơn là để người chơi tự phát hiện.
 >
 > Hart thì đã hoàn chỉnh: 7 kỹ năng, 10 bậc, hiệu ứng thật, và tên/ô/tooltip sinh
 > từ `CFG.SKILLS`. Hvwd và Hkal ⏸ **chờ thiết kế lại** —

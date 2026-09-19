@@ -50,20 +50,56 @@ end
 local function describe()
   local L = {}
   local function add(s) L[#L + 1] = s end
+  local function key(k, text) add(CFG.C_GOLD .. k .. CFG.C_END .. "  " .. text) end
 
   add(API.t("quest_intro"))
   add("")
-  add(CFG.C_GOLD .. panelKeyName() .. CFG.C_END .. "  " ..
-      API.t("quest_key_panel"))
+
+  -- ----- Phim -----
+  key(panelKeyName(), API.t("quest_key_panel"))
+
+  -- Liet ke the DOC TU BANG, khong go tay. Them mot the moi (VI. Nha
+  -- Chinh chang han) la dong nay tu dai ra -- go tay thi no thanh mot
+  -- trang noi doi, te hon la khong co trang nao.
+  if API.panelTabNames ~= nil then
+    local t = API.panelTabNames()
+    if #t > 0 then
+      add("      " .. CFG.C_GREY .. table.concat(t, "  ") .. CFG.C_END)
+    end
+  end
+
   if CFG.GAME_KEY ~= nil then
-    add(CFG.C_GOLD .. CFG.GAME_KEY .. CFG.C_END .. "  " ..
-        API.t("quest_key_game"))
+    key(CFG.GAME_KEY, API.t("quest_key_game"))
   end
   local ik = itemKeyName()
-  if ik ~= nil then
-    add(CFG.C_GOLD .. ik .. CFG.C_END .. "  " .. API.t("quest_key_item"))
+  if ik ~= nil then key(ik, API.t("quest_key_item")) end
+  key("F9", API.t("quest_key_f9"))
+
+  -- ----- Lenh go -----
+  add("")
+  key("-zoom", API.t("quest_zoom",
+      API.num(math.floor((CFG.ZOOM_MIN or 900.0) + 0.5)),
+      API.num(math.floor((CFG.ZOOM_MAX or 4500.0) + 0.5))))
+
+  -- ----- Tu chinh -----
+  --
+  -- Day moi la phan dang doc nhat cua trang. Phim tat thi bam vai lan
+  -- la thuoc; con "vi sao dam quai nay mau tim" thi khong doan ra duoc,
+  -- va khong biet thi ca he tu chinh thanh do kho vo hinh.
+  if CFG.MODIFIERS ~= nil and #CFG.MODIFIERS > 0 then
+    add("")
+    add(CFG.C_GOLD .. API.t("quest_mod_head") .. CFG.C_END)
+    add(CFG.C_GREY .. API.t("quest_mod_intro") .. CFG.C_END)
+    local en = (API.lang() == "en")
+    for i = 1, #CFG.MODIFIERS do
+      local m   = CFG.MODIFIERS[i]
+      local sky = (en and m.sky_en) or m.sky_vi
+      local d   = (en and m.desc_en) or m.desc_vi or ""
+      add("   " .. CFG.C_JADE .. API.pick(m) .. CFG.C_END ..
+          (sky ~= nil and (CFG.C_GREY .. "  (" .. sky .. ")" .. CFG.C_END) or "") ..
+          "  " .. d)
+    end
   end
-  add(CFG.C_GOLD .. "F9" .. CFG.C_END .. "  " .. API.t("quest_key_f9"))
 
   return table.concat(L, "\n")
 end

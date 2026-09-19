@@ -98,12 +98,60 @@ Nguồn thứ hai của **Vàng** và nguồn duy nhất của **Đá Huyền Th
 
 | | |
 |---|---|
-| Lượt | tinh anh 1, boss 3 → 7/cảnh giới, 140 cả ván |
-| Vàng từ quay | cảnh giới 1: 185 *(quái cho 200)*; cảnh giới 20: 27,016 |
-| Đá | 10/lượt phẳng, cả ván tối đa 1,400 |
+| Lượt | tinh anh 1 · boss 3 · cổng 1 · Thánh Thú 3/5/8/12 → **169 cả ván** |
+| Thẻ mỗi lượt | **2** — một thẻ vàng, một thẻ chỉ số. Luôn đúng hai loại đó |
+| Vàng từ một thẻ | **30–90 phẳng**, không theo cảnh giới. Trung bình 60 |
+| Vàng từ quay cả ván | **0 – 10 140**, tuỳ người chơi chọn vàng hay chỉ số |
 
-Vàng từ quay **bám theo bậc**, vàng từ quái thì **phẳng** — nên nửa sau ván quay
-áp đảo. Thêm món vào shop thì giá phải leo theo bậc.
+> **Sửa 2026-09-19.** Bảng cũ ghi *"vàng từ quay bám theo bậc: cảnh giới 1 là
+> 185, cảnh giới 20 là 27 016"* và *"Đá 10/lượt, cả ván 1 400"*. **Cả hai đều
+> sai với code hiện tại:**
+>
+> - `makeCard()` trả `GetRandomInt(FORTUNE_GOLD_MIN, FORTUNE_GOLD_MAX)` —
+>   **phẳng 30–90**, không nhân với cảnh giới. Chỉ *thẻ chỉ số* mới bám theo bậc.
+>   Nên câu "nửa sau ván quay áp đảo" cũng sai theo.
+> - **Thẻ đá đã bị bỏ** khỏi `CFG.FORTUNE_KINDS` (còn `{"gold", "stat"}`). Cơ
+>   Duyên không cho viên đá nào nữa.
+
+Vì thẻ vàng phẳng mà thẻ chỉ số thì leo, **nửa sau ván gần như không ai chọn
+vàng nữa** — 60 vàng ở cảnh giới 18 là vô nghĩa. Thu nhập vàng thực tế do đó
+dồn về nửa đầu.
+
+## Thẻ VI — Nâng cấp Nhà Chính
+
+Một đường (**Kiên Cố** — cộng Sức Mạnh cho nhà) × 10 cấp,
+`80 × 1.25^(n−1)` mỗi cấp, **tổng 2 660 vàng** — bằng **29%** thu nhập thực tế,
+hay 266 viên đá tức 6,7% bộ trang bị. Một món **bảo hiểm nhỏ**, cố ý không phải
+một nhánh tiến trình thứ hai.
+Chi tiết: [nang-cap-nha-chinh.md](nang-cap-nha-chinh.md).
+
+> **Hạ giá 2026-09-19** từ `300 × 1.45ⁿ` (trọn đường 26 723) — giá cũ đòi gần
+> 2 lần tổng thu nhập tối đa và tranh vàng trực tiếp với Trang Bị.
+
+## Vàng cả ván một người kiếm được — đo 2026-09-19
+
+| Nguồn | Vàng | Ghi chú |
+|---|---|---|
+| Quái thường | **4 000** | 80 stage × 50 con × 1. Tinh anh và boss **không** cho vàng |
+| Cơ Duyên | **0 – 10 140** | 169 lượt × thẻ vàng 30–90 *(trung bình 60)* — chỉ khi chọn vàng thay vì chỉ số |
+| **Tổng** | **4 000 – 14 140** | ~9 070 nếu chọn vàng một nửa số lượt |
+
+Thưởng **chia đủ cho mọi người**, không chia nhỏ theo số người
+([ADR 0013](../05-quyet-dinh/0013-thuong-chia-deu-cho-moi-nguoi.md)) — nên con số
+trên là của **mỗi** người chơi, bao nhiêu người cũng vậy.
+
+### Vàng KHÔNG phải đồng tiền chết — nó là đồng tiền chật nhất
+
+Vì **Đá Huyền Thiết mua bằng vàng, 10 vàng một viên**, và Trang Bị ăn đá:
+
+```
+1 cảnh giới của 1 món = 1/1.00 + 1/0.75 + 1/0.50 + 1/0.25 + 1/0.15  = 15 viên
+                      + 10 viên Tiến Giai                            = 25 viên
+trọn bộ = 25 × 20 cảnh giới × 8 món = 4 000 viên = 40 000 vàng
+```
+
+**14 140 vàng chỉ đủ 35% một bộ trang bị đầy.** Vàng là thứ chật nhất trong ván,
+không phải thứ thừa.
 
 ## Thẻ V — Shop
 
@@ -135,13 +183,27 @@ dưới sàn.
 
 ## Quà khởi đầu
 
-Phát **sau khi pick xong hero**, không phải lúc vào map — quà là của hero, mà lúc
-vào map hero chưa tồn tại nên không có túi nào để bỏ vào. Chỉ phát cho lần pick
-**đầu tiên**; đổi hero mà phát lại là một đường nhận quà vô hạn.
+**Trọn bộ quà phát ở cổng `HeroMoveRegion`, không phát lúc pick hero**
+*(đổi 2026-09-19)*:
 
-`CFG.LUMBER_START = 1` + `CFG.START_ITEMS` (10 lọ mỗi loại). Danh sách quà dùng chung
-mã với `CFG.SHOP`, không gõ lại mã item — hai chỗ cùng tạo một thứ thì sớm muộn
-cũng lệch.
+| Quà | Khoá |
+|---|---|
+| Gỗ khởi đầu | `LUMBER_START = 2` |
+| 10 lọ máu, 10 lọ mana | `START_ITEMS` |
+| **3 Tháp Canh** *(không mua thêm được)* | `TOWER_START = 3` |
+| **2 Đá Rèn** | `IRON_START = 2` |
+
+Không phát lúc vào map: quà là của hero, mà lúc đó hero chưa tồn tại nên không
+có túi nào để bỏ vào. Không phát lúc pick: hero sinh ra ở `HeroStartRegion`, xa
+nhà — để quà ở cổng là cho người chơi một **lý do để đi** đoạn đường đó. Xem
+[nha-chinh.md](nha-chinh.md#cổng-đầu-ván-herostartregion-heromoveregion).
+
+**Một cờ duy nhất canh cả ba phần** — `d.gateGift`. Cổng nằm ngay dưới chỗ hero
+hiện ra: đi ra đi vào mất ba giây, nên phát mỗi lần là một đường nhận quà vô
+hạn.
+
+Danh sách quà dùng chung mã với `CFG.SHOP`, không gõ lại mã item — hai chỗ cùng
+tạo một thứ thì sớm muộn cũng lệch.
 
 ## Dùng đồ bằng hàng số trên
 
@@ -229,8 +291,11 @@ thông báo ta vẫn gọi đúng tên, vài phút sau không ai để ý nữa.
 cái là phải kiểm lại tích. Lệch 20% ở một nguồn nghe nhỏ, nhưng lệch 20% ở cả bốn
 là tích lệch hơn gấp đôi.
 
-> **Đây là bản đang chạy trong code.** `CFG.CULT_STEP = 1.17` (không phải
-> 1.215) và `CFG.GEAR_COST_BASE = 147` (không phải 86) đều thuộc bản này.
+> ⚠ **Đoạn này đã cũ — hai khoá không còn tồn tại (soát 2026-09-19).**
+> `CFG.CULT_STEP` và `CFG.GEAR_COST_BASE` đã bị xoá. Đường cong cảnh giới bây
+> giờ tính trong `cultPowerAt()` ở [2_wave.lua](../../src/3_battle/2_wave.lua)
+> từ `CULT_STAT_BASE` / `CULT_STAT_GAIN` / `CULT_STAT_STEP`, còn giá luyện trang
+> bị là `CFG.GEAR_PRICE = 1` đá một lần thử.
 >
 > Bản cũ chia **ba** nguồn: tu vi ×40.5, trang bị ×12, kỹ năng ×2 = ×971. Cũng
 > đúng — nhưng **không trộn được**. Trộn Tu Vi ×40.5 của bản cũ với Trang Bị
@@ -374,7 +439,7 @@ về `false` nên `2_wave.lua` gọi vẫn an toàn.
 
 Boss vẫn rơi `REWARD_BOSS_QI + REWARD_BOSS_LUMBER`, tổng **1 150** cả ván. Nhưng
 Pháp Khí đã chuyển sang Ngộ Tính, nên **không hệ nào tiêu Tinh Thạch nữa** —
-`API.spendTinhThach` còn trong code nhưng không ai gọi.
+`API.spendTinhThach` **đã xoá hẳn** — hai ví bây giờ là `API.spendLumber` (Gỗ / Ngộ Tính) và `API.spendIron` (Đá Huyền Thiết).
 
 Ba cách xử lý, chưa chọn:
 
