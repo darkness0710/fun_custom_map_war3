@@ -1,9 +1,80 @@
 # Các bước thực hiện
 
-> **Cập nhật:** 2026-09-17
+> **Cập nhật:** 2026-09-20
 
 Làm từng bước một. Mỗi bước phải **chạy được và kiểm được** trước khi sang bước
 sau — không dựng ba tầng rồi mới bật game lên xem.
+
+---
+
+# 📌 Còn treo — đọc cái này trước
+
+> **Chốt ngày 2026-09-20.** Danh sách sống: làm xong thì **xoá dòng**, đừng để
+> lại. Một dòng "chưa làm" còn nằm sau khi đã làm xong thì lần sau không ai tin
+> cả danh sách nữa.
+
+## 1. Một ván đo — đáng giá hơn mọi thứ bên dưới
+
+Rất nhiều con số trong map là **con số đầu**, chưa ai đo trong một ván thật.
+Công cụ đo đã dựng xong và đang chạy tốt; thiếu đúng dữ liệu.
+
+**Chơi solo tới stage 10, rồi đọc:**
+
+| Ở đâu | Dòng | Nói lên gì |
+|---|---|---|
+| Bảng tổng kết | `Thoi gian` · `ha N quai` | Một wave mất bao lâu thật |
+| File vết | `boss: rN CHET sau Xs (thiet ke 40s)` | Lệch bao nhiêu sau khi vá `measureParty` |
+
+**Wave 1 đang lê thê:** `7 200` EHP ÷ `32` sát thương = **225 đòn**, ~2.5–3 phút.
+Núm duy nhất nên vặn là `MOB_EHP_BASE` — nhưng **đo trước**. Vặn theo cảm giác
+sau ba phút chơi thì dễ vặn quá tay.
+
+## 2. Tám chỗ chưa chứng minh — một ván là trả lời hết
+
+File vết **bị ghi đè mỗi phiên** — đọc trước khi khởi động lại.
+
+| Chỗ | Dòng cần tìm | Nếu sai thì sao |
+|---|---|---|
+| 20 mã `MOB_UNIT` | `wave: do 20 mau linh -- N ma sai, N con bay` | Lùi về `hfoo`, wave vẫn chạy |
+| `whwd` Healing Ward | `shop: ... ma sai` | Không mua được |
+| Cọc hồi `2%/giây` | *(nhìn bằng mắt)* | Đặt ở cảnh giới 1, rồi `-lc 10` đặt lại. **Số không đổi = tài liệu sai** |
+| Icon thẻ Gỗ | `fortune: icon lumber = ...` | Ra cái áo giáp, không hợp nghĩa |
+| Autocast Thiêu Thiên | `order: pid N phat lenh 852xxx` | Bấm `E` hai lần, ghi số vào `CFG.BURN_ORDER` |
+| Hào quang boss | `aura '...' can don CAN CHIEN ma con nay danh XA` | Aura im lặng không làm gì |
+| `A016` Brilliance | `skill: khong co hang so ...HAB1` | Tooltip lùi về "bậc N" |
+| `A009` Trueshot `Ear1` | như trên, `...EAR1` | như trên |
+
+## 3. Hai chỗ cần World Editor
+
+**`A010` Hồi Xuân — hồi máu gốc vẫn chạy chồng lên Lua.** Không có hằng số
+`ABILITY_RLF_*` nào cho `ACr2` *(đã đo, không phải chưa tìm)*. Cách tắt:
+
+> Mở `A010` → đặt `Data - Hit Points Gained` **một giá trị bất kỳ** → Lưu → đóng
+> WE → `python w3obj.py dump` sẽ in ra **mã trường 4 ký tự** → đưa vào
+> `SKILL_ZERO_BASE` qua `ConvertAbilityRealLevelField`.
+
+**`A012` Nguyệt Nhận — mất hoạt ảnh glaive bay vòng.** Đang tính bằng Lua. Muốn
+lấy lại hoạt ảnh thì đặt `ua1w = mbounce` cho `H002`/`H003` — **nhưng phải bỏ
+`fx = "bounce"`**, để cả hai là sát thương nhân đôi.
+
+## 4. Chưa làm
+
+| | Ghi chú |
+|---|---|
+| **Sự kiện thương nhân** | Ý của chủ dự án. Đứng cạnh nhà 60 giây sau khi dọn wave, bán giảm giá. Dùng lại nguyên `CFG.SHOP` + hệ số + đồng hồ. **Rẻ nhất, lấp lỗ thật**: vàng hiện chỉ có một chỗ tiêu, và shop là menu tĩnh không bao giờ tạo ra khoảnh khắc |
+| **Lôi Kiếp** | Đã thiết kế, đã có chỗ cắm — mốc thứ hai của `WAVE_REST` |
+| **6 mẫu lính mỗi cõi** | `MOB_UNIT` giờ là 20 unit gốc WC3, đổi mỗi cảnh giới. Muốn mẫu tự vẽ thì đây là chỗ |
+| **25 block** | Hoãn có chủ ý ([ADR 0014](05-quyet-dinh/0014-25-block-de-danh-cho-noi-dung-sau.md)). Đừng động tới cho tới khi trên xong |
+| **Màn kết nâng cao** | Bản đơn giản đã xong. Ba hướng nếu muốn hơn: camera bay qua nhà, xếp hạng ba người, ghi kỷ lục ra `CustomMapData` |
+
+## 5. Đã quyết — đừng mở lại
+
+| | Quyết định |
+|---|---|
+| **Lọ hồi máu phẳng** | `250` máu không scale; cảnh giới 20 chỉ hồi `1%`. **Để yên** — lọ rẻ `5` / cọc đắt `50` là đường tiến hoá hợp lý. Mô tả đã ghi rõ con số nên nó không nói dối |
+| **Xổ số chẵn/lẻ** | Bỏ. Cơ Duyên đã là hệ cờ bạc; cược vàng giữa người chơi tạo ra người tụt lại vì **xui**, không phải vì chơi dở |
+| **`A012` trên Hkal** | Chưa hợp lý, chấp nhận tạm. Đổi là thay một dòng |
+| **Hvwd/Hkal `locked`** | Đã mở hết. Cơ chế `locked` giữ lại cho hero thứ tư |
 
 ---
 
@@ -93,8 +164,9 @@ Những thứ mới cài, chưa ai nhìn thấy chạy:
   "mấy phát một con" phải **không đổi** từ stage 1 tới 100. Dùng `-wave N` nhảy
   tới 1, 25, 50, 75, 100 rồi đếm.
   [ADR 0020](05-quyet-dinh/0020-duong-cong-quai-bam-theo-tu-vi.md)
-- **Cơ Duyên có ngắt nhịp không.** Khung mở **ngay** khi tinh anh chết, giữa
-  lúc còn quái — vui hay phiền thì phải nhìn mới biết.
+- **Cơ Duyên có còn ngắt nhịp không.** Từ 2026-09-20 khung mở lúc **dọn sạch
+  đợt** chứ không lúc tinh anh chết, và gom cả wave vào một lần. Phải nhìn mới
+  biết gom như thế có thành một đống quá dài hay không.
 - **Ba máy có rút cùng bộ ba thẻ không.** Thẻ sinh trong sự kiện quái chết nên
   *phải* đồng bộ; lệch một lần là lệch cả ván. Chơi thử **hai máy** mới đo được.
 - **`-nat oskey`** — hàng số trên có bắt phím không, và có đụng lệnh gọi nhóm
@@ -187,12 +259,11 @@ bản. Chủ dự án dừng để nghĩ.
 
 ---
 
-## ⬜ Bước 8 — Tu chính
+## ✅ Bước 8 — Tu chính
 
-4 tầng của một cảnh giới hiện **giống hệt nhau** — chỉ số chỉ nhích ×1.054 suốt
-4 tầng. Bảng tu chính ở
-[02-he-thong/dot-quai.md](02-he-thong/dot-quai.md#tu-chính) còn là phác thảo,
-chưa có số và chưa có khoá `CFG` nào.
+**Xong 2026-09-19.** 5 tu chính trong `CFG.MODIFIERS`, bốc ngẫu nhiên mỗi stage
+thường, kèm **thời tiết** và một **dòng tra cứu** ở khung `R`. Chi tiết:
+[dot-quai.md](02-he-thong/dot-quai.md#tu-chính).
 
 ---
 
