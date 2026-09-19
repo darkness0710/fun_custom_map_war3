@@ -8,6 +8,7 @@ Con boss **phòng thủ thuần**. Không đuổi, không gọi quân, chỉ đ�
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
+| **Hào quang** `command` | Command Aura — boss **gây thêm sát thương**. | Luôn bật, không hồi chiêu, không tắt được. Là **phần trăm** nên tự bám theo sức boss, không bao giờ teo. |
 | **Phản Đòn** `reflect` | Phản lại **15%** sát thương nhận vào, thẳng vào người đánh. | Hero giòn phải cẩn thận: đánh càng mạnh càng tự thương. |
 | **Hộ Thể** `shield` | Mỗi **15s** tạo khiên hấp thụ bằng **12%** máu tối đa. | Dồn sát thương phá khiên trước khi lớp sau kịp lên, nếu không trận kéo vô hạn. |
 

@@ -8,6 +8,7 @@ Ba cơ chế đều thưởng cho việc trận kéo dài. Đây là con boss **
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
+| **Hào quang** `unholy` | Unholy Aura — boss **chạy nhanh và tự hồi máu** — khó kéo, khó bỏ chạy. | Luôn bật, không hồi chiêu, không tắt được. Là **phần trăm** nên tự bám theo sức boss, không bao giờ teo. |
 | **Hút Máu** `lifesteal` | Hồi lại **25%** sát thương nó gây ra. | Đánh gấp. Kéo dài trận là cho nó hồi, và nó hồi theo số người nó chạm được. |
 | **Phát Cuồng** `enrage` | Dưới **30%** máu, sát thương `×1.6` vĩnh viễn. | Để dành kỹ năng và lọ cho 30% cuối. Nửa đầu dễ, nửa cuối mới là trận. |
 | **Xé Giáp** `shred` | Mỗi đòn trúng cộng dồn **+2%** sát thương nhận vào **của riêng hero đó**. | Thay phiên nhau chịu đòn. Một người tank cả trận là người đó vỡ trước. |

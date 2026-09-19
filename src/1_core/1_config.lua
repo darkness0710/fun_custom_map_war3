@@ -1313,30 +1313,48 @@ CFG.BOSS_HITS_TO_KILL = 12.0
 -- cang de vo -- nguoc han nhip thong thuong.
 --
 -- Moi con mot file mo ta rieng: docs/02-he-thong/boss/NN-<slug>.md
+-- 'aura': MOI con mot hao quang, tra bang CFG.BOSS_AURA.
+--
+-- HAI RANG BUOC CUA WARCRAFT, khong phai cua map:
+--   Vampiric chi an voi don CAN CHIEN
+--   Trueshot chi an voi don TAM XA
+-- Gan nham thi aura IM LANG KHONG LAM GI -- khong loi, khong bao, va
+-- boss chi yeu di mot cach kho hieu. spawn() do lai bang
+-- IsUnitType(UNIT_TYPE_RANGED_ATTACKER) va GHI VET neu lech, nen bang
+-- nay sai o dau se tu noi ra chu khong phai doi ai phat hien.
+--
+-- Vi the: 'vampiric' chi cho con danh gan (Hmkg Obla Otch Npbm),
+-- 'trueshot' chi cho con danh xa (Hamg Emoo Hblm Nfir). Ba cai con lai
+-- an voi ca hai nen rai tu do.
+--
+-- KHONG cho 'vampiric' len con da co co che lifesteal (r5 r11 r15 r17)
+-- -- hai lop hut mau chong nhau thi lop thu hai khong doc ra duoc.
+--
+-- Bon con mot aura, chia deu 5 x 4 = 20.
 CFG.BOSSES = {
-  { r = 1,  vi = "Thi Giai Lao To",    en = "Corpse-Shed Elder",   unit = id('Hmkg'), mech = { "slam" } },
-  { r = 2,  vi = "Dan Khi Chan Nhan",  en = "Qi-Gathering Adept",  unit = id('Hpal'), mech = { "slam", "shield" } },
-  { r = 3,  vi = "Truc Co Thach Linh", en = "Foundation Stonesoul",unit = id('Ucrl'), mech = { "slam", "reflect" } },
-  { r = 4,  vi = "Kim Dan Ma Quan",    en = "Golden Core Warlord", unit = id('Obla'), mech = { "charge", "enrage" } },
-  { r = 5,  vi = "Nguyen Anh Quy Mau", en = "Nascent Soul Matron", unit = id('Udre'), mech = { "lifesteal", "summon" } },
+  { r = 1,  vi = "Thi Giai Lao To",    en = "Corpse-Shed Elder",   unit = id('Hmkg'), aura = "vampiric",  mech = { "slam" } },
+  { r = 2,  vi = "Dan Khi Chan Nhan",  en = "Qi-Gathering Adept",  unit = id('Hpal'), aura = "command",   mech = { "slam", "shield" } },
+  { r = 3,  vi = "Truc Co Thach Linh", en = "Foundation Stonesoul",unit = id('Ucrl'), aura = "endurance", mech = { "slam", "reflect" } },
+  { r = 4,  vi = "Kim Dan Ma Quan",    en = "Golden Core Warlord", unit = id('Obla'), aura = "vampiric",  mech = { "charge", "enrage" } },
+  { r = 5,  vi = "Nguyen Anh Quy Mau", en = "Nascent Soul Matron", unit = id('Udre'), aura = "unholy",    mech = { "lifesteal", "summon" } },
 
-  { r = 6,  vi = "Hoa Than Vo Tuong",  en = "Spirit-Sever Formless",unit = id('Ewar'), mech = { "charge", "shred" } },
-  { r = 7,  vi = "Luyen Hu Dao Nhan",  en = "Void-Refiner",        unit = id('Hamg'), mech = { "shield", "summon" } },
-  { r = 8,  vi = "Hop The Cuong Ma",   en = "Body-Integration Fiend",unit = id('Otch'), mech = { "slam", "enrage" } },
-  { r = 9,  vi = "Dai Thua Ton Gia",   en = "Great Ascension Arhat",unit = id('Ekee'), mech = { "summon", "reflect" } },
-  { r = 10, vi = "Do Kiep Loi Chu",    en = "Tribulation Thunderlord",unit = id('Ofar'), mech = { "slam", "charge", "enrage" } },
+  { r = 6,  vi = "Hoa Than Vo Tuong",  en = "Spirit-Sever Formless",unit = id('Ewar'), aura = "command",   mech = { "charge", "shred" } },
+  { r = 7,  vi = "Luyen Hu Dao Nhan",  en = "Void-Refiner",        unit = id('Hamg'), aura = "trueshot",  mech = { "shield", "summon" } },
+  { r = 8,  vi = "Hop The Cuong Ma",   en = "Body-Integration Fiend",unit = id('Otch'), aura = "vampiric",  mech = { "slam", "enrage" } },
+  { r = 9,  vi = "Dai Thua Ton Gia",   en = "Great Ascension Arhat",unit = id('Ekee'), aura = "endurance", mech = { "summon", "reflect" } },
+  { r = 10, vi = "Do Kiep Loi Chu",    en = "Tribulation Thunderlord",unit = id('Ofar'), aura = "unholy",    mech = { "slam", "charge", "enrage" } },
 
-  { r = 11, vi = "Chan Tien Kiem Khach",en = "True Immortal Swordsman",unit = id('Edem'), mech = { "charge", "lifesteal" } },
-  { r = 12, vi = "Thien Tien Tinh Quan",en = "Heavenly Star Marshal",unit = id('Emoo'), mech = { "shield", "shred" } },
-  { r = 13, vi = "Kim Tien Bat Hoai",  en = "Golden Immortal Adamant",unit = id('Hpal'), mech = { "reflect", "shield" } },
-  { r = 14, vi = "Thai At Cuu Chuyen", en = "Taiyi Ninefold",      unit = id('Ulic'), mech = { "summon", "slam" } },
-  { r = 15, vi = "Dai La Thien Ma",    en = "Great Luo Demon",     unit = id('Udea'), mech = { "lifesteal", "enrage", "shred" } },
+  { r = 11, vi = "Chan Tien Kiem Khach",en = "True Immortal Swordsman",unit = id('Edem'), aura = "unholy",    mech = { "charge", "lifesteal" } },
+  { r = 12, vi = "Thien Tien Tinh Quan",en = "Heavenly Star Marshal",unit = id('Emoo'), aura = "trueshot",  mech = { "shield", "shred" } },
+  { r = 13, vi = "Kim Tien Bat Hoai",  en = "Golden Immortal Adamant",unit = id('Hpal'), aura = "command",   mech = { "reflect", "shield" } },
+  { r = 14, vi = "Thai At Cuu Chuyen", en = "Taiyi Ninefold",      unit = id('Ulic'), aura = "endurance", mech = { "summon", "slam" } },
+  { r = 15, vi = "Dai La Thien Ma",    en = "Great Luo Demon",     unit = id('Udea'), aura = "unholy",    mech = { "lifesteal", "enrage", "shred" } },
 
-  { r = 16, vi = "Tien De Kim Than",   en = "Immortal Emperor",    unit = id('Hblm'), mech = { "slam", "shield", "enrage" } },
-  { r = 17, vi = "Thanh Nhan Vo Nga",  en = "Selfless Saint",      unit = id('Oshd'), mech = { "reflect", "lifesteal" } },
-  { r = 18, vi = "Dao To Huyen Vi",    en = "Dao Ancestor",        unit = id('Nbrn'), mech = { "shred", "summon", "charge" } },
-  { r = 19, vi = "Hon Don Than Ma",    en = "Primordial God-Fiend", unit = id('Nfir'), mech = { "slam", "reflect", "enrage" } },
-  { r = 20, vi = "Sang The Than",      en = "World Creator",       unit = id('Npbm'), mech = { "slam", "charge", "shred", "enrage" } },
+  { r = 16, vi = "Tien De Kim Than",   en = "Immortal Emperor",    unit = id('Hblm'), aura = "trueshot",  mech = { "slam", "shield", "enrage" } },
+  { r = 17, vi = "Thanh Nhan Vo Nga",  en = "Selfless Saint",      unit = id('Oshd'), aura = "endurance", mech = { "reflect", "lifesteal" } },
+  { r = 18, vi = "Dao To Huyen Vi",    en = "Dao Ancestor",        unit = id('Nbrn'), aura = "command",   mech = { "shred", "summon", "charge" } },
+  { r = 19, vi = "Hon Don Than Ma",    en = "Primordial God-Fiend", unit = id('Nfir'), aura = "trueshot",  mech = { "slam", "reflect", "enrage" } },
+  { r = 20, vi = "Sang The Than",      en = "World Creator",       unit = id('Npbm'), aura = "vampiric",  mech = { "slam", "charge", "shred", "enrage" } },
 }
 
 -- Con so dung chung cho tung co che.
@@ -1357,6 +1375,61 @@ CFG.BOSS_MECH = {
   shred     = { perHit = 0.02 },             -- tru 2% giap HIEN CO moi don
   enrage    = { at = 0.30, dmg = 1.60 },
 }
+
+-- ---------- Hao quang cua boss ----------
+--
+-- NAM ABILITY CO SAN CUA WARCRAFT, khong nhan ban. Ly do: ca nam deu
+-- la PHAN TRAM, nen chung tu bam theo suc cua boss va khong bao gio
+-- teo (ADR 0024). Do la truong hop hiem ma "de Warcraft giu so" la
+-- dung -- xem CFG.SKILLS[H002] de doi chieu.
+--
+-- 'abils': DANH SACH UNG CU VIEN, do chu khong go.
+--   UnitAddAbility tra FALSE khi ma sai, nen probeAura() thu lan luot
+--   roi ghi vet cai nao trung. Chi 'AUav' 'AOae' 'AEar' la DA DUOC
+--   DUNG THAT trong map nay (hut mau cua tu chinh, A003, A009); hai ma
+--   con lai chua, nen chung co ban du phong.
+--
+-- 'need': loai don danh BAT BUOC de aura co tac dung.
+--   Warcraft quy dinh, khong phai map: Vampiric chi an don can chien,
+--   Trueshot chi an don tam xa. Gan nham thi aura im lang khong lam gi.
+--   spawn() doi chieu voi IsUnitType(UNIT_TYPE_RANGED_ATTACKER) va ghi
+--   vet neu lech.
+--
+-- 'desc': cau hien cho NGUOI CHOI luc boss xuat hien. Bo di thi hao
+-- quang thanh mot con so vo hinh -- nguoi choi thua ma khong biet vi
+-- sao, y het chuyen tu chinh truoc day.
+CFG.BOSS_AURA = {
+  endurance = { vi = "Kien Nhan", en = "Endurance Aura",
+    abils = { 'AOae', 'Aaen' }, need = nil,
+    desc_vi = "Boss danh va chay NHANH hon.",
+    desc_en = "The boss attacks and moves faster." },
+
+  vampiric  = { vi = "Hut Mau", en = "Vampiric Aura",
+    abils = { 'AUav', 'ANvc', 'Avam' }, need = "melee",
+    desc_vi = "Boss tu lanh khi danh trung -- phai ep ha nhanh.",
+    desc_en = "The boss heals as it hits -- burn it down fast." },
+
+  command   = { vi = "Thong Linh", en = "Command Aura",
+    abils = { 'AOac', 'Acom', 'Acoa' }, need = nil,
+    desc_vi = "Boss gay THEM sat thuong.",
+    desc_en = "The boss deals extra damage." },
+
+  unholy    = { vi = "Bat Tinh", en = "Unholy Aura",
+    abils = { 'AUau', 'Auau', 'Aunh' }, need = nil,
+    desc_vi = "Boss chay nhanh va tu hoi mau -- kho keo, kho bo chay.",
+    desc_en = "The boss moves fast and regenerates -- hard to kite." },
+
+  trueshot  = { vi = "Than Xa", en = "Trueshot Aura",
+    abils = { 'AEar', 'Atru' }, need = "ranged",
+    desc_vi = "Don tam xa cua boss manh hon.",
+    desc_en = "The boss deals more ranged damage." },
+}
+
+-- Bac hao quang theo canh gioi. Aura goc cua Warcraft co 3 bac, va
+-- chung la PHAN TRAM nen len bac la len ti le -- khong can ta tinh gi.
+--
+-- 20 canh gioi chia 3 khoang: 1-7 bac 1, 8-14 bac 2, 15-20 bac 3.
+CFG.BOSS_AURA_MAX_LEVEL = 3
 
 -- Bang cu, giu lai cho 3_boss.lua lui ve khi CFG.BOSSES thieu mot bac.
 CFG.BOSS_UNIT = {

@@ -63,6 +63,66 @@ local function passivePct(pid)
   return sum
 end
 
+-- ---------- Hao quang ----------
+--
+-- Gan mot trong nam aura co san cua Warcraft len boss. Ca nam deu la
+-- PHAN TRAM nen tu bam theo suc boss, khong teo (ADR 0024).
+--
+-- BA CHO DE HONG IM LANG, va ca ba deu ghi vet:
+--
+--   1. MA ABILITY SAI. UnitAddAbility tra false -- khong nem loi, khong
+--      bao gi. Nen do lan luot qua danh sach ung cu vien.
+--
+--   2. QUEN DAT BAC. Ability gan bang UnitAddAbility ra o BAC 0 va bac
+--      0 khong co tac dung nao. Day la cai bay da ghi trong
+--      docs/02-he-thong/ky-nang.md, va no khong hien ra o dau ca.
+--
+--   3. SAI LOAI DON DANH. Vampiric chi an don CAN CHIEN, Trueshot chi
+--      an don TAM XA -- luat cua Warcraft. Gan nham thi aura ton tai,
+--      icon hien, va khong lam gi het.
+local function applyAura(u, d, realm)
+  if d == nil or d.aura == nil or UnitAddAbility == nil then return nil end
+  local a = (CFG.BOSS_AURA or {})[d.aura]
+  if a == nil then
+    API.trace("boss: aura '" .. tostring(d.aura) .. "' khong co trong CFG.BOSS_AURA")
+    return nil
+  end
+
+  -- Loai don danh: DO, khong suy tu ten unit.
+  local ranged = (IsUnitType ~= nil) and _G["UNIT_TYPE_RANGED_ATTACKER"] ~= nil
+                 and IsUnitType(u, UNIT_TYPE_RANGED_ATTACKER) or false
+  if a.need == "melee" and ranged then
+    API.trace("boss: r" .. realm .. " aura '" .. d.aura ..
+              "' can don CAN CHIEN ma con nay danh XA -- se khong an gi")
+  elseif a.need == "ranged" and not ranged then
+    API.trace("boss: r" .. realm .. " aura '" .. d.aura ..
+              "' can don TAM XA ma con nay danh GAN -- se khong an gi")
+  end
+
+  local code = nil
+  for i = 1, #(a.abils or {}) do
+    local c = FourCC(a.abils[i])
+    if UnitAddAbility(u, c) then code = c; break end
+  end
+  if code == nil then
+    API.trace("boss: r" .. realm .. " KHONG gan duoc aura '" .. d.aura ..
+              "' (" .. table.concat(a.abils or {}, " ") .. ")")
+    return nil
+  end
+
+  -- BAC. Chia 20 canh gioi thanh CFG.BOSS_AURA_MAX_LEVEL khoang deu.
+  -- Khong dat thi ability nam o bac 0 va khong lam gi -- kieu hong im
+  -- lang nhat trong ca ba.
+  local top = CFG.BOSS_AURA_MAX_LEVEL or 3
+  local lv = math.floor((realm - 1) / (20.0 / top)) + 1
+  if lv < 1 then lv = 1 elseif lv > top then lv = top end
+  if SetUnitAbilityLevel ~= nil then SetUnitAbilityLevel(u, code, lv) end
+
+  API.trace("boss: r" .. realm .. " aura '" .. d.aura .. "' bac " .. lv ..
+            " (" .. (ranged and "danh xa" or "danh gan") .. ")")
+  return a
+end
+
 local function measureParty()
   local dps, ehpAvg, n = 0.0, 0.0, 0
   for i = 1, #S.pids do
@@ -193,8 +253,19 @@ local function spawn(stage, realm, x, y, face)
     shield = 0.0,
   }
 
+  local aura = applyAura(u, d, realm)
+
   if d ~= nil then
     API.msg(nil, CFG.C_RED .. API.t("boss_arrived", API.pick(d)) .. CFG.C_END)
+  end
+  -- BAO HAO QUANG RA CHU. Khong bao thi no la mot he so vo hinh: nguoi
+  -- choi thua ma khong biet vi sao. Cung ly le voi tu chinh -- mot lop
+  -- co that nhung khong doc duoc thi khong dung de ra quyet dinh duoc.
+  if aura ~= nil then
+    local en = (API.lang() == "en")
+    API.msg(nil, CFG.C_GOLD .. API.t("boss_aura", API.pick(aura)) ..
+            CFG.C_END .. "  " .. CFG.C_GREY ..
+            ((en and aura.desc_en) or aura.desc_vi or "") .. CFG.C_END)
   end
   API.trace("boss: r" .. realm .. " " .. API.idToStr(uid) .. " -- " .. n ..
             " hero, dps " .. math.floor(dps) .. " -> mau " .. math.floor(hp) ..

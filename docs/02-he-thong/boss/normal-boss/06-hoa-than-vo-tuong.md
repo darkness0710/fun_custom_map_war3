@@ -8,6 +8,7 @@ Xé giáp xuất hiện lần đầu, và đây là chỗ người chơi phát h
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
+| **Hào quang** `command` | Command Aura — boss **gây thêm sát thương**. | Luôn bật, không hồi chiêu, không tắt được. Là **phần trăm** nên tự bám theo sức boss, không bao giờ teo. |
 | **Lao Kích** `charge` | Mỗi **11s** dịch chuyển tới hero **XA NHẤT** và gây `3×` một đòn. | Không có chỗ nấp. Ai đứng xa nhất là mục tiêu, kể cả người đang hồi máu. |
 | **Xé Giáp** `shred` | Mỗi đòn trúng cộng dồn **+2%** sát thương nhận vào **của riêng hero đó**. | Thay phiên nhau chịu đòn. Một người tank cả trận là người đó vỡ trước. |
 

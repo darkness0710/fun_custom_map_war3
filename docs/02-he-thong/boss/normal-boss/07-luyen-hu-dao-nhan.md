@@ -8,6 +8,7 @@ Khiên cộng thuộc hạ: ép chọn mục tiêu. Đánh boss thì thuộc h�
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
+| **Hào quang** `trueshot` | Trueshot Aura — **đòn tầm xa** của boss mạnh hơn. *(Warcraft: chỉ ăn với đòn **tầm xa**)* | Luôn bật, không hồi chiêu, không tắt được. Là **phần trăm** nên tự bám theo sức boss, không bao giờ teo. |
 | **Hộ Thể** `shield` | Mỗi **15s** tạo khiên hấp thụ bằng **12%** máu tối đa. | Dồn sát thương phá khiên trước khi lớp sau kịp lên, nếu không trận kéo vô hạn. |
 | **Triệu Hồi** `summon` | Mỗi **20s** gọi **4** thuộc hạ quanh mình. | Dọn thuộc hạ hay bỏ qua là lựa chọn: chúng cho tiền, nhưng cũng chặn đường. |
 

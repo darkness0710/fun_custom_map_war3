@@ -8,6 +8,7 @@ Hút máu cộng thuộc hạ: càng đông càng khoẻ. Con boss đầu tiên 
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
+| **Hào quang** `unholy` | Unholy Aura — boss **chạy nhanh và tự hồi máu** — khó kéo, khó bỏ chạy. | Luôn bật, không hồi chiêu, không tắt được. Là **phần trăm** nên tự bám theo sức boss, không bao giờ teo. |
 | **Hút Máu** `lifesteal` | Hồi lại **25%** sát thương nó gây ra. | Đánh gấp. Kéo dài trận là cho nó hồi, và nó hồi theo số người nó chạm được. |
 | **Triệu Hồi** `summon` | Mỗi **20s** gọi **4** thuộc hạ quanh mình. | Dọn thuộc hạ hay bỏ qua là lựa chọn: chúng cho tiền, nhưng cũng chặn đường. |
 

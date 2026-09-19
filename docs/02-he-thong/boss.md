@@ -1,5 +1,72 @@
 # Hệ thống: Boss cuối cảnh giới
 
+> ## Mỗi boss một hào quang — 2026-09-19
+>
+> Năm aura **có sẵn của Warcraft**, không nhân bản. Chia đều `5 × 4 = 20`.
+>
+> | Hào quang | Boss mang | Làm gì |
+> |---|---|---|
+> | **Vampiric** | 1 · 4 · 8 · 20 | tự lành khi đánh trúng |
+> | **Command** | 2 · 6 · 13 · 18 | gây thêm sát thương |
+> | **Endurance** | 3 · 9 · 14 · 17 | đánh và chạy nhanh hơn |
+> | **Unholy** | 5 · 10 · 11 · 15 | chạy nhanh + tự hồi máu |
+> | **Trueshot** | 7 · 12 · 16 · 19 | đòn tầm xa mạnh hơn |
+>
+> **Vì sao dùng ability gốc thay vì nhân bản.** Cả năm đều là **phần trăm**, nên
+> chúng tự bám theo sức boss và không bao giờ teo
+> ([ADR 0024](../05-quyet-dinh/0024-cong-thi-leo-nhan-thi-phang.md)). Đây đúng là
+> trường hợp hiếm mà *"để Warcraft giữ số"* là lựa chọn đúng — ngược hẳn với
+> `CFG.SKILLS[H002]`, nơi mọi số phẳng đều phải kéo về Lua.
+>
+> Bậc hào quang leo theo cảnh giới: `1–7` bậc 1, `8–14` bậc 2, `15–20` bậc 3.
+> Aura gốc có đúng 3 bậc và chúng là phần trăm, nên lên bậc là lên tỉ lệ — không
+> phải tính gì thêm.
+
+### Hai ràng buộc của Warcraft, không phải của map
+
+> **Vampiric chỉ ăn với đòn cận chiến. Trueshot chỉ ăn với đòn tầm xa.**
+
+Gán nhầm thì aura **vẫn gắn được, icon vẫn hiện, và không làm gì hết** — không
+lỗi, không báo, boss chỉ yếu đi một cách khó hiểu.
+
+Nên `vampiric` chỉ nằm trên bốn con đánh gần *(`Hmkg` `Obla` `Otch` `Npbm`)* và
+`trueshot` chỉ trên bốn con đánh xa *(`Hamg` `Emoo` `Hblm` `Nfir`)*. Ba cái còn
+lại ăn với cả hai nên rải tự do.
+
+**Nhưng bảng đó không tự chứng minh được.** `applyAura()` đo lại bằng
+`IsUnitType(u, UNIT_TYPE_RANGED_ATTACKER)` và ghi vết nếu lệch:
+
+```
+boss: r8 aura 'vampiric' can don CAN CHIEN ma con nay danh XA -- se khong an gi
+```
+
+Cũng **không cho `vampiric`** lên con đã có cơ chế `lifesteal` *(r5 · r11 · r15 ·
+r17)* — hai lớp hút máu chồng nhau thì lớp thứ hai không đọc ra được.
+
+### Ba chỗ dễ hỏng im lặng, cả ba đều ghi vết
+
+| | Triệu chứng nếu không bắt |
+|---|---|
+| **Mã ability sai** | `UnitAddAbility` trả `false` — không ném lỗi, không báo gì |
+| **Quên đặt bậc** | ability vào ở **bậc 0**, và bậc 0 không có tác dụng nào |
+| **Sai loại đòn đánh** | aura tồn tại, icon hiện, không làm gì |
+
+Mã ability **dò chứ không gõ** — `abils` là danh sách ứng cử viên, thử lần lượt
+rồi ghi vết cái nào trúng. Chỉ `AUav` `AOae` `AEar` là **đã dùng thật** trong map
+này *(hút máu của tu chính, `A003`, `A009`)*; hai mã còn lại chưa, nên chúng có
+bản dự phòng.
+
+### Báo ra chữ
+
+```
+[He Thong] Tien De Kim Than da giang the.
+[He Thong] Hao quang: Than Xa   Don tam xa cua boss manh hon.
+```
+
+Không báo thì hào quang là một hệ số **vô hình**: người chơi thua mà không biết
+vì sao. Cùng lý lẽ với [tu chính](dot-quai.md#bốn-lớp-báo-và-chỉ-một-lớp-tra-cứu-được)
+— một lớp có thật nhưng không đọc được thì không dùng để ra quyết định được.
+
 > ## Phép đo bỏ sót các lớp nhân sát thương — vá 2026-09-19
 >
 > `measureParty()` chỉ lấy `(DMG_BASE + chỉ số)`, trong khi **đòn đánh thật** còn
