@@ -22,8 +22,8 @@ hay 50 mỗi người?
 **Số lượng cố định. Chỉ chỉ số nhân theo số người.**
 
 ```
-EHP  ×= 1 + SCALE_EHP_PER_PLAYER  × (P - 1)     -- 0.60
-Dmg  ×= 1 + SCALE_DMG_PER_PLAYER  × (P - 1)     -- 0.15
+EHP  ×= 1 + SCALE_EHP_PER_PLAYER  × (P - 1)     -- 1.00
+Dmg  ×= 1 + SCALE_DMG_PER_PLAYER  × (P - 1)     -- 0.40
 Số lượng, giáp:  không nhân
 ```
 
@@ -33,12 +33,41 @@ Ba người chơi vẫn gặp đúng 50 lính và 1 tinh anh — chúng dày hơ
 một người thoát giữa chừng thì hai người còn lại không bị kẹt ở mức khó của ba
 người suốt 150 wave.
 
-Hệ số 0.60 là **dưới tuyến tính** có chủ ý. Ba hero mạnh hơn ba lần một hero:
-AoE chồng lên nhau, buff dùng chung, tập trung hạ mục tiêu, và một người đỡ đòn
-cho hai người kia rảnh tay. Nhân đủ ×3 là phạt người chơi vì rủ được bạn.
-
-Sát thương giữ 0.15 vì nó đã tự loãng: 50 con quái chia cho 3 hero thì mỗi hero
-ăn một phần ba. Nhân thêm nữa là nhân hai lần.
+> ## Sửa hai hệ số — 2026-09-20
+>
+> Bản đầu đặt `0.60` / `0.15` với lý lẽ: *"hệ số dưới tuyến tính là có chủ ý —
+> ba hero mạnh hơn ba lần một hero, nhân đủ ×3 là phạt người chơi vì rủ được
+> bạn"*, và *"sát thương đã tự loãng, nhân thêm là nhân hai lần"*.
+>
+> **Đo lại thì lý lẽ đầu sai, và cái sai nằm ở chỗ quên mất
+> [ADR 0013](0013-thuong-chia-deu-cho-moi-nguoi.md).**
+>
+> | Số người | Việc **mỗi người** | Sát thương **mỗi hero** | Thu nhập mỗi người |
+> |---|---|---|---|
+> | 1 | 100% | 100% | `X` |
+> | 3 | **73%** | **43%** | **`X`** |
+>
+> Thưởng trả **đủ cho từng người**. Nên với `1.00`:
+>
+> ```
+> ba người → 3 phần việc, mỗi người làm 1
+>          → 3 phần thưởng, mỗi người nhận 1
+> ```
+>
+> Bằng solo cả hai vế — **trung tính**, không phải phạt. Còn `0.60` thì ba người
+> làm `2.2` phần việc mà nhận `3` phần thưởng: một khoản giảm giá 27% không ai
+> trả.
+>
+> **Và co-op vẫn hơn** — chỉ là hơn bằng những thứ không nằm trong phép nhân
+> này: sát thương loãng ra *(mỗi hero vẫn chịu 60%, không phải 100%)*, ba bộ kỹ
+> năng khác nhau, có người gồng khi mình nằm chờ 30 giây, và Chấn Địa của boss
+> vốn thiết kế để **chia vai**
+> ([ADR 0023](0023-chan-dia-khong-noi-cast-tanker-o-lai-chiu.md)) — một mình thì
+> không chia được.
+>
+> Sát thương lên `0.40` chứ **không** `1.0`: nó chia theo **khoảng cách**, không
+> chia đều. Một hero đứng chắn cho hai người kia sẽ ăn trọn `3×` — tức `1.0` phạt
+> đúng cái lối chơi mà Chấn Địa đang khuyến khích.
 
 ## Phương án đã loại
 

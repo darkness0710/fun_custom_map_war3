@@ -344,8 +344,8 @@ từ giáp. Đổi giáp **không** đổi độ khó.
 
 | Khoá | Tác dụng | Ràng buộc |
 |---|---|---|
-| `SCALE_EHP_PER_PLAYER` | EHP lính nhân thêm mỗi người | Phải **< 1.0**. Bằng 1.0 là phạt người chơi vì rủ bạn |
-| `SCALE_DMG_PER_PLAYER` | Sát thương nhân thêm | Giữ **nhỏ**. Ba người có gấp ba sát thương, nhưng mỗi người vẫn chỉ có **một** thân — quái đánh đau gấp ba thì ba người chết nhanh như một |
+| `SCALE_EHP_PER_PLAYER` | EHP lính nhân thêm mỗi người | **`1.00`** *(2026-09-20)*. Lý lẽ cũ *"phải < 1.0, bằng 1.0 là phạt người chơi vì rủ bạn"* **sai** — nó quên mất [ADR 0013](../05-quyet-dinh/0013-thuong-chia-deu-cho-moi-nguoi.md): thưởng trả **đủ cho từng người**, nên `1.0` là *trung tính* chứ không phải phạt |
+| `SCALE_DMG_PER_PLAYER` | Sát thương nhân thêm | **`0.40`** *(2026-09-20)*, nâng từ `0.15`. Mỗi hero trong đội 3 giờ chịu **60%** thay vì 43% so với solo — vẫn thấp hơn solo, và đó là phần thưởng thật của việc đi đồng đội. **Không** đặt `1.0`: sát thương chia theo *khoảng cách*, nên một hero đứng chắn sẽ ăn trọn 3× |
 | `SCALE_RECOUNT_EACH_WAVE` | Tính lại `P` mỗi wave | `true` — người thoát giữa chừng không khoá cứng ván của người ở lại |
 
 **Boss không dùng bảng này.** Khoá `SCALE_BOSS_EHP_PER_PLAYER` đã bỏ: hoả lực

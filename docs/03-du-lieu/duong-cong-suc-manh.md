@@ -127,8 +127,8 @@ giáp, đòn chí mạng có chỗ dùng. Nó không tồn tại để làm quá
 ## Nhân theo số người chơi
 
 ```
-EHP  ×= 1 + SCALE_EHP_PER_PLAYER      × (P - 1)      -- 0.60
-Dmg  ×= 1 + SCALE_DMG_PER_PLAYER      × (P - 1)      -- 0.15
+EHP  ×= 1 + SCALE_EHP_PER_PLAYER      × (P - 1)      -- 1.00
+Dmg  ×= 1 + SCALE_DMG_PER_PLAYER      × (P - 1)      -- 0.40
 EHP boss ×= 1 + SCALE_BOSS_EHP_PER_PLAYER × (P - 1)  -- 0.75
 Giáp, số lượng:  không nhân
 ```
@@ -326,8 +326,8 @@ kinh tế trước.
 | `MOB_EHP_REALM_STEP` | Nhân thêm mỗi cảnh giới | Mũ 19. Giữ `GROWTH^11 × REALM_STEP` cố định thì tổng không đổi, chỉ đổi **nhịp** |
 | `MOB_DMG_BASE` `MOB_DMG_GROWTH` `MOB_DMG_REALM_STEP` | Như trên, cho sát thương | Phải dốc thoải hơn EHP. Bằng nhau là cuối game thành xúc xắc |
 | `MOB_ARMOR_BASE` `MOB_ARMOR_PER_REALM` | Giáp theo cảnh giới | Tuyến tính, không mũ. Đổi nó **không** đổi độ khó — máu thật tự chia lại. [ADR 0010](../05-quyet-dinh/0010-giap-khong-nam-trong-duong-cong.md) |
-| `SCALE_EHP_PER_PLAYER` | Nhân EHP mỗi người thêm | Phải < 1.0. Bằng 1.0 là phạt người chơi vì rủ bạn |
-| `SCALE_DMG_PER_PLAYER` | Nhân sát thương mỗi người thêm | Giữ nhỏ — sát thương đã tự loãng theo số mục tiêu |
+| `SCALE_EHP_PER_PLAYER` | Nhân EHP mỗi người thêm | **`1.00`** *(2026-09-20)*. Lý lẽ cũ *"phải < 1.0, bằng 1.0 là phạt người chơi vì rủ bạn"* **sai** — nó quên mất [ADR 0013](../05-quyet-dinh/0013-thuong-chia-deu-cho-moi-nguoi.md): thưởng trả **đủ cho từng người**, nên `1.0` là *trung tính* chứ không phải phạt |
+| `SCALE_DMG_PER_PLAYER` | Nhân sát thương mỗi người thêm | **`0.40`** *(2026-09-20)*, nâng từ `0.15`. Mỗi hero trong đội 3 giờ chịu **60%** thay vì 43% so với solo — vẫn thấp hơn solo, và đó là phần thưởng thật của việc đi đồng đội. **Không** đặt `1.0`: sát thương chia theo *khoảng cách*, nên một hero đứng chắn sẽ ăn trọn 3× |
 | `SCALE_RECOUNT_EACH_WAVE` | Tính lại `P` mỗi wave | `true` — người thoát giữa chừng không khoá cứng ván của người ở lại |
 
 ## Hợp đồng đã thực hiện tới đâu

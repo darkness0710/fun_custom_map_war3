@@ -153,8 +153,8 @@ Chi tiết và bảng tra: [duong-cong-suc-manh.md](duong-cong-suc-manh.md).
 | `MOB_EHP_REALM_STEP` | Nhân thêm mỗi cảnh giới | Mũ 19. Giữ `GROWTH^11 × REALM_STEP` cố định thì đổi **nhịp** mà không đổi tổng |
 | `MOB_DMG_BASE` `MOB_DMG_GROWTH` `MOB_DMG_REALM_STEP` | Như trên, cho sát thương | Phải dốc **thoải hơn** EHP. Bằng nhau là cuối game thành xúc xắc |
 | `MOB_ARMOR_BASE` `MOB_ARMOR_PER_REALM` | Giáp theo cảnh giới | Đổi nó **không** đổi độ khó: máu thật tự chia lại. [ADR 0010](../05-quyet-dinh/0010-giap-khong-nam-trong-duong-cong.md) |
-| `SCALE_EHP_PER_PLAYER` | Nhân EHP mỗi người thêm | Phải < 1.0 — bằng 1.0 là phạt người chơi vì rủ bạn |
-| `SCALE_DMG_PER_PLAYER` | Nhân sát thương mỗi người thêm | Giữ nhỏ: sát thương đã tự loãng theo số mục tiêu |
+| `SCALE_EHP_PER_PLAYER` | Nhân EHP mỗi người thêm | **`1.00`** *(2026-09-20)*. Lý lẽ cũ *"phải < 1.0, bằng 1.0 là phạt người chơi vì rủ bạn"* **sai** — nó quên mất [ADR 0013](../05-quyet-dinh/0013-thuong-chia-deu-cho-moi-nguoi.md): thưởng trả **đủ cho từng người**, nên `1.0` là *trung tính* chứ không phải phạt |
+| `SCALE_DMG_PER_PLAYER` | Nhân sát thương mỗi người thêm | **`0.40`** *(2026-09-20)*, nâng từ `0.15`. Mỗi hero trong đội 3 giờ chịu **60%** thay vì 43% so với solo — vẫn thấp hơn solo, và đó là phần thưởng thật của việc đi đồng đội. **Không** đặt `1.0`: sát thương chia theo *khoảng cách*, nên một hero đứng chắn sẽ ăn trọn 3× |
 | `SCALE_RECOUNT_EACH_WAVE` | Tính lại số người mỗi wave | `true`. Đọc `#S.pids`, **không** đọc `CFG.PLAYER_SLOTS` |
 
 ## Kinh tế

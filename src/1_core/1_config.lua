@@ -1470,9 +1470,54 @@ CFG.BOSS_UNIT = {
 }
 
 -- ---------- Theo so nguoi choi (ADR 0009) ----------
--- Phai < 1.0: bang 1.0 la phat nguoi choi vi ru duoc ban.
-CFG.SCALE_EHP_PER_PLAYER      = 0.60
-CFG.SCALE_DMG_PER_PLAYER      = 0.15   -- nho, vi sat thuong da tu loang
+--
+-- DO DUOC 2026-09-20, va ket qua lam do bo ly le cu.
+--
+-- 50 linh CO DINH moi wave (ADR 0009). EHP moi con nhan
+-- (1 + SCALE_EHP x (P-1)), nen voi 0.60 thi tong viec cua ca wave chi
+-- x2.2 khi co ba nguoi -- trong khi hoa luc cua doi x3.0.
+--
+--   P   viec MOI NGUOI   sat thuong MOI hero chiu   thu nhap moi nguoi
+--   1        100%                 100%                     X
+--   2         80%                  58%                     X
+--   3         73%                  43%                     X
+--
+-- Ba nguoi: moi nguoi lam IT HON 27%, chiu IT HON 57%, va kiem Y HET
+-- (thuong tra du cho tung nguoi -- ADR 0013). Co-op de hon tren MOI
+-- truc, va solo khong duoc bu gi.
+--
+-- LY LE CU: "phai < 1.0, bang 1.0 la phat nguoi choi vi ru duoc ban".
+-- Ly le do SAI, va no sai vi quen mat ADR 0013:
+--
+--   scale 1.0, ba nguoi -> 3 phan viec, moi nguoi lam 1 phan
+--                       -> 3 phan thuong, moi nguoi nhan 1 phan
+--
+-- Bang solo ca hai ve. Khong phai phat -- la TRUNG TINH. Con 0.60 thi
+-- ba nguoi lam 2.2 phan viec ma nhan 3 phan thuong, tuc co-op duoc
+-- giam gia 27% khong ai tra.
+--
+-- VA CO-OP VAN HON, chi la hon bang nhung thu khong nam trong phep
+-- nhan nay: sat thuong loang ra (moi hero van chiu it hon solo), ba bo
+-- ky nang khac nhau (Hkal hoi mau, Hart chiu don), co nguoi gong khi
+-- minh nam cho 30 giay, va Chan Dia cua boss von thiet ke de CHIA VAI
+-- (ADR 0023) -- mot minh thi khong chia duoc.
+CFG.SCALE_EHP_PER_PLAYER      = 1.00
+
+-- 0.40, NANG TU 0.15.
+--
+-- Voi 0.15 thi moi hero trong doi ba nguoi chi chiu 43% sat thuong so
+-- voi solo. 0.40 dua no len 60% -- van thap hon solo, va do la co y:
+-- do la phan thuong that su cua viec di dong doi.
+--
+-- KHONG dat 1.0 du toan hoc bao the (1.0 se cho moi hero chiu dung
+-- 100% nhu solo). Ly do: sat thuong chia theo KHOANG CACH, khong chia
+-- deu. Mot hero dung chan cho hai nguoi kia se an tron 3x va chet ngay
+-- -- tuc so nay phat dung cai loi choi ma Chan Dia dang khuyen khich.
+--
+-- Mau nha chinh cung nhan he so nay (xem newMax trong 2_wave.lua), nen
+-- nha va quai leo cung nhip -- suc chiu cua nha khong doi theo so
+-- nguoi.
+CFG.SCALE_DMG_PER_PLAYER      = 0.40
 -- KHONG con dung: boss do suc manh that cua doi, ma phep do do da cong
 -- dps cua TUNG hero roi. Nhan them theo so nguoi la dem hai lan.
 -- (CFG.SCALE_BOSS_EHP_PER_PLAYER da bo.)
