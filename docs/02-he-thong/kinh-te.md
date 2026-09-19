@@ -211,10 +211,14 @@ dưới sàn.
 
 | Quà | Khoá |
 |---|---|
-| Gỗ khởi đầu | `LUMBER_START = 2` |
+| **1 Gỗ** | `LUMBER_START = 1` |
+| **50 Vàng** | `GOLD_START = 50` |
 | 10 lọ máu, 10 lọ mana | `START_ITEMS` |
-| **3 Tháp Canh** *(không mua thêm được)* | `TOWER_START = 3` |
-| **2 Đá Rèn** | `IRON_START = 2` |
+| **3 Tháp Canh** *(mua thêm được, 10 vàng)* | `TOWER_START = 3` |
+
+> **Đá Rèn đã bỏ** — `IRON_START = 0` *(2026-09-19)*. Có 50 Vàng trong túi rồi
+> thì muốn bấm thử nút Luyện cứ **mua** một hòn `10` vàng; hai viên cho không
+> làm nhạt mất bước đầu của chuỗi `vàng → đá → Trang Bị`.
 
 Không phát lúc vào map: quà là của hero, mà lúc đó hero chưa tồn tại nên không
 có túi nào để bỏ vào. Không phát lúc pick: hero sinh ra ở `HeroStartRegion`, xa

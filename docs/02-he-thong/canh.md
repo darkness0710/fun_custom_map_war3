@@ -64,6 +64,11 @@ xịn dần" phải thắng sự hợp chủ đề.**
 cố định `CFG.GEAR_WING_ICON`, nên bấm `ĐỔI` thì **tên đổi mà ảnh không** — nút
 nhìn như hỏng. Khoá đó giờ chỉ còn là **đường lui** cho lúc chưa mở bộ nào.
 
+Và đường lui đó cũng đổi: từ `BTNMonsoon.blp` — một icon phép thuật không liên
+quan gì tới cánh — sang **chính ảnh bộ đầu tiên** (`wing\eth_storm.blp`). Người
+chưa tới cảnh giới 2 nhìn vào ô đó giờ thấy *một đôi cánh chưa mở*, chứ không
+phải một icon lạ không đoán ra là ô gì.
+
 Sáu ảnh sinh từ `docs/01-tmp/wing/<code>-avatar.png`:
 
 ```bash

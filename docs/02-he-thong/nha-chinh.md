@@ -115,11 +115,19 @@ Lúc bước qua cổng **lần đầu**, người chơi nhận một lượt:
 | **50 Vàng** | `GOLD_START` |
 | 10 bình máu, 10 bình mana | `START_ITEMS` |
 | **3 Tháp Canh** *(mua thêm được, 10 vàng)* | `TOWER_START` |
-| **2 Đá Rèn** | `IRON_START` |
 
-> **Ba thay đổi 2026-09-19.** Gỗ `2 → 1`; thêm **50 Vàng**; bỏ hẳn **1 lượt Cơ
-> Duyên** (`GATE_ROLL = 0`, xem [quay-thuong.md](quay-thuong.md)). Tháp Canh
-> không còn `forSale = false` nên mua thêm được — [kinh-te.md](kinh-te.md).
+> **Bốn thay đổi 2026-09-19.** Gỗ `2 → 1`; thêm **50 Vàng**; bỏ hẳn **1 lượt Cơ
+> Duyên** (`GATE_ROLL = 0`, xem [quay-thuong.md](quay-thuong.md)); bỏ hẳn
+> **2 Đá Rèn** (`IRON_START = 0`). Tháp Canh không còn `forSale = false` nên mua
+> thêm được — [kinh-te.md](kinh-te.md).
+
+**Vì sao bỏ Đá Rèn.** Lý lẽ cũ: hai viên là hai cú Luyện, để người chơi **bấm
+thử** cái nút đó một lần trong phút đầu rồi mới biết mình đang đi gom cái gì.
+
+Lý lẽ đó chết khi có 50 Vàng trong túi — Đá Huyền Thiết giá `10`, muốn bấm thử
+thì **mua lấy**. Và hai viên cho không làm nhạt mất bước đầu của chuỗi
+`vàng → đá → Trang Bị`: chuỗi đó chỉ có nghĩa khi người chơi tự đi qua nó một
+lần.
 
 **Vàng đặt THÀNH `50`, không cộng thêm `50`.** Warcraft phát vàng khởi đầu theo
 `war3map.w3i` **trước khi một dòng Lua nào chạy**, và con số đó không đọc được

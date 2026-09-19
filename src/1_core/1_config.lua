@@ -2380,10 +2380,20 @@ CFG.GEAR_TOGGLE_SLOT = { 2, 4 }
 -- "ve cho dep ma khong bam duoc".
 CFG.GEAR_PET_SLOT = nil
 
--- Icon hai o hang 5. Dung chan dung Thanh Thu cho o pet -- anh DA
--- IMPORT that (w3import.py list thay avatar\B001..B004.blp), khong
--- phai duong dan BTN* go tu tri nho.
-CFG.GEAR_WING_ICON = [[ReplaceableTextures\CommandButtons\BTNMonsoon.blp]]
+-- Icon hai o hang 5, DUONG LUI cho luc chua mo bo/con nao.
+--
+-- Deo roi thi o lay anh cua chinh bo dang deo -- API.wingIcon /
+-- API.petIcon, xem tabItems() trong 5_gear.lua.
+--
+-- Ca hai duong lui deu la anh DA IMPORT that (w3import.py list thay
+-- wing\eth_*.blp va avatar\B00N.blp), khong phai duong dan BTN* go tu
+-- tri nho.
+--
+-- Canh truoc day lui ve BTNMonsoon -- mot icon phep thuat khong lien
+-- quan gi toi canh. Nguoi chua toi canh gioi 2 nhin vao o do khong
+-- doan ra no la o gi. Lui ve chinh bo DAU TIEN thi o luon la mot doi
+-- canh, chi khac la chua mo.
+CFG.GEAR_WING_ICON = [[wing\eth_storm.blp]]
 CFG.GEAR_PET_ICON  = [[avatar\B001.blp]]
 
 -- Cot giua cua luoi = ly lich hero (icon + ten + canh gioi). nil = bo.
@@ -2892,12 +2902,17 @@ CFG.SHOP_STACK_MAX = 10
 -- ba cai la phai dua vao hero.
 CFG.TOWER_START = 3
 
--- Da ren phat cung luc voi thap, o cong HeroMoveRegion.
+-- Da ren phat cung luc voi thap, o cong HeroMoveRegion. 0 de tat.
 --
--- CFG.GEAR_PRICE = 1 nen hai vien = hai cu Luyen. Do khong phai de
--- nang duoc gi -- do la de nguoi choi BAM THU cai nut do mot lan trong
--- phut dau, thay no lam gi, roi moi biet minh dang di gom cai gi.
-CFG.IRON_START = 2
+-- DA TAT -- 2026-09-19. Ly le cu: hai vien = hai cu Luyen, de nguoi
+-- choi BAM THU cai nut do mot lan trong phut dau roi moi biet minh
+-- dang di gom cai gi.
+--
+-- Bo vi gio da co 50 vang, va Da Huyen Thiet gia 10 -- muon bam thu
+-- cai nut do thi mua lay, khong ai phat. Hai vien cho khong lam nhat
+-- mat buoc dau cua chuoi "vang -> da -> Trang Bi": chuoi do chi co
+-- nghia khi nguoi choi tu di qua no mot lan.
+CFG.IRON_START = 0
 
 CFG.START_ITEMS = {
   { code = "hp", count = 10 },

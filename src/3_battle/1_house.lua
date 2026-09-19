@@ -329,12 +329,15 @@ local function startHeroGate()
           local q = CFG.START_ITEMS[k]
           API.shopGive(pid, q.code, q.count)
         end
-        -- DOC lai so that tu CFG.START_ITEMS chu khong go vao cau chu.
-        -- Go vao chu thi doi CFG.TOWER_START tu 2 len 3 la cau thong
-        -- bao noi doi -- va no noi doi IM LANG, khong ai kiem duoc.
+        -- DOC lai so that tu CFG chu khong go vao cau chu. Go vao chu
+        -- thi doi CFG.TOWER_START tu 2 len 3 la cau thong bao noi doi
+        -- -- va no noi doi IM LANG, khong ai kiem duoc.
+        --
+        -- Da Ren da ra khoi cau nay cung luc CFG.IRON_START ve 0
+        -- (2026-09-19); cho do gio la vang va go.
         API.msg(pid, CFG.C_JADE .. API.t("gate_gift",
-          startCount("hp"), startCount("mp"),
-          startCount("tower"), iron) .. CFG.C_END)
+          startCount("hp"), startCount("mp"), startCount("tower"),
+          CFG.GOLD_START or 0, CFG.LUMBER_START or 0) .. CFG.C_END)
       end
 
       local n = CFG.GATE_ROLL or 0
