@@ -3,7 +3,8 @@
 > **Trạng thái:** Hart và Hvwd **đủ vỏ và ruột**; Hkal **trống, đang khoá**
 > **Cập nhật:** 2026-09-19
 
-> **Hvwd — xạ thủ — xong ngày 2026-09-19.** Bảy kỹ năng, mở khoá ra bảng chọn.
+> **Hvwd — xạ thủ — xong ngày 2026-09-19.** Bảy kỹ năng, mở khoá ra bảng chọn,
+> đủ 10 bậc + tên + tooltip + ô + phím tắt trong `war3map.w3a`.
 > Xem [Bảy kỹ năng của Hvwd](#bảy-kỹ-năng-của-hvwd-xạ-thủ) bên dưới — phần đáng
 > đọc không phải bảng số mà là **ai giữ con số**.
 
@@ -133,10 +134,36 @@ và không có cảnh báo nào. Ô `(3,2)` là chỗ nút Cancel xuất hiện 
 tránh ra nếu sau này hero có spellbook.
 
 > ⚠ **Bảy ô trống, và Hvwd có đúng bảy kỹ năng — vừa khít, không dư ô nào.**
-> `A004` và `A006` dùng chung với Hart nên vị trí của chúng **đã chốt** theo bố
-> cục của Hart. Năm cái còn lại (`A008`–`A012`) phải nhận năm ô mà Hart đang
-> dùng cho `A001` `A002` `A003` `A005` `A007` — một hero chỉ bao giờ mang bảy
-> cái của nó, nên dùng lại vị trí giữa hai hero là an toàn.
+
+**Ô nút là thuộc tính của ABILITY, không phải của hero** — và đó là chỗ
+`w3skill.py` từng sai. Nó hard-code `parse_skills(cfg, "H001")`, nên mở khoá
+Hvwd xong chạy `gen` thì **năm ability mới bị bỏ qua lặng lẽ**: lệnh chạy xong,
+không báo lỗi gì, và `A008`–`A012` không có tên lẫn phím tắt.
+
+Sửa 2026-09-19: `parse_heroes()` quét mọi `CFG.SKILLS[id('HNNN')]`, rồi
+`assign_slots()` chia ô **theo từng hero nhưng nhớ xuyên hero**. `A004`/`A006`
+nằm trong cả hai bảng; ghi hai lần hai chỗ thì lần sau đè lần trước và một
+trong hai hero có hai nút chồng nhau — không lỗi, không báo, chỉ là một nút bấm
+không được.
+
+Kết quả (`python w3skill.py show`):
+
+| | Hart | | Hvwd |
+|---|---|---|---|
+| `(0,2)` | A001 Chưởng `Q` | | A008 Lôi Vân `Q` |
+| `(1,2)` | A002 Hộ Thể `W` | | A010 Hồi Xuân `W` |
+| `(2,2)` | A007 Bất Hoại `E` | | A012 Nguyệt Nhận |
+| `(3,2)` | A005 Chém Lan | | A011 Thiêu Thiên `E` |
+| `(1,1)` | A003 Hiệu Lệnh | | A009 Thần Xạ |
+| `(2,1)` | **A004 Luyện Thể** | | **A004** *(cùng ô)* |
+| `(3,1)` | **A006 Da Sắt** | | **A006** *(cùng ô)* |
+
+Vị trí lặp **giữa** hai hero là đúng — mỗi hero chỉ mang bảy cái của nó. Trùng
+**trong cùng một hero** thì `assign_slots()` dừng hẳn và nói tên hai cái.
+
+Phím tắt cũng kiểm cùng chỗ: trùng trong một hero là lỗi *(Warcraft không báo,
+bấm ra cái nào là tuỳ thứ tự card)*; trùng giữa hai hero thì không sao — `E` là
+Bất Hoại ở Hart và Thiêu Thiên ở Hvwd.
 
 ## Bảy kỹ năng của Hvwd (xạ thủ)
 

@@ -80,824 +80,1843 @@ Shooter
 }
 
 STRING 1000
-// Abilities: A005 (Cleaving Blow), Name (Name)
+// [w3skill.py]
 {
-Cleaving Blow
+Chem Lan
 }
 
 STRING 1001
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Attacks splash 20% damage to nearby targets.
+Don danh van 20% sat thuong sang muc tieu ben canh.
 
-Level 1/10
+Bac 1/10
 }
 
 STRING 1002
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Cleaving Blow
+Chem Lan
 }
 
 STRING 1003
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Attacks splash 22% damage to nearby targets.
+Don danh van 22% sat thuong sang muc tieu ben canh.
 
-Level 2/10
+Bac 2/10
 }
 
 STRING 1004
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Cleaving Blow
+Chem Lan
 }
 
 STRING 1005
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Attacks splash 23% damage to nearby targets.
+Don danh van 23% sat thuong sang muc tieu ben canh.
 
-Level 3/10
+Bac 3/10
 }
 
 STRING 1006
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Cleaving Blow
+Chem Lan
 }
 
 STRING 1007
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Attacks splash 25% damage to nearby targets.
+Don danh van 25% sat thuong sang muc tieu ben canh.
 
-Level 4/10
+Bac 4/10
 }
 
 STRING 1008
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Cleaving Blow
+Chem Lan
 }
 
 STRING 1009
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Attacks splash 27% damage to nearby targets.
+Don danh van 27% sat thuong sang muc tieu ben canh.
 
-Level 5/10
+Bac 5/10
 }
 
 STRING 1010
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Cleaving Blow
+Chem Lan
 }
 
 STRING 1011
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Attacks splash 29% damage to nearby targets.
+Don danh van 29% sat thuong sang muc tieu ben canh.
 
-Level 6/10
+Bac 6/10
 }
 
 STRING 1012
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Cleaving Blow
+Chem Lan
 }
 
 STRING 1013
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Attacks splash 32% damage to nearby targets.
+Don danh van 32% sat thuong sang muc tieu ben canh.
 
-Level 7/10
+Bac 7/10
 }
 
 STRING 1014
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Cleaving Blow
+Chem Lan
 }
 
 STRING 1015
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Attacks splash 34% damage to nearby targets.
+Don danh van 34% sat thuong sang muc tieu ben canh.
 
-Level 8/10
+Bac 8/10
 }
 
 STRING 1016
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Cleaving Blow
+Chem Lan
 }
 
 STRING 1017
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Attacks splash 37% damage to nearby targets.
+Don danh van 37% sat thuong sang muc tieu ben canh.
 
-Level 9/10
+Bac 9/10
 }
 
 STRING 1018
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Cleaving Blow
+Chem Lan
 }
 
 STRING 1019
-// Abilities: A005 (Cleaving Blow), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Attacks splash 40% damage to nearby targets.
+Don danh van 40% sat thuong sang muc tieu ben canh.
 
-Level 10/10
+Bac 10/10
 }
 
 STRING 1020
-// Abilities: A005 (Cleaving Blow), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Cleaving Blow
+Chem Lan
 }
 
 STRING 1021
-// Abilities: A001 (Palm Strike), Name (Name)
+// [w3skill.py]
 {
-Palm Strike
+Chuong
 }
 
 STRING 1022
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Deals x1.32 damage in a line.
+Gay x1.32 sat thuong len mot duong thang.
 
-Level 1/10
-Scales with your highest attribute.
-cd 8.0s   mana 50
+Bac 1/10
+An theo chi so cao nhat cua hero.
+hoi 8.0s   mana 50
 }
 
 STRING 1023
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Palm Strike [|cffffcc00Q|r]
+Chuong [|cffffcc00Q|r]
 }
 
 STRING 1024
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Deals x1.36 damage in a line.
+Gay x1.36 sat thuong len mot duong thang.
 
-Level 2/10
-Scales with your highest attribute.
-cd 7.6s   mana 53
+Bac 2/10
+An theo chi so cao nhat cua hero.
+hoi 7.6s   mana 53
 }
 
 STRING 1025
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Palm Strike [|cffffcc00Q|r]
+Chuong [|cffffcc00Q|r]
 }
 
 STRING 1026
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Deals x1.41 damage in a line.
+Gay x1.41 sat thuong len mot duong thang.
 
-Level 3/10
-Scales with your highest attribute.
-cd 7.3s   mana 55
+Bac 3/10
+An theo chi so cao nhat cua hero.
+hoi 7.3s   mana 55
 }
 
 STRING 1027
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Palm Strike [|cffffcc00Q|r]
+Chuong [|cffffcc00Q|r]
 }
 
 STRING 1028
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Deals x1.45 damage in a line.
+Gay x1.45 sat thuong len mot duong thang.
 
-Level 4/10
-Scales with your highest attribute.
-cd 7.0s   mana 58
+Bac 4/10
+An theo chi so cao nhat cua hero.
+hoi 7.0s   mana 58
 }
 
 STRING 1029
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Palm Strike [|cffffcc00Q|r]
+Chuong [|cffffcc00Q|r]
 }
 
 STRING 1030
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Deals x1.50 damage in a line.
+Gay x1.50 sat thuong len mot duong thang.
 
-Level 5/10
-Scales with your highest attribute.
-cd 6.7s   mana 61
+Bac 5/10
+An theo chi so cao nhat cua hero.
+hoi 6.7s   mana 61
 }
 
 STRING 1031
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Palm Strike [|cffffcc00Q|r]
+Chuong [|cffffcc00Q|r]
 }
 
 STRING 1032
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Deals x1.55 damage in a line.
+Gay x1.55 sat thuong len mot duong thang.
 
-Level 6/10
-Scales with your highest attribute.
-cd 6.4s   mana 64
+Bac 6/10
+An theo chi so cao nhat cua hero.
+hoi 6.4s   mana 64
 }
 
 STRING 1033
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Palm Strike [|cffffcc00Q|r]
+Chuong [|cffffcc00Q|r]
 }
 
 STRING 1034
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Deals x1.60 damage in a line.
+Gay x1.60 sat thuong len mot duong thang.
 
-Level 7/10
-Scales with your highest attribute.
-cd 6.1s   mana 67
+Bac 7/10
+An theo chi so cao nhat cua hero.
+hoi 6.1s   mana 67
 }
 
 STRING 1035
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Palm Strike [|cffffcc00Q|r]
+Chuong [|cffffcc00Q|r]
 }
 
 STRING 1036
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Deals x1.65 damage in a line.
+Gay x1.65 sat thuong len mot duong thang.
 
-Level 8/10
-Scales with your highest attribute.
-cd 5.8s   mana 70
+Bac 8/10
+An theo chi so cao nhat cua hero.
+hoi 5.8s   mana 70
 }
 
 STRING 1037
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Palm Strike [|cffffcc00Q|r]
+Chuong [|cffffcc00Q|r]
 }
 
 STRING 1038
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Deals x1.70 damage in a line.
+Gay x1.70 sat thuong len mot duong thang.
 
-Level 9/10
-Scales with your highest attribute.
-cd 5.6s   mana 74
+Bac 9/10
+An theo chi so cao nhat cua hero.
+hoi 5.6s   mana 74
 }
 
 STRING 1039
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Palm Strike [|cffffcc00Q|r]
+Chuong [|cffffcc00Q|r]
 }
 
 STRING 1040
-// Abilities: A001 (Palm Strike), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Deals x1.76 damage in a line.
+Gay x1.76 sat thuong len mot duong thang.
 
-Level 10/10
-Scales with your highest attribute.
-cd 5.3s   mana 78
+Bac 10/10
+An theo chi so cao nhat cua hero.
+hoi 5.3s   mana 78
 }
 
 STRING 1041
-// Abilities: A001 (Palm Strike), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Palm Strike [|cffffcc00Q|r]
+Chuong [|cffffcc00Q|r]
 }
 
 STRING 1042
-// Abilities: A002 (Guarding Light), Name (Name)
+// [w3skill.py]
 {
-Guarding Light
+Ho The
 }
 
 STRING 1043
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Heals x2.20 to yourself or an ally.
+Hoi x2.20 mau cho ban than hoac dong doi.
 
-Level 1/10
-Scales with your highest attribute.
-cd 10.0s   mana 30
+Bac 1/10
+An theo chi so cao nhat cua hero.
+hoi 10.0s   mana 30
 }
 
 STRING 1044
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Guarding Light [|cffffcc00W|r]
+Ho The [|cffffcc00W|r]
 }
 
 STRING 1045
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Heals x2.27 to yourself or an ally.
+Hoi x2.27 mau cho ban than hoac dong doi.
 
-Level 2/10
-Scales with your highest attribute.
-cd 9.6s   mana 32
+Bac 2/10
+An theo chi so cao nhat cua hero.
+hoi 9.6s   mana 32
 }
 
 STRING 1046
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Guarding Light [|cffffcc00W|r]
+Ho The [|cffffcc00W|r]
 }
 
 STRING 1047
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Heals x2.34 to yourself or an ally.
+Hoi x2.34 mau cho ban than hoac dong doi.
 
-Level 3/10
-Scales with your highest attribute.
-cd 9.1s   mana 33
+Bac 3/10
+An theo chi so cao nhat cua hero.
+hoi 9.1s   mana 33
 }
 
 STRING 1048
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Guarding Light [|cffffcc00W|r]
+Ho The [|cffffcc00W|r]
 }
 
 STRING 1049
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Heals x2.42 to yourself or an ally.
+Hoi x2.42 mau cho ban than hoac dong doi.
 
-Level 4/10
-Scales with your highest attribute.
-cd 8.7s   mana 35
+Bac 4/10
+An theo chi so cao nhat cua hero.
+hoi 8.7s   mana 35
 }
 
 STRING 1050
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Guarding Light [|cffffcc00W|r]
+Ho The [|cffffcc00W|r]
 }
 
 STRING 1051
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Heals x2.50 to yourself or an ally.
+Hoi x2.50 mau cho ban than hoac dong doi.
 
-Level 5/10
-Scales with your highest attribute.
-cd 8.4s   mana 36
+Bac 5/10
+An theo chi so cao nhat cua hero.
+hoi 8.4s   mana 36
 }
 
 STRING 1052
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Guarding Light [|cffffcc00W|r]
+Ho The [|cffffcc00W|r]
 }
 
 STRING 1053
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Heals x2.58 to yourself or an ally.
+Hoi x2.58 mau cho ban than hoac dong doi.
 
-Level 6/10
-Scales with your highest attribute.
-cd 8.0s   mana 38
+Bac 6/10
+An theo chi so cao nhat cua hero.
+hoi 8.0s   mana 38
 }
 
 STRING 1054
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Guarding Light [|cffffcc00W|r]
+Ho The [|cffffcc00W|r]
 }
 
 STRING 1055
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Heals x2.66 to yourself or an ally.
+Hoi x2.66 mau cho ban than hoac dong doi.
 
-Level 7/10
-Scales with your highest attribute.
-cd 7.6s   mana 40
+Bac 7/10
+An theo chi so cao nhat cua hero.
+hoi 7.6s   mana 40
 }
 
 STRING 1056
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Guarding Light [|cffffcc00W|r]
+Ho The [|cffffcc00W|r]
 }
 
 STRING 1057
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Heals x2.75 to yourself or an ally.
+Hoi x2.75 mau cho ban than hoac dong doi.
 
-Level 8/10
-Scales with your highest attribute.
-cd 7.3s   mana 42
+Bac 8/10
+An theo chi so cao nhat cua hero.
+hoi 7.3s   mana 42
 }
 
 STRING 1058
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Guarding Light [|cffffcc00W|r]
+Ho The [|cffffcc00W|r]
 }
 
 STRING 1059
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Heals x2.83 to yourself or an ally.
+Hoi x2.83 mau cho ban than hoac dong doi.
 
-Level 9/10
-Scales with your highest attribute.
-cd 7.0s   mana 44
+Bac 9/10
+An theo chi so cao nhat cua hero.
+hoi 7.0s   mana 44
 }
 
 STRING 1060
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Guarding Light [|cffffcc00W|r]
+Ho The [|cffffcc00W|r]
 }
 
 STRING 1061
-// Abilities: A002 (Guarding Light), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Heals x2.93 to yourself or an ally.
+Hoi x2.93 mau cho ban than hoac dong doi.
 
-Level 10/10
-Scales with your highest attribute.
-cd 6.7s   mana 47
+Bac 10/10
+An theo chi so cao nhat cua hero.
+hoi 6.7s   mana 47
 }
 
 STRING 1062
-// Abilities: A002 (Guarding Light), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Guarding Light [|cffffcc00W|r]
+Ho The [|cffffcc00W|r]
+}
+
+STRING 1063
+// [w3skill.py]
+{
+Hieu Lenh
+}
+
+STRING 1064
+// [w3skill.py]
+{
+Ca doi duoc 0% toc danh va toc chay.
+
+Bac 1/10
+}
+
+STRING 1065
+// [w3skill.py]
+{
+Hieu Lenh
+}
+
+STRING 1066
+// [w3skill.py]
+{
+Ca doi duoc 0% toc danh va toc chay.
+
+Bac 2/10
+}
+
+STRING 1067
+// [w3skill.py]
+{
+Hieu Lenh
+}
+
+STRING 1068
+// [w3skill.py]
+{
+Ca doi duoc 0% toc danh va toc chay.
+
+Bac 3/10
+}
+
+STRING 1069
+// [w3skill.py]
+{
+Hieu Lenh
+}
+
+STRING 1070
+// [w3skill.py]
+{
+Ca doi duoc 0% toc danh va toc chay.
+
+Bac 4/10
+}
+
+STRING 1071
+// [w3skill.py]
+{
+Hieu Lenh
+}
+
+STRING 1072
+// [w3skill.py]
+{
+Ca doi duoc 0% toc danh va toc chay.
+
+Bac 5/10
+}
+
+STRING 1073
+// [w3skill.py]
+{
+Hieu Lenh
+}
+
+STRING 1074
+// [w3skill.py]
+{
+Ca doi duoc 0% toc danh va toc chay.
+
+Bac 6/10
+}
+
+STRING 1075
+// [w3skill.py]
+{
+Hieu Lenh
+}
+
+STRING 1076
+// [w3skill.py]
+{
+Ca doi duoc 0% toc danh va toc chay.
+
+Bac 7/10
+}
+
+STRING 1077
+// [w3skill.py]
+{
+Hieu Lenh
+}
+
+STRING 1078
+// [w3skill.py]
+{
+Ca doi duoc 0% toc danh va toc chay.
+
+Bac 8/10
+}
+
+STRING 1079
+// [w3skill.py]
+{
+Hieu Lenh
+}
+
+STRING 1080
+// [w3skill.py]
+{
+Ca doi duoc 0% toc danh va toc chay.
+
+Bac 9/10
+}
+
+STRING 1081
+// [w3skill.py]
+{
+Hieu Lenh
+}
+
+STRING 1082
+// [w3skill.py]
+{
+Ca doi duoc 0% toc danh va toc chay.
+
+Bac 10/10
+}
+
+STRING 1083
+// [w3skill.py]
+{
+Hieu Lenh
 }
 
 STRING 1084
-// Abilities: A004 (Body Forging), Name (Name)
+// [w3skill.py]
 {
-Body Forging
+Luyen The
 }
 
 STRING 1085
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+4 to all three attributes, scaled by Cultivation rank.
++4 ca ba chi so, nhan them theo bac Tu Vi.
 
-Level 1/10
+Bac 1/10
 }
 
 STRING 1086
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Body Forging
+Luyen The
 }
 
 STRING 1087
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+4 to all three attributes, scaled by Cultivation rank.
++4 ca ba chi so, nhan them theo bac Tu Vi.
 
-Level 2/10
+Bac 2/10
 }
 
 STRING 1088
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Body Forging
+Luyen The
 }
 
 STRING 1089
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+5 to all three attributes, scaled by Cultivation rank.
++5 ca ba chi so, nhan them theo bac Tu Vi.
 
-Level 3/10
+Bac 3/10
 }
 
 STRING 1090
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Body Forging
+Luyen The
 }
 
 STRING 1091
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+5 to all three attributes, scaled by Cultivation rank.
++5 ca ba chi so, nhan them theo bac Tu Vi.
 
-Level 4/10
+Bac 4/10
 }
 
 STRING 1092
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Body Forging
+Luyen The
 }
 
 STRING 1093
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+5 to all three attributes, scaled by Cultivation rank.
++5 ca ba chi so, nhan them theo bac Tu Vi.
 
-Level 5/10
+Bac 5/10
 }
 
 STRING 1094
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Body Forging
+Luyen The
 }
 
 STRING 1095
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+6 to all three attributes, scaled by Cultivation rank.
++6 ca ba chi so, nhan them theo bac Tu Vi.
 
-Level 6/10
+Bac 6/10
 }
 
 STRING 1096
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Body Forging
+Luyen The
 }
 
 STRING 1097
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+6 to all three attributes, scaled by Cultivation rank.
++6 ca ba chi so, nhan them theo bac Tu Vi.
 
-Level 7/10
+Bac 7/10
 }
 
 STRING 1098
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Body Forging
+Luyen The
 }
 
 STRING 1099
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+7 to all three attributes, scaled by Cultivation rank.
++7 ca ba chi so, nhan them theo bac Tu Vi.
 
-Level 8/10
+Bac 8/10
 }
 
 STRING 1100
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Body Forging
+Luyen The
 }
 
 STRING 1101
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+7 to all three attributes, scaled by Cultivation rank.
++7 ca ba chi so, nhan them theo bac Tu Vi.
 
-Level 9/10
+Bac 9/10
 }
 
 STRING 1102
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Body Forging
+Luyen The
 }
 
 STRING 1103
-// Abilities: A004 (Body Forging), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-+8 to all three attributes, scaled by Cultivation rank.
++8 ca ba chi so, nhan them theo bac Tu Vi.
 
-Level 10/10
+Bac 10/10
 }
 
 STRING 1104
-// Abilities: A004 (Body Forging), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Body Forging
+Luyen The
+}
+
+STRING 1105
+// [w3skill.py]
+{
+Da Sat
+}
+
+STRING 1106
+// [w3skill.py]
+{
+Chet thi tu song lai. Hoi chieu 0%.
+
+Bac 1/10
+}
+
+STRING 1107
+// [w3skill.py]
+{
+Da Sat
+}
+
+STRING 1108
+// [w3skill.py]
+{
+Chet thi tu song lai. Hoi chieu 0%.
+
+Bac 2/10
+}
+
+STRING 1109
+// [w3skill.py]
+{
+Da Sat
+}
+
+STRING 1110
+// [w3skill.py]
+{
+Chet thi tu song lai. Hoi chieu 0%.
+
+Bac 3/10
+}
+
+STRING 1111
+// [w3skill.py]
+{
+Da Sat
+}
+
+STRING 1112
+// [w3skill.py]
+{
+Chet thi tu song lai. Hoi chieu 0%.
+
+Bac 4/10
+}
+
+STRING 1113
+// [w3skill.py]
+{
+Da Sat
+}
+
+STRING 1114
+// [w3skill.py]
+{
+Chet thi tu song lai. Hoi chieu 0%.
+
+Bac 5/10
+}
+
+STRING 1115
+// [w3skill.py]
+{
+Da Sat
+}
+
+STRING 1116
+// [w3skill.py]
+{
+Chet thi tu song lai. Hoi chieu 0%.
+
+Bac 6/10
+}
+
+STRING 1117
+// [w3skill.py]
+{
+Da Sat
+}
+
+STRING 1118
+// [w3skill.py]
+{
+Chet thi tu song lai. Hoi chieu 0%.
+
+Bac 7/10
+}
+
+STRING 1119
+// [w3skill.py]
+{
+Da Sat
+}
+
+STRING 1120
+// [w3skill.py]
+{
+Chet thi tu song lai. Hoi chieu 0%.
+
+Bac 8/10
+}
+
+STRING 1121
+// [w3skill.py]
+{
+Da Sat
+}
+
+STRING 1122
+// [w3skill.py]
+{
+Chet thi tu song lai. Hoi chieu 0%.
+
+Bac 9/10
+}
+
+STRING 1123
+// [w3skill.py]
+{
+Da Sat
+}
+
+STRING 1124
+// [w3skill.py]
+{
+Chet thi tu song lai. Hoi chieu 0%.
+
+Bac 10/10
+}
+
+STRING 1125
+// [w3skill.py]
+{
+Da Sat
 }
 
 STRING 1126
-// Abilities: A007 (Indestructible), Name (Name)
+// [w3skill.py]
 {
-Indestructible
+Bat Hoai
 }
 
 STRING 1127
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Greatly raises armor for a short time.
+Tang manh giap trong thoi gian ngan.
 
-Level 1/10
-cd 60.0s   mana 60
+Bac 1/10
+hoi 60.0s   mana 60
 }
 
 STRING 1128
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Indestructible [|cffffcc00E|r]
+Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1129
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Greatly raises armor for a short time.
+Tang manh giap trong thoi gian ngan.
 
-Level 2/10
-cd 57.4s   mana 63
+Bac 2/10
+hoi 57.4s   mana 63
 }
 
 STRING 1130
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Indestructible [|cffffcc00E|r]
+Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1131
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Greatly raises armor for a short time.
+Tang manh giap trong thoi gian ngan.
 
-Level 3/10
-cd 54.8s   mana 66
+Bac 3/10
+hoi 54.8s   mana 66
 }
 
 STRING 1132
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Indestructible [|cffffcc00E|r]
+Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1133
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Greatly raises armor for a short time.
+Tang manh giap trong thoi gian ngan.
 
-Level 4/10
-cd 52.4s   mana 69
+Bac 4/10
+hoi 52.4s   mana 69
 }
 
 STRING 1134
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Indestructible [|cffffcc00E|r]
+Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1135
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Greatly raises armor for a short time.
+Tang manh giap trong thoi gian ngan.
 
-Level 5/10
-cd 50.1s   mana 73
+Bac 5/10
+hoi 50.1s   mana 73
 }
 
 STRING 1136
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Indestructible [|cffffcc00E|r]
+Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1137
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Greatly raises armor for a short time.
+Tang manh giap trong thoi gian ngan.
 
-Level 6/10
-cd 47.9s   mana 77
+Bac 6/10
+hoi 47.9s   mana 77
 }
 
 STRING 1138
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Indestructible [|cffffcc00E|r]
+Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1139
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Greatly raises armor for a short time.
+Tang manh giap trong thoi gian ngan.
 
-Level 7/10
-cd 45.8s   mana 80
+Bac 7/10
+hoi 45.8s   mana 80
 }
 
 STRING 1140
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Indestructible [|cffffcc00E|r]
+Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1141
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Greatly raises armor for a short time.
+Tang manh giap trong thoi gian ngan.
 
-Level 8/10
-cd 43.8s   mana 84
+Bac 8/10
+hoi 43.8s   mana 84
 }
 
 STRING 1142
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Indestructible [|cffffcc00E|r]
+Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1143
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Greatly raises armor for a short time.
+Tang manh giap trong thoi gian ngan.
 
-Level 9/10
-cd 41.9s   mana 89
+Bac 9/10
+hoi 41.9s   mana 89
 }
 
 STRING 1144
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Indestructible [|cffffcc00E|r]
+Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1145
-// Abilities: A007 (Indestructible), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
-Greatly raises armor for a short time.
+Tang manh giap trong thoi gian ngan.
 
-Level 10/10
-cd 40.0s   mana 93
+Bac 10/10
+hoi 40.0s   mana 93
 }
 
 STRING 1146
-// Abilities: A007 (Indestructible), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Indestructible [|cffffcc00E|r]
+Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1147
-// Abilities: A001 (Palm Strike), Hotkey (Hotkey - Normal)
+// [w3skill.py]
 {
-Q
+Thieu Thien
 }
 
 STRING 1148
-// Abilities: A002 (Guarding Light), Hotkey (Hotkey - Normal)
+// [w3skill.py]
 {
-W
+Mui ten thieu dot: them 30% sat thuong cua don danh, rai deu trong 3 giay.
+
+Bac 1/10
 }
 
 STRING 1149
-// Abilities: A007 (Indestructible), Hotkey (Hotkey - Normal)
+// [w3skill.py]
 {
-E
+Thieu Thien [|cffffcc00E|r]
 }
 
 STRING 1150
-// Units: B004 (Thanh Long), Name (Name)
+// [w3skill.py]
 {
-Thanh Long
+Mui ten thieu dot: them 32% sat thuong cua don danh, rai deu trong 3 giay.
+
+Bac 2/10
 }
 
 STRING 1151
-// Units: B003 (Bach Ho), Name (Name)
+// [w3skill.py]
 {
-Bach Ho
+Thieu Thien [|cffffcc00E|r]
 }
 
 STRING 1152
-// Units: B001 (Chu Tuoc), Name (Name)
+// [w3skill.py]
 {
-Chu Tuoc
+Mui ten thieu dot: them 35% sat thuong cua don danh, rai deu trong 3 giay.
+
+Bac 3/10
 }
 
 STRING 1153
-// Units: B002 (Huyen Vu), Name (Name)
+// [w3skill.py]
 {
-Huyen Vu
+Thieu Thien [|cffffcc00E|r]
 }
 
+STRING 1154
+// [w3skill.py]
+{
+Mui ten thieu dot: them 38% sat thuong cua don danh, rai deu trong 3 giay.
+
+Bac 4/10
+}
+
+STRING 1155
+// [w3skill.py]
+{
+Thieu Thien [|cffffcc00E|r]
+}
+
+STRING 1156
+// [w3skill.py]
+{
+Mui ten thieu dot: them 41% sat thuong cua don danh, rai deu trong 3 giay.
+
+Bac 5/10
+}
+
+STRING 1157
+// [w3skill.py]
+{
+Thieu Thien [|cffffcc00E|r]
+}
+
+STRING 1158
+// [w3skill.py]
+{
+Mui ten thieu dot: them 44% sat thuong cua don danh, rai deu trong 3 giay.
+
+Bac 6/10
+}
+
+STRING 1159
+// [w3skill.py]
+{
+Thieu Thien [|cffffcc00E|r]
+}
+
+STRING 1160
+// [w3skill.py]
+{
+Mui ten thieu dot: them 48% sat thuong cua don danh, rai deu trong 3 giay.
+
+Bac 7/10
+}
+
+STRING 1161
+// [w3skill.py]
+{
+Thieu Thien [|cffffcc00E|r]
+}
+
+STRING 1162
+// [w3skill.py]
+{
+Mui ten thieu dot: them 51% sat thuong cua don danh, rai deu trong 3 giay.
+
+Bac 8/10
+}
+
+STRING 1163
+// [w3skill.py]
+{
+Thieu Thien [|cffffcc00E|r]
+}
+
+STRING 1164
+// [w3skill.py]
+{
+Mui ten thieu dot: them 56% sat thuong cua don danh, rai deu trong 3 giay.
+
+Bac 9/10
+}
+
+STRING 1165
+// [w3skill.py]
+{
+Thieu Thien [|cffffcc00E|r]
+}
+
+STRING 1166
+// [w3skill.py]
+{
+Mui ten thieu dot: them 60% sat thuong cua don danh, rai deu trong 3 giay.
+
+Bac 10/10
+}
+
+STRING 1167
+// [w3skill.py]
+{
+Thieu Thien [|cffffcc00E|r]
+}
+
+STRING 1168
+// [w3skill.py]
+{
+Loi Van
+}
+
+STRING 1169
+// [w3skill.py]
+{
+Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.10 sat thuong.
+
+Bac 1/10
+An theo chi so cao nhat cua hero.
+hoi 9.0s   mana 45
+}
+
+STRING 1170
+// [w3skill.py]
+{
+Loi Van [|cffffcc00Q|r]
+}
+
+STRING 1171
+// [w3skill.py]
+{
+Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.14 sat thuong.
+
+Bac 2/10
+An theo chi so cao nhat cua hero.
+hoi 8.6s   mana 47
+}
+
+STRING 1172
+// [w3skill.py]
+{
+Loi Van [|cffffcc00Q|r]
+}
+
+STRING 1173
+// [w3skill.py]
+{
+Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.17 sat thuong.
+
+Bac 3/10
+An theo chi so cao nhat cua hero.
+hoi 8.2s   mana 50
+}
+
+STRING 1174
+// [w3skill.py]
+{
+Loi Van [|cffffcc00Q|r]
+}
+
+STRING 1175
+// [w3skill.py]
+{
+Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.21 sat thuong.
+
+Bac 4/10
+An theo chi so cao nhat cua hero.
+hoi 7.9s   mana 52
+}
+
+STRING 1176
+// [w3skill.py]
+{
+Loi Van [|cffffcc00Q|r]
+}
+
+STRING 1177
+// [w3skill.py]
+{
+Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.25 sat thuong.
+
+Bac 5/10
+An theo chi so cao nhat cua hero.
+hoi 7.5s   mana 55
+}
+
+STRING 1178
+// [w3skill.py]
+{
+Loi Van [|cffffcc00Q|r]
+}
+
+STRING 1179
+// [w3skill.py]
+{
+Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.29 sat thuong.
+
+Bac 6/10
+An theo chi so cao nhat cua hero.
+hoi 7.2s   mana 57
+}
+
+STRING 1180
+// [w3skill.py]
+{
+Loi Van [|cffffcc00Q|r]
+}
+
+STRING 1181
+// [w3skill.py]
+{
+Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.33 sat thuong.
+
+Bac 7/10
+An theo chi so cao nhat cua hero.
+hoi 6.9s   mana 60
+}
+
+STRING 1182
+// [w3skill.py]
+{
+Loi Van [|cffffcc00Q|r]
+}
+
+STRING 1183
+// [w3skill.py]
+{
+Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.37 sat thuong.
+
+Bac 8/10
+An theo chi so cao nhat cua hero.
+hoi 6.6s   mana 63
+}
+
+STRING 1184
+// [w3skill.py]
+{
+Loi Van [|cffffcc00Q|r]
+}
+
+STRING 1185
+// [w3skill.py]
+{
+Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.42 sat thuong.
+
+Bac 9/10
+An theo chi so cao nhat cua hero.
+hoi 6.3s   mana 66
+}
+
+STRING 1186
+// [w3skill.py]
+{
+Loi Van [|cffffcc00Q|r]
+}
+
+STRING 1187
+// [w3skill.py]
+{
+Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.46 sat thuong.
+
+Bac 10/10
+An theo chi so cao nhat cua hero.
+hoi 6.0s   mana 70
+}
+
+STRING 1188
+// [w3skill.py]
+{
+Loi Van [|cffffcc00Q|r]
+}
+
+STRING 1189
+// [w3skill.py]
+{
+Hoi Xuan
+}
+
+STRING 1190
+// [w3skill.py]
+{
+Hoi x2.00 mau cho ban than hoac dong doi.
+
+Bac 1/10
+An theo chi so cao nhat cua hero.
+hoi 12.0s   mana 40
+}
+
+STRING 1191
+// [w3skill.py]
+{
+Hoi Xuan [|cffffcc00W|r]
+}
+
+STRING 1192
+// [w3skill.py]
+{
+Hoi x2.06 mau cho ban than hoac dong doi.
+
+Bac 2/10
+An theo chi so cao nhat cua hero.
+hoi 11.5s   mana 42
+}
+
+STRING 1193
+// [w3skill.py]
+{
+Hoi Xuan [|cffffcc00W|r]
+}
+
+STRING 1194
+// [w3skill.py]
+{
+Hoi x2.13 mau cho ban than hoac dong doi.
+
+Bac 3/10
+An theo chi so cao nhat cua hero.
+hoi 11.0s   mana 44
+}
+
+STRING 1195
+// [w3skill.py]
+{
+Hoi Xuan [|cffffcc00W|r]
+}
+
+STRING 1196
+// [w3skill.py]
+{
+Hoi x2.20 mau cho ban than hoac dong doi.
+
+Bac 4/10
+An theo chi so cao nhat cua hero.
+hoi 10.5s   mana 46
+}
+
+STRING 1197
+// [w3skill.py]
+{
+Hoi Xuan [|cffffcc00W|r]
+}
+
+STRING 1198
+// [w3skill.py]
+{
+Hoi x2.27 mau cho ban than hoac dong doi.
+
+Bac 5/10
+An theo chi so cao nhat cua hero.
+hoi 10.0s   mana 49
+}
+
+STRING 1199
+// [w3skill.py]
+{
+Hoi Xuan [|cffffcc00W|r]
+}
+
+STRING 1200
+// [w3skill.py]
+{
+Hoi x2.34 mau cho ban than hoac dong doi.
+
+Bac 6/10
+An theo chi so cao nhat cua hero.
+hoi 9.6s   mana 51
+}
+
+STRING 1201
+// [w3skill.py]
+{
+Hoi Xuan [|cffffcc00W|r]
+}
+
+STRING 1202
+// [w3skill.py]
+{
+Hoi x2.42 mau cho ban than hoac dong doi.
+
+Bac 7/10
+An theo chi so cao nhat cua hero.
+hoi 9.2s   mana 54
+}
+
+STRING 1203
+// [w3skill.py]
+{
+Hoi Xuan [|cffffcc00W|r]
+}
+
+STRING 1204
+// [w3skill.py]
+{
+Hoi x2.50 mau cho ban than hoac dong doi.
+
+Bac 8/10
+An theo chi so cao nhat cua hero.
+hoi 8.8s   mana 56
+}
+
+STRING 1205
+// [w3skill.py]
+{
+Hoi Xuan [|cffffcc00W|r]
+}
+
+STRING 1206
+// [w3skill.py]
+{
+Hoi x2.58 mau cho ban than hoac dong doi.
+
+Bac 9/10
+An theo chi so cao nhat cua hero.
+hoi 8.4s   mana 59
+}
+
+STRING 1207
+// [w3skill.py]
+{
+Hoi Xuan [|cffffcc00W|r]
+}
+
+STRING 1208
+// [w3skill.py]
+{
+Hoi x2.66 mau cho ban than hoac dong doi.
+
+Bac 10/10
+An theo chi so cao nhat cua hero.
+hoi 8.0s   mana 62
+}
+
+STRING 1209
+// [w3skill.py]
+{
+Hoi Xuan [|cffffcc00W|r]
+}
+
+STRING 1210
+// [w3skill.py]
+{
+Than Xa
+}
+
+STRING 1211
+// [w3skill.py]
+{
+Ca doi duoc 0% sat thuong danh xa.
+
+Bac 1/10
+}
+
+STRING 1212
+// [w3skill.py]
+{
+Than Xa
+}
+
+STRING 1213
+// [w3skill.py]
+{
+Ca doi duoc 0% sat thuong danh xa.
+
+Bac 2/10
+}
+
+STRING 1214
+// [w3skill.py]
+{
+Than Xa
+}
+
+STRING 1215
+// [w3skill.py]
+{
+Ca doi duoc 0% sat thuong danh xa.
+
+Bac 3/10
+}
+
+STRING 1216
+// [w3skill.py]
+{
+Than Xa
+}
+
+STRING 1217
+// [w3skill.py]
+{
+Ca doi duoc 0% sat thuong danh xa.
+
+Bac 4/10
+}
+
+STRING 1218
+// [w3skill.py]
+{
+Than Xa
+}
+
+STRING 1219
+// [w3skill.py]
+{
+Ca doi duoc 0% sat thuong danh xa.
+
+Bac 5/10
+}
+
+STRING 1220
+// [w3skill.py]
+{
+Than Xa
+}
+
+STRING 1221
+// [w3skill.py]
+{
+Ca doi duoc 0% sat thuong danh xa.
+
+Bac 6/10
+}
+
+STRING 1222
+// [w3skill.py]
+{
+Than Xa
+}
+
+STRING 1223
+// [w3skill.py]
+{
+Ca doi duoc 0% sat thuong danh xa.
+
+Bac 7/10
+}
+
+STRING 1224
+// [w3skill.py]
+{
+Than Xa
+}
+
+STRING 1225
+// [w3skill.py]
+{
+Ca doi duoc 0% sat thuong danh xa.
+
+Bac 8/10
+}
+
+STRING 1226
+// [w3skill.py]
+{
+Than Xa
+}
+
+STRING 1227
+// [w3skill.py]
+{
+Ca doi duoc 0% sat thuong danh xa.
+
+Bac 9/10
+}
+
+STRING 1228
+// [w3skill.py]
+{
+Than Xa
+}
+
+STRING 1229
+// [w3skill.py]
+{
+Ca doi duoc 0% sat thuong danh xa.
+
+Bac 10/10
+}
+
+STRING 1230
+// [w3skill.py]
+{
+Than Xa
+}
+
+STRING 1231
+// [w3skill.py]
+{
+Nguyet Nhan
+}
+
+STRING 1232
+// [w3skill.py]
+{
+Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
+
+Bac 1/10
+}
+
+STRING 1233
+// [w3skill.py]
+{
+Nguyet Nhan
+}
+
+STRING 1234
+// [w3skill.py]
+{
+Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
+
+Bac 2/10
+}
+
+STRING 1235
+// [w3skill.py]
+{
+Nguyet Nhan
+}
+
+STRING 1236
+// [w3skill.py]
+{
+Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
+
+Bac 3/10
+}
+
+STRING 1237
+// [w3skill.py]
+{
+Nguyet Nhan
+}
+
+STRING 1238
+// [w3skill.py]
+{
+Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
+
+Bac 4/10
+}
+
+STRING 1239
+// [w3skill.py]
+{
+Nguyet Nhan
+}
+
+STRING 1240
+// [w3skill.py]
+{
+Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
+
+Bac 5/10
+}
+
+STRING 1241
+// [w3skill.py]
+{
+Nguyet Nhan
+}
+
+STRING 1242
+// [w3skill.py]
+{
+Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
+
+Bac 6/10
+}
+
+STRING 1243
+// [w3skill.py]
+{
+Nguyet Nhan
+}
+
+STRING 1244
+// [w3skill.py]
+{
+Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
+
+Bac 7/10
+}
+
+STRING 1245
+// [w3skill.py]
+{
+Nguyet Nhan
+}
+
+STRING 1246
+// [w3skill.py]
+{
+Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
+
+Bac 8/10
+}
+
+STRING 1247
+// [w3skill.py]
+{
+Nguyet Nhan
+}
+
+STRING 1248
+// [w3skill.py]
+{
+Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
+
+Bac 9/10
+}
+
+STRING 1249
+// [w3skill.py]
+{
+Nguyet Nhan
+}
+
+STRING 1250
+// [w3skill.py]
+{
+Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
+
+Bac 10/10
+}
+
+STRING 1251
+// [w3skill.py]
+{
+Nguyet Nhan
+}

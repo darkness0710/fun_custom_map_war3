@@ -163,10 +163,9 @@ phím R.
 > với Hart. Chi tiết và lý do phân nhóm *"ai giữ con số"*:
 > [ky-nang.md](02-he-thong/ky-nang.md#bảy-kỹ-năng-của-hvwd-xạ-thủ).
 >
-> **Còn hai việc phải làm trong World Editor** trước khi nó chạy đúng:
-> `python w3obj.py levels test2.w3x/war3map.w3a 10` *(A008–A012 đang thừa kế
-> 3 bậc của ability gốc)* và `python w3skill.py gen --lang vi`. Cả hai ghi vào
-> `war3map.w3a` nên **phải đóng World Editor trước**.
+> **Đã chạy xong** `w3obj.py levels … 10` và `w3skill.py gen` — `A008`–`A012`
+> giờ có `alev = 10`, tên riêng, tooltip 10 bậc, vị trí ô và phím tắt
+> (`A008` Q · `A010` W · `A011` E). `w3obj.py checkall` khớp từng byte.
 
 **Hkal vẫn trống và vẫn khoá.** `locked = true` nên nó không ra bảng chọn —
 trước đó chọn được nhưng **không có kỹ năng nào**. Thiết kế cũ đã xoá để làm lại

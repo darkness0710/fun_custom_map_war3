@@ -64,6 +64,11 @@ GEN_BASE = 1000
 O_ACTIVE = [(0, 2), (1, 2), (2, 2)]
 O_PASSIVE = [(3, 2), (1, 1), (2, 1), (3, 1)]
 
+# Bay o trong cua command card. Lenh co ban chiem (0,0) (1,0) (2,0)
+# (3,0) (0,1). Dung lam kho du phong khi hai danh sach uu tien o tren
+# het cho -- xem assign_slots().
+O_ALL = O_ACTIVE + O_PASSIVE
+
 
 def die(msg):
     print("[loi] " + msg)
@@ -88,6 +93,15 @@ def cfg_num(src, key, default=None):
 def cfg_str(src, key, default=None):
     m = re.search(r'^CFG\.%s\s*=\s*"([^"]*)"' % key, src, re.M)
     return m.group(1) if m else default
+
+
+def parse_heroes(src):
+    """Moi ma hero CO khai bao CFG.SKILLS[id('HNNN')], theo thu tu trong file.
+
+    Truoc day ham goi hard-code "H001". Mo khoa Hvwd (2026-09-19) thi
+    cach do lang le bo qua ca nam ability moi: gen chay xong, khong bao
+    loi gi, va A008-A012 khong co ten lan phim tat."""
+    return re.findall(r"CFG\.SKILLS\[id\('(\w+)'\)\]\s*=\s*\{", src)
 
 
 def parse_skills(src, hero):
@@ -250,26 +264,91 @@ def wts_write(path, raw, new):
 
 # ---------- lenh ----------
 
+def assign_slots(hero, sks, taken):
+    """Gan o command card cho MOT hero. 'taken' la {ma ability: o} da gan
+    tu nhung hero truoc -- sua tai cho.
+
+    VI SAO KHONG GAN THEO TUNG HERO DOC LAP: A004 va A006 nam trong CA
+    HAI bang (Hart va Hvwd). Ma o nut la thuoc tinh cua ABILITY, khong
+    phai cua hero -- ghi hai lan hai cho thi lan sau de len lan truoc,
+    va mot trong hai hero se co hai nut chong nhau. Khong loi, khong
+    bao, chi la mot nut bam khong duoc.
+
+    Nen ability nao da co o thi GIU NGUYEN, phan con lai chia vao cho
+    trong. Hai danh sach uu tien giu bo cuc cu cua Hart; het cho thi lay
+    bat cu o nao con lai."""
+    free = [p for p in O_ALL if p not in
+            [taken[s["id"]] for s in sks if s["id"] in taken]]
+
+    # Kiem dam nhau GIUA cac ability da gan cua chinh hero nay.
+    seen = {}
+    for s in sks:
+        if s["id"] in taken:
+            p = taken[s["id"]]
+            if p in seen:
+                die("%s: %s va %s cung o (%d,%d)"
+                    % (hero, seen[p], s["id"], p[0], p[1]))
+            seen[p] = s["id"]
+
+    def take(prefer):
+        for p in prefer:
+            if p in free:
+                free.remove(p)
+                return p
+        if free:
+            return free.pop(0)
+        return None
+
+    # Trung PHIM TAT trong cung mot hero. Warcraft khong bao gi: hai nut
+    # cung phim thi bam ra cai nao la tuy thu tu trong card, va nguoi
+    # choi se tuong mot trong hai hong.
+    #
+    # Trung GIUA hai hero thi khong sao -- moi hero chi mang bay cai cua
+    # no (Hart E = Bat Hoai, Hvwd E = Thieu Thien).
+    keys = {}
+    for s in sks:
+        k = s.get("hotkey")
+        if not k:
+            continue
+        if k in keys:
+            die("%s: %s va %s cung phim '%s'" % (hero, keys[k], s["id"], k))
+        keys[k] = s["id"]
+
+    rest = [s for s in sks if s["id"] not in taken]
+    if len(rest) > len(free):
+        die("%s co %d ky nang chua co o, chi con %d o trong (card 4x3 "
+            "tru 5 lenh co ban = 7 o)" % (hero, len(rest), len(free)))
+
+    for s in rest:
+        taken[s["id"]] = take(O_ACTIVE if s.get("kind") == "active"
+                              else O_PASSIVE)
+    return taken
+
+
 def build_plan(lang):
     cfg  = read(CFG_LUA)
     cur  = Curve(cfg)
     T    = parse_lang(read(LANG_LUA), lang)
-    sks  = parse_skills(cfg, "H001")
 
-    active = [s for s in sks if s.get("kind") == "active"]
-    passive = [s for s in sks if s.get("kind") != "active"]
-    if len(active) > len(O_ACTIVE) or len(passive) > len(O_PASSIVE):
-        die("Hart co %d chu dong / %d bi dong -- command card chi co %d/%d o"
-            % (len(active), len(passive), len(O_ACTIVE), len(O_PASSIVE)))
+    heroes = parse_heroes(cfg)
+    if not heroes:
+        die("khong thay CFG.SKILLS[id('...')] nao")
 
-    o = {}
-    for i, s in enumerate(active):
-        o[s["id"]] = O_ACTIVE[i]
-    for i, s in enumerate(passive):
-        o[s["id"]] = O_PASSIVE[i]
+    o, order, byid = {}, [], {}
+    for h in heroes:
+        sks = parse_skills(cfg, h)
+        assign_slots(h, sks, o)
+        for s in sks:
+            # MOT muc cho moi MA ABILITY, khong phai moi hero. A004/A006
+            # nam trong ca hai bang; sinh hai lan thi chuoi thu hai de
+            # len chuoi thu nhat va ton vo ich 2 x 21 dong .wts.
+            if s["id"] in byid:
+                continue
+            byid[s["id"]] = s
+            order.append(s)
 
     plan, strings, sid = [], {}, GEN_BASE
-    for s in sks:
+    for s in order:
         name = name_of(s, lang)
         strings[sid] = name
         item = {"id": s["id"], "vi": name, "o": o[s["id"]],
@@ -295,7 +374,9 @@ def cmd_show(lang):
     print("tieng: %s   |   %d ability, %d chuoi (id %d..%d)\n"
           % (lang, len(plan), len(strings), GEN_BASE, GEN_BASE + len(strings) - 1))
     for it in plan:
-        print("  %s  %-14s  o (%d,%d)" % (it["id"], it["vi"], it["o"][0], it["o"][1]))
+        print("  %s  %-14s  o (%d,%d)%s"
+              % (it["id"], it["vi"], it["o"][0], it["o"][1],
+                 ("   phim " + it["hotkey"]) if it["hotkey"] else ""))
     print("\n--- tooltip mau: %s bac 1 va bac %d ---" % (plan[0]["vi"], cur.maxlv))
     for lv, sid in (plan[0]["tips"][0], plan[0]["tips"][-1]):
         print("\n[bac %d]\n%s" % (lv, strings[sid]))
