@@ -679,6 +679,57 @@ local function onDamaged()
     end
   end
 
+  -- "bounce": don danh NAY sang muc tieu ben canh, moi lan yeu di.
+  --
+  -- VI SAO LAM BANG LUA CHU KHONG DE ENGINE LO. Ban dau A012 la ban
+  -- sao Moon Glaive va KHONG co dong Lua nao -- de Warcraft tu nay.
+  -- No khong nay. Do lai thi ro:
+  --
+  --   war3map.w3a  A012 khong co MOT truong du lieu nao -- so muc tieu
+  --                va do hao deu thua ke tu Amgl goc, ma goc chi co 3
+  --                bac trong khi ta vua dat alev = 10
+  --   war3map.w3u  H002 khong khai 'ua1w' -- kieu vu khi thua ke tu
+  --                unit goc, va Moon Glaive chi nay duoc khi vu khi la
+  --                Missile (Bounce)
+  --
+  -- Sua o Object Editor thi phai dung ca hai cho, va cho thu hai la
+  -- mot gia thuyet chua chung minh. Lam o day thi:
+  --   chay voi MOI hero, khong phu thuoc unit goc
+  --   la PHAN TRAM cua don danh that -> tu scale, khong teo
+  --   dung lai dung bo may ma cleave da chay hang tram wave
+  --
+  -- Doi lai: mat hoat anh glaive bay vong cua Warcraft. Neu mai nay
+  -- dat 'ua1w = mbounce' trong World Editor de lay lai hoat anh do thi
+  -- PHAI bo 'fx = "bounce"' khoi CFG.SKILLS -- de ca hai la sat thuong
+  -- nhan doi.
+  if sp ~= nil and tgt ~= nil and tp == nil then
+    local sk, lv = skillByFx(sp, "bounce")
+    if sk ~= nil then
+      local share = amount * API.skillPct(sk, lv)
+      local hops  = CFG.FX_BOUNCE_MAX or 3
+      local fall  = CFG.FX_BOUNCE_FALLOFF or 0.70
+      local reach = CFG.FX_BOUNCE_HOP or 350.0
+
+      -- 'seen' phai chua CA muc tieu dau: khong thi cu nay dau tien
+      -- quay nguoc lai chinh con vua an don thuong.
+      local seen, cx, cy = { [GetHandleId(tgt)] = true }, GetUnitX(tgt), GetUnitY(tgt)
+      for _ = 1, hops do
+        if share < 1.0 then break end
+        local best, bestD = nil, nil
+        enemiesNear(cx, cy, reach, function(e)
+          if seen[GetHandleId(e)] then return end
+          local dd = API.distXY(cx, cy, GetUnitX(e), GetUnitY(e))
+          if bestD == nil or dd < bestD then best, bestD = e, dd end
+        end)
+        if best == nil then break end
+        seen[GetHandleId(best)] = true
+        cx, cy = GetUnitX(best), GetUnitY(best)
+        hit(src, best, share, CFG.FX_HIT_BOUNCE)
+        share = share * fall
+      end
+    end
+  end
+
   -- "burn": hero GAY don. De lai mot lop dot tren chinh muc tieu do.
   --
   -- Tinh theo % DON DANH THAT ('amount' da qua Kiem va Phap Khi o tren),

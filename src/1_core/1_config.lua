@@ -1965,7 +1965,8 @@ CFG.SKILLS[id('H001')] = {
 -- trong nhat cua bang nay, khong phai ban thanaso.
 --
 --   Lua giu so   A008 A010 A011   -> factor/pct, tu bam chi so hero
---   WE giu so    A006 A009 A012   -> doc ra bang fromAbil/fromCooldown
+--   WE giu so    A006 A009        -> doc ra bang fromAbil/fromCooldown
+--   Lua giu so   A012             -> xem chu thich ngay tren dong A012
 --   ca hai       A004             -> statVal x bac skill x bac Tu Vi
 --
 -- Vi sao phai chia: mot con so PHANG dat trong Object Editor se teo
@@ -2029,17 +2030,28 @@ CFG.SKILLS[id('H002')] = {
     fromField = "Ear1", fromPct = true, fx = "aura",
     desc_vi = "Ca doi duoc %s sat thuong danh xa.",
     desc_en = "The whole party gains %s ranged attack damage." },
-  -- KHONG co 'fx' va KHONG co con so nao -- ca hai deu co y.
+  -- LOI DA SHIP, va no im lang tron ven: A012 tung KHONG co 'fx' va
+  -- khong co con so nao, vi ta tin rang "Moon Glaive la co che cua
+  -- engine, khong can mot dong Lua nao".
   --
-  -- Moon Glaive la co che cua ENGINE: don danh tu nay sang muc tieu ke,
-  -- moi lan nhay con mot PHAN TRAM cua chinh don do. Phan tram thi tu
-  -- scale, nen day la ky nang duy nhat trong ca map khong can mot dong
-  -- Lua nao. So muc tieu va do hao moi lan nhay nam trong war3map.w3a.
+  -- NO KHONG NAY. Do lai thi hai cho deu thieu:
+  --   war3map.w3a  A012 khong co MOT truong du lieu nao -- so muc tieu
+  --                va do hao thua ke tu Amgl goc (3 bac), trong khi ta
+  --                da dat alev = 10
+  --   war3map.w3u  H002 khong khai 'ua1w' -- kieu vu khi thua ke tu
+  --                unit goc, ma Moon Glaive chi nay duoc khi vu khi la
+  --                Missile (Bounce)
   --
-  -- 'noNumber' de fmt() khong bia ra "0%" -- xem 4_skill.lua.
-  { id = id('A012'), baseAbil = "Amgl", vi = "Nguyet Nhan", en = "Moon Glaive", kind = "passive", noNumber = true, pos = "3,2",
-    desc_vi = "Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.",
-    desc_en = "Attacks bounce to nearby targets, weaker each hop." },
+  -- Bai hoc: "de engine lo" chi dung khi ability GOC da chay san tren
+  -- unit do. Nhan ban no sang mot hero khac la mang theo ca mot chum
+  -- dieu kien khong ai liet ke ra.
+  --
+  -- Gio tinh bang Lua, % cua DON DANH THAT -- y het cleave. Dat
+  -- 'ua1w = mbounce' trong WE de lay lai hoat anh thi PHAI bo 'fx'
+  -- o day, khong thi sat thuong nhan doi.
+  { id = id('A012'), baseAbil = "Amgl", vi = "Nguyet Nhan", en = "Moon Glaive", kind = "passive", pct = 0.45, fx = "bounce", pos = "3,2",
+    desc_vi = "Don danh nay sang 3 muc tieu ben canh, cu nay dau %s sat thuong roi yeu dan.",
+    desc_en = "Attacks bounce to 3 nearby targets; the first bounce deals %s damage, then falls off." },
   { id = id('A004'), baseAbil = "Aamk", vi = "Luyen The", en = "Body Forging",   kind = "passive",  statVal = 4.0, fx = "stat",
     desc_vi = "%s ca ba chi so, nhan them theo bac Tu Vi.",
     desc_en = "%s to all three attributes, scaled by Cultivation rank." },
@@ -2056,7 +2068,7 @@ CFG.SKILLS[id('H002')] = {
 --   Lua giu so   A013 A014        -> factor, tu bam chi so hero
 --   WE giu so    A006 A015 A016   -> bang so trong war3map.w3a
 --   ca hai       A004             -> statVal x bac skill x bac Tu Vi
---   engine       A012             -> Moon Glaive, khong ai giu so
+--   Lua giu so   A012             -> 'bounce', % cua don danh that
 --
 -- A015 Hu Khong Khien de WE giu la DUNG: Mana Shield doi sat thuong
 -- lay mana theo mot TI LE, va bo mana thi leo theo Tri Tue -- tuc suc
@@ -2099,9 +2111,9 @@ CFG.SKILLS[id('H003')] = {
     fromField = "Hab1", fromPct = true, fx = "aura",
     desc_vi = "Ca doi hoi mana nhanh hon %s.",
     desc_en = "The whole party regenerates mana %s faster." },
-  { id = id('A012'), baseAbil = "Amgl", vi = "Nguyet Nhan", en = "Moon Glaive", kind = "passive", noNumber = true, pos = "3,2",
-    desc_vi = "Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.",
-    desc_en = "Attacks bounce to nearby targets, weaker each hop." },
+  { id = id('A012'), baseAbil = "Amgl", vi = "Nguyet Nhan", en = "Moon Glaive", kind = "passive", pct = 0.45, fx = "bounce", pos = "3,2",
+    desc_vi = "Don danh nay sang 3 muc tieu ben canh, cu nay dau %s sat thuong roi yeu dan.",
+    desc_en = "Attacks bounce to 3 nearby targets; the first bounce deals %s damage, then falls off." },
   { id = id('A004'), baseAbil = "Aamk", vi = "Luyen The", en = "Body Forging",   kind = "passive",  statVal = 4.0, fx = "stat",
     desc_vi = "%s ca ba chi so, nhan them theo bac Tu Vi.",
     desc_en = "%s to all three attributes, scaled by Cultivation rank." },
@@ -2142,6 +2154,21 @@ CFG.FX_REDUCE_CAP  = 0.10    -- tran cung cua "reduce" -- xem mota A006
 CFG.FX_CHAIN_MAX     = 4       -- so muc tieu, ke ca muc tieu dau
 CFG.FX_CHAIN_HOP     = 400.0   -- tam nhay toi da giua hai muc tieu
 CFG.FX_CHAIN_FALLOFF = 0.80    -- moi lan nhay con bay nhieu phan
+
+-- ---------- "bounce": don danh nay sang ben (A012) ----------
+--
+-- LAM BANG LUA chu khong de engine lo. A012 tung la ban sao Moon
+-- Glaive khong co dong Lua nao, va NO KHONG NAY. Do lai thay hai cho
+-- deu thieu: war3map.w3a khong co truong du lieu nao cho A012, va
+-- war3map.w3u khong khai 'ua1w' cho H002 -- ma Moon Glaive chi nay
+-- duoc khi vu khi cua unit la Missile (Bounce).
+--
+-- Neu mai nay dat 'ua1w = mbounce' trong World Editor de lay lai hoat
+-- anh glaive bay vong, PHAI bo 'fx = "bounce"' khoi A012 -- de ca hai
+-- la sat thuong nhan doi.
+CFG.FX_BOUNCE_MAX     = 3       -- so lan nay, KHONG ke muc tieu dau
+CFG.FX_BOUNCE_HOP     = 350.0   -- tam nhay giua hai muc tieu
+CFG.FX_BOUNCE_FALLOFF = 0.70    -- moi lan nay con bay nhieu phan
 
 -- ---------- "nova": no mot vong quanh muc tieu (A013, Hkal) ----------
 CFG.FX_NOVA_AOE = 300.0
@@ -2225,6 +2252,7 @@ CFG.BURN_ORDER = nil
 CFG.FX_HIT_BURN  = [[Abilities\Weapons\WitchDoctorMissile\WitchDoctorMissile.mdl]]
 CFG.FX_HIT_CHAIN = [[Abilities\Spells\Orc\Shockwave\ShockwaveMissile.mdl]]
 CFG.FX_HIT_NOVA  = [[Abilities\Spells\Orc\Shockwave\ShockwaveMissile.mdl]]
+CFG.FX_HIT_BOUNCE = [[Abilities\Weapons\WitchDoctorMissile\WitchDoctorMissile.mdl]]
 -- (CFG.FX_BUFF_TIME da xoa 2026-09-19: khong file nao doc. Thoi
 --  luong buff lay tu truong 'adur'/'ahdu' cua chinh ability --
 --  xem chu thich o 7_effect.lua.)
