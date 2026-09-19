@@ -267,6 +267,10 @@ local function addGold(pid, amount)
   local newVal = cur + amount
   if newVal < 0 then newVal = 0 end
   SetPlayerState(p, PLAYER_STATE_RESOURCE_GOLD, newVal)
+  -- Ghi so cai NGAY SAU khi ghi that. Ghi truoc thi so cai giu con
+  -- so cu va nhip kiem ngay sau se to oan nguoi choi.
+  -- Xem 13_cheatguard.lua.
+  if API.cheatNote ~= nil then API.cheatNote(pid, "gold", newVal) end
 end
 
 local function getGold(pid)
@@ -315,6 +319,7 @@ local function addLumber(pid, amount)
   local newVal = cur + amount
   if newVal < 0 then newVal = 0 end
   SetPlayerState(p, PLAYER_STATE_RESOURCE_LUMBER, newVal)
+  if API.cheatNote ~= nil then API.cheatNote(pid, "lumber", newVal) end
 end
 
 local function getLumber(pid)

@@ -9,12 +9,15 @@
 
 Bốn món, **mua một lần, không có cấp**, trả bằng **Gỗ** *(Ngộ Tính)*.
 
-| Món | Hiệu ứng | Giá | Mở khoá bằng |
-|---|---|---|---|
-| **Hoả Vũ Linh Châu** | +25% sát thương gây ra | 70 | Chu Tước |
-| **Huyền Quy Giáp** | −20% sát thương nhận, cả hai loại | 70 | Huyền Vũ |
-| **Lưỡng Nghi Châu** | Chắn Phép / Dày Da chỉ còn cắt **một nửa** | 55 | Thanh Long |
-| **Bất Động Minh Vương** | Nổ Tan **và** Xé Giáp của boss đều còn **một nửa** | 55 | Bạch Hổ |
+| # | Món | Hiệu ứng | Giá | Mở khoá bằng |
+|---|---|---|---|---|
+| 1 | **Hoả Vũ Linh Châu** | +25% sát thương gây ra | 70 | Chu Tước |
+| 2 | **Huyền Quy Giáp** | −20% sát thương nhận, cả hai loại | 70 | Huyền Vũ |
+| 3 | **Bất Động Minh Vương** | Nổ Tan **và** Xé Giáp của boss đều còn **một nửa** | 55 | Bạch Hổ |
+| 4 | **Lưỡng Nghi Châu** | Chắn Phép / Dày Da chỉ còn cắt **một nửa** | 55 | Thanh Long |
+
+Bảng xếp **đúng thứ tự hạ thú**, nên `unlock[i] == i` — thẻ IV đọc như một
+thanh tiến độ: cột trên mở trước, cột dưới mở sau.
 
 Tổng **250 Gỗ**. Ngân sách khả dụng **~222** *(cả ván ~292, kỹ năng ăn 70)*.
 
@@ -84,12 +87,42 @@ Ban đầu định gõ `BTNLavaSpawn.blp`, `BTNThoriumArmor.blp`… theo trí nh
 bẫy im lặng của map này. Tiện thể chân dung nói luôn ý đồ: món này mở khoá bằng
 con thú nào.
 
+## Mở khoá bằng Thánh Thú
+
+Hạ con thú thứ `i` → mở món thứ `i`. Cờ `S.sideDone[i]` đặt trong `onDeath()`
+của [4_sidequest.lua](../../src/3_battle/4_sidequest.lua).
+
+**Cờ là của CHUNG, không nằm trong `S.p[pid]`** — con thú chỉ có một, hạ rồi là
+cả đội hạ rồi. Cùng lý do với cấp nâng cấp nhà chính.
+
+**Con thú là cái CỔNG, Gỗ là cái BỂ TIÊU.** Tặng thẳng món đồ thì 222 Gỗ lại
+rơi vào cảnh không có gì để mua — đúng cái lỗ cũ, chỉ dời chỗ. Mở khoá xong vẫn
+phải trả đủ giá.
+
+Và đây mới là **lý do đi giết bốn con thú**. Trước đó chúng chỉ cho lượt quay,
+tức là tiền — mà tiền thì farm quái cũng có.
+
+### Ô khoá có nút, không bỏ trống
+
+Chưa mở thì dòng đó vẫn có nút, nhưng khoá và ghi **tên con thú phải hạ**:
+
+```
+[##] Huyen Quy Giap          KHOA        [ PHAI HA Huyen Vu ]
+```
+
+Ô trống thì người chơi tưởng giao diện hỏng. Có nút khoá kèm tên con thú thì nó
+thành một **cái đích**.
+
+Lúc con thú ngã, báo cho cả bàn đồ:
+
+```
+[He Thong] Mo khoa Phap Khi: Huyen Quy Giap -- 70 Go o the IV.
+```
+
+**Kiểm lại ở bên nhận** (`buy()`), không tin cú bấm — bên gửi là cục bộ.
+
 ## Chưa làm
 
-- **Chưa nối vào Thánh Thú.** Bảng trên ghi "mở khoá bằng" nhưng code **chưa
-  chặn**: hiện cả bốn món bán ngay từ đầu ván. Nối `onDeath()` của
-  [4_sidequest.lua](../../src/3_battle/4_sidequest.lua) vào một cờ mở khoá là
-  việc tiếp theo — và đó mới là lý do đi giết bốn con thú.
 - **Chưa đo trận thật.** Giá và % là con số đầu.
 - **Bốn món là ít.** Mua ba trong bốn thì chỉ có 4 tổ hợp. Sáu món mua ba sẽ
   cho 20 — thêm món là thêm một dòng `CFG.RELIC` **và** viết chỗ đọc mã của nó.

@@ -43,6 +43,12 @@ local function groups()
     -- A003 doi sang Endurance Aura, bang so nam tron trong war3map.w3a.
     -- Bang ky nang muon HIEN so that thi phai doc bang hang so nay --
     -- ten do "-nat oae" xac nhan, khong doan.
+    { name = "Canh cheat (13_cheatguard)", entries = {
+      { "BlzIsUnitInvulnerable", BlzIsUnitInvulnerable,
+        "khong bat duoc whosyourdaddy -- so cai tien van chay" },
+      { "GetPlayerState", GetPlayerState, "" },
+    } },
+
     { name = "Phan Sat cua Nha Chinh (the VI)", entries = {
       { "GetEventDamageSource", GetEventDamageSource,
         "Phan Sat se khong phan gi" },

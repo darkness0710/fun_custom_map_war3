@@ -44,6 +44,26 @@ end
 -- Cho nao can thi goi cai nay, khong ai dang ky trigger rieng -- xem
 -- luat "doc-luc-dung" o dau file. Tra 0 chu khong nil de ben goi khong
 -- phai chot nil moi cho.
+-- Mon nay da mo khoa chua.
+--
+-- Mo bang cach HA THANH THU tuong ung, khong phai bang tien. Con thu
+-- la cai CONG, Go la cai BE TIEU -- tang thang mon do thi 222 Go lai
+-- roi vao canh khong co gi de mua, dung cai lo cu chi doi cho.
+--
+-- 'unlock' vang mat nghia la ban tu dau (khong dung cho mon nao hien
+-- tai, nhung de bang khong vo neu sau nay them mon mua tu do).
+local function unlocked(item)
+  if item == nil then return false end
+  if item.unlock == nil then return true end
+  return (S.sideDone or {})[item.unlock] == true
+end
+
+-- Ten con thu phai ha, de bao cho nguoi choi biet DI DAU.
+local function gateName(item)
+  local q = (CFG.SIDE_QUESTS or {})[item.unlock or 0]
+  return (q ~= nil) and API.pick(q) or "?"
+end
+
 local function valOf(pid, code, field)
   local d = S.p[pid]
   if d == nil or d.relic == nil or not d.relic[code] then return 0.0 end
@@ -67,6 +87,11 @@ end
 local function buy(pid, i)
   local item = CFG.RELIC[i]
   if item == nil then return end
+  -- Kiem lai o BEN NHAN, khong tin cu bam: ben gui la cuc bo.
+  if not unlocked(item) then
+    API.msg(pid, CFG.C_RED .. API.t("relic_need", gateName(item)) .. CFG.C_END)
+    return
+  end
 
   local d = S.p[pid]
   if d == nil then return end
@@ -128,6 +153,16 @@ local function tabItems(pid)
 
     if has(pid, item.code) then
       it.status = CFG.C_JADE .. API.t("st_owned") .. CFG.C_END
+    elseif not unlocked(item) then
+      -- CO NUT nhung khoa, khong phai bo trong.
+      --
+      -- O trong thi nguoi choi tuong giao dien hong; co nut khoa kem
+      -- ten con thu thi no thanh mot CAI DICH -- va do chinh la ly do
+      -- di giet bon con thu.
+      it.status = CFG.C_GREY .. API.t("st_locked") .. CFG.C_END
+      it.btn    = API.t("relic_need", gateName(item))
+      it.btnOn  = false
+      it.btnWhy = "locked"
     else
       it.status = CFG.C_GREY .. API.num(item.price) .. CFG.C_END
       -- GO: buy() goi API.spendLumber. Nhan sai tien tren nut la noi doi voi
@@ -158,6 +193,19 @@ local function startRelic()
   API.trace("relic: " .. #CFG.RELIC .. " mon, the san sang")
 end
 
+-- Goi tu 4_sidequest.lua khi mot con thu nga xuong.
+local function announceUnlock(idx)
+  for i = 1, #CFG.RELIC do
+    local r = CFG.RELIC[i]
+    if r.unlock == idx then
+      API.msg(nil, CFG.C_GOLD ..
+        API.t("relic_open", API.pick(r), API.num(r.price)) .. CFG.C_END)
+    end
+  end
+  API.panelRefreshAll()
+end
+
+API.relicUnlocked = announceUnlock
 API.relicVal      = valOf
 API.relicHas      = has
 API.relicAnyHas    = anyHas

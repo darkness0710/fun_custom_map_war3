@@ -25,6 +25,7 @@ thiết kế, và là chỗ mọi con số quy về —
 | Nhà chính, chết là thua | [1_house.lua](../src/3_battle/1_house.lua) | Máu tính lại mỗi đợt theo `HOUSE_HP_HITS` |
 | Chọn hero lúc vào map | [2_heropick.lua](../src/2_player/2_heropick.lua) | 3 hero trong bảng, **1 mở** — Hvwd/Hkal đang `locked` |
 | Nâng cấp Nhà Chính | [12_houseup.lua](../src/2_player/12_houseup.lua) | Thẻ VI, trả bằng vàng — Kiên Cố (+Sức Mạnh) × 10 cấp |
+| Canh cheat | [13_cheatguard.lua](../src/2_player/13_cheatguard.lua) | **Không chặn được, chỉ đo hậu quả** — sổ cái vàng/gỗ + bất tử — [canh-cheat.md](02-he-thong/canh-cheat.md) |
 | Tu chính của đợt quái | [5_modifier.lua](../src/3_battle/5_modifier.lua) | 5 tu chính, bốc ngẫu nhiên mỗi stage thường. Báo bằng **chữ + màu quái + kiểu trời** |
 | Camera | [8_camera.lua](../src/4_ui/8_camera.lua) | Mặc định `2000` cho mọi người lúc vào map; `-zoom <số>` để đổi |
 | Khoá kinh nghiệm & điểm kỹ năng | [1_player.lua](../src/2_player/1_player.lua) | Quét lại toàn map mỗi `HERO_XP_SWEEP` giây |

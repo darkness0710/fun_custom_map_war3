@@ -87,7 +87,7 @@ chơi thấy màn hình tự lùi, đọc như lỗi.)*
 
 | Lệnh | Làm gì |
 |---|---|
-| `-debug` | Đẩy **cả bốn đồng tiền** lên `CFG.DEBUG_MONEY` *(mặc định 999 999)*: Linh Khí · Vàng · Gỗ · Đá Huyền Thiết |
+| `-debug` | Đẩy **cả bốn đồng tiền** lên `CFG.DEBUG_MONEY` *(mặc định 999 999)*: Linh Khí · Vàng · Gỗ · Đá Huyền Thiết. **Không** làm bộ canh cheat nổ — nó đi qua `API.addGold` nên sổ cái tự khớp ([canh-cheat.md](../02-he-thong/canh-cheat.md)) |
 
 Lệnh này theo `CFG.DEBUG`, **không** theo `CFG.DEV_COMMANDS` — hai công tắc tách
 nhau. Nó phát hết tiền cho người chơi nên thuộc về công tắc *"đang soi kỹ"*, chứ

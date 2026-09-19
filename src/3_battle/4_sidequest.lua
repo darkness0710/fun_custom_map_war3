@@ -456,6 +456,12 @@ local function onDeath()
   local bx, by = GetUnitX(b.u), GetUnitY(b.u)
   local reach  = (CFG.SIDE_QUEST_LEASH or 1400.0)
 
+  -- CO DA HA -- co cua CHUNG, khong nam trong S.p[pid]: con thu chi co
+  -- mot, ha roi la ca doi ha roi. Phap Khi doc co nay de mo khoa.
+  if S.sideDone == nil then S.sideDone = {} end
+  S.sideDone[b.idx] = true
+  if API.relicUnlocked ~= nil then API.relicUnlocked(b.idx) end
+
   S.side[b.idx] = nil
   API.trace(string.format("sidequest: %d %s CHET sau %.1fs (thiet ke %.0fs)",
     b.idx, API.pick(q), b.age or 0.0, CFG.SIDE_QUEST_SECONDS or 60.0))

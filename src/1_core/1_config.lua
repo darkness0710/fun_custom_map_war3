@@ -35,6 +35,33 @@ CFG.DEBUG   = true     -- bat: in so do luoi, ping minimap, bao cao chi tiet
 -- CFG.DEBUG bat. De thu mot he o bac cao ma khong phai cay ca van.
 CFG.DEBUG_MONEY = 999999
 
+-- ---------- Canh cheat co san cua Warcraft ----------
+--
+-- KHONG CHAN DUOC, CHI PHAT HIEN DUOC: greedisgood/whosyourdaddy do
+-- chinh engine xu ly, khong di qua trigger nao cua map va khong co
+-- native nao tat. He nay do HAU QUA, khong bat cu bam phim.
+--
+-- Xem 2_player/13_cheatguard.lua.
+CFG.CHEAT_WATCH = true
+
+-- Giay giua hai lan doi chieu. 2.0 la du: cheat de lai dau vet vinh
+-- vien tren thanh tai nguyen, khong phai bat cho kip trong tich tac.
+CFG.CHEAT_TICK = 2.0
+
+-- Sai so cho phep truoc khi coi la lech. Giu NHO: moi duong cap tien
+-- cua map deu di qua addGold/addLumber nen so cai phai khop tuyet doi;
+-- de rong la tu mo mot khe cho cheat nho lot qua.
+CFG.CHEAT_SLACK = 1
+
+-- Lam gi khi bat duoc:
+--   "off"       do nhung im lang (chi ghi file vet)
+--   "announce"  bao cho CA BAN DO  <- mac dinh
+--
+-- KHONG co lua chon "ket thuc van". Mot phep do co the sai, va huy van
+-- cua ba nguoi vi mot lan do sai la cai gia qua dat. Bao ra la du: trong
+-- co-op, cho nguoi khac doc duoc moi la phan co gia tri.
+CFG.CHEAT_ACTION = "announce"
+
 -- Lenh chat thu nghiem ("-sp"). Co RIENG mot co, khong di theo DEBUG --
 -- de tat bao cao chi tiet ma van go lenh thu duoc. Tat truoc khi phat hanh.
 CFG.DEV_COMMANDS = true
@@ -2237,33 +2264,37 @@ CFG.RELIC_LOCKED = false
 -- hoi API.relicHas. Them mon moi la them dong o day VA viet cho doc ma
 -- cua no -- khong co bang dieu phoi tu dong nao ca.
 CFG.RELIC = {
-  { code = "hoavu", price = 70,
+  -- 'unlock' = so thu tu trong CFG.SIDE_QUESTS. Bang nay xep DUNG THU
+  -- TU HA THU (Chu Tuoc -> Huyen Vu -> Bach Ho -> Thanh Long), nen
+  -- unlock[i] == i. Xep the de the IV doc nhu mot thanh tien do: cot
+  -- tren mo truoc, cot duoi mo sau.
+  { code = "hoavu", price = 70, unlock = 1,
     vi = "Hoa Vu Linh Chau", en = "Vermilion Pearl",
     icon = [[avatar\B001.blp]],   -- chan dung Chu Tuoc
     dmgUp = 0.25,
     desc    = "Sat thuong gay ra +25%.",
     desc_en = "Deal 25% more damage." },
 
-  { code = "huyenquy", price = 70,
+  { code = "huyenquy", price = 70, unlock = 2,
     vi = "Huyen Quy Giap", en = "Black Tortoise Mail",
     icon = [[avatar\B002.blp]],   -- chan dung Huyen Vu
     mitig = 0.20,
     desc    = "Sat thuong nhan -20%, ca don danh lan phep.",
     desc_en = "Take 20% less damage, both physical and spell." },
 
-  { code = "luongnghi", price = 55,
-    vi = "Luong Nghi Chau", en = "Duality Orb",
-    icon = [[avatar\B004.blp]],   -- chan dung Thanh Long
-    modCut = 0.50,
-    desc    = "Tu chinh Chan Phep / Day Da chi con cat MOT NUA.",
-    desc_en = "Spell Ward / Thick Hide traits cut only HALF as much." },
-
-  { code = "batdong", price = 55,
+  { code = "batdong", price = 55, unlock = 3,
     vi = "Bat Dong Minh Vuong", en = "Immovable King",
     icon = [[avatar\B003.blp]],   -- chan dung Bach Ho
     halve = 0.50,
     desc    = "No Tan va Xe Giap cua boss deu chi con mot nua.",
     desc_en = "Volatile bursts and boss Sunder are both halved." },
+
+  { code = "luongnghi", price = 55, unlock = 4,
+    vi = "Luong Nghi Chau", en = "Duality Orb",
+    icon = [[avatar\B004.blp]],   -- chan dung Thanh Long
+    modCut = 0.50,
+    desc    = "Tu chinh Chan Phep / Day Da chi con cat MOT NUA.",
+    desc_en = "Spell Ward / Thick Hide traits cut only HALF as much." },
 }
 
 
