@@ -256,3 +256,58 @@ không phải "bảng bé" — là **mật độ sai**.
 | Nút thiếu tiền | **Mờ đi, không ẩn.** Ẩn là giấu mất giá, mà giá chính là thứ cần để biết phải để dành bao nhiêu |
 | Vạch kẻ | Kẻ xen kẽ, và **chỉ kẻ dòng có nội dung**. Tắt bằng `CFG.PANEL_GRID` |
 | Chữ | Mọi frame chữ **đặt kích thước và canh lề**. Không đặt thì Warcraft căn giữa quanh điểm neo và chữ dài tràn sang cột bên |
+
+## Multiboard — bốn thứ không nằm trên thanh tài nguyên *(2026-09-20)*
+
+> **Code:** [11_board.lua](../../src/4_ui/11_board.lua) ·
+> **Khoá CFG:** `BOARD_SHOW` `BOARD_TICK`
+
+Map có **bốn** đồng tiền, mà thanh tài nguyên của Warcraft chỉ có **hai** ô:
+
+| Đồng tiền | Trước đây nhìn thấy ở đâu |
+|---|---|
+| Vàng · Gỗ | thanh tài nguyên — **luôn thấy** |
+| **Linh Khí** | chỉ trong bảng `ESC` |
+| **Đá Huyền Thiết** | chỉ trong bảng `ESC` |
+| **Lượt Cơ Duyên** | chỉ trong chat — trôi mất |
+
+**Hai trong bốn đồng tiền vô hình**, và một trong hai là **Linh Khí** — thứ mua
+Tu Vi, tức trục tiến trình chính. Câu *"đủ 500 chưa?"* là câu người chơi hỏi liên
+tục, mà phải bấm `ESC` mới trả lời được.
+
+```
+                 Đợt 47 / 100
+ Người chơi   Cảnh giới    Linh Khí   Đá   Quay
+ Player1      Hoá Thần        1.240   37      2
+ Player2      Kim Đan           820   12      0
+ Player3      Nguyên Anh         95   51      1
+```
+
+**Vì sao multiboard chứ không phải một khung tự vẽ.** Đây là thứ duy nhất **luôn
+hiện mà không cần `BlzFrame`**: UI gốc của Warcraft, chắc chắn có trên 1.31.1,
+người chơi thu nhỏ được, và nó không đâm với bốn khung tự vẽ của map *(chúng đều
+neo giữa màn hình)*.
+
+**Mỗi hàng là một người chơi, không phải chỉ mình.** Đó là chỗ biến nó từ một cái
+HUD thành một **công cụ co-op**: nhìn một cái biết ai sắp đột phá, ai đang nghèo,
+ai còn lượt quay chưa tiêu. Map trước đó không có một chỗ nào thấy được tình
+trạng đồng đội.
+
+### Ba điều kỹ thuật
+
+**1. Nội dung multiboard là trạng thái TOÀN CỤC.** Mọi máy phải ghi cùng một thứ
+— tuyệt đối không ghi trong nhánh `GetLocalPlayer()`
+([ADR 0012](../05-quyet-dinh/0012-mot-kenh-dong-bo-duy-nhat.md)). Hàm vẽ chạy từ
+một đồng hồ chung nên mỗi máy tự chạy cùng số lần.
+
+**2. `MultiboardReleaseItem` không được quên.** Thiếu nó thì **mỗi lần vẽ lại rò
+rỉ một handle** — mà ta vẽ mỗi `0.5` giây, tức ~7 200 handle một ván. Cả ba việc
+*(lấy item · đặt chữ · giải phóng)* gom vào một hàm `put()` để không ai quên vế
+thứ ba.
+
+**3. Chưa chọn hero thì để TRỐNG, không ghi `0`.** Số `0` đọc ra là *"có mà
+hết"*, còn trống đọc ra là *"chưa bắt đầu"* — hai thứ khác nhau, và người cùng
+đội cần phân biệt được.
+
+Nhịp vẽ `0.5` giây: Linh Khí nhảy mỗi con quái chết *(50 lần một wave)*, vẽ lại
+theo từng lần là thừa — một đồng hồ chung rẻ hơn và không ai nhìn ra khác biệt.

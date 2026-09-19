@@ -155,6 +155,7 @@ local function bootstrap()
   API.startCamera()         -- lenh -zoom
   API.startWing()           -- canh theo moc canh gioi
   API.startQuest()          -- trang huong dan phim tat o F9
+  API.startBoard()          -- multiboard: Linh Khi, Da, luot quay
   API.startSkillPicking()
   API.startPicking()
   API.trace("startPicking: tra ve")

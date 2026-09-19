@@ -108,6 +108,15 @@ local function groups()
         "chu tren nut se nuot cu bam -- bam dung chu thi khong an" },
     }},
 
+    { name = "Multiboard (Linh Khi, Da, luot quay)", entries = {
+      { "CreateMultiboard", _G["CreateMultiboard"],
+        "Linh Khi va Da chi doc duoc khi bam ESC" },
+      { "MultiboardSetItemValue", _G["MultiboardSetItemValue"], "" },
+      { "MultiboardReleaseItem", _G["MultiboardReleaseItem"],
+        "thieu thi moi lan ve lai ro ri mot handle -- ma ta ve moi 0.5s" },
+      { "MultiboardSetTitleText", _G["MultiboardSetTitleText"], "" },
+    }},
+
     { name = "Chi so & ten unit", entries = {
       { "BlzSetHeroProperName",     _G["BlzSetHeroProperName"],
         "dong 1 cua bang hero -- ten nhan vat" },

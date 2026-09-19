@@ -857,6 +857,25 @@ CFG.HERO_SPAWN_OFFSET = 500.0
 -- giay, nen mat gan tron mot wave), du ngan de khong ai bo game. Song
 -- lai o NHA CHINH chu khong o cho vua chet -- cho vua chet la cho vua
 -- thua, va doan duong quay lai chinh la phan gia phai tra.
+-- ---------- Multiboard ----------
+--
+-- Map co BON dong tien, ma thanh tai nguyen cua Warcraft chi co HAI o:
+-- Vang va Go luon thay, con LINH KHI va DA chi doc duoc khi bam ESC.
+-- Ma Linh Khi la thu mua Tu Vi -- truc tien trinh chinh -- nen cau
+-- "du 500 chua?" la cau nguoi choi hoi lien tuc.
+--
+-- Multiboard la thu duy nhat LUON HIEN ma khong can BlzFrame. Moi hang
+-- la mot nguoi choi, nen no vua la HUD vua la cong cu co-op: nhin mot
+-- cai biet ai sap dot pha, ai con luot quay chua tieu.
+--
+-- false de tat han. Xem 4_ui/11_board.lua.
+CFG.BOARD_SHOW = true
+
+-- Nhip ve lai. 0.5 giay: Linh Khi nhay moi con quai chet (50 lan mot
+-- wave), ve lai theo tung lan la thua -- mot dong ho chung re hon va
+-- khong ai nhin ra khac biet.
+CFG.BOARD_TICK = 0.5
+
 CFG.HERO_REVIVE_SECONDS = 30.0
 
 -- Bang tong ket dung tren man hinh bao lau truoc khi hop thoai ket qua
