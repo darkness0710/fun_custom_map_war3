@@ -41,7 +41,9 @@ truoc. Cung mot cai bay ma build.py da canh bao.
 """
 
 import argparse
+import io
 import os
+import re
 import shutil
 import struct
 import sys
@@ -277,10 +279,104 @@ def cmd_rm(map_dir, name, dry):
           " World Editor luu sau.")
 
 
+def lua_ident(name):
+    """Ten vung -> ten bien. World Editor thay moi ky tu khong phai chu
+    so bang gach duoi: "Region 004 Copy" -> Region_004_Copy."""
+    return re.sub(r"[^0-9A-Za-z]", "_", name)
+
+
+def cmd_sync(map_dir, dry):
+    """Sinh lai CreateRegions() trong war3map.lua tu war3map.w3r.
+
+    HAI FILE PHAI KHOP, va khong cai nao tu bat duoc cai kia:
+
+        war3map.w3r    du lieu vung -- cai World Editor hien ra
+        war3map.lua    CreateRegions() -- cai TAO RA bien gg_rct_* luc chay
+
+    Doi ten trong .w3r ma khong doi trong .lua thi bien van mang ten cu,
+    va CFG tra ra nil -- vung "khong ton tai" trong khi World Editor van
+    hien no ra. Khong mot dong loi nao.
+
+    World Editor tu sinh lai ham nay moi lan Save, nen lech chi xay ra
+    khi sua .w3r bang cong cu ngoai (chinh la lenh rename o duoi).
+    """
+    lua = os.path.join(map_dir, "war3map.lua")
+    if not os.path.isfile(lua):
+        die("khong thay war3map.lua")
+    ver, regs = read_regions(os.path.join(map_dir, "war3map.w3r"))
+
+    body = ["function CreateRegions()", "    local we"]
+    for g in regs:
+        body.append("    gg_rct_%s = Rect(%.1f, %.1f, %.1f, %.1f)"
+                    % (lua_ident(g["name"]), g["l"], g["b"], g["r"], g["t"]))
+    body.append("end")
+    new = chr(10).join(body)
+
+    src = io.open(lua, encoding="utf-8").read()
+    m = re.search(r"function CreateRegions\(\).*?" + chr(10) + "end", src, re.S)
+    if m is None:
+        die("khong thay function CreateRegions() trong war3map.lua")
+    if m.group(0) == new:
+        print("   war3map.lua da khop -- khong can sua")
+        return 0
+
+    print("   CreateRegions(): %d vung" % len(regs))
+    for g in regs:
+        print("      gg_rct_%s" % lua_ident(g["name"]))
+    if dry:
+        print()
+        print("[dry] khong ghi gi.")
+        return 0
+    io.open(lua, "w", encoding="utf-8", newline=chr(10)).write(
+        src[:m.start()] + new + src[m.end():])
+    return 0
+
+
+def cmd_rename(map_dir, pairs, dry):
+    """Doi ten vung. Ten la thu DUY NHAT noi Lua voi World Editor --
+    bien toan cuc la gg_rct_<Ten> -- nen doi o day thi phai doi ca ben
+    CFG. Khong co cai nao tu bat duoc cai kia, va sai thi vung tra ve
+    nil lang le.
+
+    Da kiem: war3map.wtg va war3map.wct khong nhac ten vung nao, nen
+    doi ten khong lam hong trigger cua World Editor."""
+    path = os.path.join(map_dir, "war3map.w3r")
+    ver, regs = read_regions(path)
+    have = {r["name"]: r for r in regs}
+
+    plan, bad = [], []
+    for old, new in pairs:
+        if old not in have:
+            bad.append("khong co vung ten %r" % old)
+        elif new in have and new != old:
+            bad.append("da co vung ten %r roi" % new)
+        else:
+            plan.append((old, new))
+    if bad:
+        for b in bad:
+            print("[loi] " + b)
+        return 1
+
+    for old, new in plan:
+        print("   %-18s -> %s" % (old, new))
+        have[old]["name"] = new
+
+    if dry:
+        print()
+        print("[dry] khong ghi gi.")
+        return 0
+    write_regions(path, ver, regs)
+    # NUA VIEC CON LAI. Doi ten trong .w3r ma quen .lua thi bien van
+    # mang ten cu va vung tra ra nil -- da dinh mot lan.
+    return cmd_sync(map_dir, dry)
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("lenh", choices=["list", "gen", "rm"])
+    ap.add_argument("lenh", choices=["list", "gen", "rm", "rename", "sync"])
     ap.add_argument("--ten", help="ten vung can xoa (dung voi lenh rm)")
+    ap.add_argument("--doi", action="append", metavar="CU=MOI",
+                    help="doi ten vung; lap lai duoc nhieu lan")
     ap.add_argument("--map")
     ap.add_argument("--dry", action="store_true")
     a = ap.parse_args()
@@ -288,6 +384,18 @@ def main():
     map_dir = find_map(a.map)
     if a.lenh == "list":
         cmd_list(map_dir)
+    elif a.lenh == "sync":
+        raise SystemExit(cmd_sync(map_dir, a.dry))
+    elif a.lenh == "rename":
+        if not a.doi:
+            raise SystemExit("[loi] lenh rename can --doi 'Ten Cu=TenMoi'")
+        pairs = []
+        for it in a.doi:
+            if "=" not in it:
+                raise SystemExit("[loi] --doi phai dang 'Ten Cu=TenMoi': %r" % it)
+            old, new = it.split("=", 1)
+            pairs.append((old, new))
+        raise SystemExit(cmd_rename(map_dir, pairs, a.dry))
     elif a.lenh == "rm":
         if not a.ten:
             raise SystemExit("[loi] lenh rm can --ten <TenVung>")

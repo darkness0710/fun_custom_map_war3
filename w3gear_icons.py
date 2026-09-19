@@ -31,6 +31,14 @@ import w3blp
 
 MAP = "test2.w3x"
 SRC = "docs/01-tmp"
+
+# Anh nguon da duoc don vao docs/01-tmp/gear/<nhom>/. Giu SRC tro vao
+# 01-tmp de o mau (ui/, avatar/) van tim duoc, va them mot muc cho nhom
+# da don.
+#
+# Dat thanh HANG SO chu khong noi chuoi tai cho: doi bo cuc thu muc lan
+# sau thi sua MOT dong, khong phai di lung bon cho goi glob.
+ART = os.path.join(SRC, "gear")
 # Ban nguon cua icon trang bi, tach khoi thu muc map.
 #
 # Truoc day la "docs/01-tmp/convert": mot dong 160 file phang, ten theo
@@ -91,7 +99,7 @@ def hero_icons(entries, have, flag):
     thu tu, vi bang hero co the doi thu tu ma ma thi khong.
     """
     made = 0
-    for png in sorted(glob.glob(os.path.join(SRC, "hero", "*.png"))):
+    for png in sorted(glob.glob(os.path.join(ART, "hero", "*.png"))):
         uid = os.path.splitext(os.path.basename(png))[0]
         rel = "hero\%s.blp" % uid
         out = os.path.join(MAP, rel.replace("\\", os.sep))
@@ -136,7 +144,7 @@ def realm_icons(entries, have, flag):
     icon 65 px: dung 128 thi mo nhin ra ngay.
     """
     made = 0
-    for png in sorted(glob.glob(os.path.join(SRC, "realm", "*.png"))):
+    for png in sorted(glob.glob(os.path.join(ART, "realm", "*.png"))):
         r = realm_of(png)
         if r is None:
             print("  bo qua (ten khong bat dau bang so): %s" % png)
@@ -160,7 +168,7 @@ def main():
     made, added = 0, 0
     os.makedirs(KEEP, exist_ok=True)
     for folder, key in sorted(SLOT.items(), key=lambda kv: kv[1]):
-        for png in sorted(glob.glob(os.path.join(SRC, folder, "*.png"))):
+        for png in sorted(glob.glob(os.path.join(ART, folder, "*.png"))):
             r = realm_of(png)
             if r is None:
                 print("  [bo qua] %s -- ten khong bat dau bang so canh gioi" % png)
