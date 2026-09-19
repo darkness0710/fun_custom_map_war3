@@ -1,5 +1,36 @@
 # Hệ thống: Boss cuối cảnh giới
 
+> ## Phép đo bỏ sót các lớp nhân sát thương — vá 2026-09-19
+>
+> `measureParty()` chỉ lấy `(DMG_BASE + chỉ số)`, trong khi **đòn đánh thật** còn
+> nhân thêm `%Kiếm` và Pháp Khí **Hoả Vũ** — `onDamaged()` áp cả hai.
+>
+> Hệ quả ngược đời: **càng mua Trang Bị thì boss càng dễ.** Ước lượng đứng yên
+> trong khi sản lượng thật leo lên, nên máu boss hụt lại đúng bằng phần đó. Không
+> ai thấy được, vì boss vẫn "có máu theo đội" — chỉ là sai hệ số.
+>
+> Đã vá: nhân `(1 + gearDmgPct + relicVal)` vào `hit`, đúng thứ tự `onDamaged()`
+> dùng.
+>
+> **Và bị động cộng % mỗi đòn giờ tính riêng** khỏi `BOSS_SKILL_SHARE`.
+> `BOSS_SKILL_SHARE` là ước lượng cho phần **chủ động** (bấm nút); Thiêu Thiên
+> của Hvwd thì **đọc được** từ bậc kỹ năng, không phải đoán. Gộp vào một hằng số
+> chung thì Hart và Hvwd phải dùng chung một con số mà sản lượng thật khác nhau.
+>
+> `CFG.BOSS_DPS_PASSIVE_FX = { "burn" }` — **không** có `cleave`: Chém Lan văng
+> sang con *bên cạnh*, mà boss đứng một mình nên nó cộng `0`. Gộp vào là boss
+> thành quá dày máu cho Hart.
+>
+> Đo được trước khi vá — Hvwd một mình, cảnh giới 20, **không Trang Bị**:
+>
+> ```
+> boss: r16 Hblm -- 1 hero, dps 20456 -> mau 818244
+> boss: r16 CHET sau 30.0s (thiet ke 40s) -- lech -25%
+> ```
+>
+> Sản lượng thật gấp `40/30 = 1.33` lần ước lượng — khớp đúng phần Thiêu Thiên
+> (`+30%` mỗi đòn) mà phép đo bỏ sót.
+
 > ## Viết lại toàn bộ — 2026-09-17
 >
 > **Boss là hero, không bay, và không lấy chỉ số từ đường cong quái.**

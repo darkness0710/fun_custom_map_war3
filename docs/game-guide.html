@@ -1,0 +1,1104 @@
+<title>Thiên Thư Darkness</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400;0,600;0,700;1,400&family=Be+Vietnam+Pro:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+/* ============================================================
+   Thiên Thư Darkness — bảng tra cứu hệ thống
+   Bảng màu: chu sa (朱砂) trên nền thanh từ (青瓷)
+   ============================================================ */
+
+:root {
+  /* Nền & mực */
+  --bg:        #E6E9E3;
+  --surface:   #F3F5F0;
+  --surface-2: #DCE1D8;
+  --line:      #C4CBBF;
+  --line-soft: #D6DCD1;
+  --ink:       #191D1A;
+  --ink-2:     #576055;
+  --ink-3:     #7C857A;
+
+  /* Nhấn */
+  --cinnabar:  #AF3325;
+  --cinnabar-w:#F2DCD8;
+  --jade:      #33705C;
+  --gold:      #8C6620;
+
+  /* Bốn cõi */
+  --w1: #6E7A6B;   /* Phàm  — đá rêu   */
+  --w2: #6C4B86;   /* Yêu   — tử vụ    */
+  --w3: #2F7E86;   /* Tiên  — thanh lam*/
+  --w4: #9C7620;   /* Thần  — kim sa   */
+
+  --radius: 3px;
+  --maxw: 1140px;
+
+  --f-display: "Noto Serif", Georgia, "Times New Roman", serif;
+  --f-body: "Be Vietnam Pro", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg:        #12150F;
+    --surface:   #1A1E18;
+    --surface-2: #232821;
+    --line:      #333A31;
+    --line-soft: #272D26;
+    --ink:       #E4E8DF;
+    --ink-2:     #98A294;
+    --ink-3:     #727C6F;
+
+    --cinnabar:  #DE6C59;
+    --cinnabar-w:#3A1D18;
+    --jade:      #6BBB9D;
+    --gold:      #CFA452;
+
+    --w1: #8D9A89;
+    --w2: #A17FBB;
+    --w3: #55AFB8;
+    --w4: #CCA250;
+  }
+}
+:root[data-theme="dark"] {
+  --bg:        #12150F;
+  --surface:   #1A1E18;
+  --surface-2: #232821;
+  --line:      #333A31;
+  --line-soft: #272D26;
+  --ink:       #E4E8DF;
+  --ink-2:     #98A294;
+  --ink-3:     #727C6F;
+
+  --cinnabar:  #DE6C59;
+  --cinnabar-w:#3A1D18;
+  --jade:      #6BBB9D;
+  --gold:      #CFA452;
+
+  --w1: #8D9A89;
+  --w2: #A17FBB;
+  --w3: #55AFB8;
+  --w4: #CCA250;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--f-body);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 0;
+}
+
+/* ---------- Bìa ---------- */
+
+.cover {
+  border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(180deg, transparent 0%, color-mix(in srgb, var(--surface) 60%, transparent) 100%);
+}
+.cover-in {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 56px 36px;
+}
+.eyebrow {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cinnabar);
+  margin: 0 0 14px;
+}
+h1 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: clamp(38px, 7vw, 62px);
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+  margin: 0 0 16px;
+  text-wrap: balance;
+}
+h1 .sub {
+  display: block;
+  font-size: clamp(15px, 2.2vw, 19px);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--ink-2);
+  letter-spacing: 0;
+  margin-top: 10px;
+}
+.lede {
+  max-width: 62ch;
+  color: var(--ink-2);
+  font-size: 16px;
+  margin: 0 0 28px;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+}
+.fact {
+  background: var(--surface);
+  padding: 14px 16px;
+}
+.fact b {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 22px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.fact span {
+  display: block;
+  font-size: 11.5px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-top: 3px;
+}
+
+/* ---------- Bố cục hai cột ---------- */
+
+.body-grid {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 0 72px;
+  display: grid;
+  grid-template-columns: 178px minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+@media (max-width: 860px) {
+  .body-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  nav.toc { display: none; }
+}
+
+nav.toc {
+  position: sticky;
+  top: calc(env(safe-area-inset-top, 0px) + 28px);
+  padding-top: 40px;
+  font-size: 13.5px;
+}
+nav.toc .toc-h {
+  font-family: var(--f-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 10px;
+}
+nav.toc a {
+  display: block;
+  color: var(--ink-2);
+  text-decoration: none;
+  padding: 4px 0 4px 11px;
+  border-left: 2px solid transparent;
+  transition: color .15s, border-color .15s;
+}
+nav.toc a:hover { color: var(--ink); }
+nav.toc a.on { color: var(--cinnabar); border-left-color: var(--cinnabar); font-weight: 600; }
+nav.toc a:focus-visible { outline: 2px solid var(--cinnabar); outline-offset: 2px; }
+
+/* ---------- Mục ---------- */
+
+section { padding-top: 56px; scroll-margin-top: 24px; }
+
+h2 {
+  font-family: var(--f-display);
+  font-size: clamp(25px, 3.6vw, 32px);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin: 0 0 6px;
+  text-wrap: balance;
+}
+h2 .num {
+  font-family: var(--f-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--cinnabar);
+  letter-spacing: 0.1em;
+  display: block;
+  margin-bottom: 8px;
+}
+h3 {
+  font-family: var(--f-display);
+  font-size: 18.5px;
+  font-weight: 600;
+  margin: 34px 0 10px;
+}
+h4 {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin: 26px 0 10px;
+}
+p { margin: 0 0 14px; max-width: 68ch; }
+.dek { color: var(--ink-2); max-width: 66ch; margin-bottom: 22px; }
+a { color: var(--cinnabar); }
+
+/* ---------- Bảng ---------- */
+
+.tw { overflow-x: auto; margin: 0 0 20px; border: 1px solid var(--line); }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; background: var(--surface); }
+th, td { text-align: left; padding: 9px 13px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+thead th {
+  background: var(--surface-2);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  white-space: nowrap;
+  border-bottom: 1px solid var(--line);
+}
+tbody tr:last-child td { border-bottom: none; }
+td.n, th.n { font-family: var(--f-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+td.name { font-weight: 600; white-space: nowrap; }
+caption {
+  caption-side: bottom;
+  text-align: left;
+  font-size: 12px;
+  color: var(--ink-3);
+  padding: 9px 13px;
+  background: var(--surface);
+  border-top: 1px solid var(--line-soft);
+}
+
+/* ---------- Thang cảnh giới ---------- */
+
+.ladder { border: 1px solid var(--line); background: var(--surface); margin-bottom: 18px; }
+.rung {
+  display: grid;
+  grid-template-columns: 52px 150px 1fr 190px;
+  gap: 0;
+  border-bottom: 1px solid var(--line-soft);
+  align-items: center;
+}
+.rung:last-child { border-bottom: none; }
+.rung.band-start { border-top: 1px solid var(--line); }
+.rung > * { padding: 7px 12px; }
+
+.rg-n {
+  font-family: var(--f-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-3);
+  border-left: 4px solid var(--wc);
+  background: color-mix(in srgb, var(--wc) 8%, transparent);
+}
+.rg-name { font-weight: 600; font-size: 14px; }
+.rg-name em {
+  display: block;
+  font-family: var(--f-mono);
+  font-style: normal;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--wc);
+  font-weight: 500;
+}
+.rg-boss { font-size: 13px; color: var(--ink-2); }
+.rg-boss b { color: var(--ink); font-weight: 600; }
+.rg-mark { font-size: 12px; }
+
+.mech {
+  display: inline-block;
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  padding: 1px 5px;
+  border: 1px solid var(--line);
+  color: var(--ink-3);
+  margin: 2px 3px 0 0;
+  white-space: nowrap;
+}
+.mark {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 1px 7px;
+  margin: 2px 4px 2px 0;
+  white-space: nowrap;
+  border: 1px solid currentColor;
+}
+.mark.beast { color: var(--cinnabar); background: var(--cinnabar-w); }
+.mark.wing  { color: var(--jade); }
+.mark.world { color: var(--gold); }
+
+@media (max-width: 720px) {
+  .rung { grid-template-columns: 46px minmax(0, 1fr); }
+  .rg-boss, .rg-mark { grid-column: 2; padding-top: 0; }
+  .rg-n { grid-row: span 3; align-self: stretch; display: flex; align-items: center; }
+}
+
+/* ---------- Thẻ ---------- */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin-bottom: 20px;
+}
+.card { background: var(--surface); padding: 16px 17px; }
+.card.dim { background: var(--surface-2); }
+.card .tag {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--cinnabar);
+  display: block;
+  margin-bottom: 7px;
+}
+.card.dim .tag { color: var(--ink-3); }
+.card h5 {
+  font-family: var(--f-display);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 3px;
+}
+.card .role {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-bottom: 11px;
+  letter-spacing: 0.02em;
+}
+.card ul { margin: 0; padding-left: 17px; font-size: 13.5px; color: var(--ink-2); }
+.card ul li { margin-bottom: 3px; }
+.card ul li.weak { color: var(--cinnabar); }
+.card p { font-size: 13.5px; color: var(--ink-2); margin-bottom: 0; }
+
+/* ---------- Ghi chú đóng khung ---------- */
+
+.note {
+  border-left: 3px solid var(--cinnabar);
+  background: var(--surface);
+  padding: 13px 16px;
+  margin: 0 0 20px;
+  font-size: 13.5px;
+  color: var(--ink-2);
+}
+.note b { color: var(--ink); }
+.note p { margin-bottom: 8px; max-width: 64ch; }
+.note p:last-child { margin-bottom: 0; }
+
+.formula {
+  font-family: var(--f-mono);
+  font-size: 13px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  padding: 11px 14px;
+  margin: 0 0 18px;
+  overflow-x: auto;
+  white-space: pre;
+  color: var(--ink);
+}
+
+/* ---------- Dòng tiền tệ ---------- */
+
+.coins {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  margin-bottom: 22px;
+}
+.coin { background: var(--surface); padding: 14px 16px; }
+.coin .cn { font-weight: 700; font-size: 15px; margin-bottom: 2px; }
+.coin .cs { font-family: var(--f-mono); font-size: 11.5px; color: var(--ink-3); letter-spacing: .04em; }
+.coin .cd { font-size: 13px; color: var(--ink-2); margin-top: 7px; }
+
+/* ---------- Chân trang ---------- */
+
+footer {
+  border-top: 1px solid var(--line);
+  margin-top: 40px;
+}
+.foot-in {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding-inline: 20px;
+  padding-block: 24px 40px;
+  font-size: 12.5px;
+  color: var(--ink-3);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  justify-content: space-between;
+}
+.foot-in code { font-family: var(--f-mono); font-size: 12px; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+}
+html { scroll-behavior: smooth; }
+</style>
+
+<header class="cover">
+  <div class="cover-in">
+    <p class="eyebrow">Warcraft III 1.31.1 · Bản đồ thủ trận tu tiên</p>
+    <h1>Thiên Thư Darkness
+      <span class="sub">Toàn bộ hệ thống của bản đồ, đọc từ mã nguồn <code>src/</code></span>
+    </h1>
+    <p class="lede">Ba người chơi giữ một Nhà Chính đi qua hai mươi cảnh giới. Mỗi cảnh giới là bốn đợt quái và một boss. Sức mạnh đến từ sáu hệ tách rời nhau, mỗi hệ tiêu một loại tiền riêng — không hệ nào mua được bằng tiền của hệ khác.</p>
+
+    <div class="facts">
+      <div class="fact"><b>3</b><span>Người chơi</span></div>
+      <div class="fact"><b>20</b><span>Cảnh giới</span></div>
+      <div class="fact"><b>100</b><span>Chặng</span></div>
+      <div class="fact"><b>4</b><span>Loại tiền</span></div>
+      <div class="fact"><b>4</b><span>Thần thú</span></div>
+      <div class="fact"><b>8</b><span>Ô trang bị</span></div>
+    </div>
+  </div>
+</header>
+
+<div class="body-grid">
+
+  <nav class="toc" aria-label="Mục lục">
+    <div class="toc-h">Mục lục</div>
+    <a href="#hero">Hero</a>
+    <a href="#kynang">Kỹ năng</a>
+    <a href="#tuvi">Tu Vi</a>
+    <a href="#thang">Thang cảnh giới</a>
+    <a href="#trangbi">Trang Bị</a>
+    <a href="#thanthu">Thần Thú</a>
+    <a href="#phapkhi">Pháp Khí</a>
+    <a href="#coduyen">Quay thưởng</a>
+    <a href="#canh">Cánh</a>
+    <a href="#kinhte">Kinh tế & Shop</a>
+    <a href="#chientruong">Chiến trường</a>
+  </nav>
+
+  <main>
+
+  <!-- ====================== HERO ====================== -->
+  <section id="hero">
+    <h2><span class="num">I</span>Hero</h2>
+    <p class="dek">Mỗi người chọn một hero, và <b>không ai được trùng</b>. Hero trong bản đồ này <b>không lên cấp</b> — kinh nghiệm bị khóa hoàn toàn. Mọi sức mạnh về sau đến từ Tu Vi, Trang Bị, Kỹ năng và Cơ Duyên, nên con hero bạn chọn quyết định <em>cách đánh</em> chứ không quyết định <em>đánh mạnh bao nhiêu</em>.</p>
+
+    <div class="cards">
+      <div class="card">
+        <span class="tag">H001 · đã mở</span>
+        <h5>Hart</h5>
+        <div class="role">Chiến binh — chịu đòn</div>
+        <ul>
+          <li>Dọn quái đông</li>
+          <li>Chịu đòn khỏe</li>
+          <li class="weak">Yếu trước boss</li>
+        </ul>
+      </div>
+      <div class="card">
+        <span class="tag">H002 · đã mở</span>
+        <h5>Hvwd</h5>
+        <div class="role">Xạ thủ — sát thương chính</div>
+        <ul>
+          <li>Sát thương cao nhất</li>
+          <li>Đánh từ xa</li>
+          <li class="weak">Rất mỏng</li>
+        </ul>
+      </div>
+      <div class="card dim">
+        <span class="tag">H003 · đang khóa</span>
+        <h5>Hkal</h5>
+        <div class="role">Pháp sư — hỗ trợ</div>
+        <ul>
+          <li>Hồi máu, tiếp sức</li>
+          <li>Làm chậm quái</li>
+          <li class="weak">Một mình thì yếu</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="note">
+      <p><b>Hkal khóa chứ không xóa.</b> Model, icon và mô tả đã làm xong đều đúng; chỉ cây kỹ năng là chưa thiết kế. Khi cây đó xong thì mở một dòng <code>locked</code> trong <code>CFG.HEROES</code> là con thứ ba vào sân.</p>
+    </div>
+
+    <h3>Quà khởi đầu</h3>
+    <p>Phát <b>sau khi chọn hero xong</b>, không phải lúc vào bản đồ — quà là của hero, mà lúc vào bản đồ hero chưa tồn tại nên chưa có túi nào để bỏ vào.</p>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Món</th><th class="n">Số lượng</th><th>Ghi chú</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Lọ Hồi Máu</td><td class="n">10</td><td>Gọn trong đúng một ô túi</td></tr>
+          <tr><td class="name">Lọ Hồi Mana</td><td class="n">10</td><td>Gọn trong đúng một ô túi</td></tr>
+          <tr><td class="name">Tháp Canh</td><td class="n">3</td><td>Tháp chịu đòn thay hero</td></tr>
+          <tr><td class="name">Vàng</td><td class="n">50</td><td>Đủ mua 5 viên Đá Huyền Thiết</td></tr>
+          <tr><td class="name">Gỗ</td><td class="n">1</td><td>Đủ mở khóa kỹ năng đầu tiên</td></tr>
+        </tbody>
+        <caption>Túi hero có 6 ô. Mua lúc đầy túi thì bị chặn trước và hoàn tiền, không để món rơi xuống đất.</caption>
+      </table>
+    </div>
+  </section>
+
+  <!-- ====================== KỸ NĂNG ====================== -->
+  <section id="kynang">
+    <h2><span class="num">II</span>Kỹ năng</h2>
+    <p class="dek">Mỗi hero có <b>bảy kỹ năng</b>, mở khóa và nâng cấp bằng <b>Gỗ</b> — loại tiền chỉ rơi ra từ tinh anh và boss. Giá phẳng: <b>1 Gỗ mở khóa, 1 Gỗ mỗi bậc</b>, tối đa bậc 10. Thứ tự mở tùy bạn.</p>
+
+    <div class="tw">
+      <table>
+        <caption>Cả ván kiếm khoảng 260 Gỗ; mở và lên đỉnh cả bảy kỹ năng tốn 70. Phần dư dành cho Pháp Khí.</caption>
+        <thead><tr><th>Trục</th><th class="n">Mỗi bậc</th><th class="n">Bậc 1 → 10</th><th>Áp cho</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Sát thương</td><td class="n">×1,0322</td><td class="n">×1,33</td><td>Kỹ năng chủ động</td></tr>
+          <tr><td class="name">Hồi chiêu</td><td class="n">×0,9560</td><td class="n">×0,667</td><td>Tần suất dùng ×1,5</td></tr>
+          <tr><td class="name">Bị động</td><td class="n">×1,0801</td><td class="n">×2,00</td><td>% và chỉ số bị động</td></tr>
+          <tr><td class="name">Mana</td><td class="n">×1,05</td><td class="n">×1,55</td><td>Giá mỗi lần thi triển</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Hart — cây chiến binh</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Kỹ năng</th><th>Loại</th><th class="n">Phím</th><th class="n">Hệ số</th><th class="n">Hồi chiêu</th><th class="n">Mana</th><th>Tác dụng</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Chém Lăn</td><td>Bị động</td><td class="n">—</td><td class="n">20%</td><td class="n">—</td><td class="n">—</td><td>Đòn đánh văng sát thương sang mục tiêu bên cạnh</td></tr>
+          <tr><td class="name">Chưởng</td><td>Chủ động</td><td class="n">Q</td><td class="n">×1,32</td><td class="n">8,0 s</td><td class="n">50</td><td>Sát thương trên một đường thẳng dài 700</td></tr>
+          <tr><td class="name">Hộ Thể</td><td>Chủ động</td><td class="n">W</td><td class="n">×2,20</td><td class="n">10,0 s</td><td class="n">30</td><td>Hồi máu một cục cho bản thân hoặc đồng đội</td></tr>
+          <tr><td class="name">Hiệu Lệnh</td><td>Hào quang</td><td class="n">—</td><td class="n">*</td><td class="n">—</td><td class="n">—</td><td>Cả đội được tốc đánh và tốc chạy</td></tr>
+          <tr><td class="name">Luyện Thể</td><td>Bị động</td><td class="n">—</td><td class="n">+4</td><td class="n">—</td><td class="n">—</td><td>Cộng cả ba chỉ số, nhân thêm theo bậc Tu Vi</td></tr>
+          <tr><td class="name">Dạ Sát</td><td>Bị động</td><td class="n">—</td><td class="n">*</td><td class="n">—</td><td class="n">—</td><td>Chết thì tự sống lại</td></tr>
+          <tr><td class="name">Bất Hoại</td><td>Chủ động</td><td class="n">E</td><td class="n">*</td><td class="n">60,0 s</td><td class="n">60</td><td>Tăng mạnh giáp trong thời gian ngắn</td></tr>
+        </tbody>
+        <caption>Dấu <b>*</b> — con số nằm trong chính ability ở Object Editor, không do Lua giữ. Hệ số nhân với chỉ số cao nhất của hero.</caption>
+      </table>
+    </div>
+
+    <h3>Hvwd — cây xạ thủ</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Kỹ năng</th><th>Loại</th><th class="n">Phím</th><th class="n">Hệ số</th><th class="n">Hồi chiêu</th><th class="n">Mana</th><th>Tác dụng</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Thiêu Thiên</td><td>Bị động</td><td class="n">E</td><td class="n">30%</td><td class="n">—</td><td class="n">—</td><td>Mũi tên thiêu đốt: cộng thêm sát thương, rải đều trong 3 giây</td></tr>
+          <tr><td class="name">Lôi Vân</td><td>Chủ động</td><td class="n">Q</td><td class="n">×1,10</td><td class="n">9,0 s</td><td class="n">45</td><td>Tia sét nảy qua 4 mục tiêu, mỗi lần nhảy còn 80%</td></tr>
+          <tr><td class="name">Hồi Xuân</td><td>Chủ động</td><td class="n">W</td><td class="n">×2,00</td><td class="n">12,0 s</td><td class="n">40</td><td>Hồi máu rải đều trong thời gian hiệu lực</td></tr>
+          <tr><td class="name">Thần Xạ</td><td>Hào quang</td><td class="n">—</td><td class="n">*</td><td class="n">—</td><td class="n">—</td><td>Cả đội được % sát thương đánh xa</td></tr>
+          <tr><td class="name">Nguyệt Nhận</td><td>Bị động</td><td class="n">—</td><td class="n">*</td><td class="n">—</td><td class="n">—</td><td>Đòn đánh nảy sang mục tiêu bên cạnh, mỗi lần yếu đi</td></tr>
+          <tr><td class="name">Luyện Thể</td><td>Bị động</td><td class="n">—</td><td class="n">+4</td><td class="n">—</td><td class="n">—</td><td>Dùng chung với Hart</td></tr>
+          <tr><td class="name">Dạ Sát</td><td>Bị động</td><td class="n">—</td><td class="n">*</td><td class="n">—</td><td class="n">—</td><td>Dùng chung với Hart</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <p><b>Ai giữ con số.</b> Kỹ năng nào là <em>số phẳng</em> thì Lua giữ và nhân theo chỉ số hero — một con số phẳng đặt cứng trong Object Editor sẽ teo thành không, vì chỉ số hero cuối ván lên tới ba mươi nghìn. Kỹ năng nào vốn đã là <em>phần trăm</em> (Thần Xạ, Nguyệt Nhận) thì để Warcraft giữ, vì phần trăm tự bám theo.</p>
+    </div>
+  </section>
+
+  <!-- ====================== TU VI ====================== -->
+  <section id="tuvi">
+    <h2><span class="num">III</span>Tu Vi</h2>
+    <p class="dek">Hai mươi bậc, trùng tên với hai mươi cảnh giới của phe địch. Mỗi lần đột phá tốn <b>đúng 500 Linh Khí</b> — không bậc nào đắt hơn bậc nào — và cộng thẳng một cục chỉ số vào cả ba Str / Agi / Int.</p>
+
+    <div class="formula">chỉ số cộng thêm ở lần đột phá thứ n  =  50 × 1,30ⁿ⁻¹
+cộng dồn hết 19 bậc                   =  24 199 điểm</div>
+
+    <div class="tw">
+      <table>
+        <caption>Giá phẳng là một giao kèo đơn: dọn sạch một cảnh giới kiếm đúng 500 Linh Khí, và đột phá tốn đúng 500. Không phải tính gì cả — hết cảnh giới thì bấm.</caption>
+        <thead><tr><th class="n">Bậc</th><th>Cảnh giới</th><th class="n">Giá</th><th class="n">Cộng thêm</th><th class="n">Chỉ số cộng dồn</th></tr></thead>
+        <tbody>
+          <tr><td class="n">1 → 2</td><td>Phàm Nhân → Luyện Khí</td><td class="n">500</td><td class="n">+50</td><td class="n">50</td></tr>
+          <tr><td class="n">2 → 3</td><td>Luyện Khí → Trúc Cơ</td><td class="n">500</td><td class="n">+65</td><td class="n">115</td></tr>
+          <tr><td class="n">3 → 4</td><td>Trúc Cơ → Kim Đan</td><td class="n">500</td><td class="n">+85</td><td class="n">199</td></tr>
+          <tr><td class="n">5 → 6</td><td>Nguyên Anh → Hóa Thần</td><td class="n">500</td><td class="n">+143</td><td class="n">452</td></tr>
+          <tr><td class="n">10 → 11</td><td>Độ Kiếp → Chân Tiên</td><td class="n">500</td><td class="n">+530</td><td class="n">2 131</td></tr>
+          <tr><td class="n">15 → 16</td><td>Đại La → Tiên Đế</td><td class="n">500</td><td class="n">+1 969</td><td class="n">8 364</td></tr>
+          <tr><td class="n">19 → 20</td><td>Hỗn Độn Thần → Sáng Thế Thần</td><td class="n">500</td><td class="n">+5 623</td><td class="n">24 199</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="note">
+      <p><b>Tu Vi không phải để vượt lên — nó là để không bị bỏ lại.</b> Máu và sát thương của quái được định nghĩa <em>bằng chính hệ số Tu Vi</em>, nên hai vế triệt tiêu nhau: đột phá đều đặn thì tỉ lệ &ldquo;mấy phát một con&rdquo; giữ nguyên suốt ván.</p>
+      <p>Phần <b>vượt lên</b> thật sự nằm ở Trang Bị, Kỹ năng và Cơ Duyên. Đo ở cảnh giới 16 với một hero: chỉ số thật 30 105 điểm, trong đó Tu Vi đóng góp 511 — <b>1,7%</b>. Đừng đọc nhầm Tu Vi là nguồn sức mạnh; nó là <em>trần</em> cho mọi hệ khác, và là chìa khóa mở Thần Thú, Cánh và Tiến Giải.</p>
+    </div>
+  </section>
+
+  <!-- ====================== THANG CẢNH GIỚI ====================== -->
+  <section id="thang">
+    <h2><span class="num">IV</span>Thang cảnh giới</h2>
+    <p class="dek">Một trục duy nhất buộc mọi hệ lại với nhau. Mỗi cảnh giới là <b>4 đợt quái + 1 boss</b>, tức 5 chặng — cả ván 100 chặng. Bốn tầng cảnh giới trong một cõi tên là <b>Sơ Kỳ · Trung Kỳ · Hậu Kỳ · Viên Mãn</b>. Qua mỗi cõi, model quái đổi hẳn: bạn <em>nhìn</em> ra mình đã đi được bao xa.</p>
+
+    <div class="ladder">
+      <div class="rung band-start" style="--wc: var(--w1)">
+        <div class="rg-n">01</div>
+        <div class="rg-name">Phàm Nhân<em>Cõi Phàm</em></div>
+        <div class="rg-boss"><b>Thi Giải Lão Tổ</b><br><span class="mech">Chấn Địa</span></div>
+        <div class="rg-mark"><span class="mark world">Quái: Footman</span><span class="mark beast">Chu Tước</span></div>
+      </div>
+      <div class="rung" style="--wc: var(--w1)">
+        <div class="rg-n">02</div>
+        <div class="rg-name">Luyện Khí</div>
+        <div class="rg-boss"><b>Đan Khí Chân Nhân</b><br><span class="mech">Chấn Địa</span><span class="mech">Khiên</span></div>
+        <div class="rg-mark"><span class="mark wing">Cánh Lôi Đình</span></div>
+      </div>
+      <div class="rung" style="--wc: var(--w1)">
+        <div class="rg-n">03</div>
+        <div class="rg-name">Trúc Cơ</div>
+        <div class="rg-boss"><b>Trúc Cơ Thạch Linh</b><br><span class="mech">Chấn Địa</span><span class="mech">Phản Đòn</span></div>
+        <div class="rg-mark"></div>
+      </div>
+      <div class="rung" style="--wc: var(--w1)">
+        <div class="rg-n">04</div>
+        <div class="rg-name">Kim Đan</div>
+        <div class="rg-boss"><b>Kim Đan Ma Quân</b><br><span class="mech">Lao</span><span class="mech">Phát Cuồng</span></div>
+        <div class="rg-mark"><span class="mark wing">Cánh U Minh</span></div>
+      </div>
+      <div class="rung" style="--wc: var(--w1)">
+        <div class="rg-n">05</div>
+        <div class="rg-name">Nguyên Anh</div>
+        <div class="rg-boss"><b>Nguyên Anh Quỷ Mẫu</b><br><span class="mech">Hút Máu</span><span class="mech">Triệu Hồi</span></div>
+        <div class="rg-mark"></div>
+      </div>
+
+      <div class="rung band-start" style="--wc: var(--w2)">
+        <div class="rg-n">06</div>
+        <div class="rg-name">Hóa Thần<em>Cõi Yêu</em></div>
+        <div class="rg-boss"><b>Hóa Thần Vô Tướng</b><br><span class="mech">Lao</span><span class="mech">Xé Giáp</span></div>
+        <div class="rg-mark"><span class="mark world">Quái: Ghoul</span><span class="mark beast">Huyền Vũ</span><span class="mark wing">Cánh Thiên Đạo</span></div>
+      </div>
+      <div class="rung" style="--wc: var(--w2)">
+        <div class="rg-n">07</div>
+        <div class="rg-name">Luyện Hư</div>
+        <div class="rg-boss"><b>Luyện Hư Đạo Nhân</b><br><span class="mech">Khiên</span><span class="mech">Triệu Hồi</span></div>
+        <div class="rg-mark"></div>
+      </div>
+      <div class="rung" style="--wc: var(--w2)">
+        <div class="rg-n">08</div>
+        <div class="rg-name">Hợp Thể</div>
+        <div class="rg-boss"><b>Hợp Thể Cuồng Ma</b><br><span class="mech">Chấn Địa</span><span class="mech">Phát Cuồng</span></div>
+        <div class="rg-mark"></div>
+      </div>
+      <div class="rung" style="--wc: var(--w2)">
+        <div class="rg-n">09</div>
+        <div class="rg-name">Đại Thừa</div>
+        <div class="rg-boss"><b>Đại Thừa Tôn Giả</b><br><span class="mech">Triệu Hồi</span><span class="mech">Phản Đòn</span></div>
+        <div class="rg-mark"></div>
+      </div>
+      <div class="rung" style="--wc: var(--w2)">
+        <div class="rg-n">10</div>
+        <div class="rg-name">Độ Kiếp</div>
+        <div class="rg-boss"><b>Độ Kiếp Lôi Chủ</b><br><span class="mech">Chấn Địa</span><span class="mech">Lao</span><span class="mech">Phát Cuồng</span></div>
+        <div class="rg-mark"></div>
+      </div>
+
+      <div class="rung band-start" style="--wc: var(--w3)">
+        <div class="rg-n">11</div>
+        <div class="rg-name">Chân Tiên<em>Cõi Tiên</em></div>
+        <div class="rg-boss"><b>Chân Tiên Kiếm Khách</b><br><span class="mech">Lao</span><span class="mech">Hút Máu</span></div>
+        <div class="rg-mark"><span class="mark world">Quái: Abomination</span><span class="mark beast">Bạch Hổ</span><span class="mark wing">Cánh Băng Nguyệt</span></div>
+      </div>
+      <div class="rung" style="--wc: var(--w3)">
+        <div class="rg-n">12</div>
+        <div class="rg-name">Thiên Tiên</div>
+        <div class="rg-boss"><b>Thiên Tiên Tinh Quân</b><br><span class="mech">Khiên</span><span class="mech">Xé Giáp</span></div>
+        <div class="rg-mark"></div>
+      </div>
+      <div class="rung" style="--wc: var(--w3)">
+        <div class="rg-n">13</div>
+        <div class="rg-name">Kim Tiên</div>
+        <div class="rg-boss"><b>Kim Tiên Bất Hoại</b><br><span class="mech">Phản Đòn</span><span class="mech">Khiên</span></div>
+        <div class="rg-mark"></div>
+      </div>
+      <div class="rung" style="--wc: var(--w3)">
+        <div class="rg-n">14</div>
+        <div class="rg-name">Thái Ất</div>
+        <div class="rg-boss"><b>Thái Ất Cửu Chuyển</b><br><span class="mech">Triệu Hồi</span><span class="mech">Chấn Địa</span></div>
+        <div class="rg-mark"></div>
+      </div>
+      <div class="rung" style="--wc: var(--w3)">
+        <div class="rg-n">15</div>
+        <div class="rg-name">Đại La</div>
+        <div class="rg-boss"><b>Đại La Thiên Ma</b><br><span class="mech">Hút Máu</span><span class="mech">Phát Cuồng</span><span class="mech">Xé Giáp</span></div>
+        <div class="rg-mark"></div>
+      </div>
+
+      <div class="rung band-start" style="--wc: var(--w4)">
+        <div class="rg-n">16</div>
+        <div class="rg-name">Tiên Đế<em>Cõi Thần</em></div>
+        <div class="rg-boss"><b>Tiên Đế Kim Thân</b><br><span class="mech">Chấn Địa</span><span class="mech">Khiên</span><span class="mech">Phát Cuồng</span></div>
+        <div class="rg-mark"><span class="mark world">Quái: Frost Wyrm</span><span class="mark beast">Thanh Long</span><span class="mark wing">Cánh Thánh Quang</span></div>
+      </div>
+      <div class="rung" style="--wc: var(--w4)">
+        <div class="rg-n">17</div>
+        <div class="rg-name">Thánh Nhân</div>
+        <div class="rg-boss"><b>Thánh Nhân Vô Ngã</b><br><span class="mech">Phản Đòn</span><span class="mech">Hút Máu</span></div>
+        <div class="rg-mark"></div>
+      </div>
+      <div class="rung" style="--wc: var(--w4)">
+        <div class="rg-n">18</div>
+        <div class="rg-name">Đạo Tổ</div>
+        <div class="rg-boss"><b>Đạo Tổ Huyền Vi</b><br><span class="mech">Xé Giáp</span><span class="mech">Triệu Hồi</span><span class="mech">Lao</span></div>
+        <div class="rg-mark"></div>
+      </div>
+      <div class="rung" style="--wc: var(--w4)">
+        <div class="rg-n">19</div>
+        <div class="rg-name">Hỗn Độn Thần</div>
+        <div class="rg-boss"><b>Hỗn Độn Thần Ma</b><br><span class="mech">Chấn Địa</span><span class="mech">Phản Đòn</span><span class="mech">Phát Cuồng</span></div>
+        <div class="rg-mark"></div>
+      </div>
+      <div class="rung" style="--wc: var(--w4)">
+        <div class="rg-n">20</div>
+        <div class="rg-name">Sáng Thế Thần</div>
+        <div class="rg-boss"><b>Sáng Thế Thần</b><br><span class="mech">Chấn Địa</span><span class="mech">Lao</span><span class="mech">Xé Giáp</span><span class="mech">Phát Cuồng</span></div>
+        <div class="rg-mark"><span class="mark wing">Cánh Thái Dương</span></div>
+      </div>
+    </div>
+
+    <p class="dek">Ba mốc mở Cánh ở cảnh giới 6, 11 và 16 trùng đúng ranh giới bốn cõi — <b>cố ý</b>: đó cũng là lúc quái đổi model. Chương mới của bản đồ đã có dấu hiệu thị giác sẵn, gắn Cánh vào đó làm nó nặng thêm.</p>
+  </section>
+
+  <!-- ====================== TRANG BỊ ====================== -->
+  <section id="trangbi">
+    <h2><span class="num">V</span>Trang Bị</h2>
+    <p class="dek">Tám ô, mỗi ô đi <b>20 cảnh giới × 5 cấp = 100 bậc</b>. Tiền tệ duy nhất là <b>Đá Huyền Thiết</b>, mua ở shop với giá 10 vàng một viên. Đây là hệ tốn kém nhất bản đồ, và cũng là hệ duy nhất có canh bạc.</p>
+
+    <h3>Tám ô và vai của từng ô</h3>
+    <div class="tw">
+      <table>
+        <caption>Bốn ô <b>cộng điểm</b> leo theo Tu Vi. Bốn ô <b>nhân phần trăm</b> thì phẳng — tuyến tính theo số bậc — vì giá trị của chúng đã tỉ lệ với toàn bộ sức mạnh còn lại, cho leo thêm lần nữa là nhân bình phương.</caption>
+        <thead><tr><th>Ô</th><th>Vai</th><th class="n">Trần ở bậc 100</th><th>Kiểu</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Mũ</td><td>Cộng Int</td><td class="n">~4 726 điểm</td><td>Leo theo Tu Vi</td></tr>
+          <tr><td class="name">Áo Giáp</td><td>Cộng Str</td><td class="n">~4 726 điểm</td><td>Leo theo Tu Vi</td></tr>
+          <tr><td class="name">Giày</td><td>Cộng Agi</td><td class="n">~4 726 điểm</td><td>Leo theo Tu Vi</td></tr>
+          <tr><td class="name">Dây Chuyền</td><td>Chia đều cả ba chỉ số</td><td class="n">~4 726 điểm</td><td>Leo theo Tu Vi</td></tr>
+          <tr><td class="name">Kiếm</td><td>% sát thương gây ra</td><td class="n">+20%</td><td>Phẳng, tuyến tính</td></tr>
+          <tr><td class="name">Khiên</td><td>% giảm sát thương <em>đòn đánh</em></td><td class="n">−25%</td><td>Phẳng, tuyến tính</td></tr>
+          <tr><td class="name">Áo Choàng</td><td>% giảm sát thương <em>phép</em></td><td class="n">−25%</td><td>Phẳng, tuyến tính</td></tr>
+          <tr><td class="name">Nhẫn</td><td>% hút máu theo sát thương gây ra</td><td class="n">+20%</td><td>Phẳng, tuyến tính</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Kiếm ăn vào <b>cả ba đường</b>: đòn thường, sát thương phép và hồi máu. Nhẫn <b>nhân với</b> Kiếm chứ không cộng — Kiếm cộng 20% sát thương, rồi Nhẫn hút 20% của con số <em>đã cộng</em>. Tổng phần giảm sát thương (Khiên cộng bị động Dạ Sát) bị chặn cứng ở <b>40%</b>.</p>
+
+    <h3>Luyện: canh bạc năm cấp</h3>
+    <div class="tw">
+      <table>
+        <caption>Thất bại <b>không mất gì</b> ngoài viên đá — không tụt cấp, không vỡ món. Một lần bấm sẽ luyện liên tiếp tới Hoàn Hảo hoặc tới khi hết đá.</caption>
+        <thead><tr><th class="n">Lần</th><th>Cấp đạt được</th><th class="n">Xác suất</th><th class="n">Đá kỳ vọng</th></tr></thead>
+        <tbody>
+          <tr><td class="n">1</td><td class="name">Sơ Cấp</td><td class="n">100%</td><td class="n">1,0</td></tr>
+          <tr><td class="n">2</td><td class="name">Trung Cấp</td><td class="n">75%</td><td class="n">1,3</td></tr>
+          <tr><td class="n">3</td><td class="name">Cao Cấp</td><td class="n">50%</td><td class="n">2,0</td></tr>
+          <tr><td class="n">4</td><td class="name">Thượng Cấp</td><td class="n">25%</td><td class="n">4,0</td></tr>
+          <tr><td class="n">5</td><td class="name">Hoàn Hảo</td><td class="n">15%</td><td class="n">6,7</td></tr>
+          <tr><td class="n">∑</td><td class="name">Trọn một cảnh giới</td><td class="n">—</td><td class="n">15,0</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Tiến Giải: cánh cửa sang cảnh giới sau</h3>
+    <p>Tới Hoàn Hảo rồi thì không luyện được nữa — phải <b>Tiến Giải</b>. Tốn <b>10 Đá Huyền Thiết</b> và <b>chắc chắn 100%</b>: nó là một cái cửa, không phải canh bạc chồng lên canh bạc. Tiến Giải đưa thẳng tới Sơ Cấp của cảnh giới mới.</p>
+    <div class="note">
+      <p><b>Điều kiện thứ ba là cái trần thật.</b> Tu Vi của bạn phải <em>đã tới</em> cảnh giới đích. Trang bị không bao giờ vượt quá cảnh giới người mang nó — đó là lý do cả hệ này tồn tại được mà không phá vỡ đường cong quái.</p>
+    </div>
+
+    <div class="formula">điểm chỉ số của một ô cộng điểm
+  value(T, L) = 1,5 × [ 5 × (1,30^(T−1) − 1)/0,30  +  L × 1,30^(T−1) ]
+                            T = cảnh giới của món     L = cấp 1..5</div>
+
+    <div class="note">
+      <p><b>Tiền không đủ cho cả tám ô, và đó là điểm.</b> Cả ván một người kiếm khoảng 12 400 vàng, tức 1 240 viên đá. Một ô đi trọn 100 bậc tốn khoảng 471 viên — <b>đủ cho hai tới ba ô</b>. Bảng Trang Bị là một <em>lựa chọn</em>, không phải một thanh tiến độ ai cũng kéo hết.</p>
+    </div>
+  </section>
+
+  <!-- ====================== THẦN THÚ ====================== -->
+  <section id="thanthu">
+    <h2><span class="num">VI</span>Thần Thú</h2>
+    <p class="dek">Bốn phó bản riêng, mỗi con một hang nằm ở hàng cuối bản đồ — càng xa Nhà Chính càng mạnh. Mở khóa theo mốc Tu Vi, nhưng <b>mốc mở luôn sớm hơn lúc đủ sức đánh</b>: cái chặn bạn không phải cái nút, mà là sức mạnh.</p>
+
+    <div class="tw">
+      <table>
+        <caption>Chỉ số thần thú <b>đo lúc bạn bước vào</b>, không phải lúc nó sinh ra. <em>Giây</em> = bao lâu hỏa lực cả đội mới hạ được nó; <em>Đòn</em> = bao nhiêu đòn để hạ một hero đứng yên.</caption>
+        <thead><tr><th>Thần thú</th><th class="n">Mở ở</th><th class="n">Giây</th><th class="n">Đòn</th><th class="n">Lượt quay</th><th>Cơ chế</th><th>Câu hỏi nó đặt ra</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Chu Tước</td><td class="n">Cảnh giới 1</td><td class="n">45</td><td class="n">16</td><td class="n">3</td><td><span class="mech">Lao</span><span class="mech">Phát Cuồng</span></td><td>Phải né, và phải kết liễu nhanh</td></tr>
+          <tr><td class="name">Huyền Vũ</td><td class="n">Cảnh giới 6</td><td class="n">85</td><td class="n">12</td><td class="n">5</td><td><span class="mech">Khiên</span><span class="mech">Phản Đòn</span></td><td>Đánh mạnh hơn là tự giết mình</td></tr>
+          <tr><td class="name">Bạch Hổ</td><td class="n">Cảnh giới 11</td><td class="n">150</td><td class="n">9</td><td class="n">8</td><td><span class="mech">Lao</span><span class="mech">Xé Giáp</span></td><td>Càng kéo dài càng vỡ — phải dồn sát thương</td></tr>
+          <tr><td class="name">Thanh Long</td><td class="n">Cảnh giới 16</td><td class="n">240</td><td class="n">7</td><td class="n">12</td><td><span class="mech">Chấn Địa</span><span class="mech">Triệu Hồi</span><span class="mech">Hút Máu</span><span class="mech">Phát Cuồng</span></td><td>Phải làm được cả ba bài trên</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Phần quà — ba thứ cùng lúc</h3>
+    <div class="cards">
+      <div class="card">
+        <span class="tag">Quà 1</span>
+        <h5>Lượt Cơ Duyên</h5>
+        <p>3 · 5 · 8 · 12 lượt quay, cộng thẳng cho <b>ai có mặt trong hang</b>. Người đang ở Nhà Chính farm quái thì không được gì — và bản đồ nói rõ lý do chứ không im lặng. Chết <em>trong</em> hang vẫn tính là đã đánh.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Quà 2</span>
+        <h5>Thu phục thần thú</h5>
+        <p>Con vừa hạ đi theo hero làm <b>pet</b>. Đây là <b>sưu tầm</b>, không ghi đè: hạ con thứ hai vẫn giữ con thứ nhất, và bạn đổi con đi theo ở ô Thánh Thú trong thẻ Trang Bị. Pet thuần trang trí — không đánh, không ăn đòn, không cộng chỉ số.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Quà 3</span>
+        <h5>Mở khóa một Pháp Khí</h5>
+        <p>Thần thú thứ <em>i</em> mở Pháp Khí thứ <em>i</em>. Đây là cờ <b>của chung cả đội</b>, không của riêng ai: một người hạ được là cả đội mua được. Hạ xong cả đội được đưa về Nhà Chính luôn.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <p><b>Không có cửa ra khỏi hang.</b> Đường thoát duy nhất là nút <em>Về Nhà</em> trên bảng trận đấu (phím <code>R</code>) — mà mở bảng thì <b>không dừng game</b>. Đứng yên đọc bảng trong lúc thần thú đang quật chính là cái giá phải trả.</p>
+      <p>Bỏ hoang 20 giây thì con thú <b>trả về nguyên trạng</b>: hồi đầy máu, bỏ ghim chỉ số, đo lại theo sức của đội ở thời điểm mới. Không có đường &ldquo;chạm một cái ở cảnh giới 6 để ghim chỉ số rồi quay lại ở cảnh giới 20&rdquo;.</p>
+    </div>
+  </section>
+
+  <!-- ====================== PHÁP KHÍ ====================== -->
+  <section id="phapkhi">
+    <h2><span class="num">VII</span>Pháp Khí</h2>
+    <p class="dek">Bốn món, <b>mua một lần, không có cấp</b>, trả bằng <b>Gỗ</b>. Mỗi món là câu trả lời cho một áp lực cụ thể chứ không phải một nấc thang nữa — Trang Bị đã là cái thang rồi.</p>
+
+    <div class="tw">
+      <table>
+        <caption>Tổng giá bốn món là <b>250 Gỗ</b>, mà ngân sách còn lại sau kỹ năng chỉ khoảng <b>222</b>. Mua được đúng ba, phải bỏ một — đây là chỗ duy nhất trong bản đồ bạn buộc phải <em>chọn</em>.</caption>
+        <thead><tr><th>Pháp khí</th><th class="n">Giá</th><th>Mở bởi</th><th>Tác dụng</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Hoa Vũ Linh Châu</td><td class="n">70 Gỗ</td><td>Chu Tước</td><td>Sát thương gây ra <b>+25%</b></td></tr>
+          <tr><td class="name">Huyền Quy Giáp</td><td class="n">70 Gỗ</td><td>Huyền Vũ</td><td>Sát thương nhận <b>−20%</b>, cả đòn đánh lẫn phép</td></tr>
+          <tr><td class="name">Bất Động Minh Vương</td><td class="n">55 Gỗ</td><td>Bạch Hổ</td><td>Nổ Tan và Xé Giáp của boss đều chỉ còn <b>một nửa</b></td></tr>
+          <tr><td class="name">Lưỡng Nghi Châu</td><td class="n">55 Gỗ</td><td>Thanh Long</td><td>Tu chính Chắn Phép / Dày Da chỉ còn cắt <b>một nửa</b></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <p>Hiệu ứng to có chủ đích — <b>+25% chứ không phải +8%</b>. Một món mua-một-lần-không-có-cấp phải cảm thấy được như một sự kiện; mua xong mà không thấy gì đổi thì 70 Gỗ đó là tiền vứt đi.</p>
+  </section>
+
+  <!-- ====================== CƠ DUYÊN ====================== -->
+  <section id="coduyen">
+    <h2><span class="num">VIII</span>Quay thưởng — Cơ Duyên</h2>
+    <p class="dek">Hạ <b>tinh anh được 1 lượt</b>, hạ <b>boss được 3 lượt</b>, hạ thần thú được 3–12 lượt. Mỗi lượt mở <b>hai thẻ</b>, chọn <b>một</b>. Cả ván khoảng 169 lượt.</p>
+
+    <div class="cards">
+      <div class="card">
+        <span class="tag">Thẻ 1</span>
+        <h5>Vàng</h5>
+        <div class="role">30 – 90 vàng · phẳng suốt ván</div>
+        <p>Linh hoạt: vàng mua được Đá Huyền Thiết, lọ thuốc, tháp và Ankh. Nhưng phải đi qua shop, qua hệ xác suất 100/75/50/25/15, và qua trần Tu Vi trước khi thành sức mạnh.</p>
+      </div>
+      <div class="card">
+        <span class="tag">Thẻ 2</span>
+        <h5>Chỉ số</h5>
+        <div class="role">2,2 × 1,30 ^ (bậc Tu Vi − 1), ±30%</div>
+        <p>Cộng vào <b>một</b> trong ba chỉ số, chọn ngẫu nhiên. Trả ngay, không qua xác suất, không bị trần nào chặn. Cả ván cộng khoảng 9 700 điểm — <b>40% của Tu Vi</b>.</p>
+      </div>
+    </div>
+
+    <div class="note">
+      <p><b>Tiền thì phẳng, sức mạnh thì leo.</b> Thẻ vàng đứng yên ở 30–90 suốt hai mươi cảnh giới; thẻ chỉ số nhân theo <em>chính</em> bước 1,30 của Tu Vi. Quy ra cùng thang đo, hai đường <b>song song vĩnh viễn</b> — thẻ chỉ số hơn đúng 17% và không bao giờ cắt nhau. Không thẻ nào thành thẻ chết.</p>
+      <p>Lưu ý một canh bạc có chủ đích: sát thương kỹ năng ăn theo <b>chỉ số cao nhất</b>. Trúng Str thì tăng sát thương; trúng Agi hay Int thì chỉ được giáp / tốc đánh hoặc mana.</p>
+    </div>
+  </section>
+
+  <!-- ====================== CÁNH ====================== -->
+  <section id="canh">
+    <h2><span class="num">IX</span>Cánh</h2>
+    <p class="dek">Sáu bộ, <b>thuần trang trí</b> — không một điểm chỉ số nào. Mở theo mốc cảnh giới, mở rồi thì giữ vĩnh viễn và đổi tự do ở ô Cánh trong thẻ Trang Bị.</p>
+
+    <div class="tw">
+      <table>
+        <caption>Khoảng cách 10 → 10 → 25 → 25 → 20 chặng: đầu ván dồn dập, cuối ván thưa. Ba bộ giữa trùng đúng ranh giới bốn cõi.</caption>
+        <thead><tr><th class="n">Thứ tự</th><th>Bộ cánh</th><th class="n">Mở ở cảnh giới</th><th class="n">Chặng</th></tr></thead>
+        <tbody>
+          <tr><td class="n">1</td><td class="name">Lôi Đình</td><td class="n">2</td><td class="n">6 — ngay sau boss đầu tiên</td></tr>
+          <tr><td class="n">2</td><td class="name">U Minh</td><td class="n">4</td><td class="n">16 — vẫn trong cõi Phàm</td></tr>
+          <tr><td class="n">3</td><td class="name">Thiên Đạo</td><td class="n">6</td><td class="n">26 — vào cõi Yêu</td></tr>
+          <tr><td class="n">4</td><td class="name">Băng Nguyệt</td><td class="n">11</td><td class="n">51 — vào cõi Tiên</td></tr>
+          <tr><td class="n">5</td><td class="name">Thánh Quang</td><td class="n">16</td><td class="n">76 — vào cõi Thần</td></tr>
+          <tr><td class="n">6</td><td class="name">Thái Dương</td><td class="n">20</td><td class="n">96 — đỉnh</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ====================== KINH TẾ ====================== -->
+  <section id="kinhte">
+    <h2><span class="num">X</span>Kinh tế &amp; Shop</h2>
+    <p class="dek">Bốn loại tiền, và <b>mỗi loại quái mở khóa đúng một hệ</b>. Ba hệ chính bị chặn bởi ba loại <em>nội dung</em> khác nhau chứ không chỉ bởi một cái ví.</p>
+
+    <div class="coins">
+      <div class="coin">
+        <div class="cn">Linh Khí</div>
+        <div class="cs">quái thường · 1/con</div>
+        <div class="cd">Chỉ tiêu cho <b>Tu Vi</b>. Cả ván 10 000 — đúng 19 lần đột phá cộng 500 dư cho người bỏ lỡ vài con.</div>
+      </div>
+      <div class="coin">
+        <div class="cn">Vàng</div>
+        <div class="cs">quái thường · 1/con + thẻ Cơ Duyên</div>
+        <div class="cd">Chỉ tiêu ở <b>Shop</b>. Cả ván 4 000 từ quái, cộng trung bình 10 140 nữa nếu lượt Cơ Duyên nào cũng chọn thẻ vàng.</div>
+      </div>
+      <div class="coin">
+        <div class="cn">Gỗ</div>
+        <div class="cs">tinh anh · 2 &nbsp;|&nbsp; boss · 5</div>
+        <div class="cd">Chỉ tiêu cho <b>Kỹ năng</b> và <b>Pháp Khí</b>. Cả ván ~260–292.</div>
+      </div>
+      <div class="coin">
+        <div class="cn">Đá Huyền Thiết</div>
+        <div class="cs">mua ở shop · 10 vàng/viên</div>
+        <div class="cd">Chỉ tiêu cho <b>Trang Bị</b>. Đường ra đá <b>duy nhất</b> của cả ván, nên giá 10 vàng là núm điều nhịp toàn bộ hệ Trang Bị.</div>
+      </div>
+    </div>
+
+    <h3>Thu nhập — phẳng, một con một dòng</h3>
+    <div class="tw">
+      <table>
+        <caption>Một đợt = 50 quái + 1 tinh anh = 100 Linh Khí. Một cảnh giới = 4 đợt + boss = <b>500</b> — đúng giá một lần đột phá.</caption>
+        <thead><tr><th>Loại quái</th><th class="n">Linh Khí</th><th class="n">Vàng</th><th class="n">Gỗ</th><th class="n">Lượt quay</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Quái thường</td><td class="n">1</td><td class="n">1</td><td class="n">—</td><td class="n">—</td></tr>
+          <tr><td class="name">Tinh anh</td><td class="n">50</td><td class="n">—</td><td class="n">2</td><td class="n">1</td></tr>
+          <tr><td class="name">Boss</td><td class="n">100</td><td class="n">—</td><td class="n">5</td><td class="n">3</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Shop</h3>
+    <div class="tw">
+      <table>
+        <caption>Lọ cùng loại gộp vào một ô túi, tối đa 10 lượt mỗi ô. Tháp Canh giá ngang một viên đá — mua tháp là trả bằng <em>tốc độ lên đồ</em>.</caption>
+        <thead><tr><th>Món</th><th class="n">Giá</th><th>Tác dụng</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Lọ Hồi Máu</td><td class="n">5 vàng</td><td>Hồi máu ngay, dùng được một lần</td></tr>
+          <tr><td class="name">Lọ Hồi Mana</td><td class="n">5 vàng</td><td>Hồi mana ngay, dùng được một lần</td></tr>
+          <tr><td class="name">Đá Huyền Thiết</td><td class="n">10 vàng</td><td>Một viên đá, dùng để nâng cấp trang bị</td></tr>
+          <tr><td class="name">Tháp Canh</td><td class="n">10 vàng</td><td>Dựng một tháp canh, tháp chịu đòn thay hero</td></tr>
+          <tr><td class="name">Ankh Hồi Sinh</td><td class="n">500 vàng</td><td>Tự hồi sinh tại chỗ khi chết</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Nâng cấp Nhà Chính</h3>
+    <p><b>Kiên Cố</b> — tối đa 10 cấp, mỗi cấp <b>+40 Sức Mạnh</b> cho Nhà Chính (đo ở cảnh giới 1: cấp 10 là +400 điểm ≈ 10 000 máu trên nền 2 400, tức ×5). Giá cấp <em>n</em> = <b>80 × 1,25ⁿ⁻¹</b>; cấp 1 giá 80, cấp 10 giá 596, trọn đường 2 660 vàng — khoảng 29% thu nhập thực tế. Cấp 1 cố ý để rẻ: phải mua được ngay cảnh giới đầu, lúc nhà yếu nhất.</p>
+  </section>
+
+  <!-- ====================== CHIẾN TRƯỜNG ====================== -->
+  <section id="chientruong">
+    <h2><span class="num">XI</span>Chiến trường</h2>
+    <p class="dek">Không có đồng hồ nào kéo đợt sau vào. Nhịp của cả ván do <b>nút GỌI ĐỢT</b> trên bảng trận đấu (phím <code>R</code>) quyết định, và chỉ nó. Đợt mới chỉ ra khi đợt cũ đã dọn sạch.</p>
+
+    <h3>Một đợt gồm gì</h3>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Thành phần</th><th class="n">Số lượng</th><th class="n">Máu hiệu dụng</th><th class="n">Sát thương</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Quái thường</td><td class="n">50</td><td class="n">×1</td><td class="n">×1</td></tr>
+          <tr><td class="name">Tinh anh</td><td class="n">1</td><td class="n">×10</td><td class="n">×2,5</td></tr>
+          <tr><td class="name">Boss (chặng 5)</td><td class="n">1</td><td class="n">40 giây hỏa lực cả đội</td><td class="n">12 đòn hạ một hero</td></tr>
+        </tbody>
+        <caption>Số quái cố định 50, <b>không đổi theo số người</b>. Thay vào đó máu tăng 60% và sát thương tăng 15% cho mỗi người chơi thêm.</caption>
+      </table>
+    </div>
+
+    <h3>Tám cơ chế boss</h3>
+    <div class="tw">
+      <table>
+        <caption>Mỗi boss mang 1–4 cơ chế trong tám cái này; thần thú dùng đúng bảng từ vựng đó chứ không có cơ chế riêng.</caption>
+        <thead><tr><th>Cơ chế</th><th class="n">Hồi chiêu</th><th class="n">Thông số</th><th>Phải làm gì</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Chấn Địa</td><td class="n">9,0 s</td><td class="n">niệm 2 s · bán kính 600 · ×10</td><td>Vòng tròn hiện ra trước khi nổ — chạy ra khỏi nó</td></tr>
+          <tr><td class="name">Lao</td><td class="n">11,0 s</td><td class="n">×3 sát thương</td><td>Lao vào hero ở <b>xa nhất</b>, không phải gần nhất</td></tr>
+          <tr><td class="name">Triệu Hồi</td><td class="n">20,0 s</td><td class="n">4 thuộc hạ</td><td>Dọn thuộc hạ hoặc bỏ qua chúng, tùy sức</td></tr>
+          <tr><td class="name">Khiên</td><td class="n">15,0 s</td><td class="n">12% máu tối đa</td><td>Phá khiên trước khi nó dựng lại</td></tr>
+          <tr><td class="name">Hút Máu</td><td class="n">—</td><td class="n">25% sát thương gây ra</td><td>Đừng để nó đánh trúng liên tục</td></tr>
+          <tr><td class="name">Phản Đòn</td><td class="n">—</td><td class="n">15% sát thương nhận</td><td>Đánh mạnh hơn là tự giết mình</td></tr>
+          <tr><td class="name">Xé Giáp</td><td class="n">mỗi đòn</td><td class="n">−2% giáp hiện có</td><td>Càng kéo dài càng vỡ — phải dồn sát thương</td></tr>
+          <tr><td class="name">Phát Cuồng</td><td class="n">dưới 30% máu</td><td class="n">×1,60 sát thương</td><td>Kết liễu nhanh, đừng rề rà đoạn cuối</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Năm tu chính — nhìn bầu trời là biết</h3>
+    <p>Mỗi đợt có thể mang một tu chính, và <b>thời tiết nói cho bạn biết trước</b> — không phải đọc chữ.</p>
+    <div class="tw">
+      <table>
+        <thead><tr><th>Tu chính</th><th>Bầu trời</th><th>Tác dụng</th><th>Cách đánh</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Hút Máu</td><td>Giông bão có sét</td><td>Quái tự lành khi đánh trúng</td><td>Dồn từng con, đừng rải</td></tr>
+          <tr><td class="name">Chắn Phép</td><td>Mái vòm phép</td><td>Kỹ năng chỉ còn nửa sát thương</td><td>Đánh tay</td></tr>
+          <tr><td class="name">Dày Da</td><td>Tuyết nặng</td><td>Đòn đánh thường chỉ còn nửa sát thương</td><td>Xả chiêu</td></tr>
+          <tr><td class="name">Nổ Tan</td><td>Bão tuyết</td><td>Chết thì nổ, bán kính 300 · ×4</td><td>Đừng đứng chụm một chỗ</td></tr>
+          <tr><td class="name">Trùng Linh</td><td>Trời quang</td><td>Không có gì đặc biệt — thưởng <b>gấp đôi</b></td><td>Vắng mặt thời tiết cũng là một tin</td></tr>
+        </tbody>
+        <caption>Lưỡng Nghi Châu cắt một nửa hiệu lực của Chắn Phép và Dày Da; Bất Động Minh Vương cắt một nửa Nổ Tan.</caption>
+      </table>
+    </div>
+
+    <h3>Nhà Chính</h3>
+    <p>Nhà chết là <b>thua</b> — không có đếm mạng, không có lọt vài con cho qua. Máu nhà <b>không cố định</b>: nó bằng <b>400 lần sát thương một con lính ở chặng đó</b>, tính lại mỗi đợt, nên tỉ lệ sống sót giữ nguyên suốt ván. Với 400: ba con lọt thì nhà cầm được 133 giây, năm mươi con lọt thì 8 giây. Mỗi đợt nhà tự hồi <b>20%</b> máu tối đa.</p>
+  </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="foot-in">
+    <span>Đọc từ mã nguồn <code>src/</code> — 34 file Lua, <code>build.py</code> nối lại thành <code>war3map.lua</code>.</span>
+    <span>Warcraft III 1.31.1 · bản đồ <code>test2.w3x</code></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.toc a'));
+  if (!links.length || !('IntersectionObserver' in window)) return;
+
+  var byId = {};
+  links.forEach(function (a) { byId[a.getAttribute('href').slice(1)] = a; });
+
+  var seen = {};
+  function paint() {
+    var first = null;
+    for (var i = 0; i < links.length; i++) {
+      var id = links[i].getAttribute('href').slice(1);
+      if (seen[id]) { first = id; break; }
+    }
+    links.forEach(function (a) {
+      a.classList.toggle('on', a.getAttribute('href').slice(1) === first);
+    });
+  }
+
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { seen[e.target.id] = e.isIntersecting; });
+    paint();
+  }, { rootMargin: '-15% 0px -70% 0px' });
+
+  Object.keys(byId).forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el) io.observe(el);
+  });
+})();
+</script>

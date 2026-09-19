@@ -378,13 +378,35 @@ end
 local BURN_ON, BURN_OFF = nil, nil
 
 local function probeBurnOrder()
+  -- Da DO roi thi dung so do, khong tim nua. CFG.BURN_ORDER = { bat,
+  -- tat } -- lay tu dong "order: pid N phat lenh X" trong file vet.
+  local fixed = CFG.BURN_ORDER
+  if fixed ~= nil and fixed[1] ~= nil and fixed[2] ~= nil then
+    BURN_ON, BURN_OFF = fixed[1], fixed[2]
+    API.trace("effect: burn autocast = CFG.BURN_ORDER " ..
+              BURN_ON .. "/" .. BURN_OFF)
+    return
+  end
+
   if OrderId == nil then
     API.trace("effect: khong co OrderId -- burn coi nhu LUON BAT")
     return
   end
-  -- Ten lenh cua Searing Arrows chua duoc do trong du an nay. Thu lan
-  -- luot; cai nao ca hai chieu deu ra khac 0 thi lay.
-  local cands = { "searingarrows", "flamingarrows", "blackarrow" }
+  -- OrderId KHAC 0 CHI CHUNG MINH "ten nay la mot lenh co that",
+  -- KHONG chung minh "no la lenh cua ability nay".
+  --
+  -- LOI DA SHIP: danh sach dau co "blackarrow" o cuoi, va no trung --
+  -- file vet ghi 'blackarrow' 852577/852579. Nhung blackarrow la lenh
+  -- cua Black Arrow, mot ability khac han; nut E cua Thieu Thien khong
+  -- bao gio phat lenh do, nen bo theo doi im lang khong chay.
+  --
+  -- Cung lop loi voi AddWeatherEffect nhan ma rac: ham tra ve mot gia
+  -- tri "hop le" cho mot dau vao sai.
+  --
+  -- Gio chi giu hai ten CO LIEN QUAN toi AHfa. Trung thi dung; truot
+  -- thi onOrder() ghi vet moi lenh la de nguoi choi bam E mot cai va
+  -- doc ra so that -- do, khong doan.
+  local cands = { "searingarrows", "flamingarrows" }
   for i = 1, #cands do
     local on  = OrderId(cands[i])
     local off = OrderId(cands[i] .. "off")
@@ -414,11 +436,28 @@ end
 
 local function onOrder()
   local o = GetIssuedOrderId and GetIssuedOrderId() or nil
-  if o == nil or BURN_ON == nil then return end
-  if o ~= BURN_ON and o ~= BURN_OFF then return end
+  if o == nil then return end
   local pid = heroPid(GetTriggerUnit())
   if pid == nil or S.p[pid] == nil then return end
-  S.p[pid].burnOn = (o == BURN_ON)
+
+  if BURN_ON ~= nil and (o == BURN_ON or o == BURN_OFF) then
+    S.p[pid].burnOn = (o == BURN_ON)
+    return
+  end
+
+  -- GHI VET LENH LA, mot lan moi ma.
+  --
+  -- Day la cach DO ra so that thay vi doan tiep mot cai ten: nguoi
+  -- choi bam E mot cai, file vet in ra hai so, va ta ghi thang chung
+  -- vao CFG.BURN_ORDER. Loc bo lenh di chuyen/danh thuong -- chung
+  -- phat lien tuc va se lam ngap file vet.
+  if not CFG.DEV_COMMANDS then return end
+  if S.orderSeen == nil then S.orderSeen = {} end
+  if S.orderSeen[o] then return end
+  S.orderSeen[o] = true
+  -- 851971..851999 la vung lenh co ban (move/stop/attack/hold/patrol).
+  if o >= 851970 and o <= 851999 then return end
+  API.trace("order: pid " .. pid .. " phat lenh " .. o)
 end
 
 local FX_CAST = { line = fxLine, chain = fxChain, heal = fxHeal,
@@ -729,7 +768,10 @@ local function startSkillFx()
   -- Nut bat/tat cua Thieu Thien (A011). Do ten lenh TRUOC khi dang ky:
   -- khong do duoc thi khong can trigger nao, burn se luon bat.
   probeBurnOrder()
-  if BURN_ON ~= nil and EVENT_PLAYER_UNIT_ISSUED_ORDER ~= nil then
+  -- Dang ky KE CA khi do khong ra: luc do onOrder() lam viec khac --
+  -- ghi vet moi lenh la, de nguoi choi bam E mot cai la doc duoc so
+  -- that. Do, khong doan tiep mot cai ten.
+  if EVENT_PLAYER_UNIT_ISSUED_ORDER ~= nil then
     local tOrd = CreateTrigger()
     TriggerRegisterAnyUnitEventBJ(tOrd, EVENT_PLAYER_UNIT_ISSUED_ORDER)
     TriggerAddAction(tOrd, onOrder)

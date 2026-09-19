@@ -39,6 +39,30 @@ end
 -- ---------- Do suc manh doi ----------
 -- Tra ve: tong dps uoc luong, mau hieu dung TRUNG BINH mot hero, so hero
 
+-- Tong % ma cac BI DONG cong vao moi don danh DON MUC TIEU.
+--
+-- VI SAO KHONG GOM "cleave": Chem Lan van sat thuong sang con BEN
+-- CANH. Danh boss thi boss dung mot minh, nen no cong 0. Gom vao la
+-- uoc luong cao len va boss thanh qua day mau cho Hart.
+--
+-- "burn" thi nguoc lai: no dot chinh muc tieu vua danh, nen no cong du
+-- ca khi chi co mot con. Bang CFG.BOSS_DPS_PASSIVE_FX giu danh sach
+-- nay, de them bi dong moi la khai them mot dong chu khong sua ham.
+local function passivePct(pid)
+  local list = CFG.BOSS_DPS_PASSIVE_FX
+  if list == nil or API.skillList == nil then return 0.0 end
+  local sks, sum = API.skillList(pid), 0.0
+  for i = 1, #sks do
+    for k = 1, #list do
+      if sks[i].fx == list[k] then
+        local lv = API.skillLevel(pid, sks[i].id, i)
+        if lv > 0 then sum = sum + API.skillPct(sks[i], lv) end
+      end
+    end
+  end
+  return sum
+end
+
 local function measureParty()
   local dps, ehpAvg, n = 0.0, 0.0, 0
   for i = 1, #S.pids do
@@ -46,8 +70,23 @@ local function measureParty()
     local h = d and d.hero or nil
     if h ~= nil and API.alive(h) then
       n = n + 1
+      local pid = S.pids[i]
       local top = API.skillTopStat and API.skillTopStat(h) or 0
       local hit = CFG.BOSS_DPS_FACTOR * (CFG.CULT_DMG_BASE + top)
+
+      -- NHAN CAC LOP % DON DANH, y het onDamaged() lam voi don THAT.
+      --
+      -- LO HONG DA CO: ham nay chi lay (DMG_BASE + chi so), trong khi
+      -- don danh that con nhan them %Kiem va Phap Khi Hoa Vu. Nen cang
+      -- mua Trang Bi thi uoc luong cang thap so voi that, tuc BOSS CANG
+      -- DE -- nguoc han y do. Khong ai thay duoc vi boss van "co mau
+      -- theo doi", chi la sai he so.
+      local pct = 0.0
+      if API.gearDmgPct ~= nil then pct = pct + API.gearDmgPct(pid) end
+      if API.relicVal ~= nil then
+        pct = pct + API.relicVal(pid, "hoavu", "dmgUp")
+      end
+      if pct > 0.0 then hit = hit * (1.0 + pct) end
 
       -- MOT DON, khong phai mot giay. Phai chia cho hoi chieu don danh
       -- that -- neu khong thi mau boss = 40 DON chu khong phai 40 giay,
@@ -68,7 +107,15 @@ local function measureParty()
       end
 
       -- Ky nang gop them. Uoc luong, chinh theo dong trace luc boss chet.
-      dps = dps + (hit / cd) * (1.0 + CFG.BOSS_SKILL_SHARE)
+      --
+      -- BOSS_SKILL_SHARE la phan CHU DONG (bam nut). Bi dong cong % vao
+      -- moi don danh -- Thieu Thien cua Hvwd -- thi phai cong RIENG:
+      -- no khong phai mot uoc luong chung, no la con so doc duoc.
+      --
+      -- Do duoc 2026-09-19: boss r16 chet sau 30s so voi thiet ke 40s,
+      -- tuc san luong that gap 1.33 lan uoc luong. Hvwd luc do co Thieu
+      -- Thien va khong co Trang Bi -- dung bang phan bi dong thieu o day.
+      dps = dps + (hit / cd) * (1.0 + CFG.BOSS_SKILL_SHARE + passivePct(pid))
 
       local cut = damageReduction((BlzGetUnitArmor ~= nil) and BlzGetUnitArmor(h) or 0.0)
       -- Mau hieu dung: bao nhieu sat thuong THO moi ha duoc hero nay.

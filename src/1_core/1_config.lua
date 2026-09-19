@@ -1256,6 +1256,17 @@ CFG.BOSS_ATTACKS_FALLBACK = 1.0    -- don/giay khi khong doc duoc hoi chieu
 -- thuc so voi BOSS_SECONDS -- chinh so nay theo do chu dung doan.
 CFG.BOSS_SKILL_SHARE = 1.0
 
+-- Bi dong nao cong % vao moi don danh DON MUC TIEU.
+--
+-- Tach khoi BOSS_SKILL_SHARE vi day khong phai uoc luong -- day la con
+-- so DOC DUOC tu bac ky nang cua tung hero. Gop vao mot hang so chung
+-- thi Hart va Hvwd phai dung chung mot con so ma san luong that cua
+-- chung khac nhau.
+--
+-- KHONG co "cleave": Chem Lan van sang con BEN CANH, ma boss dung mot
+-- minh nen no cong 0. Gom vao la boss thanh qua day mau cho Hart.
+CFG.BOSS_DPS_PASSIVE_FX = { "burn" }
+
 -- Boss ha mot hero dung yen trong bao nhieu don.
 CFG.BOSS_HITS_TO_KILL = 12.0
 
@@ -1834,7 +1845,11 @@ CFG.SKILLS[id('H002')] = {
   -- 'kind = "passive"' nhung VAN co hotkey: ban goc AHfa la autocast,
   -- nen no co nut bat/tat that su tren command card. 'kind' o day chi
   -- la goi y cho fmt() biet hien pct hay factor -- xem 4_skill.lua.
-  { id = id('A011'), baseAbil = "AHfa", vi = "Thieu Thien", en = "Searing Arrows", kind = "passive", pct = 0.30, fx = "burn", hotkey = "E",
+  -- 'pos' ghi de cho tu dong chia o. Thu tu tu dong tra ra o (3,2) cho
+  -- Thieu Thien va (2,2) cho Nguyet Nhan -- dung o nhung nguoc CHO.
+  -- Bo cuc nut la chuyen cam giac, khong suy ra duoc tu bang, nen khai
+  -- thang chu khong sap xep lai bang cho ra dung thu tu.
+  { id = id('A011'), baseAbil = "AHfa", vi = "Thieu Thien", en = "Searing Arrows", kind = "passive", pct = 0.30, fx = "burn", hotkey = "E", pos = "2,2",
     desc_vi = "Mui ten thieu dot: them %s sat thuong cua don danh, rai deu trong 3 giay.",
     desc_en = "Arrows sear: %s of the hit as extra damage spread over 3 seconds." },
   -- He so 1.10 chu khong 1.32 nhu Chuong: cai nay cham toi BON muc
@@ -1882,7 +1897,7 @@ CFG.SKILLS[id('H002')] = {
   -- Lua nao. So muc tieu va do hao moi lan nhay nam trong war3map.w3a.
   --
   -- 'noNumber' de fmt() khong bia ra "0%" -- xem 4_skill.lua.
-  { id = id('A012'), baseAbil = "Amgl", vi = "Nguyet Nhan", en = "Moon Glaive", kind = "passive", noNumber = true,
+  { id = id('A012'), baseAbil = "Amgl", vi = "Nguyet Nhan", en = "Moon Glaive", kind = "passive", noNumber = true, pos = "3,2",
     desc_vi = "Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.",
     desc_en = "Attacks bounce to nearby targets, weaker each hop." },
   { id = id('A004'), baseAbil = "Aamk", vi = "Luyen The", en = "Body Forging",   kind = "passive",  statVal = 4.0, fx = "stat",
@@ -1957,6 +1972,24 @@ CFG.FX_BURN_STACK = false
 --
 -- Chi dung khi doc khong ra, va luc do fxHot() ghi vet mot lan.
 CFG.FX_HOT_TIME = 6.0
+
+-- ---------- Nut bat/tat cua Thieu Thien (A011) ----------
+--
+-- { ma lenh BAT, ma lenh TAT }. nil = tu do theo ten lenh.
+--
+-- VI SAO CO KHOA NAY: do theo TEN khong dang tin. OrderId() tra khac 0
+-- chi chung minh "ten nay la mot lenh co that", KHONG chung minh "no la
+-- lenh cua ability nay". Ban dau danh sach do co "blackarrow" va no
+-- trung -- file vet ghi 852577/852579 -- nhung do la lenh cua Black
+-- Arrow, mot ability khac han. Nut E khong bao gio phat lenh do.
+--
+-- Cung lop loi voi AddWeatherEffect nhan ma rac.
+--
+-- CACH LAY SO THAT: vao game, bam E mot cai, doc dong
+--   order: pid 0 phat lenh 852xxx
+-- trong DarknessTrace.txt (bam hai lan duoc ca so bat lan so tat), roi
+-- ghi thang vao day. Do, khong doan.
+CFG.BURN_ORDER = nil
 
 -- HAI DUONG DAN NAY LA DUONG DA CHUNG MINH, khong phai duong dep nhat.
 --

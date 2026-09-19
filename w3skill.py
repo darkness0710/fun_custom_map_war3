@@ -118,7 +118,8 @@ def parse_skills(src, hero):
     for chunk in re.findall(r"\{\s*id = id\('(\w+)'\)(.*?)\},", blk, re.S):
         aid, body = chunk
         d = {"id": aid}
-        for k in ("vi", "en", "kind", "desc_vi", "desc_en", "fx", "hotkey"):
+        for k in ("vi", "en", "kind", "desc_vi", "desc_en", "fx", "hotkey",
+                  "pos"):
             m = re.search(r'\b%s\s*=\s*"((?:[^"\\]|\\.)*)"' % k, body)
             if m:
                 d[k] = m.group(1)
@@ -277,6 +278,27 @@ def assign_slots(hero, sks, taken):
     Nen ability nao da co o thi GIU NGUYEN, phan con lai chia vao cho
     trong. Hai danh sach uu tien giu bo cuc cu cua Hart; het cho thi lay
     bat cu o nao con lai."""
+    # 'pos = "x,y"' trong CFG.SKILLS ghi de cho tu dong chia. Dung khi
+    # thu tu tu dong ra dung o nhung khong dung CHO -- bo cuc nut la
+    # chuyen cam giac, khong suy ra duoc tu bang.
+    for s in sks:
+        p = s.get("pos")
+        if not p:
+            continue
+        try:
+            x, y = [int(v) for v in p.split(",")]
+        except ValueError:
+            die("%s: %s co pos = %r -- phai dang \"x,y\"" % (hero, s["id"], p))
+        if (x, y) not in O_ALL:
+            die("%s: %s xin o (%d,%d) -- khong phai o trong. Bay o: %s"
+                % (hero, s["id"], x, y,
+                   " ".join("(%d,%d)" % q for q in O_ALL)))
+        if s["id"] in taken and taken[s["id"]] != (x, y):
+            die("%s: %s da nhan o (%d,%d) tu hero truoc, gio xin (%d,%d) -- "
+                "o nut la thuoc tinh cua ABILITY, khai mot cho thoi"
+                % (hero, s["id"], taken[s["id"]][0], taken[s["id"]][1], x, y))
+        taken[s["id"]] = (x, y)
+
     free = [p for p in O_ALL if p not in
             [taken[s["id"]] for s in sks if s["id"] in taken]]
 
