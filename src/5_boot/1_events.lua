@@ -14,6 +14,9 @@ local function onAnyDeath()
     API.onHouseDeath()
     return
   end
+  -- Hero cua nguoi choi: hen gio song lai, va KHONG day sang
+  -- onMobDeath -- ham do cong tien thuong cho ke giet.
+  if API.onHeroDeath ~= nil and API.onHeroDeath(u) then return end
   API.onMobDeath(u, GetKillingUnit())
 end
 

@@ -113,6 +113,7 @@ local function bootstrap()
 
   API.startHeroLock()
   API.startCheatGuard()     -- canh cheat co san cua Warcraft
+  API.startRevive()         -- hero chet roi song lai o nha chinh
   API.trace("startHeroLock: xong")
 
   -- Cac he dang ky the TRUOC, roi bang moi dung -- bang can biet co

@@ -1,6 +1,6 @@
 # Hệ thống: Kỹ năng hero
 
-> **Trạng thái:** Hart và Hvwd **đủ vỏ và ruột**; Hkal **trống, đang khoá**
+> **Trạng thái:** cả ba hero **đủ vỏ và ruột**
 > **Cập nhật:** 2026-09-19
 
 > **Hvwd — xạ thủ — xong ngày 2026-09-19.** Bảy kỹ năng, mở khoá ra bảng chọn,
@@ -12,9 +12,9 @@
 > 2026-09-16 có cả **tên riêng, vị trí ô, tooltip 10 bậc** sinh bằng
 > [w3skill.py](../../w3skill.py). Trước đó 6/7 ability hiện nguyên tên Blizzard.
 >
-> **Hkal vẫn trống** — `CFG.SKILLS` có `H001` và `H002`. Thiết kế cho Hkal đã bị
-> xoá để làm lại, xem [thiet-ke-hero.md](thiet-ke-hero.md); nó vẫn mang
-> `locked = true` nên không ra bảng chọn.
+> **Hkal xong 2026-09-19** — `CFG.SKILLS` có đủ `H001` `H002` `H003`, và không
+> hero nào còn `locked`. `HERO_UNIQUE` từ giờ mới có nghĩa thật: ba người, ba
+> con, không ai lấy trùng.
 >
 > **Hai kỹ năng của Hart đổi bản chất 2026-09-19** — `A003` Hiệu Lệnh thành bản
 > sao **Endurance Aura**, `A006` Da Sắt thành bản sao **Reincarnation**. Bảng số
@@ -133,7 +133,7 @@ Bảy ô trống. Hai ability trùng vị trí thì **đè lên nhau**, một c�
 và không có cảnh báo nào. Ô `(3,2)` là chỗ nút Cancel xuất hiện khi mở submenu —
 tránh ra nếu sau này hero có spellbook.
 
-> ⚠ **Bảy ô trống, và Hvwd có đúng bảy kỹ năng — vừa khít, không dư ô nào.**
+> ⚠ **Bảy ô trống, và mỗi hero có đúng bảy kỹ năng — vừa khít, không dư ô nào.**
 
 **Ô nút là thuộc tính của ABILITY, không phải của hero** — và đó là chỗ
 `w3skill.py` từng sai. Nó hard-code `parse_skills(cfg, "H001")`, nên mở khoá
@@ -148,22 +148,22 @@ không được.
 
 Kết quả (`python w3skill.py show`):
 
-| | Hart | | Hvwd |
+| ô | Hart | Hvwd | Hkal |
 |---|---|---|---|
-| `(0,2)` | A001 Chưởng `Q` | | A008 Lôi Vân `Q` |
-| `(1,2)` | A002 Hộ Thể `W` | | A010 Hồi Xuân `W` |
-| `(2,2)` | A007 Bất Hoại `E` | | A012 Nguyệt Nhận |
-| `(3,2)` | A005 Chém Lan | | A011 Thiêu Thiên `E` |
-| `(1,1)` | A003 Hiệu Lệnh | | A009 Thần Xạ |
-| `(2,1)` | **A004 Luyện Thể** | | **A004** *(cùng ô)* |
-| `(3,1)` | **A006 Da Sắt** | | **A006** *(cùng ô)* |
+| `(0,2)` | Chưởng `Q` | Lôi Vân `Q` | Hàn Băng `Q` |
+| `(1,2)` | Hộ Thể `W` | Hồi Xuân `W` | Cam Lộ `W` |
+| `(2,2)` | Bất Hoại `E` | Thiêu Thiên `E` | Linh Khiên `E` |
+| `(3,2)` | Chém Lan | **Nguyệt Nhận** | **Nguyệt Nhận** *(cùng ô)* |
+| `(1,1)` | Hiệu Lệnh | Thần Xạ | Linh Tuyền |
+| `(2,1)` | **Luyện Thể** | **Luyện Thể** | **Luyện Thể** *(cùng ô)* |
+| `(3,1)` | **Da Sắt** | **Da Sắt** | **Da Sắt** *(cùng ô)* |
 
-Vị trí lặp **giữa** hai hero là đúng — mỗi hero chỉ mang bảy cái của nó. Trùng
+Vị trí lặp **giữa** các hero là đúng — mỗi hero chỉ mang bảy cái của nó. Trùng
 **trong cùng một hero** thì `assign_slots()` dừng hẳn và nói tên hai cái.
 
 Phím tắt cũng kiểm cùng chỗ: trùng trong một hero là lỗi *(Warcraft không báo,
-bấm ra cái nào là tuỳ thứ tự card)*; trùng giữa hai hero thì không sao — `E` là
-Bất Hoại ở Hart và Thiêu Thiên ở Hvwd.
+bấm ra cái nào là tuỳ thứ tự card)*; trùng giữa các hero thì không sao — `E` là
+Bất Hoại ở Hart, Thiêu Thiên ở Hvwd, Linh Khiên ở Hkal.
 
 ## Bảy kỹ năng của Hvwd (xạ thủ)
 
@@ -232,6 +232,44 @@ chiều đều khác `0` thì lấy, và ghi vết kết quả.
 
 Đo không ra thì **luôn bật**, không phải luôn tắt: một kỹ năng im lặng không làm
 gì là kiểu hỏng tệ nhất ([ADR 0012](../05-quyet-dinh/0012-mot-kenh-dong-bo-duy-nhat.md)).
+
+## Bảy kỹ năng của Hkal (pháp sư / hỗ trợ)
+
+| | Ability gốc | Tên | Ai giữ số |
+|---|---|---|---|
+| `A013` | `AUfn` Frost Nova | **Hàn Băng** `Q` | **Lua** — `factor` × chỉ số |
+| `A014` | `AOhw` Healing Wave | **Cam Lộ** `W` | **Lua** — `factor` × chỉ số |
+| `A015` | `ACmf` Mana Shield | **Linh Khiên** `E` | **WE** |
+| `A016` | `AHab` Brilliance Aura | **Linh Tuyền** | **WE** — `fromField` |
+| `A012` | `Amgl` Moon Glaive | **Nguyệt Nhận** | engine |
+| `A004` | `Aamk` Attribute Bonus | **Luyện Thể** | cả hai |
+| `A006` | `AOre` Reincarnation | **Da Sắt** | **WE** — hồi chiêu |
+
+**`A015` để World Editor giữ là đúng.** Mana Shield đổi sát thương lấy mana theo
+một **tỉ lệ**, mà bộ mana thì leo theo Trí Tuệ — tức sức chịu của khiên tự leo.
+Tỉ lệ thì không teo
+([ADR 0024](../05-quyet-dinh/0024-cong-thi-leo-nhan-thi-phang.md)).
+
+> ⚠ **`A016` thì chưa chắc.** Nếu trường của Brilliance Aura là **phần trăm** tốc
+> hồi mana thì nó tự scale; nếu là một số mana/giây **phẳng** thì nó teo dần.
+> Chưa đo được — `-nat spell` sẽ nói.
+>
+> Dù sao nó cũng là kỹ năng **đầu ván** theo thiết kế: `SKILL_MANA_STEP` (×1.55
+> sau 10 bậc) **cố ý** tăng chậm hơn bộ mana, nên cuối ván mana không còn là ràng
+> buộc.
+
+> **`A012` trên một pháp sư là chưa hợp lý** — chủ dự án biết và chấp nhận tạm.
+> Giữ ở đó để bộ bảy cái đủ chỗ; đổi một kỹ năng thứ thế thì thay một dòng.
+
+### `wave` chọn người thiếu máu nhất, `chain` chọn người gần nhất
+
+Hai vòng lặp nhìn giống hệt nhau nhưng tiêu chí chọn mục tiêu **ngược nhau**, và
+đó là khác biệt thật:
+
+| | Chọn ai | Vì sao |
+|---|---|---|
+| `chain` *(sát thương)* | **gần nhất** | mục tiêu nào cũng ăn đủ |
+| `wave` *(hồi máu)* | **thiếu máu nhất** | hồi sang người đầy máu là vứt đi một nhịp, mà số nhịp thì có hạn |
 
 ### `heal` và `hot` là hai thứ khác nhau — A010 từng dùng nhầm
 

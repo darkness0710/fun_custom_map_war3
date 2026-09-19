@@ -635,9 +635,9 @@ CFG.HEROES = {
     icon = [[hero\H002.blp]],
     desc_vi    = { "Sat thuong cao nhat", "Danh tu xa", "Rat mong" },
     desc_en = { "Top damage", "Long range", "Very fragile" } },
-  -- KHOA: cay ky nang chua thiet ke. Khoa chu khong xoa -- xoa thi mat
-  -- ca model, icon va mo ta da lam xong, ma nhung thu do khong sai.
-  { id = id('H003'), locked = true, name = "Hkal", role = "Mage - Support", abilities = {}, skills = nil,
+  -- DA MO KHOA -- 2026-09-19. Cay ky nang xong: xem CFG.SKILLS[H003].
+  -- Ca ba hero deu mo, nen HERO_UNIQUE gio co nghia that.
+  { id = id('H003'), name = "Hkal", role = "Mage - Support", abilities = {}, skills = nil,
     -- Icon TU VE. Nguon: docs/01-tmp/hero/<ma unit>.png
     -- Sinh bang: python w3gear_icons.py
     icon = [[hero\H003.blp]],
@@ -830,6 +830,24 @@ CFG.HERO_UNIQUE = true
 
 -- Hero sinh ra cach nha chinh bao xa.
 CFG.HERO_SPAWN_OFFSET = 500.0
+
+-- Hero chet bao lau thi song lai. 0 = tat han, hero chet nam luon.
+--
+-- TRUOC 2026-09-19 KHONG CO HE NAY. onAnyDeath() chi xu ly nha chinh
+-- va quai; duong song lai duy nhat la Ankh 500 vang hoac bi dong Hoi
+-- Sinh cua A006. Chet o wave 30 ma khong co Ankh thi ngoi xem 70 wave
+-- con lai -- trong map co-op ba nguoi do la cho mot nguoi nghi choi
+-- giua chung ma van phai ngoi do.
+--
+-- Te hon: measureParty() bo qua hero chet nen boss NHO LAI theo. Doi
+-- hai nguoi thang de hon doi ba nguoi co mot xac -- nghich ly, va no
+-- am tham.
+--
+-- 30 giay: du dai de chet la mat mat that (mot wave thuong keo 40-60
+-- giay, nen mat gan tron mot wave), du ngan de khong ai bo game. Song
+-- lai o NHA CHINH chu khong o cho vua chet -- cho vua chet la cho vua
+-- thua, va doan duong quay lai chinh la phan gia phai tra.
+CFG.HERO_REVIVE_SECONDS = 30.0
 
 -- ============================================================
 --  DOT QUAI  --  100 stage
@@ -1982,6 +2000,68 @@ CFG.SKILLS[id('H002')] = {
     desc_en = "Revives you on death. Cooldown %s." },
 }
 
+-- ---------- Hkal: phap su / ho tro ----------
+--
+-- CHIA NHOM THEO "AI GIU CON SO", y het Hvwd:
+--
+--   Lua giu so   A013 A014        -> factor, tu bam chi so hero
+--   WE giu so    A006 A015 A016   -> bang so trong war3map.w3a
+--   ca hai       A004             -> statVal x bac skill x bac Tu Vi
+--   engine       A012             -> Moon Glaive, khong ai giu so
+--
+-- A015 Hu Khong Khien de WE giu la DUNG: Mana Shield doi sat thuong
+-- lay mana theo mot TI LE, va bo mana thi leo theo Tri Tue -- tuc suc
+-- chiu cua khien tu leo. Ti le thi khong teo (ADR 0024).
+--
+-- A016 Linh Tuyen thi CHUA CHAC. Neu truong cua Brilliance Aura la
+-- phan tram toc hoi mana thi no tu scale; neu la mot so mana/giay
+-- PHANG thi no teo dan. Chua do duoc -- "-nat spell" se noi. Du sao
+-- no cung la ky nang DAU VAN theo thiet ke: SKILL_MANA_STEP (x1.55
+-- sau 10 bac) co y tang cham hon bo mana, nen cuoi van mana khong con
+-- la rang buoc.
+--
+-- A012 Nguyet Nhan tren mot phap su la CHUA HOP LY -- chu du an biet
+-- va chap nhan tam. Giu o day de bo bay cai du cho, doi mot ky nang
+-- thu the thi thay mot dong.
+--
+-- A004 / A006 / A012 dung chung ability voi hero khac, nen ba dong do
+-- phai GIONG HET ban goc: w3skill.py ghi ten/tooltip theo MA ABILITY
+-- chu khong theo hero.
+CFG.SKILLS[id('H003')] = {
+  { id = id('A013'), baseAbil = "AUfn", vi = "Han Bang", en = "Frost Nova", kind = "active", factor = 1.20, cd = 8.0, mana = 55, fx = "nova", hotkey = "Q",
+    desc_vi = "No mot vong bang quanh muc tieu, %s sat thuong len moi con trong vong.",
+    desc_en = "Bursts a ring of frost around the target for %s damage to everything inside." },
+  -- 1.80 chu khong 2.20 nhu Ho The: cai nay cham toi BA nguoi. Nhan ra
+  -- la 1.80 x (1 + 0.75 + 0.5625) = 4.16 so voi mot muc tieu cua Hart.
+  { id = id('A014'), baseAbil = "AOhw", vi = "Cam Lo", en = "Healing Wave", kind = "active", factor = 1.80, cd = 10.0, mana = 45, fx = "wave", hotkey = "W",
+    desc_vi = "Hoi %s mau, nay qua dong doi va yeu dan. Uu tien nguoi thieu mau nhat.",
+    desc_en = "Restores %s health, bouncing to allies and weakening. Picks the most wounded first." },
+
+  -- KHONG khai 'mana' lan 'cd': ca hai do World Editor dat, va
+  -- applyLevel() chi ghi de khi bang nay co khai. Mana Shield tinh
+  -- mana theo TUNG DON an vao, khong phai mot lan bam.
+  { id = id('A015'), baseAbil = "ACmf", vi = "Linh Khien", en = "Mana Shield", kind = "active", noNumber = true, hotkey = "E",
+    desc_vi = "Bat len thi sat thuong tru vao mana thay vi mau.",
+    desc_en = "While active, damage drains mana instead of health." },
+  -- Y HET cach A003 va A009 lam. 'Hab1' suy tu quy luat, CHUA DO. Doc
+  -- khong ra thi fromAbility() ghi vet va tooltip lui ve "bac N".
+  { id = id('A016'), baseAbil = "AHab", vi = "Linh Tuyen", en = "Brilliance Aura", kind = "aura",
+    fromAbil = "ABILITY_RLF_MANA_REGENERATION_INCREASE_HAB1",
+    fromField = "Hab1", fromPct = true, fx = "aura",
+    desc_vi = "Ca doi hoi mana nhanh hon %s.",
+    desc_en = "The whole party regenerates mana %s faster." },
+  { id = id('A012'), baseAbil = "Amgl", vi = "Nguyet Nhan", en = "Moon Glaive", kind = "passive", noNumber = true, pos = "3,2",
+    desc_vi = "Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.",
+    desc_en = "Attacks bounce to nearby targets, weaker each hop." },
+  { id = id('A004'), baseAbil = "Aamk", vi = "Luyen The", en = "Body Forging",   kind = "passive",  statVal = 4.0, fx = "stat",
+    desc_vi = "%s ca ba chi so, nhan them theo bac Tu Vi.",
+    desc_en = "%s to all three attributes, scaled by Cultivation rank." },
+  { id = id('A006'), baseAbil = "AOre", vi = "Da Sat", en = "Ironhide",          kind = "passive",
+    fromCooldown = true, fx = "reduce",
+    desc_vi = "Chet thi tu song lai. Hoi chieu %s.",
+    desc_en = "Revives you on death. Cooldown %s." },
+}
+
 -- ---------- Hang so hieu ung ky nang ----------
 --
 -- SAT THUONG CONG THEM, khong sua truong cua ability.
@@ -2013,6 +2093,18 @@ CFG.FX_REDUCE_CAP  = 0.10    -- tran cung cua "reduce" -- xem mota A006
 CFG.FX_CHAIN_MAX     = 4       -- so muc tieu, ke ca muc tieu dau
 CFG.FX_CHAIN_HOP     = 400.0   -- tam nhay toi da giua hai muc tieu
 CFG.FX_CHAIN_FALLOFF = 0.80    -- moi lan nhay con bay nhieu phan
+
+-- ---------- "nova": no mot vong quanh muc tieu (A013, Hkal) ----------
+CFG.FX_NOVA_AOE = 300.0
+
+-- ---------- "wave": hoi mau nay qua dong doi (A014, Hkal) ----------
+--
+-- CHON NGUOI THIEU MAU NHAT chu khong phai gan nhat -- xem fxWave().
+-- Hoi mau nay sang mot nguoi day mau la vut di mot nhip, ma so nhip
+-- thi co han. Sat thuong thi nguoc lai: muc tieu nao cung an du.
+CFG.FX_WAVE_MAX      = 3       -- so nguoi duoc hoi, ke ca nguoi dau
+CFG.FX_WAVE_HOP      = 500.0   -- tam nhay toi da giua hai nguoi
+CFG.FX_WAVE_FALLOFF  = 0.75    -- moi lan nhay con bay nhieu phan
 
 -- ---------- "burn": thieu dot (A011, Hvwd) ----------
 --
@@ -2083,6 +2175,7 @@ CFG.BURN_ORDER = nil
 -- huu ich de thay Lua va Warcraft co chon cung bay con hay khong.
 CFG.FX_HIT_BURN  = [[Abilities\Weapons\WitchDoctorMissile\WitchDoctorMissile.mdl]]
 CFG.FX_HIT_CHAIN = [[Abilities\Spells\Orc\Shockwave\ShockwaveMissile.mdl]]
+CFG.FX_HIT_NOVA  = [[Abilities\Spells\Orc\Shockwave\ShockwaveMissile.mdl]]
 -- (CFG.FX_BUFF_TIME da xoa 2026-09-19: khong file nao doc. Thoi
 --  luong buff lay tu truong 'adur'/'ahdu' cua chinh ability --
 --  xem chu thich o 7_effect.lua.)

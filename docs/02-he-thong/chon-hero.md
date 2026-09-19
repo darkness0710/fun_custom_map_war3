@@ -169,7 +169,9 @@ Vào map, đợi 2 giây. Cần thấy:
 
 ## Chưa làm
 
-- Mất hero thì không chọn lại được — `heroCount` không giảm.
+- Mất hero thì không chọn lại được — `heroCount` không giảm. *(Nhưng hero chết
+  giờ **tự sống lại sau 30 giây** — [hoi-sinh.md](hoi-sinh.md). Mục này chỉ còn
+  đúng cho trường hợp unit bị xoá hẳn.)*
 - Không có hình minh hoạ hero trên nút; Warcraft III chỉ cho chữ.
 - Không có hạn giờ chọn. Ai không bấm thì không có hero, ván vẫn chạy.
 - Nhiều người hơn số hero: chỉ báo một dòng, chưa xử lý gì thêm.

@@ -21,8 +21,9 @@
 --  truong nao ca. Sat thuong goc cua Warcraft van con, nhung o bac 10
 --  voi Linh Can bac 20 thi no la sai so lam tron.
 --
---  CHIN LOAI HIEU UNG, khai bao bang truong 'fx' trong CFG.SKILLS:
---    line chain heal hot buff  chu dong, bat qua su kien cast
+--  MUOI MOT LOAI HIEU UNG, khai bao bang truong 'fx':
+--    line chain nova           chu dong, sat thuong
+--    heal hot wave buff        chu dong, hoi mau / tu buff
 --    cleave burn reduce        bi dong, bat qua su kien sat thuong
 --    stat                      bi dong, tinh lai khi bac ky nang doi
 --
@@ -34,9 +35,10 @@
 --  ('aura' KHONG con la hieu ung o day -- con so cua no nam trong chinh
 --  ability va Warcraft tu cong. No chi con la nhan de bang phim R loc.)
 --
---  Tam loai nay dung lai duoc cho Hkal -- them hero moi la khai bao
---  them dong trong CFG.SKILLS, khong phai viet them code o day. Hvwd
---  (2026-09-19) can dung hai loai MOI: 'chain' va 'burn'.
+--  Moi hero moi thuong keo theo vai loai moi, roi tu do hero sau dung
+--  lai duoc: Hvwd (2026-09-19) them 'chain' va 'burn', Hkal cung ngay
+--  them 'nova' va 'wave'. Den hero thu tu thi kha nang chi con khai
+--  bao them dong trong CFG.SKILLS.
 --
 --  VI SAO 'burn' TINH THEO % DON DANH, KHONG PHAI % MAU MUC TIEU
 --
@@ -170,15 +172,93 @@ local function fxLine(pid, u, sk, lv)
   end)
 end
 
+-- Hoi mau, chan o tran. MOT cho duy nhat lam viec nay -- ba duong
+-- (heal, hot, wave) deu goi vao day chu khong ai tu viet lai phep kep.
+local function healUnit(t, amount)
+  if t == nil or amount <= 0.0 or not API.alive(t) then return end
+  local hp = GetUnitState(t, UNIT_STATE_LIFE) + amount
+  local mx = GetUnitState(t, UNIT_STATE_MAX_LIFE)
+  SetUnitState(t, UNIT_STATE_LIFE, (hp > mx) and mx or hp)
+end
+
 -- "heal": hoi mau mot muc tieu. Khong co muc tieu thi hoi chinh minh.
 local function fxHeal(pid, u, sk, lv)
   local t = (GetSpellTargetUnit ~= nil) and GetSpellTargetUnit() or nil
   if t == nil then t = u end
-  local amount = API.skillDamage(u, API.skillFactor(sk, lv))
-  local hp = GetUnitState(t, UNIT_STATE_LIFE) + amount
-  local mx = GetUnitState(t, UNIT_STATE_MAX_LIFE)
-  SetUnitState(t, UNIT_STATE_LIFE, (hp > mx) and mx or hp)
+  healUnit(t, API.skillDamage(u, API.skillFactor(sk, lv)))
   API.fx(CFG.FX_HIT_HEAL, GetUnitX(t), GetUnitY(t))
+end
+
+-- "nova": no mot vong quanh MUC TIEU, khong phai quanh minh (A013).
+--
+-- Frost Nova goc nham vao mot unit roi van ra; giu dung kieu do. Khong
+-- co muc tieu thi lay diem nham -- ban sao co the duoc dat lai thanh
+-- nham diem trong Object Editor, va luc do ham nay van chay.
+local function fxNova(pid, u, sk, lv)
+  local tx, ty
+  local t = (GetSpellTargetUnit ~= nil) and GetSpellTargetUnit() or nil
+  if t ~= nil then
+    tx, ty = GetUnitX(t), GetUnitY(t)
+  elseif GetSpellTargetX ~= nil then
+    tx, ty = GetSpellTargetX(), GetSpellTargetY()
+  end
+  if tx == nil then return end
+
+  local dmg = API.skillDamage(u, API.skillFactor(sk, lv))
+  enemiesNear(tx, ty, CFG.FX_NOVA_AOE or 300.0, function(e)
+    hit(u, e, dmg, CFG.FX_HIT_NOVA)
+  end)
+end
+
+-- Duyet HERO CUA NGUOI CHOI trong ban kinh. Doi cua enemiesNear.
+--
+-- Khong dung GroupEnumUnitsInRange roi loc theo phe: pet va thap canh
+-- cung thuoc ve nguoi choi, ma hoi mau cho mot cai thap thi vo nghia.
+-- Duyet thang S.pids la chac chan lay dung hero.
+local function heroesNear(x, y, radius, f)
+  for i = 1, #S.pids do
+    local d = S.p[S.pids[i]]
+    local h = d and d.hero or nil
+    if h ~= nil and API.alive(h)
+       and API.distXY(x, y, GetUnitX(h), GetUnitY(h)) <= radius then
+      f(h)
+    end
+  end
+end
+
+-- "wave": hoi mau nay qua dong doi, moi lan nhay yeu di (A014).
+--
+-- CHON NGUOI THIEU MAU NHAT, khong phai nguoi gan nhat. Day la khac
+-- biet that: hoi mau nay sang mot nguoi day mau la vut di mot nhip,
+-- ma so nhip thi co han. Sat thuong thi nguoc lai -- "gan nhat" moi
+-- dung, vi muc tieu nao cung an du.
+local function fxWave(pid, u, sk, lv)
+  local t = (GetSpellTargetUnit ~= nil) and GetSpellTargetUnit() or nil
+  if t == nil then t = u end
+
+  local amount = API.skillDamage(u, API.skillFactor(sk, lv))
+  local hops  = CFG.FX_WAVE_MAX or 3
+  local fall  = CFG.FX_WAVE_FALLOFF or 0.75
+  local reach = CFG.FX_WAVE_HOP or 500.0
+
+  local seen, cur = {}, t
+  for _ = 1, hops do
+    if cur == nil or amount < 1.0 then break end
+    seen[GetHandleId(cur)] = true
+    local cx, cy = GetUnitX(cur), GetUnitY(cur)
+    healUnit(cur, amount)
+    API.fx(CFG.FX_HIT_HEAL, cx, cy)
+    amount = amount * fall
+
+    local best, worst = nil, nil
+    heroesNear(cx, cy, reach, function(h)
+      if seen[GetHandleId(h)] then return end
+      local frac = GetUnitState(h, UNIT_STATE_LIFE)
+                 / GetUnitState(h, UNIT_STATE_MAX_LIFE)
+      if worst == nil or frac < worst then best, worst = h, frac end
+    end)
+    cur = best
+  end
 end
 
 -- "buff" KHONG con ham Lua nao.
@@ -460,8 +540,8 @@ local function onOrder()
   API.trace("order: pid " .. pid .. " phat lenh " .. o)
 end
 
-local FX_CAST = { line = fxLine, chain = fxChain, heal = fxHeal,
-                  hot = fxHot }
+local FX_CAST = { line = fxLine, chain = fxChain, nova = fxNova,
+                  heal = fxHeal, hot = fxHot, wave = fxWave }
 
 local function onSpell()
   local u = GetTriggerUnit()
