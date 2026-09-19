@@ -180,6 +180,9 @@ local function setRank(pid, newR, dev)
   d.cultRank = newR
   API.heroRecompute(pid)
   API.panelRefresh(pid)
+  -- Bang hero hien canh gioi o dong hai. setRank la cho DUY NHAT bac
+  -- doi, nen goi o day la du cho moi duong (dot pha, lenh dev).
+  if API.heroNameRefresh ~= nil then API.heroNameRefresh(pid) end
 
   if dev then
     API.info(pid, CFG.C_GREY .. "[dev] Linh Can -> " .. rankName(newR) ..

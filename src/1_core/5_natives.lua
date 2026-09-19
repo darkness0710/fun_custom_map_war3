@@ -109,6 +109,10 @@ local function groups()
     }},
 
     { name = "Chi so & ten unit", entries = {
+      { "BlzSetHeroProperName",     _G["BlzSetHeroProperName"],
+        "dong 1 cua bang hero -- ten nhan vat" },
+      { "SetHeroLevel",             _G["SetHeroLevel"],
+        "dong 2 cua bang hero -- cap = bac Tu Vi" },
       { "BlzSetUnitName",           BlzSetUnitName,
         "quai giu ten goc cua mau linh (Footman, Ghoul...) -- nhin vao" ..
         " con quai khong biet no thuoc canh gioi nao, tang may" },

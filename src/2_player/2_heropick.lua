@@ -278,6 +278,9 @@ local function applyHeroPick(pid, uid)
   -- Hero MOI thi chua co canh tren nguoi, du canh gioi da cao (doi
   -- hero giua van). check() quet ca bang chu khong so voi bac vua qua.
   if API.wingCheck ~= nil then API.wingCheck(pid) end
+  -- Hai dong chu tren bang hero: ten nhan vat + cap/canh gioi.
+  -- Dat o day chu khong trong spawnHero(): luc do d.hero chua gan.
+  if API.heroNameRefresh ~= nil then API.heroNameRefresh(pid) end
   if uniqueOn() then S.heroTaken[uid] = true end
   pickerHide(pid)
 

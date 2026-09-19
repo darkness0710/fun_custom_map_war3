@@ -622,14 +622,14 @@ CFG.HEROES = {
   --
   -- Gach thu ba luon la DIEM YEU -- the nao cung co cai manh, chi diem
   -- yeu moi lam nguoi choi phai nghi xem nen chon con nao.
-  { id = id('H001'), name = "Hart", role = "Warrior - Tanker", abilities = {}, skills = nil,
+  { id = id('H001'), title = "Thiet Son", name = "Hart", role = "Warrior - Tanker", abilities = {}, skills = nil,
     -- Icon TU VE. Nguon: docs/01-tmp/hero/<ma unit>.png
     -- Sinh bang: python w3gear_icons.py
     icon = [[hero\H001.blp]],
     desc_vi    = { "Don quai dong", "Chiu don khoe", "Yeu truoc boss" },
     desc_en = { "Clears crowds", "Very tanky", "Weak vs bosses" } },
   -- DA MO KHOA -- 2026-09-19. Cay ky nang xong: xem CFG.SKILLS[H002].
-  { id = id('H002'), name = "Hvwd", role = "Shooter - Carry", abilities = {}, skills = nil,
+  { id = id('H002'), title = "Lac Vu", name = "Hvwd", role = "Shooter - Carry", abilities = {}, skills = nil,
     -- Icon TU VE. Nguon: docs/01-tmp/hero/<ma unit>.png
     -- Sinh bang: python w3gear_icons.py
     icon = [[hero\H002.blp]],
@@ -637,7 +637,7 @@ CFG.HEROES = {
     desc_en = { "Top damage", "Long range", "Very fragile" } },
   -- DA MO KHOA -- 2026-09-19. Cay ky nang xong: xem CFG.SKILLS[H003].
   -- Ca ba hero deu mo, nen HERO_UNIQUE gio co nghia that.
-  { id = id('H003'), name = "Hkal", role = "Mage - Support", abilities = {}, skills = nil,
+  { id = id('H003'), title = "Han Nguyet", name = "Hkal", role = "Mage - Support", abilities = {}, skills = nil,
     -- Icon TU VE. Nguon: docs/01-tmp/hero/<ma unit>.png
     -- Sinh bang: python w3gear_icons.py
     icon = [[hero\H003.blp]],
@@ -829,6 +829,16 @@ CFG.HERO_MAX_PER_PLAYER = 1
 CFG.HERO_UNIQUE = true
 
 -- Hero sinh ra cach nha chinh bao xa.
+-- Bang hero: dong 1 la TEN NHAN VAT, dong 2 la "Level <bac> <canh gioi>".
+--
+-- Truoc day ca hai dong deu ghi ten unit cua Object Editor, nen dong
+-- hai la "Level 1 Mage" VINH VIEN -- hero trong map nay khong bao gio
+-- len cap. Dong quan trong thu hai cua bang noi dung mot thu: mot he
+-- thong khong ton tai.
+--
+-- false de tra lai nhu cu. Xem 15_heroname.lua.
+CFG.HERO_NAME_SHOW_RANK = true
+
 CFG.HERO_SPAWN_OFFSET = 500.0
 
 -- Hero chet bao lau thi song lai. 0 = tat han, hero chet nam luon.
