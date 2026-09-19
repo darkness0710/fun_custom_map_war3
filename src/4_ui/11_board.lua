@@ -29,31 +29,40 @@
 --  Nho: goi ham cua file khac phai qua API.
 -- ============================================================
 
--- Cot 1 la ten nguoi choi, nen bon cot so la 2..5.
-local COLS = 5
+-- Be ngang TUNG COT, tinh theo be ngang man hinh.
+--
+-- LOI DA SHIP: ban dau chi dat be ngang cho HANG TIEU DE. Multiboard
+-- cua Warcraft giu be ngang theo TUNG O chu khong theo cot -- nen hang
+-- tieu de gian theo so cua ta con hang du lieu giu mac dinh, va hai
+-- hang le nhau tren man hinh.
+--
+-- Khong co ham nao dat "be ngang cua mot cot". Phai dat cho MOI o, va
+-- do la ly do put() luon tra bang nay chu khong nhan tham so.
+local COLW = { 0.085, 0.075, 0.055, 0.042, 0.042 }
+local COLS = #COLW
 
 local function fmtNum(n)
   return API.num(math.floor((n or 0) + 0.5))
 end
 
--- Ghi mot o. Gop lai mot cho vi moi o deu phai lam ba viec giong nhau
--- (lay item, dat chu, giai phong handle) -- quen cai thu ba thi ro ri
--- mot handle moi lan ve lai, va ta ve lai moi nua giay.
-local function put(mb, row, col, text, width)
+-- Ghi mot o. Gop lai mot cho vi moi o deu phai lam BON viec giong nhau
+-- (lay item, dat kieu, dat chu + be ngang, giai phong handle) -- quen
+-- cai cuoi thi ro ri mot handle moi lan ve lai, va ta ve moi nua giay.
+local function put(mb, row, col, text)
   local it = MultiboardGetItem(mb, row - 1, col - 1)
   if it == nil then return end
   MultiboardSetItemStyle(it, true, false)
   MultiboardSetItemValue(it, text)
-  if width ~= nil then MultiboardSetItemWidth(it, width) end
+  MultiboardSetItemWidth(it, COLW[col] or 0.05)
   MultiboardReleaseItem(it)
 end
 
 local function header(mb)
-  put(mb, 1, 1, CFG.C_GOLD .. API.t("board_player") .. CFG.C_END, 0.085)
-  put(mb, 1, 2, CFG.C_GOLD .. API.t("board_realm")  .. CFG.C_END, 0.075)
-  put(mb, 1, 3, CFG.C_GOLD .. API.t("panel_qi")     .. CFG.C_END, 0.055)
-  put(mb, 1, 4, CFG.C_GOLD .. API.t("cur_iron")     .. CFG.C_END, 0.040)
-  put(mb, 1, 5, CFG.C_GOLD .. API.t("board_roll")   .. CFG.C_END, 0.040)
+  put(mb, 1, 1, CFG.C_GOLD .. API.t("board_player") .. CFG.C_END)
+  put(mb, 1, 2, CFG.C_GOLD .. API.t("board_realm")  .. CFG.C_END)
+  put(mb, 1, 3, CFG.C_GOLD .. API.t("panel_qi")     .. CFG.C_END)
+  put(mb, 1, 4, CFG.C_GOLD .. API.t("cur_iron")     .. CFG.C_END)
+  put(mb, 1, 5, CFG.C_GOLD .. API.t("board_roll")   .. CFG.C_END)
 end
 
 local function refresh()

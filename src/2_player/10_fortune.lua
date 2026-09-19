@@ -110,22 +110,30 @@ local function addRolls(pid, n)
   -- ham nay chay tren moi may, con mo khung la UI thuan (ADR 0012).
   if d.cards == nil then drawCards(pid) end
 
-  -- KHONG MO KHUNG O DAY NUA -- 2026-09-20.
+  -- MO KHUNG NGAY.
   --
-  -- LOI DA SHIP: khung bat len NGAY luc tinh anh chet, ma tinh anh chet
-  -- GIUA WAVE -- con 49 con dang go nguoi choi. Ba hau qua:
+  -- DA THU DOI SANG "mo luc don sach wave" (2026-09-20) ROI GO LAI
+  -- TRONG CUNG NGAY. Ghi lai vi ly le nghe rat xuoi ma sai:
   --
-  --   1. Phai chon the trong luc dang bi danh. Ca he Co Duyen dung de
-  --      nguoi choi CAN NHAC, ma khoanh khac can nhac lai dat dung vao
-  --      luc khong ai can nhac duoc -- no thanh mot thu phai gat di.
-  --   2. Khung goi panelHide(), tuc DONG BANG ESC cua nguoi choi. Dang
-  --      mua trang bi thi mat cho dang dung.
-  --   3. Do duoc: 168 luot mot van. Van 90 phut la MOT LAN MOI 32 GIAY,
-  --      va sau Thanh Long la 12 lan lien tiep.
+  --   "Tinh anh chet GIUA wave, con 49 con dang danh -- chon the luc do
+  --    khong phai lua chon, la mot thu phai gat di."
   --
-  -- Gio chi bao mot dong. Khung bat khi DON SACH WAVE -- cho nhip da
-  -- dung san (ADR 0026) -- va gom ca wave vao mot lan.
-  API.msg(pid, CFG.C_GOLD .. API.t("fortune_pending", d.rolls) .. CFG.C_END)
+  -- Gia dinh do CHUA DO, va no sai. Tinh anh co ELITE_EHP = 10, tuc day
+  -- gap 10 lan mot con linh va sinh cung luc voi 50 con kia -- nen no
+  -- LUON la con chet cuoi. Boss thi con hien nhien hon: boss dung mot
+  -- minh, boss chet LA wave sach.
+  --
+  -- Trong onMobDeath, rewardAll() va onWaveCleared() cach nhau DUNG
+  -- NAM DONG trong cung mot ham. Doi cho mo khung giua hai dong do la
+  -- doi mot thu khong ai nhin thay.
+  --
+  -- Va no lam hong mot duong: Thanh Thu chet TRONG HANG, thuong luc
+  -- giua hai wave -- khong co wave nao dang chay de ma "don sach". 12
+  -- luot cua Thanh Long nam cho toi tan wave sau.
+  --
+  -- Bai hoc: dem SO LAN khong phai do su kho chiu. 168 luot mot van la
+  -- that, nhung moi lan von da roi vao luc an toan roi.
+  if API.fortuneFrameShow ~= nil then API.fortuneFrameShow(pid) end
 end
 
 -- Goi tu 2_wave.lua luc don sach wave, va tu phim R.
