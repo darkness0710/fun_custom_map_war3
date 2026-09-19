@@ -3174,14 +3174,14 @@ CFG.SHOP = {
   { code = "hp", vi = "Lo Hoi Mau",  en = "Healing Potion",
     item = id('phea'), price = 5,
     icon = [[ReplaceableTextures\CommandButtons\BTNPotionGreenSmall.blp]],
-    desc_vi    = "Hoi mau ngay. Dung duoc mot lan.",
-    desc_en = "Restores health instantly. One use." },
+    desc_vi    = "Hoi 250 mau ngay. Dung duoc mot lan.",
+    desc_en = "Restores 250 health instantly. One use." },
 
   { code = "mp", vi = "Lo Hoi Mana", en = "Mana Potion",
     item = id('pman'), price = 5,
     icon = [[ReplaceableTextures\CommandButtons\BTNPotionBlueSmall.blp]],
-    desc_vi    = "Hoi mana ngay. Dung duoc mot lan.",
-    desc_en = "Restores mana instantly. One use." },
+    desc_vi    = "Hoi 150 mana ngay. Dung duoc mot lan.",
+    desc_en = "Restores 150 mana instantly. One use." },
 
   -- Da Huyen Thiet: mon DUY NHAT trong shop khong phai item.
   --
@@ -3215,6 +3215,48 @@ CFG.SHOP = {
   -- Ma 'ankh' la phong doan nhu 'phea'/'pman'. Khong sao: startShop()
   -- tao thu moi item luc vao map, ma sai thi CreateItem tra ve nil va
   -- no bao do ngay -- khong doi toi luc ai do bo ra 500 vang moi biet.
+
+  -- ---------- Coc Hoi Mau ----------
+  --
+  -- MON HOI MAU DUY NHAT TRONG SHOP KHONG TEO. Coc hoi 2% MAU TOI DA
+  -- moi giay, tuc PHAN TRAM -- no tu bam theo hero suot 20 canh gioi.
+  --
+  -- Doi chieu voi lo thuoc, va day moi la cho dang doc:
+  --
+  --   canh gioi  mau hero   mot lo (250 phang)   coc (2%/giay)
+  --          1       ~350              71%             7 mau/giay
+  --         20    ~24.000               1%           480 mau/giay
+  --
+  -- LO HOI MAU DANG CHET DAN va chua ai nhan ra, vi chua ai choi toi
+  -- canh gioi 20. Chu du an chon DE YEN (2026-09-20): lo re 5 vang,
+  -- coc dat 50 -- "mon re dau van / mon dat cuoi van" la mot duong
+  -- tien hoa hop ly, mien la mo ta khong noi doi. Do la ly do mo ta lo
+  -- gio ghi ro con so 250.
+  --
+  -- GIA 50 = 5 Da Huyen Thiet = 5 buoc Luyen = 10 lo thuoc.
+  -- Phep thu: mua MOT coc moi wave trong 100 wave = 5.000 vang = TRON
+  -- phan thu nhap chac chan cua ca van. Tuc co coc HOAC co Trang Bi,
+  -- khong co ca hai. Do moi la quyet dinh.
+  --   25 thi cuoi van ai cung mua moi wave ma van thua tien len do
+  --   100 thi khong ai mua giua luc dang bi don
+  --
+  -- PHANH TU NHIEN: coc chi co 5 MAU, mot don thuong la mat. Nen no an
+  -- khi doi DANG GIU DUOC THE, va vo dung khi dang bi tran. Phanh do
+  -- khong phai con so ta chinh -- no co san, va no dung tinh than
+  -- "quyet dinh, khong phai con so".
+  --
+  -- 2%/giay va 25-30 giay lay tu tai lieu, CHUA DO tren 1.31.1. Phep
+  -- do re nhat: dat mot coc o canh gioi 1, nhin so mau hoi; "-lc 10"
+  -- roi dat cai nua. So khong doi la tai lieu sai.
+  --
+  -- Ma 'whwd' la phong doan nhu 'ankh'. probeItems() tao thu moi item
+  -- luc vao map va BAO RO neu sai -- khong doi toi luc ai do bo ra 50
+  -- vang moi biet.
+  { code = "ward", vi = "Coc Hoi Mau", en = "Healing Ward",
+    item = id('whwd'), price = 50,
+    icon = [[ReplaceableTextures\CommandButtons\BTNPotionGreenSmall.blp]],
+    desc_vi    = "Cam mot coc hoi 2% mau moi giay cho CA DOI dung gan.",
+    desc_en = "Plants a ward that heals 2% health per second to ALL nearby allies." },
 
   { code = "ankh", vi = "Ankh Hoi Sinh", en = "Ankh of Reincarnation",
     item = id('ankh'), price = 500,

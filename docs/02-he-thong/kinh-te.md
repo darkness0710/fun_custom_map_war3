@@ -98,10 +98,14 @@ Nguồn thứ hai của **Vàng** và nguồn duy nhất của **Đá Huyền Th
 
 | | |
 |---|---|
-| Lượt | tinh anh 1 · boss 3 · cổng 1 · Thánh Thú 3/5/8/12 → **169 cả ván** |
-| Thẻ mỗi lượt | **2** — một thẻ vàng, một thẻ chỉ số. Luôn đúng hai loại đó |
+| Lượt | tinh anh 1 · boss 3 · Thánh Thú 3/5/8/12 → **168 cả ván** |
+| Thẻ mỗi lượt | **2 rút trong 3 loại** — Vàng · Chỉ Số · **Gỗ** *(2026-09-20)* |
 | Vàng từ một thẻ | **30–90 phẳng**, không theo cảnh giới. Trung bình 60 |
-| Vàng từ quay cả ván | **0 – 10 140**, tuỳ người chơi chọn vàng hay chỉ số |
+| Vàng từ quay cả ván | **0 – 6 720** — thẻ Vàng chỉ xuất hiện ở **⅔** số lượt |
+
+> **Cổng đã bỏ** *(`GATE_ROLL = 0`)* và **thêm loại thẻ thứ ba** — xem
+> [quay-thuong.md](quay-thuong.md). Thẻ Vàng giờ chỉ được mời ở `2/3` số lượt,
+> nên trần vàng từ quay tụt từ `10 140` xuống `6 720`.
 
 > **Sửa 2026-09-19.** Bảng cũ ghi *"vàng từ quay bám theo bậc: cảnh giới 1 là
 > 185, cảnh giới 20 là 27 016"* và *"Đá 10/lượt, cả ván 1 400"*. **Cả hai đều
@@ -113,9 +117,17 @@ Nguồn thứ hai của **Vàng** và nguồn duy nhất của **Đá Huyền Th
 > - **Thẻ đá đã bị bỏ** khỏi `CFG.FORTUNE_KINDS` (còn `{"gold", "stat"}`). Cơ
 >   Duyên không cho viên đá nào nữa.
 
-Vì thẻ vàng phẳng mà thẻ chỉ số thì leo, **nửa sau ván gần như không ai chọn
-vàng nữa** — 60 vàng ở cảnh giới 18 là vô nghĩa. Thu nhập vàng thực tế do đó
-dồn về nửa đầu.
+> **Đoạn này từng SAI, sửa 2026-09-20.** Bản cũ viết *"thẻ vàng phẳng mà thẻ chỉ
+> số thì leo, nên nửa sau ván gần như không ai chọn vàng"*.
+>
+> Đo lại thì **ngược hẳn**: quy hai thẻ về cùng đơn vị *(điểm chỉ số)*, thẻ Vàng
+> hơn thẻ Chỉ Số **×4.09 ở MỌI bậc** — vì `60 vàng → 6 đá → 6 bước Luyện`, mà mỗi
+> bước Luyện cũng nhân `CULT_STAT_STEP`. Hai bên khoá cùng một hệ số nên **không
+> bao giờ có điểm giao**.
+>
+> Cái sai nằm ở chỗ so *"60 vàng"* với *"+2 chỉ số"* như hai con số trần trụi, thay
+> vì hỏi **60 vàng cuối cùng mua được bao nhiêu chỉ số**. `FORTUNE_VALUE` đã nâng
+> `2.2 → 7.0` để còn lệch `×1.29`.
 
 ## Thẻ IV — Pháp Khí
 
@@ -140,9 +152,9 @@ Chi tiết: [nang-cap-nha-chinh.md](nang-cap-nha-chinh.md).
 
 | Nguồn | Vàng | Ghi chú |
 |---|---|---|
-| Quái thường | **4 000** | 80 stage × 50 con × 1. Tinh anh và boss **không** cho vàng |
-| Cơ Duyên | **0 – 10 140** | 169 lượt × thẻ vàng 30–90 *(trung bình 60)* — chỉ khi chọn vàng thay vì chỉ số |
-| **Tổng** | **4 000 – 14 140** | ~9 070 nếu chọn vàng một nửa số lượt |
+| Quái thường | **5 000** | 100 stage × 50 con × 1. Tinh anh và boss **không** cho vàng |
+| Cơ Duyên | **0 – 6 720** | 168 lượt, thẻ Vàng được mời ở ⅔ số lượt × 30–90 *(trung bình 60)* |
+| **Tổng** | **5 000 – 11 720** | *(quái thường đo lại: 100 stage × 50 con, kể cả stage boss)* |
 
 Thưởng **chia đủ cho mọi người**, không chia nhỏ theo số người
 ([ADR 0013](../05-quyet-dinh/0013-thuong-chia-deu-cho-moi-nguoi.md)) — nên con số
@@ -172,7 +184,45 @@ vĩnh viễn; thẻ này bán một lần dùng.
 | Lọ hồi mana | **5** vàng | `pman` |
 | **Tháp Canh** | **10** vàng | `tsct` |
 | Đá Huyền Thiết | 10 vàng | *(không phải item)* |
+| **Cọc Hồi Máu** | **50** vàng | `whwd` |
 | Ankh hồi sinh | 500 vàng | `ankh` |
+
+### Cọc Hồi Máu — món hồi máu duy nhất **không teo** *(2026-09-20)*
+
+Cọc hồi **2% máu tối đa mỗi giây**, tức **phần trăm**. Nó tự bám theo hero suốt 20
+cảnh giới. Đối chiếu với lọ thuốc — và đây mới là chỗ đáng đọc:
+
+| cảnh giới | máu hero | 1 lọ *(250 phẳng)* | cọc *(2%/giây)* |
+|---|---|---|---|
+| 1 | ~350 | **71%** | 7 máu/giây |
+| 20 | ~24 000 | **1%** | 480 máu/giây |
+
+> **Lọ hồi máu đang chết dần và chưa ai nhận ra**, vì chưa ai chơi tới cảnh giới
+> 20. Ở đó một lọ hồi `1%` máu; đầy một ô túi *(10 lọ)* hồi được `10%`.
+>
+> Chủ dự án chọn **để yên**: lọ rẻ `5` vàng, cọc đắt `50` — *"món rẻ đầu ván /
+> món đắt cuối ván"* là một đường tiến hoá hợp lý, **miễn là mô tả không nói
+> dối**. Đó là lý do mô tả lọ giờ ghi rõ con số `250` thay vì *"hồi máu ngay"*.
+
+**Giá `50` = 5 Đá Huyền Thiết = 5 bước Luyện = 10 lọ thuốc.**
+
+Phép thử: mua **một cọc mỗi wave** trong 100 wave = **5 000 vàng** = **trọn phần
+thu nhập chắc chắn** của cả ván. Tức có cọc **hoặc** có Trang Bị, không có cả
+hai. Đó mới là quyết định.
+
+- `25` thì cuối ván ai cũng mua mỗi wave mà vẫn thừa tiền lên đồ — không phải lựa chọn
+- `100` thì không ai mua giữa lúc đang bị dồn, mà món không ai mua thì bằng không có
+
+**Phanh tự nhiên:** cọc chỉ có **5 máu**, một đòn thường là mất. Nên nó ăn khi đội
+**đang giữ được thế**, và vô dụng khi đang bị tràn. Cái phanh đó có sẵn, không
+phải con số ta chỉnh.
+
+> ⚠ `2%/giây` và `25–30 giây` lấy từ tài liệu, **chưa đo trên 1.31.1**. Phép đo rẻ
+> nhất: đặt một cọc ở cảnh giới 1, nhìn số máu hồi; `-lc 10` rồi đặt cái nữa. Số
+> không đổi là tài liệu sai.
+>
+> Mã `whwd` là phỏng đoán như `ankh` — `probeItems()` tạo thử mọi item lúc vào map
+> và **báo rõ** nếu sai, không đợi tới lúc ai đó bỏ ra 50 vàng mới biết.
 
 > **Hai thay đổi 2026-09-19.**
 >
