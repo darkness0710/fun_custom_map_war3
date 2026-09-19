@@ -132,6 +132,10 @@ Chi tiết: [02-he-thong/dot-quai.md](../02-he-thong/dot-quai.md) ·
 | `MOB_UNIT` | Mẫu lính mỗi cõi, tra theo `REALMS[r].world` | **Placeholder** — 4 unit gốc WC3. Thiết kế cần 4 cõi × 6 mẫu = 24 |
 | `ELITE_EHP` `ELITE_DMG` `ELITE_SCALE` | Tinh anh | `ELITE_DMG` phải thấp hơn nhiều `ELITE_EHP` — nhân 10 cả hai là giết hero một đòn |
 | `BOSS_SECONDS` `BOSS_HITS_TO_KILL` `BOSS_SCALE` | Boss | Chỉ số **đo từ đội**, không nhân từ lính. `BOSS_EHP`/`BOSS_DMG` đã bỏ — xem [boss.md](../02-he-thong/boss.md) |
+| `BOSS_SKILL_SHARE` | Kỹ năng **chủ động** cộng thêm bao nhiêu vào ước lượng | `1.0`. Là **ước lượng**, chỉnh theo dòng `boss: ... CHET sau ...s` trong file vết |
+| `BOSS_DPS_PASSIVE_FX` | Bị động nào cộng % vào mỗi đòn **đơn mục tiêu** | `{ "burn" }`. Tách khỏi `BOSS_SKILL_SHARE` vì đây **không** phải ước lượng — nó đọc được từ bậc kỹ năng. **Không** có `cleave`: Chém Lan văng sang con *bên cạnh*, mà boss đứng một mình nên nó cộng `0` |
+| `BOSS_AURA` `BOSS_AURA_MAX_LEVEL` | Năm hào quang, mỗi boss một cái | Dùng ability **gốc** của Warcraft, không nhân bản — cả năm đều là **phần trăm** nên tự bám theo sức boss. `Vampiric` chỉ ăn đòn **cận chiến**, `Trueshot` chỉ ăn đòn **tầm xa**; gán nhầm thì aura im lặng không làm gì, nên `applyAura()` đo lại và ghi vết |
+| `SIDE_QUEST_RESET` | Bỏ hoang bao lâu thì Thánh Thú trả về nguyên trạng | `20` giây. Không có nó thì `b.pinned` ghim **vĩnh viễn**: chạm vào con thú lúc vừa mở khoá rồi bỏ đi, quay lại sau vẫn gặp con số cũ |
 | `MOB_ARCHETYPES` | 6 mẫu lính | **(chưa có)** `Σ(tỉ lệ)` = 1.0 và `Σ(tỉ lệ × EHP mult)` ∈ [0.95, 1.05] |
 | `MODIFIERS` `TIER_MODIFIERS` | Tu chính, và tầng nào bật mấy cái | **(chưa có)** Cố định theo stage, **không random**. Thiếu nó thì 4 tầng của một cảnh giới giống hệt nhau |
 | `WAVE_SPAWN_BATCH` `WAVE_SPAWN_TICK` | Sinh rải thế nào | **(chưa có)** Hiện sinh cả 50 con trong một lượt |
@@ -197,10 +201,21 @@ Chi tiết: [nang-cap-ky-nang.md](nang-cap-ky-nang.md) ·
 | `SKILL_LUMBER_UP` | Giá nâng một bậc, bằng **Gỗ** | `1`. Một con số phẳng, không bảng, không đường cong |
 | `SKILL_LUMBER_UNLOCK` | Giá mở khoá một kỹ năng | `1`. Mở cái thứ nhất hay thứ bảy đều như nhau — người chơi chỉ chọn **thứ tự**, không phải tính toán |
 | `SKILL_START_COUNT` | Bao nhiêu kỹ năng phát sẵn | `0` — command card trống khi vào map |
-| `LUMBER_START` | Gỗ cầm sẵn lúc vào map | `2` — đủ mở **một** kỹ năng sát thương **và** Luyện Thể ngay giây đầu. Đó là quyết định đầu tiên của ván |
+| `LUMBER_START` | Gỗ cầm sẵn lúc vào map | `1` *(hạ từ `2` ngày 2026-09-19)* — hai Gỗ mở được **hai** kỹ năng ngay giây đầu, và thế là mất mất quyết định đầu tiên của ván: *"mở cái nào trước"* |
 | `SKILL_DMG_STEP` `SKILL_CD_STEP` `SKILL_PASSIVE_STEP` | Sức mạnh mỗi bậc | Ngân sách cả hệ là ×2, và ×2 đó là **tích** của mọi nút chỉnh: chủ động ×1.33 sát thương × 1.5 tần suất; bị động ăn trọn ×2 vì không có hồi chiêu |
 | `SKILL_MANA_STEP` | Mana mỗi bậc | Tăng **chậm hơn** bộ mana (Tu Vi cộng cả Int). Chủ ý: đầu ván mana là ràng buộc thật, cuối ván không còn |
 | `SKILL_DATA_LIVE` | Số liệu đã có hiệu lực chưa | `true` từ 2026-09-16. Bảy ability có 10 bậc thật, và [7_effect.lua](../../src/2_player/7_effect.lua) tự gây sát thương theo đúng `CFG.SKILLS` |
+
+### Hằng số hiệu ứng *(thêm 2026-09-19 cho Hvwd)*
+
+| Khoá | Ý nghĩa | Ràng buộc |
+|---|---|---|
+| `FX_CHAIN_MAX` `FX_CHAIN_HOP` `FX_CHAIN_FALLOFF` | Lôi Vân: số mục tiêu · tầm nảy · hao mỗi lần nảy | `4` · `400` · `0.80`. Tia sét **gốc** của Chain Lightning vẫn vẽ ra và nó chọn mục tiêu theo bảng số của WE, không theo vòng lặp Lua — hai bên có thể lệch một con |
+| `FX_BURN_TIME` `FX_BURN_TICK` | Thiêu Thiên: dài bao lâu · nhịp | `3.0` · `0.5`. **Một** bảng và **một** đồng hồ cho cả map — mỗi `TimerStart` là một handle, vài nghìn cái trong một wave thì Warcraft cạn handle và những hệ **khác** bắt đầu hỏng |
+| `FX_BURN_STACK` | Đánh lại thì cộng dồn hay làm mới | `false`. Cộng dồn thì tốc đánh tự nhân với chính nó — hero cuối ván đánh rất nhanh sẽ có hàng chục lớp đốt chồng lên |
+| `FX_HOT_TIME` | Hồi Xuân: **đường lui** nếu đọc không ra | `6.0`. Thời lượng **thật** đọc từ trường `adur` của chính ability — World Editor giữ con số đó, một nơi duy nhất. Phải dùng tới khoá này thì `fxHot()` ghi vết |
+| `FX_HIT_BURN` `FX_HIT_CHAIN` | Model hiệu ứng | Đang **mượn lại** model của `line`/`cleave`. Trông không đúng lắm, nhưng một đường dẫn **sai** thì không vẽ ra gì mà vẫn "thành công" — cùng lớp lỗi với `AddWeatherEffect` nhận mã rác. Đổi thì phải thử trong game trước |
+| `BURN_ORDER` | Mã lệnh bật/tắt autocast của Thiêu Thiên | `nil` = tự dò theo tên. **Dò theo tên không đáng tin**: `OrderId()` khác `0` chỉ chứng minh *"tên này là một lệnh có thật"*, không chứng minh *"nó là lệnh của ability này"* — xem [ky-nang.md](../02-he-thong/ky-nang.md) |
 
 ## Trang Bị
 
