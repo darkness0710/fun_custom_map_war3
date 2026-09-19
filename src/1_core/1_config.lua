@@ -2059,7 +2059,7 @@ CFG.SKILLS[id('H002')] = {
   -- Gio tinh bang Lua, % cua DON DANH THAT -- y het cleave. Dat
   -- 'ua1w = mbounce' trong WE de lay lai hoat anh thi PHAI bo 'fx'
   -- o day, khong thi sat thuong nhan doi.
-  { id = id('A012'), baseAbil = "Amgl", vi = "Nguyet Nhan", en = "Moon Glaive", kind = "passive", pct = 0.45, fx = "bounce", pos = "3,2",
+  { id = id('A012'), baseAbil = "Amgl", vi = "Nguyet Nhan", en = "Moon Glaive", kind = "passive", pct = 0.25, fx = "bounce", pos = "3,2",
     desc_vi = "Don danh nay sang 3 muc tieu ben canh, cu nay dau %s sat thuong roi yeu dan.",
     desc_en = "Attacks bounce to 3 nearby targets; the first bounce deals %s damage, then falls off." },
   { id = id('A004'), baseAbil = "Aamk", vi = "Luyen The", en = "Body Forging",   kind = "passive",  statVal = 4.0, fx = "stat",
@@ -2121,7 +2121,7 @@ CFG.SKILLS[id('H003')] = {
     fromField = "Hab1", fromPct = true, fx = "aura",
     desc_vi = "Ca doi hoi mana nhanh hon %s.",
     desc_en = "The whole party regenerates mana %s faster." },
-  { id = id('A012'), baseAbil = "Amgl", vi = "Nguyet Nhan", en = "Moon Glaive", kind = "passive", pct = 0.45, fx = "bounce", pos = "3,2",
+  { id = id('A012'), baseAbil = "Amgl", vi = "Nguyet Nhan", en = "Moon Glaive", kind = "passive", pct = 0.25, fx = "bounce", pos = "3,2",
     desc_vi = "Don danh nay sang 3 muc tieu ben canh, cu nay dau %s sat thuong roi yeu dan.",
     desc_en = "Attacks bounce to 3 nearby targets; the first bounce deals %s damage, then falls off." },
   { id = id('A004'), baseAbil = "Aamk", vi = "Luyen The", en = "Body Forging",   kind = "passive",  statVal = 4.0, fx = "stat",
@@ -2179,6 +2179,20 @@ CFG.FX_CHAIN_FALLOFF = 0.80    -- moi lan nhay con bay nhieu phan
 CFG.FX_BOUNCE_MAX     = 3       -- so lan nay, KHONG ke muc tieu dau
 CFG.FX_BOUNCE_HOP     = 350.0   -- tam nhay giua hai muc tieu
 CFG.FX_BOUNCE_FALLOFF = 0.70    -- moi lan nay con bay nhieu phan
+
+-- HA TU 0.45 XUONG 0.25 -- 2026-09-20, sau khi DO trong tran that.
+--
+-- File vet: "bounce: pid 0 co Nguyet Nhan bac 10, 90% moi cu nay".
+-- Bac 10 nhan SKILL_PASSIVE_STEP^9 = x2, nen 0.45 thanh 0.90. Ba cu
+-- nay voi FALLOFF 0.70 la 90 + 63 + 44 = +197% sat thuong -- gan gap
+-- BA don danh.
+--
+-- Doi chieu: Chem Lan cua Hart o bac 10 la 40%. Nguyet Nhan vang vao
+-- dung 3 con con Chem Lan vang ca dam, nen manh hon moi muc tieu la
+-- hop ly -- gap ba thi khong.
+--
+-- 0.25 -> bac 10 la 50%, ba cu = 50 + 35 + 24 = +109%. Van la ky nang
+-- manh nhat cua xa thu, nhung khong con nuot ca bang so.
 
 -- ---------- "nova": no mot vong quanh muc tieu (A013, Hkal) ----------
 CFG.FX_NOVA_AOE = 300.0

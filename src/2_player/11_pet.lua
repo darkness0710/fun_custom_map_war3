@@ -221,7 +221,36 @@ local function startPet()
       SetPlayerAllianceStateBJ(owner, p, bj_ALLIANCE_ALLIED_VISION)
       SetPlayerAllianceStateBJ(p, owner, bj_ALLIANCE_ALLIED_VISION)
     end
-    API.trace("pet: phe " .. slot .. " da lien minh voi " .. #S.pids .. " nguoi choi")
+
+    -- VA VOI PHE DICH NUA -- day la cho thieu.
+    --
+    -- LOI DA SHIP: doan tren chi noi quan he voi NGUOI CHOI, nen pet va
+    -- quai van la ke thu cua nhau. Hai hau qua, va ca hai deu nhin ra
+    -- duoc ma khong ai doan duoc nguyen nhan:
+    --
+    --   quai NHAM VAO PET. Pet bat tu nen chung khong giet duoc, nhung
+    --   chung dung lai va vung vao no -- pet thanh mot cai moc keo quai
+    --   khong ai dinh dat o do.
+    --
+    --   pet DANH TRA. SetUnitAcquireRange(0) chan viec TU DI TIM muc
+    --   tieu, no khong chan viec danh tra khi bi danh. Nen chi can mot
+    --   con quai vung truoc la pet lao theo.
+    --
+    -- NEUTRAL chu khong ALLIED: hai phe thoi nham vao nhau, va khong
+    -- ben nao chia tam nhin cho ben nao. Dung ALLIED_VISION o day thi
+    -- nguoi choi -- von da lien minh-co-tam-nhin voi phe pet -- co the
+    -- nhin xuyen sang ca ban do dich.
+    local neutral = _G["bj_ALLIANCE_NEUTRAL"] or _G["bj_ALLIANCE_ALLIED"]
+    if S.enemy ~= nil and neutral ~= nil then
+      SetPlayerAllianceStateBJ(owner, S.enemy, neutral)
+      SetPlayerAllianceStateBJ(S.enemy, owner, neutral)
+    else
+      API.trace("pet: KHONG dat duoc quan he voi phe dich -- pet se bi " ..
+                "quai nham vao va se danh tra")
+    end
+
+    API.trace("pet: phe " .. slot .. " lien minh voi " .. #S.pids ..
+              " nguoi choi, trung lap voi phe dich")
   end
   S.petTimer = CreateTimer()
   TimerStart(S.petTimer, CFG.PET.tick, true, follow)
