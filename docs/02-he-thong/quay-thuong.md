@@ -1,6 +1,6 @@
 # Cơ Duyên — mỗi thẻ một cột
 
-> **Trạng thái:** **Đã cài** — ba loại thẻ, rút hai
+> **Trạng thái:** **Đã cài** — ba loại thẻ, mở cả ba
 > **Cập nhật:** 2026-09-20
 > **Khoá CFG:** `FORTUNE_ELITE` `FORTUNE_BOSS` `FORTUNE_VALUE` `FORTUNE_RANGE_MIN/MAX`
 > `FORTUNE_KINDS` `FORTUNE_DRAW` `FORTUNE_LUMBER` `FORTUNE_GOLD_MIN/MAX`
@@ -81,16 +81,29 @@ chỗ nhịp **đã dừng sẵn** ([ADR 0026](../05-quyet-dinh/0026-nhip-van-do
 > đóng mà còn lượt thì người chơi **kẹt lượt vĩnh viễn** — không phím, nút hay
 > lệnh nào mở lại được.
 
-## Ba loại thẻ, rút hai *(2026-09-20)*
+## Ba loại thẻ, mở cả ba *(2026-09-20)*
 
-```
-Gỗ    ↔ Chỉ Số     mở một nút bấm mới   vs  mạnh hơn ngay
-Gỗ    ↔ Vàng       kỹ năng              vs  trang bị
-Chỉ Số ↔ Vàng      ăn ngay              vs  phải qua Luyện
-```
+| Thẻ | Trục |
+|---|---|
+| **Vàng** | → đá → Trang Bị |
+| **Chỉ Số** | sức mạnh ngay, vào **một chỉ số ngẫu nhiên** |
+| **Gỗ** | Kỹ Năng và Pháp Khí |
 
-Ba câu hỏi thay vì một. Mở cả ba thẻ thì nó thành *"chọn cái to nhất"* — mà cái
-to nhất thì tính ra được, tức không còn là lựa chọn.
+> **Từng rút 2 trong 3, đổi lại thành 3 trong cùng ngày.** Lý lẽ rút 2 là *"mở cả
+> ba thì nó thành chọn cái to nhất, mà cái to nhất tính ra được"*. Lý lẽ đó **bỏ
+> sót một chi tiết của chính hệ này**:
+>
+> **Thẻ Chỉ Số cộng vào một chỉ số NGẪU NHIÊN** *(`CFG.FORTUNE_STATS`)*, mà sát
+> thương kỹ năng ăn theo chỉ số **cao nhất**. Nên cùng một thẻ Chỉ Số có thể rất
+> đáng *(trúng chỉ số chính)* hoặc gần như vô dụng *(trúng chỉ số phụ)*. Nó không
+> phải một con số cố định để đem so — và rút 2 trong 3 thì có lượt người chơi
+> không được **nhìn** để biết.
+>
+> Và không có cái nào áp đảo: **Gỗ nằm trên một trục khác hẳn** *(kỹ năng và Pháp
+> Khí, không phải chỉ số)*, nên *"cái to nhất"* không tính ra được dù có mở cả ba.
+>
+> Đổi lại: mỗi lượt không còn là một câu hỏi khác nhau. Thấy nhàm thì hạ về `2` —
+> một dòng, khung tự co theo.
 
 ### Thẻ Vàng từng hơn thẻ Chỉ Số ×4.09 — ở mọi bậc
 

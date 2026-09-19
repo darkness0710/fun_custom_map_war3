@@ -257,7 +257,7 @@ Chi tiết: [02-he-thong/quay-thuong.md](../02-he-thong/quay-thuong.md) ·
 | Khoá | Ý nghĩa | Ràng buộc |
 |---|---|---|
 | `FORTUNE_ELITE` `FORTUNE_BOSS` | Lượt quay tinh anh / boss | `1` + `3`. Cộng Thánh Thú là **168 lượt** cả ván — nhân bất cứ phần thưởng nào với 168 đều thành to |
-| `FORTUNE_KINDS` `FORTUNE_DRAW` | Ba loại thẻ, rút hai | Mở cả ba thì thành *"chọn cái to nhất"* — mà cái to nhất tính ra được, tức không còn là lựa chọn |
+| `FORTUNE_KINDS` `FORTUNE_DRAW` | Ba loại thẻ, **mở cả ba** | Thẻ Chỉ Số cộng vào một chỉ số **ngẫu nhiên**, nên nó không phải con số cố định để đem so — rút 2 trong 3 thì có lượt người chơi không được *nhìn* để biết |
 | `FORTUNE_LUMBER` | Thẻ Gỗ | `1`, **cố định và không nhân theo bậc**. Gỗ là đồng tiền nguyên, giá phẳng — ngẫu nhiên `1–3` sẽ tự lật quyết định mỗi lượt |
 | `FORTUNE_KINDS` | `{ "gold", "stat" }` | **Hai** thẻ. Thứ tự ở đây là thứ tự cột **và** thứ tự gọi `GetRandomInt` — đổi thứ tự là đổi chuỗi ngẫu nhiên. Thẻ đá đã bỏ vì nó là **tập con** của thẻ vàng — [ADR 0025](../05-quyet-dinh/0025-co-duyen-con-hai-the.md) |
 | `FORTUNE_VALUE` `FORTUNE_RANGE_MIN/MAX` | Thẻ chỉ số | `2.2 × 1.30^(bậc−1)`, ±30%. **Leo** — nó là sức mạnh, không phải tiền |
