@@ -421,18 +421,38 @@ lọt bao nhiêu cũng không sao).
 > người chơi gọi. Xem [bang-tran-dau.md](bang-tran-dau.md).
 | `WAVE_TICK` | Giây giữa hai lần ra lệnh lại cho quái | Quái bị đánh lạc hướng phải quay về nhà |
 | `SPAWN_JITTER` | Bán kính xê dịch điểm sinh | Đủ rộng để 50 con không chồng một chỗ |
-| `MOB_UNIT` | Mẫu lính mỗi cõi, tra theo `REALMS[r].coi` | **Placeholder** — 4 unit gốc WC3. Thiết kế cần 24 |
+| `MOB_UNIT` | Mẫu lính, tra theo **cảnh giới** `1..20` | 20 unit gốc WC3, **không con nào bay**. `probeMobUnits()` đo lại cả hai điều đó lúc vào map |
+| `MOB_UNIT_FALLBACK` | Lùi về khi thiếu bậc hoặc mã sai | `hfoo` — mã **đã chạy thật** hàng trăm wave. Đường lui phải là thứ chắc chắn chạy, không phải thứ đẹp |
 | `TIERS_PER_REALM` | `4` | Đổi là đổi tổng stage; mọi thứ suy ra từ nó. 4 tầng + 1 boss = 5 stage/cảnh giới, ×20 = **100 stage** |
 
 ## Chưa làm
 
 - **Chưa đo đủ trận thật.** Ba chỗ dễ sai nhất: DPS thật của hero ở stage 1,
   thời gian quái đi bộ tới nhà, và `MOB_EHP_BASE`.
-- **6 mẫu lính chưa có** — `MOB_UNIT` mới là **4 unit gốc WC3 làm
-  placeholder**, mỗi cõi một mẫu. Bản thiết kế cần `4 cõi × 6 mẫu = 24`. Đây là
-  khoảng trống **nhìn thấy được** lớn nhất còn lại: suốt 25 stage của một cõi,
-  quái không đổi hình một lần nào.
+- **Mẫu lính vẫn là unit gốc của Warcraft**, chưa có mẫu tự vẽ. Nhưng chúng
+  **đổi mỗi cảnh giới** rồi, nên không còn là khoảng trống lớn nhất.
 - Đường đi phương án B, khi địa hình xong.
+
+> ## Mẫu lính: 4 → 20, và không còn con nào bay *(2026-09-19)*
+>
+> `MOB_UNIT` tra theo **cảnh giới** chứ không theo cõi, nên quái đổi hình mỗi
+> **5 stage** thay vì mỗi 25.
+>
+> | Cõi | Cảnh giới | Chủng tộc |
+> |---|---|---|
+> | Phàm | 1–5 | Người — lính thường → kỵ binh |
+> | Yêu | 6–10 | Orc — thô phệ, to và ồn ào |
+> | Tiên | 11–15 | Night Elf — thanh thoát, đánh xa |
+> | Thần | 16–20 | Undead, và một con Infernal khép lại |
+>
+> **Bỏ hẳn quái bay.** Bản trước cõi Thần dùng `ufro` *(Frost Wyrm)* — nó **bay**,
+> và quái bay thì hero đánh gần không chạm tới, đường đi không theo địa hình, và
+> Chấn Địa của boss thành vô nghĩa.
+>
+> **Mã unit thì đo, không tin trí nhớ.** `probeMobUnits()` lúc vào map tạo thử
+> từng con rồi xoá đi, kiểm **hai** thứ: `CreateUnit` có trả `nil` không, và
+> `IsUnitType(UNIT_TYPE_FLYING)`. Gõ sai một mã bốn ký tự thì wave đó không sinh
+> được con nào — **im lặng**, và chỉ lộ ra ở cảnh giới 14 sau bốn mươi phút chơi.
 
 > **Hai mục đã xong, gỡ khỏi danh sách này 2026-09-19.**
 >

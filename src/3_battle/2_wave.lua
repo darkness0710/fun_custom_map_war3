@@ -196,7 +196,10 @@ end
 -- ha quanh minh, va thuoc ha phai di qua day de cung duong cong, cung
 -- tien thuong, va cung duoc dem vao S.alive.
 local function spawnOne(stage, realm, kind, ex, ey)
-  local uid = CFG.MOB_UNIT[realmWorld(realm)]
+  -- Tra theo CANH GIOI, khong phai theo coi: quai doi hinh moi 5 stage
+  -- thay vi moi 25. Thieu bac thi lui ve ma da chay that, chu khong
+  -- tra nil va nuot ca wave.
+  local uid = CFG.MOB_UNIT[realm] or CFG.MOB_UNIT_FALLBACK
   if uid == nil then return nil end
 
   local x, y = spawnPoint()
@@ -651,6 +654,10 @@ local function onMobDeath(u, killer)
   S.mobs[u] = nil
   S.alive = S.alive - 1
   if S.alive < 0 then S.alive = 0 end
+  -- Dem cho bang tong ket. Dem o DAY chu khong o onAnyDeath: cho nay
+  -- da loc 'kind == nil' nen no chi dem quai cua he wave, khong dem
+  -- thap canh, pet hay hero.
+  S.killCount = (S.killCount or 0) + 1
 
   local stage = S.mobStage[u] or S.stage
   S.mobStage[u] = nil
@@ -689,7 +696,55 @@ local function callState()
   return { label = API.t("wave_btn_next", nextStage), on = true }
 end
 
+-- Tao thu 20 mau linh luc vao map, kiem hai thu, roi xoa di.
+--
+-- VI SAO PHAI DO. Mot ma unit bon ky tu go sai thi CreateUnit tra ve
+-- nil va wave do khong sinh duoc con nao -- im lang, va chi lo ra o
+-- canh gioi 14 sau bon muoi phut choi. Do o giay dau thi biet ngay.
+--
+-- VA KIEM BAY. Chu du an yeu cau khong co quai bay: quai bay thi hero
+-- danh gan khong cham toi, duong di khong theo dia hinh, va Chan Dia
+-- cua boss thanh vo nghia. Ban truoc coi Than dung Frost Wyrm va no
+-- bay -- khong ai bat duoc vi khong co cho nao kiem.
+--
+-- Tao o goc ban do roi RemoveUnit ngay. Mot con hien ra nua giay o goc
+-- thi khong ai thay; mot wave rong thi ai cung thay.
+local function probeMobUnits()
+  if CreateUnit == nil or CFG.MOB_UNIT == nil then return end
+  local bad, flying = {}, {}
+  for r = 1, #CFG.REALMS do
+    local uid = CFG.MOB_UNIT[r]
+    if uid == nil then
+      bad[#bad + 1] = r
+    else
+      local u = CreateUnit(S.enemy, uid, 0.0, 0.0, 0.0)
+      if u == nil then
+        bad[#bad + 1] = r .. ":" .. API.idToStr(uid)
+      else
+        if IsUnitType ~= nil and _G["UNIT_TYPE_FLYING"] ~= nil
+           and IsUnitType(u, UNIT_TYPE_FLYING) then
+          flying[#flying + 1] = r .. ":" .. API.idToStr(uid)
+        end
+        RemoveUnit(u)
+      end
+    end
+  end
+
+  if #bad > 0 then
+    API.warn(nil, "CFG.MOB_UNIT sai ma o canh gioi: " ..
+             table.concat(bad, " ") .. " -- lui ve " ..
+             API.idToStr(CFG.MOB_UNIT_FALLBACK or 0))
+  end
+  if #flying > 0 then
+    API.warn(nil, "CFG.MOB_UNIT co quai BAY o canh gioi: " ..
+             table.concat(flying, " ") .. " -- hero danh gan khong cham toi")
+  end
+  API.trace("wave: do " .. #CFG.REALMS .. " mau linh -- " .. #bad ..
+            " ma sai, " .. #flying .. " con bay")
+end
+
 local function startWaves()
+  probeMobUnits()
   S.stage = 0
   S.mobs  = {}
   S.mobStage = {}

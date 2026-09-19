@@ -849,6 +849,11 @@ CFG.HERO_SPAWN_OFFSET = 500.0
 -- thua, va doan duong quay lai chinh la phan gia phai tra.
 CFG.HERO_REVIVE_SECONDS = 30.0
 
+-- Bang tong ket dung tren man hinh bao lau truoc khi hop thoai ket qua
+-- cua Warcraft che mat. Truoc day la 3 giay cho MOT dong chu; gio la
+-- mot bang nhieu dong nen phai lau hon.
+CFG.END_SUMMARY_SECONDS = 10.0
+
 -- ============================================================
 --  DOT QUAI  --  100 stage
 --  Luat: docs/02-he-thong/dot-quai.md
@@ -1463,15 +1468,59 @@ CFG.SCALE_DMG_PER_PLAYER      = 0.15   -- nho, vi sat thuong da tu loang
 -- (CFG.SCALE_BOSS_EHP_PER_PLAYER da bo.)
 CFG.SCALE_RECOUNT_EACH_WAVE   = true
 
--- ---------- Mau linh theo coi ----------
--- PLACEHOLDER. Ban thiet ke can 4 coi x 6 mau = 24 unit type trong
--- Object Editor. Hien moi coi mot mau de he wave chay duoc truoc.
+-- ---------- Mau linh: MOT MAU MOI CANH GIOI ----------
+--
+-- Tra theo CANH GIOI (1..20), khong phai theo coi. Ban truoc tra theo
+-- coi nen suot 25 stage quai khong doi hinh mot lan nao -- doc khoang
+-- trong nhin thay duoc lon nhat con lai cua he dot quai. Gio doi moi
+-- 5 stage.
+--
+-- Bon coi, bon chung toc, do dan len:
+--   1-5    Pham  Nguoi     linh thuong -> ky binh
+--   6-10   Yeu   Orc       tho phi, to va on ao
+--   11-15  Tien  Night Elf thanh thoat, danh xa
+--   16-20  Than  Undead    va mot con Infernal khep lai
+--
+-- KHONG CON QUAI BAY. Ban truoc coi Than dung 'ufro' (Frost Wyrm) --
+-- no BAY, va quai bay thi hero danh gan khong cham toi, duong di khong
+-- theo dia hinh, va Chan Dia cua boss thanh vo nghia.
+--
+-- MA UNIT THI DO, KHONG TIN TRI NHO. probeMobUnits() luc vao map tao
+-- thu tung con, kiem CreateUnit co tra ve nil khong VA kiem
+-- IsUnitType(UNIT_TYPE_FLYING) -- roi xoa di. Go sai mot ma bon ky tu
+-- la wave do khong sinh duoc con nao, va no im lang.
 CFG.MOB_UNIT = {
-  id('hfoo'),   -- Pham : Footman
-  id('ugho'),   -- Yeu  : Ghoul
-  id('uabo'),   -- Tien : Abomination
-  id('ufro'),   -- Than : Frost Wyrm
+  id('hfoo'),   -- 1  Pham Nhan      Footman
+  id('hrif'),   -- 2  Luyen Khi      Rifleman
+  id('hmpr'),   -- 3  Truc Co        Priest
+  id('hsor'),   -- 4  Kim Dan        Sorceress
+  id('hkni'),   -- 5  Nguyen Anh     Knight
+
+  id('ogru'),   -- 6  Hoa Than       Grunt
+  id('ohun'),   -- 7  Luyen Hu       Troll Headhunter
+  id('orai'),   -- 8  Hop The        Raider
+  id('okod'),   -- 9  Dai Thua       Kodo Beast
+  id('ocat'),   -- 10 Do Kiep        Catapult
+
+  id('earc'),   -- 11 Chan Tien      Archer
+  id('esen'),   -- 12 Thien Tien     Huntress
+  id('edry'),   -- 13 Kim Tien       Dryad
+  id('edoc'),   -- 14 Thai At        Druid of the Claw
+  id('emtg'),   -- 15 Dai La         Mountain Giant
+
+  id('ugho'),   -- 16 Tien De        Ghoul
+  id('ucry'),   -- 17 Thanh Nhan     Crypt Fiend
+  id('unec'),   -- 18 Dao To         Necromancer
+  id('uabo'),   -- 19 Hon Don        Abomination
+  id('ninf'),   -- 20 Sang The       Infernal
 }
+
+-- Lui ve day khi CFG.MOB_UNIT thieu bac, hoac ma sai.
+--
+-- 'hfoo' vi no la ma DA CHAY THAT hang tram wave trong du an nay --
+-- khong phai vi no hop chu de. Duong lui phai la thu chac chan chay,
+-- khong phai thu dep.
+CFG.MOB_UNIT_FALLBACK = id('hfoo')
 
 -- ---------- Mau nha chinh ----------
 -- Nha nhan sat thuong, chet la thua. Khong co dem mang, khong co lot.

@@ -31,14 +31,22 @@ local function endGame(win, reason)
   S.running = false
   API.stopWaves()
 
-  API.msg(nil, " ")
-  if win then
-    API.info(nil, CFG.C_GOLD .. "THANG -- " .. reason .. CFG.C_END)
+  -- Bang tong ket thay cho mot dong chu.
+  --
+  -- Hai dong cu di qua API.info / API.warn -- KENH CHAN DOAN cho nguoi
+  -- LAM MAP -- va la chuoi cung khong qua i18n. Tuc chu quan trong
+  -- nhat cua ca map nam sai kenh va chi co mot thu tieng.
+  if API.summaryShow ~= nil then
+    API.summaryShow(win, reason)
   else
-    API.warn(nil, "THUA -- " .. reason)
+    API.msg(nil, (win and CFG.C_GOLD or CFG.C_RED) ..
+            (win and API.t("end_win") or API.t("end_lose")) ..
+            CFG.C_END .. "  " .. reason)
   end
 
-  API.after(3.0, function()
+  -- Doi lau hon truoc day (3s): bang tong ket co nhieu dong, va hop
+  -- thoai cua Warcraft nuot man hinh ngay khi no hien.
+  API.after(CFG.END_SUMMARY_SECONDS or 10.0, function()
     for i = 1, #S.pids do
       local p = Player(S.pids[i])
       if win then
@@ -114,6 +122,7 @@ local function bootstrap()
   API.startHeroLock()
   API.startCheatGuard()     -- canh cheat co san cua Warcraft
   API.startRevive()         -- hero chet roi song lai o nha chinh
+  API.startSummary()        -- dong ho + bo dem cho bang tong ket
   API.trace("startHeroLock: xong")
 
   -- Cac he dang ky the TRUOC, roi bang moi dung -- bang can biet co

@@ -129,7 +129,7 @@ Chi tiết: [02-he-thong/dot-quai.md](../02-he-thong/dot-quai.md) ·
 > [ADR 0026](../05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md) · [bang-tran-dau.md](../02-he-thong/bang-tran-dau.md)
 | `WAVE_TICK` | Giây giữa hai lần phát lại lệnh đi | Quái bị đánh lạc hướng đứng mãi nếu không có |
 | `SPAWN_JITTER` | Bán kính xê dịch điểm sinh | Đủ rộng để `WAVE_MOB_COUNT` con không chồng một chỗ |
-| `MOB_UNIT` | Mẫu lính mỗi cõi, tra theo `REALMS[r].world` | **Placeholder** — 4 unit gốc WC3. Thiết kế cần 4 cõi × 6 mẫu = 24 |
+| `MOB_UNIT` `MOB_UNIT_FALLBACK` | Mẫu lính, tra theo **cảnh giới** `1..20` | 20 unit gốc WC3, **không con nào bay** — `probeMobUnits()` đo lại cả hai lúc vào map. Đường lui là `hfoo`, mã đã chạy thật hàng trăm wave |
 | `ELITE_EHP` `ELITE_DMG` `ELITE_SCALE` | Tinh anh | `ELITE_DMG` phải thấp hơn nhiều `ELITE_EHP` — nhân 10 cả hai là giết hero một đòn |
 | `BOSS_SECONDS` `BOSS_HITS_TO_KILL` `BOSS_SCALE` | Boss | Chỉ số **đo từ đội**, không nhân từ lính. `BOSS_EHP`/`BOSS_DMG` đã bỏ — xem [boss.md](../02-he-thong/boss.md) |
 | `BOSS_SKILL_SHARE` | Kỹ năng **chủ động** cộng thêm bao nhiêu vào ước lượng | `1.0`. Là **ước lượng**, chỉnh theo dòng `boss: ... CHET sau ...s` trong file vết |
