@@ -60,6 +60,23 @@ xịn dần" phải thắng sự hợp chủ đề.**
 
 Ô **Cánh** ở hàng 5 thẻ Trang Bị, nút `ĐỔI` xoay vòng qua các bộ đã mở.
 
+**Ô hiện đúng ảnh bộ đang đeo** *(2026-09-19)*. Trước đó nó treo một đường dẫn
+cố định `CFG.GEAR_WING_ICON`, nên bấm `ĐỔI` thì **tên đổi mà ảnh không** — nút
+nhìn như hỏng. Khoá đó giờ chỉ còn là **đường lui** cho lúc chưa mở bộ nào.
+
+Sáu ảnh sinh từ `docs/01-tmp/wing/<code>-avatar.png`:
+
+```bash
+python w3blp.py encode docs/01-tmp/wing/<code>-avatar.png \
+                       models/icons/wing/<code>.blp --size 256
+python w3import.py add models/icons/wing/<code>.blp wing/<code>.blp
+```
+
+> ⚠ **`wings\` là model, `wing\` là ảnh** — hai thư mục, khác nhau một chữ `s`.
+> Không phải lỗi chính tả: model vào `wings\` từ đợt import đầu, ảnh là đợt sau.
+> Đổi tên một trong hai là sửa ba chỗ (`CFG`, `war3map.imp`, file trên đĩa) đổi
+> lấy không gì.
+
 Chưa tự chọn thì luôn đeo bộ **cao nhất**. Tự chọn rồi thì `check()` **tôn trọng
 lựa chọn đó** — trừ khi bộ đang đeo không còn hợp lệ.
 

@@ -1,15 +1,19 @@
 # Hệ thống: Kỹ năng hero
 
-> **Trạng thái:** Hart **đủ vỏ và ruột**; Hvwd/Hkal **trống, đang khoá**
+> **Trạng thái:** Hart và Hvwd **đủ vỏ và ruột**; Hkal **trống, đang khoá**
 > **Cập nhật:** 2026-09-19
+
+> **Hvwd — xạ thủ — xong ngày 2026-09-19.** Bảy kỹ năng, mở khoá ra bảng chọn.
+> Xem [Bảy kỹ năng của Hvwd](#bảy-kỹ-năng-của-hvwd-xạ-thủ) bên dưới — phần đáng
+> đọc không phải bảng số mà là **ai giữ con số**.
 
 > **Hart đã hoàn chỉnh.** Bảy kỹ năng, đủ 10 bậc, hiệu ứng chạy thật, và từ
 > 2026-09-16 có cả **tên riêng, vị trí ô, tooltip 10 bậc** sinh bằng
 > [w3skill.py](../../w3skill.py). Trước đó 6/7 ability hiện nguyên tên Blizzard.
 >
-> **Hvwd và Hkal vẫn trống** — `CFG.SKILLS` chỉ có `H001`. Thiết kế cho hai hero
-> này đã bị xoá để làm lại, xem [thiet-ke-hero.md](thiet-ke-hero.md). Từ
-> 2026-09-19 chúng mang `locked = true` nên không ra bảng chọn nữa.
+> **Hkal vẫn trống** — `CFG.SKILLS` có `H001` và `H002`. Thiết kế cho Hkal đã bị
+> xoá để làm lại, xem [thiet-ke-hero.md](thiet-ke-hero.md); nó vẫn mang
+> `locked = true` nên không ra bảng chọn.
 >
 > **Hai kỹ năng của Hart đổi bản chất 2026-09-19** — `A003` Hiệu Lệnh thành bản
 > sao **Endurance Aura**, `A006` Da Sắt thành bản sao **Reincarnation**. Bảng số
@@ -127,6 +131,92 @@ code.
 Bảy ô trống. Hai ability trùng vị trí thì **đè lên nhau**, một cái bấm không được,
 và không có cảnh báo nào. Ô `(3,2)` là chỗ nút Cancel xuất hiện khi mở submenu —
 tránh ra nếu sau này hero có spellbook.
+
+> ⚠ **Bảy ô trống, và Hvwd có đúng bảy kỹ năng — vừa khít, không dư ô nào.**
+> `A004` và `A006` dùng chung với Hart nên vị trí của chúng **đã chốt** theo bố
+> cục của Hart. Năm cái còn lại (`A008`–`A012`) phải nhận năm ô mà Hart đang
+> dùng cho `A001` `A002` `A003` `A005` `A007` — một hero chỉ bao giờ mang bảy
+> cái của nó, nên dùng lại vị trí giữa hai hero là an toàn.
+
+## Bảy kỹ năng của Hvwd (xạ thủ)
+
+Cài 2026-09-19. Phần đáng đọc không phải bảng số, mà là **ai giữ con số** —
+đó là thứ quyết định kỹ năng nào còn sống ở cảnh giới 20.
+
+| | Ability gốc | Tên | Ai giữ số |
+|---|---|---|---|
+| `A011` | `AHfa` Searing Arrows | **Thiêu Thiên** | **Lua** — `pct` của đòn đánh |
+| `A008` | `AOcl` Chain Lightning | **Lôi Vân** | **Lua** — `factor` × chỉ số |
+| `A010` | `ACr2` Rejuvenation | **Hồi Xuân** | **Lua** — `factor` × chỉ số |
+| `A009` | `AEar` Trueshot Aura | **Thần Xạ** | **WE** — `fromField` |
+| `A012` | `Amgl` Moon Glaive | **Nguyệt Nhận** | **WE** — engine lo hết |
+| `A004` | `Aamk` Attribute Bonus | **Luyện Thể** | cả hai |
+| `A006` | `AOre` Reincarnation | **Da Sắt** | **WE** — hồi chiêu |
+
+### Luật phân nhóm: chỉ phần trăm mới được để World Editor giữ
+
+Một con số **phẳng** đặt trong Object Editor sẽ teo thành không —
+[ADR 0024](../05-quyet-dinh/0024-cong-thi-leo-nhan-thi-phang.md). Đo được: ở cảnh
+giới 16 chỉ số thật của hero là **30 105**. Một cú `+40 sát thương mỗi mũi tên`
+lúc đó là **làm tròn số**.
+
+Nên `A009` Trueshot và `A012` Moon Glaive được phép để WE giữ — cả hai vốn *là*
+phần trăm, nên tự bám theo hero. Ba cái kia thì Lua phải giữ.
+
+**`A012` là kỹ năng duy nhất trong cả map không cần một dòng Lua nào.** Engine tự
+nảy đòn đánh sang mục tiêu kế, mỗi lần nảy một phần trăm của chính đòn đó.
+
+### Searing Arrows: vì sao KHÔNG phải "% máu tối đa của mục tiêu"
+
+Bản thảo đầu là `+1% máu tối đa, tối đa 2.5%`. Không dùng được, và lý do nằm ở
+[4_sidequest.lua:60](../../src/3_battle/4_sidequest.lua#L60):
+
+```lua
+local hp = dps * (q.seconds or CFG.SIDE_QUEST_SECONDS or 60.0)
+```
+
+Máu Thánh Thú **không phải con số cố định** — nó là `DPS cả đội × số giây`. Nên:
+
+> **1% máu tối đa ⇒ đúng 100 mũi tên giết mọi thứ. 2.5% ⇒ 40 mũi.**
+
+Con số `seconds` (45 / 85 / 150 / 240) — **cả cái núm chỉnh độ khó của Thánh
+Thú** — biến mất khỏi phương trình. Và nó **ngược**: so với thiết kế, cùng 100
+mũi đó là *chậm hơn* đánh thường ở Chu Tước (45 giây) nhưng *nhanh gấp 3,6 lần*
+ở Thanh Long (240 giây). Con dễ nhất không đổi gì, con khó nhất bốc hơi.
+
+Gốc rễ: trong map này **máu mọi thứ đều định nghĩa theo DPS người chơi**
+([ADR 0020](../05-quyet-dinh/0020-duong-cong-quai-bam-theo-tu-vi.md)). Nên
+*"% máu địch"* thực chất là *"% trận đấu"* — con số phải nằm trong tay người
+thiết kế, không phải trong tay một kỹ năng.
+
+Bản đang chạy tính theo **% đòn đánh thật**, y hệt Chém Lan: `pct` của `amount`
+sau khi Kiếm và Pháp Khí đã nhân. Nó không có con số riêng nào để bị bỏ lại.
+
+### Nút bật/tắt của Thiêu Thiên
+
+`A011` là bản sao của một ability **autocast** — có nút bật/tắt thật trên phím
+`E`. Nếu Lua cứ đốt bất kể nút đó thì tắt đi là vừa khỏi tốn mana vừa giữ nguyên
+sát thương: **nút thành cái bẫy**.
+
+Warcraft 1.31.1 không phơi ra native nào hỏi *"autocast đang bật không"*. Nhưng
+**lệnh** thì bắt được, và `OrderId()` trả `0` cho tên sai — nên đây là **đo
+được**, không phải đoán. `probeBurnOrder()` thử lần lượt vài tên, cái nào cả hai
+chiều đều khác `0` thì lấy, và ghi vết kết quả.
+
+Đo không ra thì **luôn bật**, không phải luôn tắt: một kỹ năng im lặng không làm
+gì là kiểu hỏng tệ nhất ([ADR 0012](../05-quyet-dinh/0012-mot-kenh-dong-bo-duy-nhat.md)).
+
+### Hai thứ còn phải đo
+
+- **Tên hằng số trong `CFG.SKILL_ZERO_BASE`** cho `A008` và `A010`, và
+  `fromAbil`/`fromField` của `A009`, đều **suy từ quy luật, chưa đo**. Quy luật:
+  ability `AOsh` → trường `Osh1` → hằng số `ABILITY_RLF_<TÊN>_OSH1`. Gõ sai thì
+  **không im lặng** — `zeroField()` ghi vết *"KHÔNG có hằng số … hiệu ứng gốc VẪN
+  CHẠY"*. Đo lại bằng `-nat spell`.
+- **Hai đường dẫn model** `FX_HIT_BURN` / `FX_HIT_CHAIN` đang mượn lại model của
+  `line`/`cleave`. Trông không đúng lắm, nhưng một đường dẫn **sai** thì không vẽ
+  ra gì mà vẫn "thành công" — cùng lớp lỗi với `AddWeatherEffect`. Đổi sang model
+  đúng nghĩa thì phải thử trong game trước.
 
 ## Phát điểm ở chỗ khác
 

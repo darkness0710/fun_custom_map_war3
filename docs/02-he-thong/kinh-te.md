@@ -168,9 +168,24 @@ vĩnh viễn; thẻ này bán một lần dùng.
 
 | Món | Giá | Item gốc |
 |---|---|---|
-| Lọ hồi máu | 10 vàng | `phea` |
-| Lọ hồi mana | 10 vàng | `pman` |
+| Lọ hồi máu | **5** vàng | `phea` |
+| Lọ hồi mana | **5** vàng | `pman` |
+| **Tháp Canh** | **10** vàng | `tsct` |
+| Đá Huyền Thiết | 10 vàng | *(không phải item)* |
 | Ankh hồi sinh | 500 vàng | `ankh` |
+
+> **Hai thay đổi 2026-09-19.**
+>
+> **Lọ xuống `5`.** Trước đó `40/30`, rồi `10`. Chốt `5`.
+>
+> **Tháp Canh mở bán, `10` vàng.** Trước đó nó mang `forSale = false` nên chỉ
+> đến từ `CFG.START_ITEMS` — hết ba cái phát đầu ván là hết hẳn cả ván.
+>
+> Giá `10` đặt **ngang một hòn Đá Huyền Thiết**, và đó là tỉ giá cần nói ra:
+> *một cái tháp = một bước tiến Trang Bị bị hoãn lại*. Người chơi mua tháp là
+> đang trả bằng **tốc độ lên đồ**, không phải bằng một khoản vàng lẻ không dùng
+> vào đâu. Rẻ hơn nữa thì đập tháp liên tục sẽ rẻ hơn mua thuốc, và cả hệ Trang
+> Bị thành không cần thiết ở những wave đầu.
 
 **Gộp lượt vào một ô**, tối đa `CFG.SHOP_STACK_MAX = 10`. Gộp **bằng tay** chứ
 không trông chờ Warcraft tự gộp: tự gộp hay không là thuộc tính của từng item

@@ -21,13 +21,29 @@
 --  truong nao ca. Sat thuong goc cua Warcraft van con, nhung o bac 10
 --  voi Linh Can bac 20 thi no la sai so lam tron.
 --
---  BAY LOAI HIEU UNG, khai bao bang truong 'fx' trong CFG.SKILLS:
---    line heal buff        chu dong, bat qua su kien cast
---    cleave reduce         bi dong, bat qua su kien sat thuong
---    stat aura             bi dong, tinh lai khi bac ky nang doi
+--  TAM LOAI HIEU UNG, khai bao bang truong 'fx' trong CFG.SKILLS:
+--    line chain heal buff  chu dong, bat qua su kien cast
+--    cleave burn reduce    bi dong, bat qua su kien sat thuong
+--    stat                  bi dong, tinh lai khi bac ky nang doi
 --
---  Bay loai nay dung lai duoc cho Hvwd va Hkal -- them hero moi la khai
---  bao them dong trong CFG.SKILLS, khong phai viet them code o day.
+--  ('aura' KHONG con la hieu ung o day -- con so cua no nam trong chinh
+--  ability va Warcraft tu cong. No chi con la nhan de bang phim R loc.)
+--
+--  Tam loai nay dung lai duoc cho Hkal -- them hero moi la khai bao
+--  them dong trong CFG.SKILLS, khong phai viet them code o day. Hvwd
+--  (2026-09-19) can dung hai loai MOI: 'chain' va 'burn'.
+--
+--  VI SAO 'burn' TINH THEO % DON DANH, KHONG PHAI % MAU MUC TIEU
+--
+--  Ban thao dau la "+1% mau toi da cua muc tieu". Khong dung duoc: mau
+--  moi thu trong map nay DINH NGHIA theo DPS nguoi choi (ADR 0020, va
+--  armStats() dat mau Thanh Thu = dps x seconds). Nen "% mau dich" that
+--  ra la "% TRAN DAU" -- 1% thanh dung 100 mui ten giet MOI thu, va bo
+--  so 45/85/150/240 giay cua bon Thanh Thu mat sach y nghia.
+--
+--  Do lai con nguoc: cung 100 mui do voi Chu Tuoc (thiet ke 45 giay) la
+--  CHAM hon danh thuong, con voi Thanh Long (240 giay) la nhanh gap 3,6
+--  lan. Con de nhat khong doi gi, con kho nhat boc hoi.
 --
 --  Nho: goi ham cua file khac phai qua API.
 -- ============================================================
@@ -173,7 +189,155 @@ end
 -- HAV2 (mau toi da) van chay: ban 1.31.1 khong phoi ra hang so nao cho
 -- no nen khong tat duoc -- xem chu thich o CFG.SKILL_ZERO_BASE.
 
-local FX_CAST = { line = fxLine, heal = fxHeal }
+-- "chain": nay tu muc tieu sang con gan nhat chua bi danh (A008, Hvwd).
+--
+-- Warcraft CO san co che nay, nhung sat thuong cua no la so PHANG trong
+-- Object Editor -- tuc teo thanh khong o canh gioi cao (ADR 0024). Nen
+-- ta muon cai VO (icon, tia set, hoi chieu, mana, tam) va tu tinh sat
+-- thuong bang skillDamage() nhu moi ky nang khac.
+--
+-- Tia set GOC van ve ra, va no chon muc tieu theo bang so cua WE chu
+-- khong theo vong lap nay. Hai ben co the lech mot con -- FX_HIT_CHAIN
+-- danh dau nhung con LUA that su danh, de nhin ra do lech neu co.
+local function fxChain(pid, u, sk, lv)
+  local t = (GetSpellTargetUnit ~= nil) and GetSpellTargetUnit() or nil
+  if t == nil then return end
+
+  local dmg  = API.skillDamage(u, API.skillFactor(sk, lv))
+  local hops = CFG.FX_CHAIN_MAX or 4
+  local fall = CFG.FX_CHAIN_FALLOFF or 0.80
+  local reach = CFG.FX_CHAIN_HOP or 400.0
+
+  -- 'seen' chan tia set quay lai con vua danh. Khong co no thi hai con
+  -- dung canh nhau se chuyen qua chuyen lai va an tron ca bon lan nhay.
+  local seen, cur = {}, t
+  for _ = 1, hops do
+    if cur == nil or dmg < 1.0 then break end
+    seen[GetHandleId(cur)] = true
+    -- Nho toa do TRUOC khi danh: hit() co the giet no, va enemiesNear
+    -- loc theo API.alive nen tu bo qua xac.
+    local cx, cy = GetUnitX(cur), GetUnitY(cur)
+    hit(u, cur, dmg, CFG.FX_HIT_CHAIN)
+    dmg = dmg * fall
+
+    local best, bestD = nil, nil
+    enemiesNear(cx, cy, reach, function(e)
+      if seen[GetHandleId(e)] then return end
+      local dd = API.distXY(cx, cy, GetUnitX(e), GetUnitY(e))
+      if bestD == nil or dd < bestD then best, bestD = e, dd end
+    end)
+    cur = best
+  end
+end
+
+-- ---------- "burn": lop thieu dot (A011, Hvwd) ----------
+--
+-- MOT bang va MOT dong ho cho ca map, khong phai mot dong ho moi lan
+-- danh. Xa thu cuoi van danh rat nhanh, ma moi TimerStart la mot handle:
+-- vai nghin cai trong mot wave thi Warcraft can handle va nhung he KHAC
+-- bat dau hong -- kieu loi khong bao gio truy nguoc duoc ve day.
+--
+-- Nho 'pid' chu khong nho unit hero: doi hero thi handle cu treo lai, va
+-- UnitDamageTarget voi mot nguon da bi xoa la vung khong xac dinh. Tra
+-- lai S.p[pid].hero moi nhip thi luon la con dang song.
+local function burnApply(pid, tgt, total)
+  if total < 1.0 or tgt == nil or not API.alive(tgt) then return end
+  if S.burn == nil then S.burn = {} end
+
+  local time  = CFG.FX_BURN_TIME or 3.0
+  local step  = CFG.FX_BURN_TICK or 0.5
+  local ticks = math.floor(time / step + 0.5)
+  if ticks < 1 then ticks = 1 end
+
+  local k = GetHandleId(tgt)
+  local b = S.burn[k]
+  if b ~= nil and CFG.FX_BURN_STACK then
+    b.per  = b.per + total / ticks
+    b.left = time
+    b.pid  = pid
+  else
+    -- LAM MOI chu khong cong don (CFG.FX_BURN_STACK = false). Cong don
+    -- thi toc danh tu nhan voi chinh no.
+    S.burn[k] = { u = tgt, pid = pid, per = total / ticks, left = time }
+    API.fx(CFG.FX_HIT_BURN, GetUnitX(tgt), GetUnitY(tgt))
+  end
+end
+
+local function burnTick()
+  if S.burn == nil then return end
+  local step = CFG.FX_BURN_TICK or 0.5
+  -- Gan nil cho CHINH khoa dang duyet la hop le trong Lua; them khoa
+  -- moi thi khong, va vong nay khong them.
+  for k, b in pairs(S.burn) do
+    local d   = S.p[b.pid]
+    local src = d and d.hero or nil
+    if b.u == nil or not API.alive(b.u) or b.left <= 0.0
+       or src == nil or not API.alive(src) then
+      S.burn[k] = nil
+    else
+      hit(src, b.u, b.per, nil)
+      b.left = b.left - step
+      if b.left <= 0.0 then S.burn[k] = nil end
+    end
+  end
+end
+
+-- ---------- Autocast cua Searing Arrows ----------
+--
+-- A011 la ban sao cua AHfa -- mot ability AUTOCAST, tuc co nut bat/tat
+-- that tren command card (phim E). Neu Lua cu dot bat ke nut do thi tat
+-- di la vua khoi ton mana vua giu nguyen sat thuong: nut thanh cai bay.
+--
+-- Warcraft 1.31.1 khong phoi ra native nao hoi "autocast dang bat
+-- khong". Nhung LENH thi bat duoc, va OrderId() tra ve 0 cho ten sai --
+-- nen day la do duoc, khong phai doan.
+local BURN_ON, BURN_OFF = nil, nil
+
+local function probeBurnOrder()
+  if OrderId == nil then
+    API.trace("effect: khong co OrderId -- burn coi nhu LUON BAT")
+    return
+  end
+  -- Ten lenh cua Searing Arrows chua duoc do trong du an nay. Thu lan
+  -- luot; cai nao ca hai chieu deu ra khac 0 thi lay.
+  local cands = { "searingarrows", "flamingarrows", "blackarrow" }
+  for i = 1, #cands do
+    local on  = OrderId(cands[i])
+    local off = OrderId(cands[i] .. "off")
+    if on ~= nil and on ~= 0 and off ~= nil and off ~= 0 then
+      BURN_ON, BURN_OFF = on, off
+      API.trace("effect: burn autocast = '" .. cands[i] .. "' " ..
+                on .. "/" .. off)
+      return
+    end
+  end
+  -- Khong do duoc thi LUON BAT, khong phai luon tat: mot ky nang im
+  -- lang khong lam gi la kieu hong te nhat (ADR 0012).
+  API.trace("effect: KHONG do duoc lenh autocast cua Searing Arrows -- " ..
+            "burn coi nhu LUON BAT")
+end
+
+-- Mac dinh BAT khi chua ai bam.
+--
+-- Nguoc voi mac dinh cua Object Editor (Searing Arrows goc tat san),
+-- va do la co y: nguoi choi khong bam gi ma thay ky nang chay la hieu
+-- duoc, con bo Go ra mo khoa roi khong thay gi thi tuong la hong.
+local function burnOn(pid)
+  if BURN_ON == nil then return true end
+  local d = S.p[pid]
+  return d == nil or d.burnOn ~= false
+end
+
+local function onOrder()
+  local o = GetIssuedOrderId and GetIssuedOrderId() or nil
+  if o == nil or BURN_ON == nil then return end
+  if o ~= BURN_ON and o ~= BURN_OFF then return end
+  local pid = heroPid(GetTriggerUnit())
+  if pid == nil or S.p[pid] == nil then return end
+  S.p[pid].burnOn = (o == BURN_ON)
+end
+
+local FX_CAST = { line = fxLine, chain = fxChain, heal = fxHeal }
 
 local function onSpell()
   local u = GetTriggerUnit()
@@ -308,6 +472,22 @@ local function onDamaged()
             if e ~= tgt then hit(src, e, splash, CFG.FX_HIT_CLEAVE) end
           end)
       end
+    end
+  end
+
+  -- "burn": hero GAY don. De lai mot lop dot tren chinh muc tieu do.
+  --
+  -- Tinh theo % DON DANH THAT ('amount' da qua Kiem va Phap Khi o tren),
+  -- y het cleave. Do la ly do no khong bao gio teo: no khong co con so
+  -- rieng nao de bi bo lai.
+  --
+  -- 'tp == nil' de khong dot dong doi neu mai nay map co sat thuong
+  -- cheo phe. burnTick() goi hit(), ma hit() bat 'busy' nen lop dot
+  -- khong tu de ra lop dot moi.
+  if sp ~= nil and tgt ~= nil and tp == nil and burnOn(sp) then
+    local sk, lv = skillByFx(sp, "burn")
+    if sk ~= nil then
+      burnApply(sp, tgt, amount * API.skillPct(sk, lv))
     end
   end
 end
@@ -458,10 +638,24 @@ local function startSkillFx()
     TriggerAddAction(tDmg, onDamaged)
   else
     API.warn(nil, "Khong co EVENT_PLAYER_UNIT_DAMAGED -- " ..
-      "Chem Lan va Da Sat se khong chay.")
+      "Chem Lan, Thieu Thien va Da Sat se khong chay.")
   end
 
-  API.trace("effect: san sang (cast + damage)")
+  -- Nut bat/tat cua Thieu Thien (A011). Do ten lenh TRUOC khi dang ky:
+  -- khong do duoc thi khong can trigger nao, burn se luon bat.
+  probeBurnOrder()
+  if BURN_ON ~= nil and EVENT_PLAYER_UNIT_ISSUED_ORDER ~= nil then
+    local tOrd = CreateTrigger()
+    TriggerRegisterAnyUnitEventBJ(tOrd, EVENT_PLAYER_UNIT_ISSUED_ORDER)
+    TriggerAddAction(tOrd, onOrder)
+  end
+
+  -- MOT dong ho cho moi lop dot cua ca map -- xem burnApply().
+  S.burn = {}
+  S.burnTimer = CreateTimer()
+  TimerStart(S.burnTimer, CFG.FX_BURN_TICK or 0.5, true, burnTick)
+
+  API.trace("effect: san sang (cast + damage + burn)")
 end
 
 API.heroBaseCapture  = baseCapture

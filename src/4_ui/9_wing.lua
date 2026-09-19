@@ -154,6 +154,19 @@ local function label(pid)
   return API.pick(defAt(i))
 end
 
+-- Anh cua bo DANG DEO, cho o Canh o the Trang Bi.
+--
+-- nil = chua deo bo nao; cho goi tu quyet dinh duong lui
+-- (CFG.GEAR_WING_ICON). Khong tra duong lui o day: o goi con phan biet
+-- "chua mo bo nao" voi "da deo nhung thieu file anh".
+local function iconOf(pid)
+  local d = S.p[pid]
+  local i = d and d.wingWorn or nil
+  if i == nil then return nil end
+  local w = defAt(i)
+  return (w ~= nil) and w.icon or nil
+end
+
 local function nextRank(pid)
   local r = rankOf(pid)
   for i = 1, #(CFG.WINGS or {}) do
@@ -220,6 +233,7 @@ end
 API.wingCheck   = check
 API.wingClear   = clear
 API.wingCycle   = cycle
+API.wingIcon    = iconOf
 API.wingLabel   = label
 API.wingNext    = nextRank
 API.wingOwned   = ownedCount

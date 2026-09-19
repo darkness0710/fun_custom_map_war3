@@ -159,6 +159,24 @@ còn lại. Không mã nào nhận thì ghi vết và lùi về đường sự k
 nghĩa ở cảnh giới 15. Và **chỉ đánh hero**: nổ lan sang chính đồng quái của nó
 thì tu chính này thành một món quà cho người chơi.
 
+### Bốn lớp báo, và chỉ một lớp TRA CỨU được
+
+| Lớp | Luôn ở đó? | Vấn đề |
+|---|---|---|
+| **Dòng chữ** lúc vào đợt | không | nói một lần rồi trôi mất |
+| **Màu quái** | có | phải **nhớ** màu nào nghĩa gì |
+| **Trời** | có | sương mù rất mờ, không chắc là vừa đổi hay chưa |
+| **Dòng trong khung `R`** | **có** | — |
+
+**Dòng thứ tư thêm 2026-09-19**, và nó vá đúng lỗ mà ba lớp kia để lại: *tu
+chính kéo dài cả đợt, còn dòng chữ thì trôi sau vài giây*. Người chơi vào giữa
+đợt, hoặc vừa đọc một dòng khác đè lên, thì **không còn chỗ nào hỏi**.
+
+Hàng cuối của thẻ Tổng Quan (`ROWS = 5`) hiện **tên tu chính + kiểu trời + mô
+tả nó làm gì** — `API.modifierLabel()`. `announce()` và `clear()` đều gọi
+`API.gameFrameRefresh()`, nếu không thì sang đợt boss dòng đó vẫn giữ tên tu
+chính **cũ** — sai mà nhìn rất thật.
+
 ### Trời đổi theo tu chính *(2026-09-19)*
 
 Lớp báo thứ **ba**, cạnh dòng chữ (trôi mất) và màu quái (phải nhìn vào quái).

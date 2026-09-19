@@ -77,18 +77,26 @@ CFG.WINGS = {
   -- do: nen map toi, canh den doc rat yeu o tam zoom 2000. No an tuong
   -- luc dung ngam, nhung giua tran thi nhat hon Thanh Quang va Thai
   -- Duong nhieu. Cam giac "canh minh xin dan" phai thang su hop chu de.
+  -- 'path' la MODEL (wings\, so nhieu), 'icon' la ANH (wing\, so it).
+  -- Hai thu muc khac nhau va do khong phai loi chinh ta: model di vao
+  -- wings\ tu dot import dau, icon la dot sau. Doi ten mot trong hai la
+  -- sua ba cho (CFG, war3map.imp, file tren dia) doi lay khong gi.
+  --
+  -- Anh sinh tu docs/01-tmp/wing/<code>-avatar.png bang:
+  --   python w3blp.py encode <png> models/icons/wing/<code>.blp --size 256
+  --   python w3import.py add  models/icons/wing/<code>.blp wing/<code>.blp
   { code = "eth_storm",    rank =  2, vi = "Loi Dinh",    en = "Storm",
-    path = [[wings\eth_storm.mdx]],    attach = "origin" },
+    path = [[wings\eth_storm.mdx]],    icon = [[wing\eth_storm.blp]],    attach = "origin" },
   { code = "eth_darkness", rank =  4, vi = "U Minh",      en = "Darkness",
-    path = [[wings\eth_darkness.mdx]], attach = "origin" },
+    path = [[wings\eth_darkness.mdx]], icon = [[wing\eth_darkness.blp]], attach = "origin" },
   { code = "eth_divine",   rank =  6, vi = "Thien Dao",   en = "Divine",
-    path = [[wings\eth_divine.mdx]],   attach = "origin" },
+    path = [[wings\eth_divine.mdx]],   icon = [[wing\eth_divine.blp]],   attach = "origin" },
   { code = "eth_blizzard", rank = 11, vi = "Bang Nguyet", en = "Blizzard",
-    path = [[wings\eth_blizzard.mdx]], attach = "origin" },
+    path = [[wings\eth_blizzard.mdx]], icon = [[wing\eth_blizzard.blp]], attach = "origin" },
   { code = "eth_holy",     rank = 16, vi = "Thanh Quang", en = "Holy",
-    path = [[wings\eth_holy.mdx]],     attach = "origin" },
+    path = [[wings\eth_holy.mdx]],     icon = [[wing\eth_holy.blp]],     attach = "origin" },
   { code = "eth_sun",      rank = 20, vi = "Thai Duong",  en = "Sun",
-    path = [[wings\eth_sun.mdx]],      attach = "origin" },
+    path = [[wings\eth_sun.mdx]],      icon = [[wing\eth_sun.blp]],      attach = "origin" },
 }
 
 
@@ -307,7 +315,12 @@ CFG.RGN_HERO_MOVE  = { "HeroMoveRegion" }
 -- la mot cai may in luot quay vo han.
 --
 -- 0 de tat.
-CFG.GATE_ROLL = 1
+--
+-- DA TAT -- 2026-09-19. Luot quay dau van gio den tu Co Duyen va Thanh
+-- Thu, khong phat kem qua khoi dau nua: mot luot quay mien phi ngay
+-- giay dau day nguoi choi rang quay la thu tu den, trong khi ca he do
+-- duoc dung de THUONG cho viec di danh.
+CFG.GATE_ROLL = 0
 
 -- ---------- NHIEM VU PHU: Tu Thanh Thu ----------
 --
@@ -376,20 +389,32 @@ CFG.GATE_ROLL = 1
 -- thieu sot. arrive la cho hero hien
 -- ra, lair la cho boss dung san tu luc vao map. exit la cua ra de bo
 -- chay giua chung. Chua ve thi nut khoa va noi ro thieu vung nao.
+-- 'icon' la CHAN DUNG, dung o o Thanh Thu cua the Trang Bi.
+--
+-- Truoc day o do treo CFG.GEAR_PET_ICON -- MOT duong dan co dinh -- nen
+-- doi pet xong o van hien Chu Tuoc. Nguoi choi bam DOI, chu doi, con
+-- thu ngoai san doi, ma cai o thi khong: trong nhu nut bam hong.
+--
+-- Cung bon file ma CFG.RELIC dang dung (avatar\B001..B004.blp), va cung
+-- thu tu -- Phap Khi thu i mo boi Thanh Thu thu i.
 CFG.SIDE_QUESTS = {
   { unit = id('B001'), vi = "Chu Tuoc",   en = "Vermilion Bird", rank =  1, seconds =  45.0, hits = 16.0, rolls =  3,
+    icon = [[avatar\B001.blp]],
     mech = { "charge", "enrage" },
     arrive = { "Quest1Gate" }, lair = { "Quest1Lair" } },
 
   { unit = id('B002'), vi = "Huyen Vu",   en = "Black Tortoise", rank =  6, seconds =  85.0, hits = 12.0, rolls =  5,
+    icon = [[avatar\B002.blp]],
     mech = { "shield", "reflect" },
     arrive = { "Quest2Gate" }, lair = { "Quest2Lair" } },
 
   { unit = id('B003'), vi = "Bach Ho",    en = "White Tiger",    rank = 11, seconds = 150.0, hits =  9.0, rolls =  8,
+    icon = [[avatar\B003.blp]],
     mech = { "charge", "shred" },
     arrive = { "Quest3Gate" }, lair = { "Quest3Lair" } },
 
   { unit = id('B004'), vi = "Thanh Long", en = "Azure Dragon",   rank = 16, seconds = 240.0, hits =  7.0, rolls = 12,
+    icon = [[avatar\B004.blp]],
     mech = { "slam", "summon", "lifesteal", "enrage" },
     arrive = { "Quest4Gate" }, lair = { "Quest4Lair" } },
 }
@@ -419,6 +444,19 @@ CFG.SIDE_QUEST_AGGRO   = 800.0
 -- con boss bi dong kinh.
 CFG.SIDE_QUEST_LEASH   = 1400.0
 CFG.SIDE_QUEST_TICK    = 1.0    -- giay giua hai lan kiem day xich
+-- Bo hoang bay nhieu giay thi con thu TRA VE NGUYEN TRANG: hoi day mau,
+-- bo ghim chi so, do lai theo suc cua doi o thoi diem moi.
+--
+-- LO HONG DA CO, day la mieng va: armPin() ghim chi so VINH VIEN. Ghim
+-- la dung -- xem chu thich o armPin -- nhung khong bo ghim thi sinh ra
+-- duong di nay: mo khoa Huyen Vu o canh gioi 6, cham vao no mot cai de
+-- ghim, bo di, quay lai o canh gioi 20. No van la con thu do cho mot
+-- doi canh gioi 6. Ca bon con deu mo khoa SOM hon luc du suc danh, nen
+-- day khong phai truong hop hiem -- do la duong tu nhien.
+--
+-- 20 giay: du dai de mot pha chet-hoi-sinh-chay-vao khong bi tinh la bo
+-- cuoc, du ngan de khong ai phai dung cho.
+CFG.SIDE_QUEST_RESET   = 20.0
 CFG.SIDE_QUEST_SCALE   = 1.6    -- Thanh Thu to hon hero, nho hon boss (2.2)
 -- Mac dinh khi mot con khong tu khai 'seconds' / 'hits'.
 --   seconds: bao nhieu giay hoa luc CA DOI de ha. Boss thuong la 40s.
@@ -590,14 +628,15 @@ CFG.HEROES = {
     icon = [[hero\H001.blp]],
     desc_vi    = { "Don quai dong", "Chiu don khoe", "Yeu truoc boss" },
     desc_en = { "Clears crowds", "Very tanky", "Weak vs bosses" } },
-  -- KHOA: cay ky nang chua thiet ke. Khoa chu khong xoa -- xoa thi mat
-  -- ca model, icon va mo ta da lam xong, ma nhung thu do khong sai.
-  { id = id('H002'), locked = true, name = "Hvwd", role = "Shooter - Carry", abilities = {}, skills = nil,
+  -- DA MO KHOA -- 2026-09-19. Cay ky nang xong: xem CFG.SKILLS[H002].
+  { id = id('H002'), name = "Hvwd", role = "Shooter - Carry", abilities = {}, skills = nil,
     -- Icon TU VE. Nguon: docs/01-tmp/hero/<ma unit>.png
     -- Sinh bang: python w3gear_icons.py
     icon = [[hero\H002.blp]],
     desc_vi    = { "Sat thuong cao nhat", "Danh tu xa", "Rat mong" },
     desc_en = { "Top damage", "Long range", "Very fragile" } },
+  -- KHOA: cay ky nang chua thiet ke. Khoa chu khong xoa -- xoa thi mat
+  -- ca model, icon va mo ta da lam xong, ma nhung thu do khong sai.
   { id = id('H003'), locked = true, name = "Hkal", role = "Mage - Support", abilities = {}, skills = nil,
     -- Icon TU VE. Nguon: docs/01-tmp/hero/<ma unit>.png
     -- Sinh bang: python w3gear_icons.py
@@ -781,12 +820,12 @@ CFG.HERO_MAX_PER_PLAYER = 1
 -- true = mot hero chi mot nguoi lay duoc.
 -- "Moi nguoi mot con, khong ai lay trung."
 --
--- CHI co nghia khi con NHIEU HON MOT hero mo khoa. Hien chi con Hart
--- (H002/H003 dang locked), nen ep duy nhat la hai nguoi con lai khong
--- co hero nao -- va ho khong lam gi duoc de sua.
+-- CHI co nghia khi con NHIEU HON MOT hero mo khoa. Tu 2026-09-19 da co
+-- HAI con mo (Hart va Hvwd), nen luat nay bat that: nguoi thu ba van
+-- chua co gi de lay cho toi khi Hkal xong.
 --
--- 2_heropick.lua tu tat luat nay khi so hero mo khoa <= 1, nen mo khoa
--- lai la no tu bat -- khong phai nho sua dong nay.
+-- 2_heropick.lua tu tat luat nay khi so hero mo khoa <= 1, nen khoa hay
+-- mo deu khong phai sua dong nay.
 CFG.HERO_UNIQUE = true
 
 -- Hero sinh ra cach nha chinh bao xa.
@@ -1523,6 +1562,20 @@ CFG.SKILL_ZERO_BASE = {
   [id('A002')] = { "ABILITY_RLF_AMOUNT_HEALED_DAMAGED_HHB1" },
   [id('A007')] = { "ABILITY_RLF_DAMAGE_BONUS_HAV3",
                    "ABILITY_RLF_MAGIC_DAMAGE_REDUCTION_HAV4" },
+
+  -- Hvwd. HAI TEN DUOI DAY SUY TU QUY LUAT, CHUA DO.
+  --
+  -- Quy luat doc duoc tu ba dong tren: ma ability AOsh -> truong Osh1 ->
+  -- hang so ABILITY_RLF_<TEN TRUONG>_OSH1. Ap cho AOcl (Chain Lightning)
+  -- ra OCL1/OCL2, cho ACr2 (Rejuvenation) ra CR21.
+  --
+  -- Go sai thi KHONG im lang: zeroField() ghi vet "KHONG co hang so ...
+  -- hieu ung goc VAN CHAY". Hau qua cung nhe -- sat thuong goc la so
+  -- PHANG nen no chi cong them mot it o nhung wave dau roi teo dan.
+  -- Nhung van phai sua: do dung bang "-nat spell" roi thay ten o day.
+  [id('A008')] = { "ABILITY_RLF_DAMAGE_OCL1",
+                   "ABILITY_RLF_DAMAGE_REDUCTION_PER_TARGET_OCL2" },
+  [id('A010')] = { "ABILITY_RLF_HIT_POINTS_GAINED_CR21" },
 }
 
 -- ---------- Truong goc dung lam VAT MANG ----------
@@ -1598,8 +1651,22 @@ CFG.SKILL_ZERO_BASE_INT = {
 CFG.SKILL_START_COUNT = 0
 
 -- Go cam san luc vao map. Du dung MOT ky nang.
--- 2 go: du mo MOT ky nang sat thuong VA Luyen The ngay giay dau.
-CFG.LUMBER_START = 2
+--
+-- 1 go -- 2026-09-19, ha tu 2. Hai go mo duoc HAI ky nang ngay giay
+-- dau, ma the la mat mat quyet dinh dau tien cua van: "mo cai nao
+-- truoc". Mot go thi phai chon THAT, va con lai phai di danh moi co.
+CFG.LUMBER_START = 1
+
+-- Vang cam san luc buoc qua cong ve nha.
+--
+-- Dat THANH 50 chu khong CONG 50: Warcraft phat vang khoi dau theo
+-- war3map.w3i truoc khi mot dong Lua nao chay, va con so do khong doc
+-- duoc tu day. Cong them thi tong se la "50 + mot con so khong ai
+-- biet"; dat thanh thi dung 50 du w3i co dat gi.
+--
+-- 50 vang = 5 lo thuoc, hoac 5 hon Da Huyen Thiet, hoac 5 thap. Du de
+-- mua MOT thu, khong du de mua ca ba -- lai la mot quyet dinh that.
+CFG.GOLD_START = 50
 
 -- ---------- Bay ky nang cua tung hero ----------
 --
@@ -1621,12 +1688,16 @@ CFG.SKILLS = {}
 -- them dong, khong phai viet them code.
 --
 --   "line"   gay sat thuong tren mot duong thang truoc mat
+--   "chain"  nay tu muc tieu sang muc tieu gan, moi lan yeu di
 --   "heal"   hoi mau mot muc tieu
 --   "buff"   tu tang giap + mau trong CFG.FX_BUFF_TIME giay
 --   "cleave" bi dong: don danh van % sat thuong sang ben
+--   "burn"   bi dong: don danh de lai mot lop dot keo dai
 --   "reduce" bi dong: giam % sat thuong nhan vao (co tran cung)
 --   "stat"   bi dong: +% ca ba chi so
---   "aura"   +% giap cho ca doi
+--   "aura"   NHAN thuan tuy -- khong con ma Lua nao doc. Con so nam
+--            trong chinh ability (A003 Hieu Lenh, A009 Than Xa), va
+--            Warcraft tu cong. Giu lai vi bang phim R loc theo no.
 CFG.SKILLS[id('H001')] = {
   -- Khong cai nao phat san (CFG.SKILL_START_COUNT = 0). Thu tu trong
   -- bang la thu tu hien o bang phim R, nen xep hai cai co ban len dau --
@@ -1717,6 +1788,80 @@ CFG.SKILLS[id('H001')] = {
     desc_en = "Greatly raises armor for a short time." },
 }
 
+-- ---------- Hvwd: xa thu ----------
+--
+-- BAY KY NANG, CHIA BA NHOM THEO "AI GIU CON SO" -- va do la phan quan
+-- trong nhat cua bang nay, khong phai ban thanaso.
+--
+--   Lua giu so   A008 A010 A011   -> factor/pct, tu bam chi so hero
+--   WE giu so    A006 A009 A012   -> doc ra bang fromAbil/fromCooldown
+--   ca hai       A004             -> statVal x bac skill x bac Tu Vi
+--
+-- Vi sao phai chia: mot con so PHANG dat trong Object Editor se teo
+-- thanh khong ([ADR 0024] cong thi leo, nhan thi phang). Do duoc o canh
+-- gioi 16: chi so that cua hero la 30.105. Mot cu "+40 sat thuong moi
+-- mui ten" luc do la lam tron so. Nen chi nhung gi von la PHAN TRAM
+-- (Trueshot, Moon Glaive) moi duoc phep de WE giu.
+--
+-- A004 va A006 DUNG CHUNG ID voi Hart, va hai dong do phai GIONG HET
+-- ben H001: w3skill.py ghi ten/tooltip theo MA ABILITY chu khong theo
+-- hero, nen hai ban khai khac nhau cho cung mot ma se de len nhau -- ai
+-- chay sau thang, va khong ai thay gi sai luc build.
+CFG.SKILLS[id('H002')] = {
+  -- Hai cai dau la hai cai NEN, giong cach Hart xep Chem Lan + Chuong
+  -- len dau: diem Go dau tien nen roi vao tam mat truoc.
+  --
+  -- 'kind = "passive"' nhung VAN co hotkey: ban goc AHfa la autocast,
+  -- nen no co nut bat/tat that su tren command card. 'kind' o day chi
+  -- la goi y cho fmt() biet hien pct hay factor -- xem 4_skill.lua.
+  { id = id('A011'), baseAbil = "AHfa", vi = "Thieu Thien", en = "Searing Arrows", kind = "passive", pct = 0.30, fx = "burn", hotkey = "E",
+    desc_vi = "Mui ten thieu dot: them %s sat thuong cua don danh, rai deu trong 3 giay.",
+    desc_en = "Arrows sear: %s of the hit as extra damage spread over 3 seconds." },
+  -- He so 1.10 chu khong 1.32 nhu Chuong: cai nay cham toi BON muc
+  -- tieu. Nhan ra la 4 x 1.10 = 4.40 so voi mot duong thang cua Chuong.
+  { id = id('A008'), baseAbil = "AOcl", vi = "Loi Van", en = "Chain Lightning", kind = "active", factor = 1.10, cd = 9.0, mana = 45, fx = "chain", hotkey = "Q",
+    desc_vi = "Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. %s sat thuong.",
+    desc_en = "Lightning arcs between nearby targets, weaker each hop. %s damage." },
+
+  -- Nam cai duoi mo sau, THU TU NAO CUNG DUOC -- gia mo khoa phang.
+  --
+  -- 2.00 chu khong 2.20 nhu Ho The cua Hart: xa thu khong phai nguoi di
+  -- hoi mau, va Hkal moi la ho tro that su.
+  { id = id('A010'), baseAbil = "ACr2", vi = "Hoi Xuan", en = "Rejuvenation", kind = "active", factor = 2.00, cd = 12.0, mana = 40, fx = "heal", hotkey = "W",
+    desc_vi = "Hoi %s mau cho ban than hoac dong doi.",
+    desc_en = "Heals %s to yourself or an ally." },
+  -- Trueshot Aura: WE giu so, va o day do la DUNG -- no von la PHAN
+  -- TRAM sat thuong tam xa, nen tu bam theo hero, khong teo.
+  --
+  -- Y HET cach A003 lam. 'Ear1' suy tu quy luat cua A003 (ability AOae
+  -- -> truong Oae1/Oae2), CHUA DO. Doc khong ra thi fromAbility() ghi
+  -- vet va tooltip lui ve "bac N" -- khong bia so. Do lai bang
+  -- "-nat spell" roi sua o day neu sai.
+  { id = id('A009'), baseAbil = "AEar", vi = "Than Xa", en = "Trueshot Aura", kind = "aura",
+    fromAbil = "ABILITY_RLF_DAMAGE_INCREASE_EAR1",
+    fromField = "Ear1", fromPct = true, fx = "aura",
+    desc_vi = "Ca doi duoc %s sat thuong danh xa.",
+    desc_en = "The whole party gains %s ranged attack damage." },
+  -- KHONG co 'fx' va KHONG co con so nao -- ca hai deu co y.
+  --
+  -- Moon Glaive la co che cua ENGINE: don danh tu nay sang muc tieu ke,
+  -- moi lan nhay con mot PHAN TRAM cua chinh don do. Phan tram thi tu
+  -- scale, nen day la ky nang duy nhat trong ca map khong can mot dong
+  -- Lua nao. So muc tieu va do hao moi lan nhay nam trong war3map.w3a.
+  --
+  -- 'noNumber' de fmt() khong bia ra "0%" -- xem 4_skill.lua.
+  { id = id('A012'), baseAbil = "Amgl", vi = "Nguyet Nhan", en = "Moon Glaive", kind = "passive", noNumber = true,
+    desc_vi = "Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.",
+    desc_en = "Attacks bounce to nearby targets, weaker each hop." },
+  { id = id('A004'), baseAbil = "Aamk", vi = "Luyen The", en = "Body Forging",   kind = "passive",  statVal = 4.0, fx = "stat",
+    desc_vi = "%s ca ba chi so, nhan them theo bac Tu Vi.",
+    desc_en = "%s to all three attributes, scaled by Cultivation rank." },
+  { id = id('A006'), baseAbil = "AOre", vi = "Da Sat", en = "Ironhide",          kind = "passive",
+    fromCooldown = true, fx = "reduce",
+    desc_vi = "Chet thi tu song lai. Hoi chieu %s.",
+    desc_en = "Revives you on death. Cooldown %s." },
+}
+
 -- ---------- Hang so hieu ung ky nang ----------
 --
 -- SAT THUONG CONG THEM, khong sua truong cua ability.
@@ -1738,6 +1883,58 @@ CFG.FX_LINE_LEN    = 700.0   -- do dai duong danh cua "line"
 CFG.FX_LINE_WIDTH  = 125.0   -- nua be ngang duong danh
 CFG.FX_CLEAVE_AOE  = 200.0   -- ban kinh van cua "cleave"
 CFG.FX_REDUCE_CAP  = 0.10    -- tran cung cua "reduce" -- xem mota A006
+
+-- ---------- "chain": set dien lan (A008, Hvwd) ----------
+--
+-- Warcraft CO san co che nay trong Chain Lightning, nhung con so cua no
+-- la sat thuong PHANG tu Object Editor -- tuc teo dan theo ADR 0024.
+-- Nen ta muon cai VO (icon, hoi chieu, mana, tam) va tu tinh sat thuong
+-- bang skillDamage() nhu moi ky nang khac.
+CFG.FX_CHAIN_MAX     = 4       -- so muc tieu, ke ca muc tieu dau
+CFG.FX_CHAIN_HOP     = 400.0   -- tam nhay toi da giua hai muc tieu
+CFG.FX_CHAIN_FALLOFF = 0.80    -- moi lan nhay con bay nhieu phan
+
+-- ---------- "burn": thieu dot (A011, Hvwd) ----------
+--
+-- Vi sao KHONG dung "% mau toi da cua muc tieu" nhu ban thao dau: mau
+-- moi thu trong map nay DINH NGHIA theo DPS nguoi choi (ADR 0020, va
+-- armStats() trong 4_sidequest.lua dat mau Thanh Thu = dps x seconds).
+-- Nen "% mau dich" that ra la "% TRAN DAU": 1% se thanh dung 100 mui
+-- ten giet moi thu, va con so 'seconds' 45/85/150/240 -- ca cai num
+-- chinh do kho cua Thanh Thu -- bien mat khoi phuong trinh.
+--
+-- Do lai con te hon: cung 100 mui do voi Chu Tuoc (thiet ke 45 giay) la
+-- CHAM hon danh thuong, con voi Thanh Long (240 giay) la nhanh gap 3,6
+-- lan. Cang ve cuoi map cang vo.
+--
+-- Nen burn tinh theo % DON DANH THAT, y het "cleave": no tu bam theo
+-- moi thu hero co, va khong bao gio cham vao num do kho cua boss.
+CFG.FX_BURN_TIME = 3.0     -- giay chay mot lan dot
+CFG.FX_BURN_TICK = 0.5     -- giay giua hai nhip dot
+-- Danh lai TRONG luc dang chay thi LAM MOI, khong cong don. Cong don
+-- thi toc danh tu nhan voi chinh no -- hero cuoi van danh rat nhanh se
+-- co hang chuc lop dot chong len nhau.
+CFG.FX_BURN_STACK = false
+
+-- HAI DUONG DAN NAY LA DUONG DA CHUNG MINH, khong phai duong dep nhat.
+--
+-- Ca hai dang muon lai model cua "line"/"cleave". Trong khong dung lam:
+-- mot cu set dien ma no ra song xung kich. Nhung mot duong dan SAI thi
+-- khong ve ra gi VA VAN "thanh cong" -- AddSpecialEffect tra ve handle
+-- nhu thuong, y het AddWeatherEffect voi ma rac. Khong co cach nao kiem
+-- tu ngoai; chi vao game NHIN moi biet.
+--
+-- Muon doi sang model dung nghia thi thu trong game roi hay ghi vao
+-- day. Vai ung cu vien (CHUA DO):
+--   Abilities\Spells\Orc\LightningBolt\LightningBoltMissile.mdl
+--   Abilities\Spells\Other\Incinerate\FireLordDeathExplode.mdl
+--
+-- Rieng A008 con co art RIENG cua Chain Lightning goc chay len -- ban
+-- sao AOcl van ve tia set cua no du ta da zero sat thuong. Nen
+-- FX_HIT_CHAIN chi la DAU CHAM tren tung muc tieu Lua that su danh,
+-- huu ich de thay Lua va Warcraft co chon cung bay con hay khong.
+CFG.FX_HIT_BURN  = [[Abilities\Weapons\WitchDoctorMissile\WitchDoctorMissile.mdl]]
+CFG.FX_HIT_CHAIN = [[Abilities\Spells\Orc\Shockwave\ShockwaveMissile.mdl]]
 -- (CFG.FX_BUFF_TIME da xoa 2026-09-19: khong file nao doc. Thoi
 --  luong buff lay tu truong 'adur'/'ahdu' cua chinh ability --
 --  xem chu thich o 7_effect.lua.)
@@ -2446,10 +2643,15 @@ CFG.FORTUNE_Y = 0.36
 
 -- Cach nhau bao lau giua hai cot khi chia the. 0 = tat hieu ung.
 --
--- 0.10 la vua: du de mat thay la 'vua sang luot moi', chua du de
--- thanh cho doi. 12 luot lien tiep (Thanh Long) x 2 cot x 0.10 =
--- 2,4 giay tong cong cho ca chuoi.
-CFG.FORTUNE_DEAL_STEP = 0.10
+-- DA TAT -- 2026-09-19. Ly le cu: 0.10 giay du de mat thay 'vua sang
+-- luot moi'. Do la ly le cua nguoi NHIN MOT LUOT. Nguoi choi that thi
+-- quay 12 luot lien tiep sau Thanh Long, va luc do moi lan cho la mot
+-- lan tay phai dung lai -- 2,4 giay cong don cho ca chuoi, tra gia
+-- bang nhip bam.
+--
+-- Mot hieu ung trang tri thua o lan thu muoi hai thi no khong con la
+-- trang tri, no la do tre.
+CFG.FORTUNE_DEAL_STEP = 0.0
 
 CFG.FORTUNE_ELITE = 1
 CFG.FORTUNE_BOSS  = 3
@@ -2553,8 +2755,12 @@ CFG.FORTUNE_STATS = { "str", "agi", "int" }
 --
 -- Ngan sach: 10,000 vang ca van, 50 moi wave thuong (mot nguoi choi).
 --
--- Gia 10 cho ca hai lo: nam lo moi wave neu tieu het. Ban truoc dat
--- 40/30 (mot lo mot wave); chu du an chot lai 10.
+-- Gia 5 cho ca hai lo: nam lo moi wave neu tieu het. Ban truoc dat
+-- 40/30 (mot lo mot wave), roi 10; chu du an chot lai 5.
+--
+-- Cung gia voi Thap Canh la CO Y: ca ba deu la do tieu hao mua theo
+-- nhip wave, nen dat chung mot bac de nguoi choi khong phai tinh -- chi
+-- phai chon lan nay can MAU, MANA hay mot cai THAP chiu don.
 --
 -- 'item' la ma item CO SAN cua Warcraft, khong phai item tu tao:
 --   phea  Potion of Healing  -- hoi mau
@@ -2563,13 +2769,13 @@ CFG.FORTUNE_STATS = { "str", "agi", "int" }
 -- khong nuot im -- xem ADR 0012.
 CFG.SHOP = {
   { code = "hp", vi = "Lo Hoi Mau",  en = "Healing Potion",
-    item = id('phea'), price = 10,
+    item = id('phea'), price = 5,
     icon = [[ReplaceableTextures\CommandButtons\BTNPotionGreenSmall.blp]],
     desc_vi    = "Hoi mau ngay. Dung duoc mot lan.",
     desc_en = "Restores health instantly. One use." },
 
   { code = "mp", vi = "Lo Hoi Mana", en = "Mana Potion",
-    item = id('pman'), price = 10,
+    item = id('pman'), price = 5,
     icon = [[ReplaceableTextures\CommandButtons\BTNPotionBlueSmall.blp]],
     desc_vi    = "Hoi mana ngay. Dung duoc mot lan.",
     desc_en = "Restores mana instantly. One use." },
@@ -2613,7 +2819,7 @@ CFG.SHOP = {
     desc_vi    = "Tu hoi sinh tai cho khi chet.",
     desc_en = "Revives you on the spot when you die." },
 
-  -- ---------- Thap thu (phat cung, khong ban) ----------
+  -- ---------- Thap canh (phat cung VA ban) ----------
   --
   -- 'tsct' la item GOC cua Warcraft: Ivory Tower. Ability cua no la
   -- Albt "Build Tiny Scout Tower" -- viec DUY NHAT cua no la dung thap,
@@ -2621,14 +2827,25 @@ CFG.SHOP = {
   -- muon mot binh thuoc lam the: binh thuoc dung se VUA hoi mau VUA
   -- dung thap, ma ability goc thi khong go duoc luc chay (ADR 0008).
   --
-  -- forSale = false: KHONG hien o the Cua Hang, va buy() tu choi ke ca
-  -- khi op toi bang duong khac. give() van tim duoc vi no tra ca bang
-  -- CFG.SHOP, khong loc theo co nay.
+  -- DA MO BAN -- 2026-09-19. Truoc day 'forSale = false' nen no chi den
+  -- tu CFG.START_ITEMS: het ba cai phat dau van la het han ca van.
+  --
+  -- Gia 10 dat NGANG mot hon Da Huyen Thiet, va gap doi mot lo thuoc.
+  -- Do la ti gia can noi ra: mot cai thap = mot buoc tien Trang Bi bi
+  -- hoan lai. Nguoi choi mua thap la dang tra bang TOC DO LEN DO, chu
+  -- khong phai bang mot khoan vang le khong dung vao dau.
+  --
+  -- Khong dat re hon: thap chiu don thay hero, ma re qua thi dap thap
+  -- lien tuc se re hon ca mua thuoc -- va ca he Trang Bi thanh khong
+  -- can thiet o nhung wave dau.
+  --
+  -- give() van tim duoc no nhu truoc: give() tra ca bang CFG.SHOP,
+  -- khong loc theo 'forSale'.
   --
   -- probeItems() tao thu moi ma luc vao map va bao do neu sai -- nen
   -- 'tsct' go nham thi biet ngay, khong im lang mat thap.
   { code = "tower", vi = "Thap Canh", en = "Watch Tower",
-    item = id('tsct'), price = 0, forSale = false,
+    item = id('tsct'), price = 10,
     icon = [[ReplaceableTextures\CommandButtons\BTNHumanWatchTower.blp]],
     desc_vi = "Dung mot thap canh. Thap chiu don thay hero.",
     desc_en = "Raises a watch tower. It soaks damage for you." },

@@ -33,12 +33,20 @@ Mỗi lượt mở **hai thẻ**, chọn **một**. Ba nguồn cho lượt quay:
 |---|---|---|
 | Hạ **tinh anh** | 1 | `FORTUNE_ELITE` |
 | Hạ **boss** | 3 | `FORTUNE_BOSS` |
-| Qua cổng `HeroMoveRegion` về nhà **lần đầu** | 1 | `GATE_ROLL` |
 | Hạ **Thánh Thú** | 3 · 5 · 8 · 12 | `SIDE_QUESTS[i].rolls` |
 
-Nguồn thứ ba là quà làm quen, **một lần một người** — xem
-[nha-chinh.md](nha-chinh.md). Nó nằm ở cổng chứ không ở lúc pick hero vì cổng
-cách chỗ hero hiện ra vài bước: có quà thì đoạn đường đó có lý do.
+**Cả ba nguồn đều là phần thưởng cho việc đi đánh** — và từ 2026-09-19 đó là
+điều kiện duy nhất.
+
+> **Quà ở cổng đã bỏ *(2026-09-19)*.** `CFG.GATE_ROLL = 0`. Trước đó qua cổng
+> `HeroMoveRegion` lần đầu được **1 lượt** làm quà làm quen.
+>
+> Lý do bỏ: một lượt quay miễn phí ngay giây đầu dạy người chơi rằng **quay là
+> thứ tự đến**. Cả hệ Cơ Duyên được dựng để *thưởng* cho việc hạ tinh anh và
+> boss; mở màn bằng một lượt không phải trả gì là nói ngược lại chính nó ngay
+> trước khi người chơi kịp hiểu nó là gì.
+>
+> Khoá vẫn còn và `0` là tắt — bật lại chỉ là đổi một số.
 
 ### Khung tự đóng bảng ESC *(2026-09-19)*
 
@@ -50,14 +58,24 @@ nào biết cái nào. Người chơi thấy chữ chồng chít và không bấ
 bật lên không xin phép** (từ sự kiện quái chết), nên nó là bên phải nhường đường
 — chứ không phải bắt bảng đi kiểm xem có khung nào sắp bật hay không.
 
-### Hiệu ứng chia bài *(2026-09-19)*
+### Hiệu ứng chia bài — đã làm rồi đã tắt *(2026-09-19)*
+
+> **Đang TẮT.** `CFG.FORTUNE_DEAL_STEP = 0.0`. Code vẫn còn nguyên và bật lại
+> chỉ là đổi một số — phần dưới giữ lại vì nó ghi một bài học.
 
 Đổi thẻ giữa hai lượt trước đây là một cú **nhảy**: chữ và icon đổi tại chỗ
 trong cùng một khung hình, không có gì báo là vừa sang lượt mới. Có 12 lượt liên
 tiếp (Thanh Long) thì nó thành một cái bảng nhảy loạn.
 
-`dealIn()` chia **từng cột một**, cách nhau `CFG.FORTUNE_DEAL_STEP = 0.10` giây.
-Đặt `0` là tắt hẳn.
+`dealIn()` chia **từng cột một**, cách nhau `CFG.FORTUNE_DEAL_STEP` giây.
+
+**Vì sao tắt.** Lý lẽ đặt `0.10` là *"đủ để mắt thấy vừa sang lượt mới, chưa đủ
+để thành chờ đợi"* — và đó là lý lẽ của người **nhìn một lượt**. Người chơi thật
+thì quay 12 lượt liên tiếp sau Thanh Long, và ở đó mỗi lần chờ là một lần tay
+phải dừng lại: 2,4 giây cộng dồn cho cả chuỗi, trả bằng nhịp bấm.
+
+> Một hiệu ứng trang trí thừa ở lần thứ mười hai thì nó không còn là trang trí,
+> nó là độ trễ.
 
 Chỉ dùng `BlzFrameSetVisible` — **không** dùng alpha hay scale: hai thứ đó không
 chắc có ở mọi bản, mà một hiệu ứng trang trí thì không đáng để làm hỏng khung.

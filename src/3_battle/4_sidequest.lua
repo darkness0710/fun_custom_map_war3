@@ -271,6 +271,20 @@ local function tickOne(b, dt)
   beat("cdShield", "shield",   shieldUp)
 end
 
+-- Bo ghim khi LAN THU DA BO DO.
+--
+-- Ghim chi so la dung (xem armPin), nhung ghim VINH VIEN thi sai: cham
+-- vao con thu mot cai luc vua mo khoa roi bo di se dong bang no o suc
+-- manh cua doi luc do, va quay lai sau mot tieng van gap dung con so ay.
+--
+-- Chi bo hai co; arm() lo phan con lai -- no tu hoi day mau, tat cuong,
+-- xoa khien va dat lai b.age. Viet lai o day la hai noi cung khai mot
+-- viec, roi mot ngay chi sua mot noi.
+local function release(b)
+  b.pinned = false
+  b.armed  = false
+end
+
 local function tick()
   local dt = CFG.SIDE_QUEST_TICK or 1.0
   for i = 1, #(S.side or {}) do
@@ -292,7 +306,22 @@ local function tick()
       --
       -- b.pinned: da co nguoi bam "Tien Hanh" mot lan roi thi THOI theo
       -- doi. Xem armPin() ben duoi.
-      if not b.pinned and not anyHeroNear(b) then arm(i) end
+      --
+      -- b.idle dem giay LIEN TUC khong co ai trong hang. Du lau thi coi
+      -- nhu lan thu da bo do: bo ghim, va nhip ngay sau do arm() se do
+      -- lai tu dau. Dem o day chu khong trong tickOne vi tickOne thoat
+      -- som khi khong co ai gan -- dung cho ta can dem.
+      if anyHeroNear(b) then
+        b.idle = 0.0
+      else
+        b.idle = (b.idle or 0.0) + dt
+        if b.pinned and b.idle >= (CFG.SIDE_QUEST_RESET or 20.0) then
+          release(b)
+          API.trace("sidequest: " .. i .. " BO GHIM -- bo hoang " ..
+                    math.floor(b.idle) .. "s")
+        end
+        if not b.pinned then arm(i) end
+      end
       tickOne(b, dt)
     end
   end

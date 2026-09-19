@@ -152,17 +152,26 @@ Chi tiết: [quay-thuong.md](02-he-thong/quay-thuong.md) ·
 
 ---
 
-## ⏸ Bước 7b — Kỹ năng cho Hvwd và Hkal
+## ⏸ Bước 7b — Kỹ năng cho Hkal
 
-**Hart xong.** Bảy kỹ năng đủ vỏ lẫn ruột: 10 bậc, hiệu ứng thật, và từ 2026-09-16
-có tên riêng, vị trí ô, tooltip 10 bậc — sinh bằng
+**Hart và Hvwd xong.** Mỗi con bảy kỹ năng đủ vỏ lẫn ruột: 10 bậc, hiệu ứng
+thật, tên riêng, vị trí ô, tooltip 10 bậc — sinh bằng
 [w3skill.py](../w3skill.py) từ `CFG.SKILLS`, nên tooltip không thể nói khác bảng
 phím R.
 
-**Hvwd và Hkal vẫn trống, và từ 2026-09-19 đã khoá.** `locked = true` nên chúng
-không ra bảng chọn nữa — trước đó chọn được nhưng **không có kỹ năng nào**.
-Thiết kế cũ đã xoá để làm lại — [thiet-ke-hero.md](02-he-thong/thiet-ke-hero.md).
-Mở lại chỉ là bỏ cờ đó đi.
+> **Hvwd mở khoá 2026-09-19.** Bảy kỹ năng, và `A004`/`A006` dùng chung ability
+> với Hart. Chi tiết và lý do phân nhóm *"ai giữ con số"*:
+> [ky-nang.md](02-he-thong/ky-nang.md#bảy-kỹ-năng-của-hvwd-xạ-thủ).
+>
+> **Còn hai việc phải làm trong World Editor** trước khi nó chạy đúng:
+> `python w3obj.py levels test2.w3x/war3map.w3a 10` *(A008–A012 đang thừa kế
+> 3 bậc của ability gốc)* và `python w3skill.py gen --lang vi`. Cả hai ghi vào
+> `war3map.w3a` nên **phải đóng World Editor trước**.
+
+**Hkal vẫn trống và vẫn khoá.** `locked = true` nên nó không ra bảng chọn —
+trước đó chọn được nhưng **không có kỹ năng nào**. Thiết kế cũ đã xoá để làm lại
+— [thiet-ke-hero.md](02-he-thong/thiet-ke-hero.md). Mở lại chỉ là bỏ cờ đó đi
+sau khi `CFG.SKILLS[id('H003')]` có nội dung.
 
 **Chặn bởi một câu hỏi không phải cân bằng:** bộ mặt của map. Icon và hiệu ứng đều
 lấy từ kho có sẵn của Warcraft, nên mỗi kỹ năng trông giống ability gốc mà nó nhân

@@ -32,7 +32,9 @@ local GAP    = 0.008
 local TAB_H  = 0.026
 local LINE   = 0.021
 local BTN_H  = 0.032
-local ROWS   = 4        -- so dong chu cua the Tong Quan
+-- 5 tu 2026-09-19: them dong TU CHINH. Moi hinh hoc khac suy ra tu day
+-- (chieu cao khung, vi tri hai nut duoi), nen doi mot so nay la du.
+local ROWS   = 5        -- so dong chu cua the Tong Quan
 
 local TAB_OVERVIEW = 1
 local TAB_QUESTS   = 2
@@ -347,6 +349,21 @@ local function refresh(pid)
 
   BlzFrameSetText(st.row[4], CFG.C_GREY ..
     API.t("game_alive", S.alive or 0) .. CFG.C_END)
+
+  -- TU CHINH dang chay. Dong chat luc vao dot troi mat sau vai giay, ma
+  -- tu chinh keo dai CA DOT -- nen no phai co mot cho tra cuu duoc.
+  -- Xem labelNow() trong 5_modifier.lua.
+  if API.modifierLabel ~= nil then
+    local name, desc = API.modifierLabel()
+    if name ~= nil then
+      BlzFrameSetText(st.row[5], CFG.C_GOLD .. name .. CFG.C_END ..
+        "  " .. CFG.C_GREY .. (desc or "") .. CFG.C_END)
+    else
+      BlzFrameSetText(st.row[5], "")
+    end
+  else
+    BlzFrameSetText(st.row[5], "")
+  end
 
   if st.call ~= nil and API.waveCallState ~= nil then
     local c = API.waveCallState()

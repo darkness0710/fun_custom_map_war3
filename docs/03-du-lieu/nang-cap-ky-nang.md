@@ -217,8 +217,10 @@ nằm trong bảng Lua — chỉnh cân bằng không cần build lại file nh�
 
 ## Mở khóa: tay không, nhưng cầm sẵn 1 điểm
 
-**Chốt 2026-09-16:** `CFG.SKILL_START_COUNT = 0` và `CFG.LUMBER_START = 2`
-*(khoá cũ tên `NGOTINH_START`, đã đổi)*.
+**Chốt 2026-09-16:** `CFG.SKILL_START_COUNT = 0` và `CFG.LUMBER_START = 1`
+*(khoá cũ tên `NGOTINH_START`, đã đổi; hạ từ `2` xuống `1` ngày 2026-09-19 —
+hai Gỗ mở được **hai** kỹ năng ngay giây đầu, và thế là mất mất quyết định đầu
+tiên của ván: "mở cái nào trước")*.
 Hero vào map với command card trống, ví có đúng **một** Ngộ Tính — vừa đủ mở một
 kỹ năng ngay giây đầu. Mở khoá 1 điểm, đôn một bậc 1 điểm, trọn bảy cái là
 `7 × (1 + 9) = 70` điểm.

@@ -299,6 +299,26 @@ local function startHeroGate()
         API.addLumber(pid, CFG.LUMBER_START)
       end
 
+      -- Vang: dat THANH CFG.GOLD_START, khong cong them.
+      --
+      -- Warcraft da phat vang khoi dau theo war3map.w3i truoc khi mot
+      -- dong Lua nao chay, va con so do khong doc duoc tu CFG. Cong
+      -- them thi tong la "50 + mot con so khong ai biet". Bu phan lech
+      -- thi dung 50 du w3i dat gi -- va GHI VET con so nen, de lan sau
+      -- khong ai phai doan no nua.
+      --
+      -- Di qua addGold chu khong SetPlayerState: addGold la mot trong
+      -- HAI duong ghi hop le, va no cap nhat so cai cua canh cheat.
+      -- Ghi thang o day la tu to oan minh sau nua giay.
+      if CFG.GOLD_START ~= nil and API.addGold ~= nil and API.getGold ~= nil then
+        local base = API.getGold(pid)
+        if base ~= CFG.GOLD_START then
+          API.addGold(pid, CFG.GOLD_START - base)
+        end
+        API.trace("gate: pid " .. pid .. " vang nen " .. base ..
+                  " -> dat thanh " .. CFG.GOLD_START)
+      end
+
       local iron = CFG.IRON_START or 0
       if iron > 0 and API.addIron ~= nil then API.addIron(pid, iron) end
 

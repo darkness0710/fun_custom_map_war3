@@ -132,6 +132,9 @@ end
 local function clear()
   S.waveMod, S.waveModCode = nil, nil
   setWeather(nil)
+  -- Khung Tong Quan co mot dong doc tu day. Khong goi thi dong do giu
+  -- ten tu chinh CU suot ca dot boss -- sai ma nhin rat that.
+  if API.gameFrameRefresh ~= nil then API.gameFrameRefresh() end
 end
 
 -- ---------- Bao cho nguoi choi ----------
@@ -156,6 +159,33 @@ local function announce()
 
   API.msg(nil, CFG.C_GOLD .. head .. CFG.C_END ..
                "  " .. CFG.C_GREY .. desc .. CFG.C_END)
+  if API.gameFrameRefresh ~= nil then API.gameFrameRefresh() end
+end
+
+-- Tu chinh DANG chay, cho khung Tong Quan (phim R). Tra ve (ten, mo ta),
+-- hoac nil khi dot nay khong co tu chinh nao.
+--
+-- VI SAO PHAI CO CHO TRA CUU, khong chi mot dong chat.
+--
+-- Dong chat bao dung mot lan, luc vao dot. Nhung TU CHINH KEO DAI CA
+-- DOT, con dong chat thi troi mat sau vai giay. Nguoi choi vao giua
+-- dot, hoac vua doc mot dong khac de len, thi khong con cho nao hoi --
+-- va thu duy nhat con lai la mau quai voi kieu troi, ca hai deu phai
+-- NHO moi doc duoc.
+--
+-- Do la lop thu tu, va la lop duy nhat TRA CUU DUOC:
+--   dong chat  noi mot lan, roi mat
+--   mau quai   luon o do, nhung phai nho no nghia gi
+--   kieu troi  luon o do, nhung suong mu thi rat mo
+--   dong nay   luon o do, va noi ro bang chu
+local function labelNow()
+  local m = cur()
+  if m == nil then return nil end
+  local en   = (API.lang() == "en")
+  local sky  = (en and m.sky_en) or m.sky_vi
+  local name = API.pick(m)
+  if sky ~= nil then name = name .. " (" .. sky .. ")" end
+  return name, (en and m.desc_en) or m.desc_vi or ""
 end
 
 -- Lenh dev "-sky N": bat MOT ma thoi tiet bat ky de NHIN.
@@ -384,5 +414,6 @@ API.modifierDevSet     = devSet
 API.modifierDevSky     = devSky
 API.modifierApply      = apply
 API.modifierAnnounce   = announce
+API.modifierLabel      = labelNow
 API.modifierRewardMult = rewardMult
 API.startModifier      = startModifier

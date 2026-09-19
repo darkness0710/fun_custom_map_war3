@@ -3,7 +3,7 @@
 > **Trạng thái:** Đã cài — vùng đã có trong map
 > **Cập nhật:** 2026-09-19
 > **Code:** [1_house.lua](../../src/3_battle/1_house.lua), [4_geometry.lua](../../src/1_core/4_geometry.lua)
-> **Khoá CFG:** `RGN_HOUSE` `RGN_ENEMY` `HOUSE_*` `RGN_HERO_START` `RGN_HERO_MOVE` `START_ITEMS` `TOWER_START` `GATE_ROLL`
+> **Khoá CFG:** `RGN_HOUSE` `RGN_ENEMY` `HOUSE_*` `RGN_HERO_START` `RGN_HERO_MOVE` `START_ITEMS` `TOWER_START` `GOLD_START` `LUMBER_START` `IRON_START` `GATE_ROLL`
 > **Code thêm:** [1_events.lua](../../src/5_boot/1_events.lua), [1_player.lua](../../src/2_player/1_player.lua)
 
 ## Nó là gì
@@ -111,11 +111,25 @@ Lúc bước qua cổng **lần đầu**, người chơi nhận một lượt:
 
 | Nhận được | Khoá `CFG` |
 |---|---|
-| Gỗ khởi đầu | `LUMBER_START` |
+| **1 Gỗ** | `LUMBER_START` |
+| **50 Vàng** | `GOLD_START` |
 | 10 bình máu, 10 bình mana | `START_ITEMS` |
-| **3 Tháp Canh** *(không mua thêm được)* | `TOWER_START` |
+| **3 Tháp Canh** *(mua thêm được, 10 vàng)* | `TOWER_START` |
 | **2 Đá Rèn** | `IRON_START` |
-| **1 lượt Cơ Duyên** | `GATE_ROLL` |
+
+> **Ba thay đổi 2026-09-19.** Gỗ `2 → 1`; thêm **50 Vàng**; bỏ hẳn **1 lượt Cơ
+> Duyên** (`GATE_ROLL = 0`, xem [quay-thuong.md](quay-thuong.md)). Tháp Canh
+> không còn `forSale = false` nên mua thêm được — [kinh-te.md](kinh-te.md).
+
+**Vàng đặt THÀNH `50`, không cộng thêm `50`.** Warcraft phát vàng khởi đầu theo
+`war3map.w3i` **trước khi một dòng Lua nào chạy**, và con số đó không đọc được
+từ `CFG`. Cộng thêm thì tổng là *"50 + một con số không ai biết"*; bù phần lệch
+thì đúng `50` dù `w3i` đặt gì. Và nó **ghi vết con số nền**, để lần sau không ai
+phải đoán nó nữa.
+
+Đi qua `API.addGold` chứ không `SetPlayerState` thẳng: `addGold` là một trong
+**hai** đường ghi hợp lệ, và nó cập nhật sổ cái của
+[canh cheat](canh-cheat.md). Ghi thẳng ở đây là tự tố oan mình sau nửa giây.
 
 Ba tháp và hai bình dùng chung **một ô túi** mỗi loại — `SHOP_STACK_MAX = 10`
 nên chúng gộp lượt, hết 3 trên 6 ô.

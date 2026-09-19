@@ -112,6 +112,11 @@ def parse_skills(src, hero):
             m = re.search(r"\b%s\s*=\s*([0-9.]+)" % k, body)
             if m:
                 d[k] = float(m.group(1))
+        # Co luan ly. 'noNumber' = ky nang khong co con so nao de hien,
+        # va do la co y -- xem fmt() trong 4_skill.lua.
+        for k in ("noNumber",):
+            if re.search(r"\b%s\s*=\s*true" % k, body):
+                d[k] = True
         out.append(d)
     if not out:
         die("doc duoc 0 ky nang tu %s" % anchor)
@@ -180,7 +185,13 @@ def tooltip(sk, lv, cur, lang, T):
     lines = []
     desc = desc_of(sk, lang) or ""
     if "%s" in desc:
-        desc = desc.replace("%s", cur.fmt(sk, lv))
+        # Phai khop nhanh 'noNumber' cua fmt() trong 4_skill.lua: khong
+        # co no thi ky nang khong khai so se roi xuong nhanh cuoi va ra
+        # "0%" / "x0.00" -- mot con so bia.
+        if sk.get("noNumber"):
+            desc = desc.replace("%s", T.get("skill_always", "always on"))
+        else:
+            desc = desc.replace("%s", cur.fmt(sk, lv))
     desc = desc.replace("%%", "%")
     lines.append(desc)
     lines.append("")

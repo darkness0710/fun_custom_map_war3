@@ -112,4 +112,25 @@ nhiêu. Không có đường nào thắng một con mình chưa đủ sức, tr�
 Ghim xong thì mốc cảnh giới mới có nghĩa thật: con thú đo theo sức của đội
 **đúng lúc cam kết**, và trang bị mở sau đó là lời của người chơi.
 
+> **Đây là câu trả lời cho *"đang đánh mà nâng chỉ số, sao con thú không đổi?"***
+> — nó **cố ý**. Nếu con thú lớn theo thì nâng chỉ số giữa trận thành vô nghĩa:
+> một cái máy chạy bộ, càng khoẻ càng đứng yên một chỗ.
+
+### Nhưng ghim không phải vĩnh viễn *(2026-09-19)*
+
+**Lỗ hổng đã có:** `b.pinned` bật lên rồi **không bao giờ tắt**. Nên có đường đi
+này — mở khoá Huyền Vũ ở cảnh giới 6, chạm vào nó một cái để ghim, bỏ đi, quay
+lại ở cảnh giới 20. Nó vẫn là con thú đo cho một đội **cảnh giới 6**.
+
+Cả bốn con đều mở khoá **sớm hơn** lúc đủ sức đánh, nên đây không phải trường
+hợp hiếm — đó là đường tự nhiên.
+
+**Vá:** bỏ hoang `CFG.SIDE_QUEST_RESET = 20` giây *(đếm liên tục, không ai trong
+hang)* thì con thú **trả về nguyên trạng** — hồi đầy máu, bỏ ghim, đo lại theo
+sức của đội ở thời điểm mới.
+
+20 giây đủ dài để một pha chết-hồi-sinh-chạy-vào không bị tính là bỏ cuộc, đủ
+ngắn để không ai phải đứng chờ. `release()` chỉ tắt hai cờ; `arm()` lo phần còn
+lại — nó tự hồi máu, tắt cuồng, xoá khiên, đặt lại `b.age`.
+
 ← [Thiết kế boss chung](../../boss.md) · [20 boss thường](../normal-boss/README.md)

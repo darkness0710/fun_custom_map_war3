@@ -356,6 +356,16 @@ local function fromAbility(pid, sk, level)
 end
 
 local function fmt(pid, sk, level, rank)
+  -- 'noNumber': ky nang KHONG CO con so nao de hien, va do la co y.
+  --
+  -- Moon Glaive (A012) la vi du: ca co che nay do Warcraft lo, Lua
+  -- khong tinh gi ca. Neu khong co nhanh nay thi no roi xuong nhanh
+  -- cuoi va hien "0%" -- mot con so BIA, te hon la khong co so.
+  --
+  -- Khong dung cach "khai mot pct chi de hien": nhu the la hai noi cung
+  -- khai mot con so, va mot ngay se chi sua mot noi.
+  if sk.noNumber then return API.t("skill_always") end
+
   local fromA = fromAbility(pid, sk, level)
   if fromA ~= nil then return fromA end
   -- Doc khong ra thi noi RO la bac may, chu khong bia mot con so.

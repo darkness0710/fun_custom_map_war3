@@ -23,7 +23,7 @@ thiết kế, và là chỗ mọi con số quy về —
 | Kênh đồng bộ nhiều người | [3_sync.lua](../src/1_core/3_sync.lua) | blz → cache → local, tự dò |
 | Hai thứ tiếng | [6_i18n.lua](../src/1_core/6_i18n.lua) | `build.py --lang en\|vi` |
 | Nhà chính, chết là thua | [1_house.lua](../src/3_battle/1_house.lua) | Máu tính lại mỗi đợt theo `HOUSE_HP_HITS` |
-| Chọn hero lúc vào map | [2_heropick.lua](../src/2_player/2_heropick.lua) | 3 hero trong bảng, **1 mở** — Hvwd/Hkal đang `locked` |
+| Chọn hero lúc vào map | [2_heropick.lua](../src/2_player/2_heropick.lua) | 3 hero trong bảng, **2 mở** — chỉ Hkal còn `locked` |
 | Nâng cấp Nhà Chính | [12_houseup.lua](../src/2_player/12_houseup.lua) | Thẻ VI, trả bằng vàng — Kiên Cố (+Sức Mạnh) × 10 cấp |
 | Canh cheat | [13_cheatguard.lua](../src/2_player/13_cheatguard.lua) | **Không chặn được, chỉ đo hậu quả** — sổ cái vàng/gỗ + bất tử — [canh-cheat.md](02-he-thong/canh-cheat.md) |
 | Tu chính của đợt quái | [5_modifier.lua](../src/3_battle/5_modifier.lua) | 5 tu chính, bốc ngẫu nhiên mỗi stage thường. Báo bằng **chữ + màu quái + kiểu trời** |
@@ -106,13 +106,16 @@ giao kèo `CULT_COST_BASE = 500` phẳng + một cảnh giới kiếm đúng 500
 `SKILL_DATA_LIVE` **đã bật** từ 2026-09-16: cả bảy ability có 10 bậc thật, và
 sát thương ăn theo chỉ số qua [7_effect.lua](../src/2_player/7_effect.lua).
 
-> **Chỉ Hart có kỹ năng, nên từ 2026-09-19 chỉ Hart ra bảng chọn.** Hvwd và
-> Hkal mang cờ `locked = true`. Trước đó ba người chọn ba hero thì hai người có
-> **0 kỹ năng** — khoá lại là cách trung thực hơn là để người chơi tự phát hiện.
->
-> Hart thì đã hoàn chỉnh: 7 kỹ năng, 10 bậc, hiệu ứng thật, và tên/ô/tooltip sinh
-> từ `CFG.SKILLS`. Hvwd và Hkal ⏸ **chờ thiết kế lại** —
+> **Hai hero mở, một còn khoá *(2026-09-19)*.** Hart *(tanker)* và Hvwd
+> *(xạ thủ)* đều đủ 7 kỹ năng, 10 bậc, hiệu ứng thật, tên/ô/tooltip sinh từ
+> `CFG.SKILLS`. Hkal ⏸ vẫn mang `locked = true` —
 > [thiet-ke-hero.md](02-he-thong/thiet-ke-hero.md).
+>
+> Khoá chứ không xoá, vì lý do cũ vẫn đúng: ba người chọn ba hero mà hai người
+> có **0 kỹ năng** thì khoá lại trung thực hơn là để người chơi tự phát hiện.
+>
+> Bộ kỹ năng của Hvwd đáng đọc ở chỗ **ai giữ con số** chứ không ở bảng số —
+> [ky-nang.md](02-he-thong/ky-nang.md#bảy-kỹ-năng-của-hvwd-xạ-thủ).
 
 ## Chưa quyết
 

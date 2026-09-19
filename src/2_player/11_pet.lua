@@ -163,16 +163,32 @@ local function cycle(pid)
   end
 end
 
--- Ten con dang di theo, cho the Trang Bi. nil = chua co con nao.
-local function label(pid)
+-- Dong trong CFG.SIDE_QUESTS cua con DANG di theo. nil = chua co con nao.
+--
+-- Mot cho tra duy nhat cho ca ten lan chan dung. Truoc day chi co ten,
+-- con chan dung thi the Trang Bi treo CFG.GEAR_PET_ICON co dinh -- nen
+-- doi pet xong o van hien Chu Tuoc.
+local function defOf(pid)
   local d = S.p[pid]
   if d == nil or d.petUnit == nil then return nil end
   for i = 1, #(CFG.SIDE_QUESTS or {}) do
-    if CFG.SIDE_QUESTS[i].unit == d.petUnit then
-      return API.pick(CFG.SIDE_QUESTS[i])
-    end
+    if CFG.SIDE_QUESTS[i].unit == d.petUnit then return CFG.SIDE_QUESTS[i] end
   end
   return nil
+end
+
+-- Ten con dang di theo, cho the Trang Bi. nil = chua co con nao.
+local function label(pid)
+  local q = defOf(pid)
+  return (q ~= nil) and API.pick(q) or nil
+end
+
+-- Chan dung con dang di theo. nil = de cho goi tu quyet dinh duong lui
+-- (CFG.GEAR_PET_ICON), chu KHONG tu tra duong lui o day: o goi con phan
+-- biet "chua co pet" voi "co pet nhung thieu file anh".
+local function iconOf(pid)
+  local q = defOf(pid)
+  return (q ~= nil) and q.icon or nil
 end
 
 local function ownedCount(pid)
@@ -215,6 +231,7 @@ end
 
 API.petCycle  = cycle
 API.petLabel  = label
+API.petIcon   = iconOf
 API.petOwned  = ownedCount
 API.petSpawn  = spawn
 API.petRemove = remove

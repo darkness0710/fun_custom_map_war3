@@ -576,7 +576,10 @@ local function tabItems(pid)
 
   local wn = (API.wingOwned ~= nil) and API.wingOwned(pid) or 0
   local wl = (API.wingLabel ~= nil) and API.wingLabel(pid) or nil
-  local wi = { icon = CFG.GEAR_WING_ICON, name = API.t("gear_wing") }
+  -- Anh theo bo DANG DEO, y het o Thanh Thu ben duoi. CFG.GEAR_WING_ICON
+  -- gio chi con la duong LUI cho luc chua mo bo nao.
+  local wIcon = (API.wingIcon ~= nil) and API.wingIcon(pid) or nil
+  local wi = { icon = wIcon or CFG.GEAR_WING_ICON, name = API.t("gear_wing") }
   if wn <= 0 then
     -- Chua co bo nao: noi RO can canh gioi may, khong de o trong.
     local need = (API.wingNext ~= nil) and API.wingNext(pid) or nil
@@ -595,7 +598,13 @@ local function tabItems(pid)
 
   local pn = (API.petOwned ~= nil) and API.petOwned(pid) or 0
   local pl = (API.petLabel ~= nil) and API.petLabel(pid) or nil
-  local pi = { icon = CFG.GEAR_PET_ICON, name = API.t("gear_pet") }
+  -- CHAN DUNG THEO CON DANG DEO, khong phai mot duong dan co dinh.
+  --
+  -- Truoc day day la CFG.GEAR_PET_ICON thang, nen bam DOI thi ten doi ma
+  -- anh van la Chu Tuoc -- nut nhin nhu hong. CFG.GEAR_PET_ICON gio chi
+  -- con la duong LUI cho luc chua thu phuc con nao.
+  local pIcon = (API.petIcon ~= nil) and API.petIcon(pid) or nil
+  local pi = { icon = pIcon or CFG.GEAR_PET_ICON, name = API.t("gear_pet") }
   if pn <= 0 then
     pi.status = CFG.C_GREY .. API.t("st_locked") .. CFG.C_END
     pi.desc   = API.t("pet_need")
