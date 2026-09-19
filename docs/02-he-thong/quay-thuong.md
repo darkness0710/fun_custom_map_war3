@@ -76,10 +76,19 @@ Giờ `addRolls()` chỉ **cộng dồn và báo một dòng**. Khung mở ở `
 chỗ nhịp **đã dừng sẵn** ([ADR 0026](../05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md))
 — và gom cả wave vào một lần.
 
-> **Đường tự mở:** bấm `R` mà còn lượt thì khung Cơ Duyên lên trước bảng trận
-> đấu. Trước đây `fortuneFrameShow` **chỉ** được gọi từ `addRolls`, nên nếu khung
-> đóng mà còn lượt thì người chơi **kẹt lượt vĩnh viễn** — không phím, nút hay
-> lệnh nào mở lại được.
+> **Đã thử cho `R` mở khung này, rồi gỡ lại — cùng ngày.**
+>
+> Lý lẽ lúc đó: *"nếu khung đóng mà còn lượt thì người chơi kẹt lượt vĩnh viễn"*.
+>
+> **Trạng thái đó không xảy ra được.** `fortuneFrameHide()` được gọi ở đúng **một
+> chỗ** — trong `take()`, khi lượt về `0` — và `ESC` cũng không đóng khung Cơ
+> Duyên. Không có đường nào tới *"còn lượt mà khung đóng"*.
+>
+> Nên nhánh đó vừa là mã chết, vừa **cướp phím `R`**: còn lượt thì bấm `R` không
+> mở được bảng trận đấu nữa.
+>
+> Một đường cứu hộ cho trạng thái không tồn tại **không phải vô hại** — nó chiếm
+> mất một phím.
 
 ## Ba loại thẻ, mở cả ba *(2026-09-20)*
 

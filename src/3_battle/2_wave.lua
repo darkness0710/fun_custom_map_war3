@@ -584,14 +584,17 @@ local function onWaveCleared()
   if S.stage <= 0 or not S.running then return end
   if API.relicOnClear ~= nil then API.relicOnClear() end
 
-  -- CO DUYEN MO O DAY, khong mo luc tinh anh chet.
+  -- LUOI HUNG cho khung Co Duyen, khong phai cho mo chinh.
   --
-  -- Tinh anh chet GIUA wave, con 49 con dang go nguoi choi -- chon the
-  -- luc do khong phai mot lua chon, la mot thu phai gat di. Cho nay la
-  -- cho nhip DA DUNG SAN (ADR 0026), va no gom ca wave vao mot lan.
+  -- Cho mo chinh la addRolls() -- ngay luc tinh anh/boss/Thanh Thu
+  -- chet. Dong nay chi bat mot truong hop: showFrame() thoat som khi
+  -- build(pid) hong, va luc do luot nam lai ma khong co khung nao.
+  -- Toi day thu dung lai khung mot lan nua.
   --
-  -- Dat TRUOC ba nhanh return ben duoi: ca ba deu la "wave da sach",
-  -- chi khac nhau o nut se hien gi.
+  -- Khong co luot thi showIfPending() tra false va khong lam gi, nen
+  -- dong nay khong bao gio ban nham.
+  --
+  -- Dat TRUOC ba nhanh return ben duoi: ca ba deu la "wave da sach".
   if API.fortuneShowPending ~= nil then
     for i = 1, #S.pids do API.fortuneShowPending(S.pids[i]) end
   end

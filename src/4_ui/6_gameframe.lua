@@ -423,23 +423,23 @@ local function showFrame(pid)
   setVisible(pid, true)
 end
 
+-- R chi lam MOT viec: bat/tat bang tran dau.
+--
+-- DA TUNG cho no mo khung Co Duyen khi con luot, roi go lai
+-- (2026-09-20). Ly le luc do: "khung chi bat len tu addRolls(), nen
+-- neu no dong ma con luot thi nguoi choi ket luot".
+--
+-- Trang thai do KHONG XAY RA DUOC. fortuneFrameHide() duoc goi o dung
+-- MOT cho -- trong take(), khi luot ve 0 -- va ESC cung khong dong
+-- khung Co Duyen. Tuc "con luot ma khung dong" khong co duong nao toi.
+--
+-- Nen nhanh do vua la ma chet, vua CUOP phim R: con luot thi bam R
+-- khong mo duoc bang tran dau nua.
+--
+-- Bai hoc: mot duong cuu ho cho trang thai khong ton tai khong phai la
+-- vo hai -- no chiem mat mot phim.
 local function toggle(pid)
-  if isShown(pid) then hideFrame(pid); return end
-
-  -- CON LUOT CO DUYEN THI MO CAI DO TRUOC.
-  --
-  -- Day la duong TU MO duy nhat cua khung Co Duyen. Truoc day khung chi
-  -- bat len tu addRolls(), nen neu vi ly do gi do no dong ma con luot
-  -- thi nguoi choi KET LUOT -- khong phim nao, nut nao, lenh nao mo lai
-  -- duoc ("-quay" la lenh dev).
-  --
-  -- Bam R la cu ra hieu tu nhien cho "cho toi xem viec cua toi": no da
-  -- la phim cua bang tran dau roi.
-  if API.fortuneShowPending ~= nil and API.fortuneShowPending(pid) then
-    return
-  end
-
-  showFrame(pid)
+  if isShown(pid) then hideFrame(pid) else showFrame(pid) end
 end
 
 local function refreshAll()
