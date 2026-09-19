@@ -8,7 +8,7 @@ Con cuối. Bốn cơ chế — mọi bài đã học trong 19 trận trước, 
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Chấn Địa** `slam` | Mỗi **9s**: boss **đứng yên 2s**, một vòng tròn bán kính **600** hiện ra tại chỗ nó đang đứng, rồi nổ — `10×` một đòn thường lên mọi hero còn trong vòng. | **Chia vai, không phải cùng chạy.** Tanker **ở lại** ăn đòn — máu hiệu dụng nó trên trung bình nên đòn này ăn vào nó nhẹ hơn. Carry và Support **phải chạy**: dưới trung bình thì đòn này có thể quá 100% máu. Tâm nổ chốt lúc bắt đầu niệm nên chạy là thoát thật. Đổi lại boss bị khoá 2s — cửa sổ để đánh trả. Không nhân hệ số phát cuồng. [ADR 0023](../../05-quyet-dinh/0023-chan-dia-khong-noi-cast-tanker-o-lai-chiu.md) |
+| **Chấn Địa** `slam` | Mỗi **9s**: boss **đứng yên 2s**, một vòng tròn bán kính **600** hiện ra tại chỗ nó đang đứng, rồi nổ — `10×` một đòn thường lên mọi hero còn trong vòng. | **Chia vai, không phải cùng chạy.** Tanker **ở lại** ăn đòn — máu hiệu dụng nó trên trung bình nên đòn này ăn vào nó nhẹ hơn. Carry và Support **phải chạy**: dưới trung bình thì đòn này có thể quá 100% máu. Tâm nổ chốt lúc bắt đầu niệm nên chạy là thoát thật. Đổi lại boss bị khoá 2s — cửa sổ để đánh trả. Không nhân hệ số phát cuồng. [ADR 0023](../../../05-quyet-dinh/0023-chan-dia-khong-noi-cast-tanker-o-lai-chiu.md) |
 | **Lao Kích** `charge` | Mỗi **11s** dịch chuyển tới hero **XA NHẤT** và gây `3×` một đòn. | Không có chỗ nấp. Ai đứng xa nhất là mục tiêu, kể cả người đang hồi máu. |
 | **Xé Giáp** `shred` | Mỗi đòn trúng cộng dồn **+2%** sát thương nhận vào **của riêng hero đó**. | Thay phiên nhau chịu đòn. Một người tank cả trận là người đó vỡ trước. |
 | **Phát Cuồng** `enrage` | Dưới **30%** máu, sát thương `×1.6` vĩnh viễn. | Để dành kỹ năng và lọ cho 30% cuối. Nửa đầu dễ, nửa cuối mới là trận. |
@@ -32,4 +32,4 @@ giảm **99.79%** sát thương. Một con số tuyệt đối sẽ chỉ còn 4
 Boss là **hero** và **không bay** — `startBoss()` kiểm cả hai lúc vào map,
 báo đỏ ngay nếu sai, không đợi tới cảnh giới 20 mới phát hiện.
 
-← [Danh sách 20 boss](README.md) · [Thiết kế chung](../boss.md)
+← [Danh sách 20 boss](README.md) · [Thiết kế chung](../../boss.md)

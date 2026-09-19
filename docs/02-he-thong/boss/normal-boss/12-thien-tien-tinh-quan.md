@@ -1,15 +1,15 @@
-# 17. Thánh Nhân Vô Ngã — *Selfless Saint*
+# 12. Thiên Tiên Tinh Quân — *Heavenly Star Marshal*
 
-> **Cảnh giới 17 — Thánh Nhân** *(Saint)* · stage **85** · unit `Oshd` *(Shadow Hunter)*
+> **Cảnh giới 12 — Thiên Tiên** *(Heavenly Immortal)* · stage **60** · unit `Emoo` *(Priestess of the Moon)*
 
-Mọi đòn đánh đều quay lại chống người chơi: phản một phần, và nuôi nó phần còn lại.
+Khiên kéo dài trận, xé giáp phạt việc kéo dài. Hai cơ chế cố tình chống nhau — đó là cái bẫy.
 
 ## Cơ chế
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Phản Đòn** `reflect` | Phản lại **15%** sát thương nhận vào, thẳng vào người đánh. | Hero giòn phải cẩn thận: đánh càng mạnh càng tự thương. |
-| **Hút Máu** `lifesteal` | Hồi lại **25%** sát thương nó gây ra. | Đánh gấp. Kéo dài trận là cho nó hồi, và nó hồi theo số người nó chạm được. |
+| **Hộ Thể** `shield` | Mỗi **15s** tạo khiên hấp thụ bằng **12%** máu tối đa. | Dồn sát thương phá khiên trước khi lớp sau kịp lên, nếu không trận kéo vô hạn. |
+| **Xé Giáp** `shred` | Mỗi đòn trúng cộng dồn **+2%** sát thương nhận vào **của riêng hero đó**. | Thay phiên nhau chịu đòn. Một người tank cả trận là người đó vỡ trước. |
 
 ## Chỉ số
 
@@ -28,6 +28,6 @@ Chia cho `(1 − giảm)` là phần quan trọng: cuối ván hero có 8,070 gi
 giảm **99.79%** sát thương. Một con số tuyệt đối sẽ chỉ còn 4 máu khi chạm tới.
 
 Boss là **hero** và **không bay** — `startBoss()` kiểm cả hai lúc vào map,
-báo đỏ ngay nếu sai, không đợi tới cảnh giới 17 mới phát hiện.
+báo đỏ ngay nếu sai, không đợi tới cảnh giới 12 mới phát hiện.
 
-← [Danh sách 20 boss](README.md) · [Thiết kế chung](../boss.md)
+← [Danh sách 20 boss](README.md) · [Thiết kế chung](../../boss.md)

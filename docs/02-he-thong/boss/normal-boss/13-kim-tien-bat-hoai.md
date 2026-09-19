@@ -1,15 +1,15 @@
-# 07. Luyện Hư Đạo Nhân — *Void-Refiner*
+# 13. Kim Tiên Bất Hoại — *Golden Immortal Adamant*
 
-> **Cảnh giới 7 — Luyện Hư** *(Void Refining)* · stage **35** · unit `Hamg` *(Archmage)*
+> **Cảnh giới 13 — Kim Tiên** *(Golden Immortal)* · stage **65** · unit `Hpal` *(Paladin)*
 
-Khiên cộng thuộc hạ: ép chọn mục tiêu. Đánh boss thì thuộc hạ dồn lại, dọn thuộc hạ thì khiên lên lớp mới.
+Con boss **phòng thủ thuần**. Không đuổi, không gọi quân, chỉ đứng đó và bắt đội chứng minh sát thương của mình.
 
 ## Cơ chế
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
+| **Phản Đòn** `reflect` | Phản lại **15%** sát thương nhận vào, thẳng vào người đánh. | Hero giòn phải cẩn thận: đánh càng mạnh càng tự thương. |
 | **Hộ Thể** `shield` | Mỗi **15s** tạo khiên hấp thụ bằng **12%** máu tối đa. | Dồn sát thương phá khiên trước khi lớp sau kịp lên, nếu không trận kéo vô hạn. |
-| **Triệu Hồi** `summon` | Mỗi **20s** gọi **4** thuộc hạ quanh mình. | Dọn thuộc hạ hay bỏ qua là lựa chọn: chúng cho tiền, nhưng cũng chặn đường. |
 
 ## Chỉ số
 
@@ -28,6 +28,6 @@ Chia cho `(1 − giảm)` là phần quan trọng: cuối ván hero có 8,070 gi
 giảm **99.79%** sát thương. Một con số tuyệt đối sẽ chỉ còn 4 máu khi chạm tới.
 
 Boss là **hero** và **không bay** — `startBoss()` kiểm cả hai lúc vào map,
-báo đỏ ngay nếu sai, không đợi tới cảnh giới 7 mới phát hiện.
+báo đỏ ngay nếu sai, không đợi tới cảnh giới 13 mới phát hiện.
 
-← [Danh sách 20 boss](README.md) · [Thiết kế chung](../boss.md)
+← [Danh sách 20 boss](README.md) · [Thiết kế chung](../../boss.md)

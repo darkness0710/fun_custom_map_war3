@@ -1,14 +1,13 @@
-# 10. Độ Kiếp Lôi Chủ — *Tribulation Thunderlord*
+# 04. Kim Đan Ma Quân — *Golden Core Warlord*
 
-> **Cảnh giới 10 — Độ Kiếp** *(Tribulation)* · stage **50** · unit `Ofar` *(Far Seer)*
+> **Cảnh giới 4 — Kim Đan** *(Golden Core)* · stage **20** · unit `Obla` *(Blademaster)*
 
-Mốc giữa ván: ba cơ chế cùng lúc. Bài kiểm tra xem đội đã biết tản, đổi vị trí và để dành tài nguyên chưa.
+Con đầu tiên **đuổi theo** người chơi. Kết hợp phát cuồng: nửa cuối trận nó vừa bám vừa đau.
 
 ## Cơ chế
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Chấn Địa** `slam` | Mỗi **9s**: boss **đứng yên 2s**, một vòng tròn bán kính **600** hiện ra tại chỗ nó đang đứng, rồi nổ — `10×` một đòn thường lên mọi hero còn trong vòng. | **Chia vai, không phải cùng chạy.** Tanker **ở lại** ăn đòn — máu hiệu dụng nó trên trung bình nên đòn này ăn vào nó nhẹ hơn. Carry và Support **phải chạy**: dưới trung bình thì đòn này có thể quá 100% máu. Tâm nổ chốt lúc bắt đầu niệm nên chạy là thoát thật. Đổi lại boss bị khoá 2s — cửa sổ để đánh trả. Không nhân hệ số phát cuồng. [ADR 0023](../../05-quyet-dinh/0023-chan-dia-khong-noi-cast-tanker-o-lai-chiu.md) |
 | **Lao Kích** `charge` | Mỗi **11s** dịch chuyển tới hero **XA NHẤT** và gây `3×` một đòn. | Không có chỗ nấp. Ai đứng xa nhất là mục tiêu, kể cả người đang hồi máu. |
 | **Phát Cuồng** `enrage` | Dưới **30%** máu, sát thương `×1.6` vĩnh viễn. | Để dành kỹ năng và lọ cho 30% cuối. Nửa đầu dễ, nửa cuối mới là trận. |
 
@@ -29,6 +28,6 @@ Chia cho `(1 − giảm)` là phần quan trọng: cuối ván hero có 8,070 gi
 giảm **99.79%** sát thương. Một con số tuyệt đối sẽ chỉ còn 4 máu khi chạm tới.
 
 Boss là **hero** và **không bay** — `startBoss()` kiểm cả hai lúc vào map,
-báo đỏ ngay nếu sai, không đợi tới cảnh giới 10 mới phát hiện.
+báo đỏ ngay nếu sai, không đợi tới cảnh giới 4 mới phát hiện.
 
-← [Danh sách 20 boss](README.md) · [Thiết kế chung](../boss.md)
+← [Danh sách 20 boss](README.md) · [Thiết kế chung](../../boss.md)

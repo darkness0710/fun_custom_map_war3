@@ -1,8 +1,8 @@
 # Hệ thống: Hai thứ tiếng
 
-> **Trạng thái:** Đã cài, chưa phủ hết
-> **Cập nhật:** 2026-09-16
-> **Code:** [6_i18n.lua](../../src/1_core/6_i18n.lua)
+> **Trạng thái:** Đã phủ hết phần người chơi nhìn thấy
+> **Cập nhật:** 2026-09-19
+> **Code:** [6_i18n.lua](../../src/1_core/6_i18n.lua) · [2_state.lua](../../src/1_core/2_state.lua)
 > **Khoá CFG:** `LANG`
 
 Một bộ nguồn, xuất ra được bản tiếng Anh và bản tiếng Việt.
@@ -16,6 +16,39 @@ python build.py --lang en --map test2en.w3x
 `--lang` **không sửa `1_config.lua` trên đĩa** — nó chèn một dòng
 `CFG.LANG = "en"` vào cuối khối đã sinh. Nhờ vậy build hai bản khác tiếng không
 làm bẩn cây làm việc, và `git diff` không nhảy lên sau mỗi lần build.
+
+## Năm kênh hiện chữ, và chỉ ba kênh phải dịch
+
+Đây là thứ hay bị bỏ sót nhất, nên đặt lên đầu.
+
+| Kênh | Ai đọc | Luật |
+|---|---|---|
+| `API.msg` | **người chơi** | **bắt buộc** qua `API.t()` |
+| `BlzFrameSetText` | **người chơi** | **bắt buộc** qua `API.t()` / `API.pick()` |
+| `BlzSetUnitName` | **người chơi** | **bắt buộc** qua `API.t()` / `API.pick()` |
+| `API.warn` | người làm map | miễn — tiếng Việt không dấu |
+| `API.info` | người làm map | miễn — thân báo cáo, không màu |
+| `API.dbg` | chỉ khi `CFG.DEBUG` | miễn |
+| `API.trace` | file vết | miễn |
+
+**Vì sao phần `warn`/`info` không dịch.** Nội dung của nó là tên khoá `CFG`, tên
+native, tên file: *"Kiểm tra `CFG.HOUSE_UNIT`"*. Dịch sang tiếng Anh vẫn là một
+câu người chơi không làm gì được — chỉ tốn hai bảng chuỗi cho một độc giả duy
+nhất là chính mình.
+
+Tách thành **hàm riêng** chứ không phải một quy ước, để máy kiểm được chính xác:
+chuỗi cứng trong `API.msg` là **lỗi**, trong `API.warn` là **bình thường**.
+
+### Dấu hiệu phân kênh là `API.t()`, không phải màu
+
+Đợt chuyển 150 chỗ sang kênh mới lần đầu lấy **màu đỏ** làm dấu hiệu chẩn đoán.
+Sai: đỏ cũng dùng cho lỗi **của người chơi** — *"không đủ gỗ"*, *"túi đã đầy"*.
+Kết quả là **26 câu của người chơi** bị đẩy sang kênh chẩn đoán.
+
+Không ai thấy được: build vẫn chạy, chữ vẫn hiện đúng, chỉ phân loại là sai. Bắt
+được nhờ quét `API.warn(` nào còn chứa `API.t(`.
+
+Dấu hiệu đúng: **có `API.t()` là của người chơi.**
 
 ## Hai cách, dùng cho hai thứ khác nhau
 

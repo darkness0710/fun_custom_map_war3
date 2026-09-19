@@ -150,6 +150,7 @@ docs/
      0025-co-duyen-con-hai-the.md
      0026-nhip-van-do-nguoi-choi-goi.md
      0027-luyen-trang-bi-gop-mot-cu-bam.md
+     0028-vung-ve-tay-thay-luoi-25-block.md
   06-object-editor/
      sua-va-clone-ability.md  Đọc/ghi war3map.w3a bằng script, mã trường đã đo
      import-model.md         Import model/texture bằng script, bẫy World Editor giữ bộ nhớ

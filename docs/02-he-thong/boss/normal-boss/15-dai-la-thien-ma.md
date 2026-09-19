@@ -1,14 +1,15 @@
-# 12. Thiên Tiên Tinh Quân — *Heavenly Star Marshal*
+# 15. Đại La Thiên Ma — *Great Luo Demon*
 
-> **Cảnh giới 12 — Thiên Tiên** *(Heavenly Immortal)* · stage **60** · unit `Emoo` *(Priestess of the Moon)*
+> **Cảnh giới 15 — Đại La** *(Great Luo)* · stage **75** · unit `Udea` *(Death Knight)*
 
-Khiên kéo dài trận, xé giáp phạt việc kéo dài. Hai cơ chế cố tình chống nhau — đó là cái bẫy.
+Ba cơ chế đều thưởng cho việc trận kéo dài. Đây là con boss **phạt sự do dự** nặng nhất ván.
 
 ## Cơ chế
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Hộ Thể** `shield` | Mỗi **15s** tạo khiên hấp thụ bằng **12%** máu tối đa. | Dồn sát thương phá khiên trước khi lớp sau kịp lên, nếu không trận kéo vô hạn. |
+| **Hút Máu** `lifesteal` | Hồi lại **25%** sát thương nó gây ra. | Đánh gấp. Kéo dài trận là cho nó hồi, và nó hồi theo số người nó chạm được. |
+| **Phát Cuồng** `enrage` | Dưới **30%** máu, sát thương `×1.6` vĩnh viễn. | Để dành kỹ năng và lọ cho 30% cuối. Nửa đầu dễ, nửa cuối mới là trận. |
 | **Xé Giáp** `shred` | Mỗi đòn trúng cộng dồn **+2%** sát thương nhận vào **của riêng hero đó**. | Thay phiên nhau chịu đòn. Một người tank cả trận là người đó vỡ trước. |
 
 ## Chỉ số
@@ -28,6 +29,6 @@ Chia cho `(1 − giảm)` là phần quan trọng: cuối ván hero có 8,070 gi
 giảm **99.79%** sát thương. Một con số tuyệt đối sẽ chỉ còn 4 máu khi chạm tới.
 
 Boss là **hero** và **không bay** — `startBoss()` kiểm cả hai lúc vào map,
-báo đỏ ngay nếu sai, không đợi tới cảnh giới 12 mới phát hiện.
+báo đỏ ngay nếu sai, không đợi tới cảnh giới 15 mới phát hiện.
 
-← [Danh sách 20 boss](README.md) · [Thiết kế chung](../boss.md)
+← [Danh sách 20 boss](README.md) · [Thiết kế chung](../../boss.md)

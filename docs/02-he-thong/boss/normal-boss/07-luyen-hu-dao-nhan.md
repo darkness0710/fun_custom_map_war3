@@ -1,14 +1,14 @@
-# 05. Nguyên Anh Quỷ Mẫu — *Nascent Soul Matron*
+# 07. Luyện Hư Đạo Nhân — *Void-Refiner*
 
-> **Cảnh giới 5 — Nguyên Anh** *(Nascent Soul)* · stage **25** · unit `Udre` *(Dreadlord)*
+> **Cảnh giới 7 — Luyện Hư** *(Void Refining)* · stage **35** · unit `Hamg` *(Archmage)*
 
-Hút máu cộng thuộc hạ: càng đông càng khoẻ. Con boss đầu tiên **thắng bằng dọn dẹp** chứ không phải đánh thẳng.
+Khiên cộng thuộc hạ: ép chọn mục tiêu. Đánh boss thì thuộc hạ dồn lại, dọn thuộc hạ thì khiên lên lớp mới.
 
 ## Cơ chế
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Hút Máu** `lifesteal` | Hồi lại **25%** sát thương nó gây ra. | Đánh gấp. Kéo dài trận là cho nó hồi, và nó hồi theo số người nó chạm được. |
+| **Hộ Thể** `shield` | Mỗi **15s** tạo khiên hấp thụ bằng **12%** máu tối đa. | Dồn sát thương phá khiên trước khi lớp sau kịp lên, nếu không trận kéo vô hạn. |
 | **Triệu Hồi** `summon` | Mỗi **20s** gọi **4** thuộc hạ quanh mình. | Dọn thuộc hạ hay bỏ qua là lựa chọn: chúng cho tiền, nhưng cũng chặn đường. |
 
 ## Chỉ số
@@ -28,6 +28,6 @@ Chia cho `(1 − giảm)` là phần quan trọng: cuối ván hero có 8,070 gi
 giảm **99.79%** sát thương. Một con số tuyệt đối sẽ chỉ còn 4 máu khi chạm tới.
 
 Boss là **hero** và **không bay** — `startBoss()` kiểm cả hai lúc vào map,
-báo đỏ ngay nếu sai, không đợi tới cảnh giới 5 mới phát hiện.
+báo đỏ ngay nếu sai, không đợi tới cảnh giới 7 mới phát hiện.
 
-← [Danh sách 20 boss](README.md) · [Thiết kế chung](../boss.md)
+← [Danh sách 20 boss](README.md) · [Thiết kế chung](../../boss.md)

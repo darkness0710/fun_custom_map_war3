@@ -1,15 +1,15 @@
-# 04. Kim Đan Ma Quân — *Golden Core Warlord*
+# 17. Thánh Nhân Vô Ngã — *Selfless Saint*
 
-> **Cảnh giới 4 — Kim Đan** *(Golden Core)* · stage **20** · unit `Obla` *(Blademaster)*
+> **Cảnh giới 17 — Thánh Nhân** *(Saint)* · stage **85** · unit `Oshd` *(Shadow Hunter)*
 
-Con đầu tiên **đuổi theo** người chơi. Kết hợp phát cuồng: nửa cuối trận nó vừa bám vừa đau.
+Mọi đòn đánh đều quay lại chống người chơi: phản một phần, và nuôi nó phần còn lại.
 
 ## Cơ chế
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Lao Kích** `charge` | Mỗi **11s** dịch chuyển tới hero **XA NHẤT** và gây `3×` một đòn. | Không có chỗ nấp. Ai đứng xa nhất là mục tiêu, kể cả người đang hồi máu. |
-| **Phát Cuồng** `enrage` | Dưới **30%** máu, sát thương `×1.6` vĩnh viễn. | Để dành kỹ năng và lọ cho 30% cuối. Nửa đầu dễ, nửa cuối mới là trận. |
+| **Phản Đòn** `reflect` | Phản lại **15%** sát thương nhận vào, thẳng vào người đánh. | Hero giòn phải cẩn thận: đánh càng mạnh càng tự thương. |
+| **Hút Máu** `lifesteal` | Hồi lại **25%** sát thương nó gây ra. | Đánh gấp. Kéo dài trận là cho nó hồi, và nó hồi theo số người nó chạm được. |
 
 ## Chỉ số
 
@@ -28,6 +28,6 @@ Chia cho `(1 − giảm)` là phần quan trọng: cuối ván hero có 8,070 gi
 giảm **99.79%** sát thương. Một con số tuyệt đối sẽ chỉ còn 4 máu khi chạm tới.
 
 Boss là **hero** và **không bay** — `startBoss()` kiểm cả hai lúc vào map,
-báo đỏ ngay nếu sai, không đợi tới cảnh giới 4 mới phát hiện.
+báo đỏ ngay nếu sai, không đợi tới cảnh giới 17 mới phát hiện.
 
-← [Danh sách 20 boss](README.md) · [Thiết kế chung](../boss.md)
+← [Danh sách 20 boss](README.md) · [Thiết kế chung](../../boss.md)

@@ -1,16 +1,15 @@
-# 18. Đạo Tổ Huyền Vi — *Dao Ancestor*
+# 05. Nguyên Anh Quỷ Mẫu — *Nascent Soul Matron*
 
-> **Cảnh giới 18 — Đạo Tổ** *(Dao Ancestor)* · stage **90** · unit `Nbrn` *(Dark Ranger)*
+> **Cảnh giới 5 — Nguyên Anh** *(Nascent Soul)* · stage **25** · unit `Udre` *(Dreadlord)*
 
-Xé giáp cộng dồn trong khi thuộc hạ giữ chân. Càng lâu càng giòn, và nó không cho phép rút.
+Hút máu cộng thuộc hạ: càng đông càng khoẻ. Con boss đầu tiên **thắng bằng dọn dẹp** chứ không phải đánh thẳng.
 
 ## Cơ chế
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Xé Giáp** `shred` | Mỗi đòn trúng cộng dồn **+2%** sát thương nhận vào **của riêng hero đó**. | Thay phiên nhau chịu đòn. Một người tank cả trận là người đó vỡ trước. |
+| **Hút Máu** `lifesteal` | Hồi lại **25%** sát thương nó gây ra. | Đánh gấp. Kéo dài trận là cho nó hồi, và nó hồi theo số người nó chạm được. |
 | **Triệu Hồi** `summon` | Mỗi **20s** gọi **4** thuộc hạ quanh mình. | Dọn thuộc hạ hay bỏ qua là lựa chọn: chúng cho tiền, nhưng cũng chặn đường. |
-| **Lao Kích** `charge` | Mỗi **11s** dịch chuyển tới hero **XA NHẤT** và gây `3×` một đòn. | Không có chỗ nấp. Ai đứng xa nhất là mục tiêu, kể cả người đang hồi máu. |
 
 ## Chỉ số
 
@@ -29,6 +28,6 @@ Chia cho `(1 − giảm)` là phần quan trọng: cuối ván hero có 8,070 gi
 giảm **99.79%** sát thương. Một con số tuyệt đối sẽ chỉ còn 4 máu khi chạm tới.
 
 Boss là **hero** và **không bay** — `startBoss()` kiểm cả hai lúc vào map,
-báo đỏ ngay nếu sai, không đợi tới cảnh giới 18 mới phát hiện.
+báo đỏ ngay nếu sai, không đợi tới cảnh giới 5 mới phát hiện.
 
-← [Danh sách 20 boss](README.md) · [Thiết kế chung](../boss.md)
+← [Danh sách 20 boss](README.md) · [Thiết kế chung](../../boss.md)

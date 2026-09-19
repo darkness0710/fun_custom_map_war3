@@ -1,6 +1,8 @@
 # 0017 — Tên vùng là vị trí, vai trò nằm trong CFG
 
-> **Trạng thái:** Đã chốt
+> **Trạng thái:** ~~Đã chốt~~ — **phần lưới `Blk01`…`Blk25` đã bị thay thế**
+> bởi [ADR 0028](0028-vung-ve-tay-thay-luoi-25-block.md) (2026-09-19).
+> Nguyên tắc "vai trò sống trong CFG" thì vẫn còn hiệu lực.
 > **Ngày:** 2026-09-16
 
 ## Bối cảnh

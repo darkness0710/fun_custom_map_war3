@@ -1,15 +1,15 @@
-# 11. Chân Tiên Kiếm Khách — *True Immortal Swordsman*
+# 09. Đại Thừa Tôn Giả — *Great Ascension Arhat*
 
-> **Cảnh giới 11 — Chân Tiên** *(True Immortal)* · stage **55** · unit `Edem` *(Demon Hunter)*
+> **Cảnh giới 9 — Đại Thừa** *(Great Ascension)* · stage **45** · unit `Ekee` *(Keeper of the Grove)*
 
-Lao tới người xa nhất rồi hút máu từ chính đòn đó — người đứng xa vừa bị nhắm vừa nuôi nó.
+Phản đòn khiến việc quét diện rộng để dọn thuộc hạ trở thành tự chuốc sát thương.
 
 ## Cơ chế
 
 | Cơ chế | Làm gì | Đánh thế nào |
 |---|---|---|
-| **Lao Kích** `charge` | Mỗi **11s** dịch chuyển tới hero **XA NHẤT** và gây `3×` một đòn. | Không có chỗ nấp. Ai đứng xa nhất là mục tiêu, kể cả người đang hồi máu. |
-| **Hút Máu** `lifesteal` | Hồi lại **25%** sát thương nó gây ra. | Đánh gấp. Kéo dài trận là cho nó hồi, và nó hồi theo số người nó chạm được. |
+| **Triệu Hồi** `summon` | Mỗi **20s** gọi **4** thuộc hạ quanh mình. | Dọn thuộc hạ hay bỏ qua là lựa chọn: chúng cho tiền, nhưng cũng chặn đường. |
+| **Phản Đòn** `reflect` | Phản lại **15%** sát thương nhận vào, thẳng vào người đánh. | Hero giòn phải cẩn thận: đánh càng mạnh càng tự thương. |
 
 ## Chỉ số
 
@@ -28,6 +28,6 @@ Chia cho `(1 − giảm)` là phần quan trọng: cuối ván hero có 8,070 gi
 giảm **99.79%** sát thương. Một con số tuyệt đối sẽ chỉ còn 4 máu khi chạm tới.
 
 Boss là **hero** và **không bay** — `startBoss()` kiểm cả hai lúc vào map,
-báo đỏ ngay nếu sai, không đợi tới cảnh giới 11 mới phát hiện.
+báo đỏ ngay nếu sai, không đợi tới cảnh giới 9 mới phát hiện.
 
-← [Danh sách 20 boss](README.md) · [Thiết kế chung](../boss.md)
+← [Danh sách 20 boss](README.md) · [Thiết kế chung](../../boss.md)
