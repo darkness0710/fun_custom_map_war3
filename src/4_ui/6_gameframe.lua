@@ -424,7 +424,22 @@ local function showFrame(pid)
 end
 
 local function toggle(pid)
-  if isShown(pid) then hideFrame(pid) else showFrame(pid) end
+  if isShown(pid) then hideFrame(pid); return end
+
+  -- CON LUOT CO DUYEN THI MO CAI DO TRUOC.
+  --
+  -- Day la duong TU MO duy nhat cua khung Co Duyen. Truoc day khung chi
+  -- bat len tu addRolls(), nen neu vi ly do gi do no dong ma con luot
+  -- thi nguoi choi KET LUOT -- khong phim nao, nut nao, lenh nao mo lai
+  -- duoc ("-quay" la lenh dev).
+  --
+  -- Bam R la cu ra hieu tu nhien cho "cho toi xem viec cua toi": no da
+  -- la phim cua bang tran dau roi.
+  if API.fortuneShowPending ~= nil and API.fortuneShowPending(pid) then
+    return
+  end
+
+  showFrame(pid)
 end
 
 local function refreshAll()

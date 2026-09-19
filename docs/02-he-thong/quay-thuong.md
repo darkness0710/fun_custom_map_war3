@@ -1,17 +1,18 @@
 # Cơ Duyên — mỗi thẻ một cột
 
-> **Trạng thái:** **Đã cài** — hai thẻ
-> **Cập nhật:** 2026-09-18
+> **Trạng thái:** **Đã cài** — ba loại thẻ, rút hai
+> **Cập nhật:** 2026-09-20
 > **Khoá CFG:** `FORTUNE_ELITE` `FORTUNE_BOSS` `FORTUNE_VALUE` `FORTUNE_RANGE_MIN/MAX`
-> `FORTUNE_KINDS` `FORTUNE_GOLD_MIN/MAX` `FORTUNE_STATS` `FORTUNE_X/Y`
+> `FORTUNE_KINDS` `FORTUNE_DRAW` `FORTUNE_LUMBER` `FORTUNE_GOLD_MIN/MAX`
+> `FORTUNE_STATS` `FORTUNE_X/Y`
 > **Mã:** [10_fortune.lua](../../src/2_player/10_fortune.lua) *(số liệu)* ·
 > [5_fortuneframe.lua](../../src/4_ui/5_fortuneframe.lua) *(giao diện)*
 
-**Không phải một thẻ trong bảng.** Khung riêng, **mỗi thẻ một cột dọc**, mở
-**ngay** khi tinh anh hoặc boss chết — kiểu chọn lõi của TFT. Cả cột là một nút:
-bấm đâu trong cột cũng được.
+**Không phải một thẻ trong bảng.** Khung riêng, **mỗi thẻ một cột dọc**, mở khi
+**dọn sạch đợt** — kiểu chọn lõi của TFT. Cả cột là một nút: bấm đâu trong cột
+cũng được.
 
-**Số cột đọc từ `CFG.FORTUNE_KINDS`**, không gõ cứng. Thêm hay bớt một thẻ là
+**Số cột đọc từ `CFG.FORTUNE_DRAW`**, không gõ cứng. Thêm hay bớt một thẻ là
 thêm một dòng vào bảng đó cộng một nhánh trong `take()`; khung tự chia lại bề
 ngang.
 
@@ -47,6 +48,96 @@ Mỗi lượt mở **hai thẻ**, chọn **một**. Ba nguồn cho lượt quay:
 > trước khi người chơi kịp hiểu nó là gì.
 >
 > Khoá vẫn còn và `0` là tắt — bật lại chỉ là đổi một số.
+
+## Khung mở lúc DỌN SẠCH ĐỢT, không lúc tinh anh chết *(2026-09-20)*
+
+**Lỗi đã ship.** `addRolls()` mở khung **ngay** khi tinh anh chết — mà tinh anh
+chết **giữa wave**, còn 49 con đang gõ người chơi.
+
+| | |
+|---|---|
+| **Cắt ngang lúc đang đánh** | Cả hệ này dựng để người chơi **cân nhắc**, mà khoảnh khắc cân nhắc lại đặt đúng lúc không ai cân nhắc được. Nó thành một thứ phải gạt đi |
+| **Cướp bảng ESC** | `showFrame()` gọi `panelHide()`. Đang mua trang bị thì mất chỗ đang đứng |
+| **Khoá cả hai bảng** | Khung đang mở thì `ESC` lẫn `R` đều không mở được — nó là **modal** |
+
+**Đo được: 168 lượt một ván.**
+
+```
+tinh anh   80 wave × 1 =  80
+boss       20 con  × 3 =  60
+Thánh Thú  3+5+8+12    =  28
+                       -----
+                         168      ván 90 phút → MỘT LẦN MỖI 32 GIÂY
+```
+
+Và sau Thanh Long là **12 lần liên tiếp**.
+
+Giờ `addRolls()` chỉ **cộng dồn và báo một dòng**. Khung mở ở `onWaveCleared()` —
+chỗ nhịp **đã dừng sẵn** ([ADR 0026](../05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md))
+— và gom cả wave vào một lần.
+
+> **Đường tự mở:** bấm `R` mà còn lượt thì khung Cơ Duyên lên trước bảng trận
+> đấu. Trước đây `fortuneFrameShow` **chỉ** được gọi từ `addRolls`, nên nếu khung
+> đóng mà còn lượt thì người chơi **kẹt lượt vĩnh viễn** — không phím, nút hay
+> lệnh nào mở lại được.
+
+## Ba loại thẻ, rút hai *(2026-09-20)*
+
+```
+Gỗ    ↔ Chỉ Số     mở một nút bấm mới   vs  mạnh hơn ngay
+Gỗ    ↔ Vàng       kỹ năng              vs  trang bị
+Chỉ Số ↔ Vàng      ăn ngay              vs  phải qua Luyện
+```
+
+Ba câu hỏi thay vì một. Mở cả ba thẻ thì nó thành *"chọn cái to nhất"* — mà cái
+to nhất thì tính ra được, tức không còn là lựa chọn.
+
+### Thẻ Vàng từng hơn thẻ Chỉ Số ×4.09 — ở mọi bậc
+
+Quy hai thẻ về **cùng một đơn vị**:
+
+```
+thẻ Vàng  60 vàng → 6 đá → 6 bước Luyện
+          mỗi bước cộng GEAR_STAT_BASE × CULT_STAT_STEP^(bậc−1) = 1.5×
+          → 9.0 × hệ số
+
+thẻ Chỉ Số                                        → 2.2 × hệ số
+```
+
+Tỉ lệ `4.09` và nó **đứng im suốt 20 bậc**, vì cả hai cùng nhân `CULT_STAT_STEP`.
+Nghĩa là **không bao giờ có điểm giao** — ai nhận ra sẽ bấm Vàng 168 lần mà không
+cần nhìn.
+
+`FORTUNE_VALUE` `2.2 → 7.0`. Còn lệch `×1.29`, và đó là **cố ý**: thẻ Chỉ Số ăn
+ngay và không qua xác suất, còn thẻ Vàng phải đi qua shop, qua hệ Luyện
+`100/75/50/25/15`, và qua trần Tu Vi.
+
+### Thẻ Gỗ: 1 điểm, cố định
+
+**Không ngẫu nhiên.** Gỗ là đồng tiền **nguyên** và giá phẳng — `1 Gỗ = đúng một
+bậc kỹ năng`, đọc phát hiểu ngay. Ngẫu nhiên `1–3` thì bắt làm tính mỗi lượt, và
+nó **tự lật quyết định**: `3 Gỗ` hiển nhiên hơn thẻ Chỉ Số, `1 Gỗ` hiển nhiên
+thua. Đó là nhiễu, không phải lựa chọn.
+
+*(Thẻ Vàng được phép ngẫu nhiên vì `30` hay `90` không đổi việc ta có muốn vàng
+hay không — nó là số lớn, liên tục.)*
+
+**Không nhân theo bậc**, vì chỗ tiêu của Gỗ đều phẳng. Nhân theo bậc thì cuối ván
+một thẻ cho 100 Gỗ trong khi chỉ còn 5 chỗ tiêu.
+
+### Và `REWARD_ELITE_LUMBER` phải hạ `2 → 1`
+
+168 lượt nhân bất cứ thứ gì cũng thành to. Thẻ Gỗ `1` mà luôn chọn thì nguồn Gỗ
+`261 → 429`, trong khi chỗ tiêu chỉ `320` — **thừa 109**, và quyết định *"mua 3
+Pháp Khí bỏ 1"* biến mất.
+
+| Cách chơi | Nguồn Gỗ | vs chỗ tiêu `320` |
+|---|---|---|
+| Không lấy thẻ Gỗ lần nào | **181** | thiếu 139 — bỏ 2 Pháp Khí |
+| Lấy một nửa số lượt | **265** | thiếu 55 — vẫn bỏ 1 |
+| Lấy mọi lượt | **349** | đủ hết — trả bằng 168 thẻ khác |
+
+Gỗ thôi là **thu nhập tự động**, thành thứ **đánh đổi bằng sức mạnh**.
 
 ### Khung tự đóng bảng ESC *(2026-09-19)*
 

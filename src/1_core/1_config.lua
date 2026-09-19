@@ -1650,7 +1650,18 @@ CFG.REWARD_MOB_QI = 1
 CFG.REWARD_MOB_GOLD    = 1
 CFG.REWARD_ELITE_QI = 50
 CFG.REWARD_BOSS_QI  = 100
-CFG.REWARD_ELITE_LUMBER    = 2
+-- 1, HA TU 2 -- 2026-09-20, di kem viec them the Go vao Co Duyen.
+--
+-- Do duoc: mot van co 168 luot quay. Them the Go 1 diem ma nguoi choi
+-- luon chon thi nguon Go 261 -> 429, trong khi cho tieu chi 320 --
+-- thua 109, va ca quyet dinh "mua 3 Phap Khi bo 1" bien mat.
+--
+-- Ha nguon tu dong xuong con mot nua thi Go THOI LA THU NHAP TU DONG,
+-- thanh thu phai DANH DOI bang suc manh:
+--   khong lay the Go lan nao   181  -- thieu 139, bo 2 Phap Khi
+--   lay mot nua so luot        265  -- thieu 55, van bo 1
+--   lay moi luot               349  -- du het, tra bang 168 the khac
+CFG.REWARD_ELITE_LUMBER    = 1
 CFG.REWARD_BOSS_LUMBER     = 5
 
 -- Khong co cong tac "chia theo nguoi ket lieu". Da do: cach do lam ba
@@ -3014,7 +3025,21 @@ CFG.FORTUNE_BOSS  = 3
 --
 -- 2.2 chon de 7 luot mot canh gioi dang gia ~31% mot lan dot pha, va ca
 -- van (140 luot) cong ~9,700 chi so = 40% cua Tu Vi.
-CFG.FORTUNE_VALUE = 2.2
+-- 7.0, NANG TU 2.2 -- 2026-09-20, sau khi quy hai the ve CUNG MOT
+-- DON VI (diem chi so):
+--
+--   the Vang 60 vang -> 6 da -> 6 buoc Luyen
+--   moi buoc Luyen cong GEAR_STAT_BASE x CULT_STAT_STEP^(bac-1) = 1.5x
+--   tuc the Vang = 9.0 x he so, the Chi So = 2.2 x he so
+--
+-- Ti le 4.09 lan, va no DUNG IM suot 20 bac vi ca hai cung nhan
+-- CULT_STAT_STEP. Nghia la khong bao gio co diem giao: nguoi choi nao
+-- nhan ra se bam Vang 168 lan lien tiep ma khong can nhin.
+--
+-- 7.0 chu khong 9.0: the Chi So an NGAY va khong qua xac suat, con the
+-- Vang phai di qua shop, qua he Luyen 100/75/50/25/15, va qua tran Tu
+-- Vi. Chenh 22% la phan tra cho su chac chan do.
+CFG.FORTUNE_VALUE = 7.0
 
 -- Dai ngau nhien quanh gia tri do: 0.7 .. 1.3 lan.
 CFG.FORTUNE_RANGE_MIN = 0.70
@@ -3088,7 +3113,33 @@ CFG.FORTUNE_GOLD_MAX = 90
 --
 -- Thu tu trong bang NAY LA thu tu cot trai sang phai, va cung la thu tu
 -- goi GetRandomInt trong drawCards -- doi thu tu la doi chuoi ngau nhien.
-CFG.FORTUNE_KINDS = { "gold", "stat" }
+CFG.FORTUNE_KINDS = { "gold", "stat", "lumber" }
+
+-- BA LOAI, RUT HAI. Moi luot la mot cau hoi KHAC NHAU:
+--
+--   Go   <-> Chi So    mo mot nut bam moi   vs  manh hon ngay
+--   Go   <-> Vang      ky nang              vs  trang bi
+--   Chi So <-> Vang    an ngay              vs  phai qua Luyen
+--
+-- Ba cau hoi thay vi mot. Mo ca ba the thi no thanh "chon cai to nhat"
+-- -- va cai to nhat thi tinh ra duoc, tuc khong con la lua chon.
+CFG.FORTUNE_DRAW = 2
+
+-- The Go: MOT diem, CO DINH, khong nhan theo bac.
+--
+-- VI SAO KHONG NGAU NHIEN. Go la dong tien NGUYEN va gia phang: 1 Go =
+-- dung mot bac ky nang. Doc phat hieu ngay. Ngau nhien 1-3 thi bat
+-- nguoi choi lam tinh moi lan rut, VA no tu lat quyet dinh: 3 Go thi
+-- hien nhien hon the Chi So, 1 Go thi hien nhien thua. Do la NHIEU,
+-- khong phai lua chon.
+--
+-- The Vang DUOC PHEP ngau nhien vi 30 hay 90 khong doi viec ta co muon
+-- vang hay khong -- no la so lon, lien tuc.
+--
+-- VI SAO KHONG NHAN THEO BAC: cho tieu cua Go deu PHANG (1 Go mot bac
+-- ky nang, Phap Khi gia co dinh). Nhan theo bac thi cuoi van mot the
+-- cho 100 Go trong khi chi con 5 cho tieu.
+CFG.FORTUNE_LUMBER = 1
 
 -- The 2 cong vao MOT chi so ngau nhien trong ba.
 --

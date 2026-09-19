@@ -230,6 +230,7 @@ T.en = {
   -- doc ra la "nang len bac 1", khong ai doan duoc 1 do la 1 Go.
   cur_qi          = "Qi",
   cur_lumber          = "Lumber",
+  fortune_pending     = "+1 Fortune roll (%d waiting) -- opens when the wave is clear.",
   cur_gold        = "Gold",
   cur_iron          = "Iron",
   panel_iron        = "Iron",
@@ -462,6 +463,7 @@ T.vi = {
   btn_unlock      = "MO KHOA",
   cur_qi          = "Linh Khi",
   cur_lumber          = "Go",
+  fortune_pending     = "+1 luot Co Duyen (dang co %d) -- mo khi don sach dot.",
   cur_gold        = "Vang",
   cur_iron          = "Da",
   panel_iron        = "Huyen Thiet",

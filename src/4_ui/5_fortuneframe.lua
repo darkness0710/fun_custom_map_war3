@@ -9,7 +9,7 @@
 --  nhau va phu kin ca khung thi khong co cho nao de "bam hut"; mot nut
 --  nho o duoi thi phai co y moi trung. Cung ly do voi bang chon hero.
 --
---  SO COT DOC TU CFG.FORTUNE_KINDS, khong go cung. Be ngang khung giu
+--  SO COT DOC TU CFG.FORTUNE_DRAW, khong go cung. Be ngang khung giu
 --  nguyen, cot tu chia lai -- them hay bot the khong phai sua file nay.
 --
 --  KHONG DONG BANG ESC. Phai chon mot the moi di tiep. Do la ly do
@@ -48,7 +48,11 @@ end
 -- So the mot luot. Doc moi lan chu khong nho: build() chay sau khi CFG
 -- da nap xong, va giu mot ban sao cuc bo la mot cho nua co the lech.
 local function nCol()
-  local n = CFG.FORTUNE_KINDS and #CFG.FORTUNE_KINDS or 0
+  -- SO THE RUT RA, khong phai so loai co san. Tu 2026-09-20 co BA loai
+  -- ma chi rut HAI -- ve ba cot thi mot cot luon rong.
+  local n = CFG.FORTUNE_DRAW or 0
+  local avail = CFG.FORTUNE_KINDS and #CFG.FORTUNE_KINDS or 0
+  if n <= 0 or n > avail then n = avail end
   return (n > 0) and n or 1
 end
 

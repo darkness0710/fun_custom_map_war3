@@ -4,8 +4,9 @@
 --  Giet tinh anh 1 luot, boss 3 luot. Moi luot mo CFG.FORTUNE_KINDS
 --  the, chon MOT.
 --
---    "gold"  vang, PHANG, ngau nhien FORTUNE_GOLD_MIN..MAX
---    "stat"  +V vao MOT chi so ngau nhien trong ba
+--    "gold"    vang, PHANG, ngau nhien FORTUNE_GOLD_MIN..MAX
+--    "stat"    +V vao MOT chi so ngau nhien trong ba
+--    "lumber"  Go, PHANG va CO DINH -- xem CFG.FORTUNE_LUMBER
 --
 --  V = CFG.FORTUNE_VALUE x CULT_STAT_STEP^(bac-1), ngau nhien +-30%.
 --  CHI the "stat" dung V. Dung CHINH buoc cua Tu Vi nen no tu bam theo
@@ -53,6 +54,9 @@ local function makeCard(pid, kind, v)
   elseif kind == "stat" then
     return { kind = kind, amount = math.floor(v + 0.5),
              stat = CFG.FORTUNE_STATS[GetRandomInt(1, #CFG.FORTUNE_STATS)] }
+  elseif kind == "lumber" then
+    -- CO DINH, khong goi GetRandomInt. Xem CFG.FORTUNE_LUMBER.
+    return { kind = kind, amount = CFG.FORTUNE_LUMBER or 1 }
   elseif kind == "iron" then
     -- The da da bo khoi CFG.FORTUNE_KINDS, nhanh nay giu de bat lai
     -- bang mot dong CFG neu can. Khong co CFG.FORTUNE_IRON nua thi coi
@@ -64,14 +68,35 @@ local function makeCard(pid, kind, v)
 end
 
 -- Rut mot luot the moi. Chay tren MOI may -- xem chu thich dau file.
+--
+-- RUT CFG.FORTUNE_DRAW TRONG SO CFG.FORTUNE_KINDS. Mo ca ba the thi
+-- no thanh "chon cai to nhat", ma cai to nhat thi tinh ra duoc -- tuc
+-- khong con la lua chon. Rut hai trong ba thi moi luot la mot cau hoi
+-- khac: Go/Chi So, Go/Vang, hay Chi So/Vang.
+--
+-- DONG BO: ham nay chay tu addRolls(), tuc tu su kien quai chet, tuc
+-- tren MOI may. Moi may boc cung thu tu tu cung chuoi ngau nhien nen
+-- ra cung bo the. Tuyet doi khong goi tu callback frame (ADR 0012).
+--
+-- Boc kieu "rut khong hoan lai": sao chep danh sach roi nhat ra, de
+-- khong bao gio ra hai the trung loai.
 local function drawCards(pid)
   local d = S.p[pid]
   if d == nil then return end
   local v = rollValue(pid)
-  local kinds = CFG.FORTUNE_KINDS
+
+  local pool = {}
+  for i = 1, #CFG.FORTUNE_KINDS do pool[i] = CFG.FORTUNE_KINDS[i] end
+
+  local want = CFG.FORTUNE_DRAW or #pool
+  if want > #pool then want = #pool end
+
   local out = {}
-  for i = 1, #kinds do
-    out[#out + 1] = makeCard(pid, kinds[i], v)
+  for _ = 1, want do
+    local k = GetRandomInt(1, #pool)
+    local kind = pool[k]
+    table.remove(pool, k)
+    out[#out + 1] = makeCard(pid, kind, v)
   end
   d.cards = out
 end
@@ -81,10 +106,39 @@ local function addRolls(pid, n)
   local d = S.p[pid]
   if d == nil or n == nil or n <= 0 then return end
   d.rolls = (d.rolls or 0) + n
-  -- Chua co the nao thi rut ngay.
+  -- Chua co the nao thi rut ngay. RUT o day chu khong o cho mo khung:
+  -- ham nay chay tren moi may, con mo khung la UI thuan (ADR 0012).
   if d.cards == nil then drawCards(pid) end
-  -- Mo khung NGAY. Day la cho duy nhat khung tu bat len.
-  if API.fortuneFrameShow ~= nil then API.fortuneFrameShow(pid) end
+
+  -- KHONG MO KHUNG O DAY NUA -- 2026-09-20.
+  --
+  -- LOI DA SHIP: khung bat len NGAY luc tinh anh chet, ma tinh anh chet
+  -- GIUA WAVE -- con 49 con dang go nguoi choi. Ba hau qua:
+  --
+  --   1. Phai chon the trong luc dang bi danh. Ca he Co Duyen dung de
+  --      nguoi choi CAN NHAC, ma khoanh khac can nhac lai dat dung vao
+  --      luc khong ai can nhac duoc -- no thanh mot thu phai gat di.
+  --   2. Khung goi panelHide(), tuc DONG BANG ESC cua nguoi choi. Dang
+  --      mua trang bi thi mat cho dang dung.
+  --   3. Do duoc: 168 luot mot van. Van 90 phut la MOT LAN MOI 32 GIAY,
+  --      va sau Thanh Long la 12 lan lien tiep.
+  --
+  -- Gio chi bao mot dong. Khung bat khi DON SACH WAVE -- cho nhip da
+  -- dung san (ADR 0026) -- va gom ca wave vao mot lan.
+  API.msg(pid, CFG.C_GOLD .. API.t("fortune_pending", d.rolls) .. CFG.C_END)
+end
+
+-- Goi tu 2_wave.lua luc don sach wave, va tu phim R.
+--
+-- Tra ve true neu co mo khung -- ben goi dung no de biet co nen lam
+-- viec khac hay khong.
+local function showIfPending(pid)
+  local d = S.p[pid]
+  if d == nil or (d.rolls or 0) <= 0 then return false end
+  if d.cards == nil then drawCards(pid) end
+  if API.fortuneFrameShow == nil then return false end
+  API.fortuneFrameShow(pid)
+  return true
 end
 
 -- ---------- Nhan the ----------
@@ -110,6 +164,11 @@ local function take(pid, i)
 
   elseif card.kind == "gold" then
     API.addGold(pid, card.amount)
+
+  elseif card.kind == "lumber" then
+    -- Di qua addLumber chu khong SetPlayerState: do la mot trong HAI
+    -- duong ghi hop le, va no cap nhat so cai cua canh cheat.
+    API.addLumber(pid, card.amount)
   end
 
   API.msg(pid, API.t("fortune_took", CFG.C_JADE .. API.fortuneLabel(card) .. CFG.C_END))
@@ -133,6 +192,8 @@ local function labelOf(card)
     return API.num(card.amount) .. " " .. API.t("cur_iron")
   elseif card.kind == "stat" then
     return "+" .. API.num(card.amount) .. " " .. API.t("stat_" .. card.stat)
+  elseif card.kind == "lumber" then
+    return "+" .. API.num(card.amount) .. " " .. API.t("cur_lumber")
   end
   return "+" .. API.num(card.amount) .. " " .. API.t("cur_gold")
 end
@@ -154,6 +215,8 @@ local ICON = {
   iron    = [[ReplaceableTextures\CommandButtons\BTNStaffOfSanctuary.blp]],
   stat = [[ReplaceableTextures\CommandButtons\BTNSteelMelee.blp]],
   gold  = [[ReplaceableTextures\CommandButtons\BTNTalisman.blp]],
+  -- Duong LUI da chung minh ve ra hinh (the Trang Bi dang dung).
+  lumber = [[ReplaceableTextures\CommandButtons\BTNSteelArmor.blp]],
 }
 
 -- Do icon that luc vao map. Moi muc: { khoa, ma item de thu, ability
@@ -170,7 +233,8 @@ local function probeIcons()
   --    CreateItem tra nil khi ma khong ton tai -> giu duong lui va GHI
   --    VET, khong nuot im.
   if CreateItem ~= nil and BlzGetItemIconPath ~= nil then
-    local probes = { { "gold", "gold" }, { "iron", "ingt" } }
+    local probes = { { "gold", "gold" }, { "iron", "ingt" },
+                     { "lumber", "lmbr" } }
     for i = 1, #probes do
       local field, code = probes[i][1], probes[i][2]
       local it = CreateItem(FourCC(code), 0.0, 0.0)
@@ -216,6 +280,7 @@ local function startFortune()
 end
 
 API.fortuneAddRolls = addRolls
+API.fortuneShowPending = showIfPending
 API.fortuneLabel     = labelOf
 API.fortuneTake     = take
 API.fortuneHasRolls  = hasRolls
