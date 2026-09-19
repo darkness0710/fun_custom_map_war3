@@ -344,3 +344,40 @@ nhưng ba chỗ phải kiểm vì ability unit không được thiết kế đ�
    nó có thể đè lên một ô khác trong command card.
 - Bộ sinh chưa viết. Cần bảng số liệu 21 skill trước.
 - Chưa đo World Editor có giữ nguyên file script ghi ra sau khi Save không.
+
+## Trường chỉ khai ở bậc 1 là một quả mìn hẹn giờ
+
+> **Lỗi đã ship — 2026-09-20.** `A010` *Hồi Xuân* khai `atar` *(danh sách mục
+> tiêu)*, `adur`, `aran`, `amcs`, `acdn` ở **đúng bậc 1**. Bậc 1 nhắm được bản
+> thân và đồng đội; **bậc 2 trở lên rơi về ability gốc và không nhắm được ai
+> cả**.
+>
+> Nghĩa là người chơi bỏ Gỗ ra **nâng một bậc** thì kỹ năng **hỏng đi** — và
+> không có lỗi nào báo.
+
+Object Editor lưu trường theo **từng bậc**. Gõ một giá trị khi ability mới có 1
+bậc, rồi sau đó nâng `Stats - Levels` lên 10, thì bậc 2–10 **không có giá trị
+nào** — và Warcraft lặng lẽ đọc dữ liệu của ability **gốc** cho những bậc đó.
+
+Đây là anh em sinh đôi của cái bẫy `alev`: cái kia là *số* bậc, cái này là *nội
+dung* của những bậc vừa mở ra.
+
+```bash
+python w3obj.py fill test2.w3x/war3map.w3a --dry   # xem trước
+python w3obj.py fill test2.w3x/war3map.w3a
+```
+
+Nhân bản giá trị bậc 1 ra mọi bậc, cho **mọi** trường chỉ khai bậc 1. Chạy lại
+nhiều lần vô hại — trường nào đã đủ bậc thì nó bỏ qua.
+
+**Thứ tự đúng sau khi clone một ability mới:**
+
+```bash
+python w3obj.py levels test2.w3x/war3map.w3a 10   # mở đủ 10 bậc
+python w3skill.py gen --lang vi                   # tên · tooltip · ô · phím
+python w3obj.py fill   test2.w3x/war3map.w3a      # trám nội dung bậc 2-10
+python w3obj.py checkall test2.w3x                # đọc lại, so từng byte
+```
+
+Đo lại bằng chính `dump`: trường nào chỉ có một dòng `level=1` trong khi
+`alev = 10` là một quả mìn chưa nổ.

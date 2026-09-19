@@ -10,6 +10,8 @@ w3obj.py -- doc va ghi file du lieu Object Editor cua Warcraft III.
 
     python w3obj.py levels  test2.w3x/war3map.w3a 10  # alev = 10 cho MOI
                                                       # ability tu tao
+    python w3obj.py fill    test2.w3x/war3map.w3a     # truong nao chi khai
+                                                      # bac 1 -> nhan ra moi bac
     python w3obj.py set     test2.w3x/war3map.w3a A001 alev 10
     python w3obj.py set     test2.w3x/war3map.w3a A001 anam "Chuong"
 
@@ -316,6 +318,77 @@ def cmd_levels(path, n, dry):
     return write_back(path, version, orig, custom)
 
 
+def cmd_fill(path, dry):
+    """Nhan ban gia tri o BAC 1 ra moi bac, cho truong nao chi khai bac 1.
+
+    VI SAO CAN. Object Editor luu truong theo TUNG BAC. Go mot gia tri
+    khi ability moi co 1 bac, roi sau do nang 'Stats - Levels' len 10,
+    thi bac 2-10 KHONG co gia tri nao -- va Warcraft lang le doc du lieu
+    cua ability GOC cho nhung bac do.
+
+    Loi da ship: A010 'Hoi Xuan' khai atar/adur/aran/amcs/acdn o dung
+    bac 1. Bac 1 nham duoc ban than va dong doi; bac 2 tro len roi ve
+    ACr2 goc va khong nham duoc ai ca. Nguoi choi mua them mot bac thi
+    ky nang HONG DI -- va khong co loi nao bao.
+
+    Cung ho voi cmd_levels: cai kia dat SO bac, cai nay dat NOI DUNG
+    cua nhung bac vua mo ra.
+    """
+    (version, orig, custom), raw = read_file(path)
+    if not is_leveled(path):
+        print("[loi] %s khong phai file co bac -- khong co gi de nhan ban" % path)
+        return False
+
+    doi = 0
+    for o in custom:
+        name = o.newid or o.base
+        top = 0
+        for m in o.mods:
+            if m.mid == "alev":
+                top = int(m.value)
+        if top <= 1:
+            continue
+
+        # Bac nao da co gia tri cho truong nay.
+        have = {}
+        for m in o.mods:
+            if m.level > 0:
+                have.setdefault(m.mid, set()).add(m.level)
+
+        for mid, levels in sorted(have.items()):
+            if 1 not in levels or len(levels) >= top:
+                continue
+            src = None
+            for m in o.mods:
+                if m.mid == mid and m.level == 1:
+                    src = m
+                    break
+            if src is None:
+                continue
+            added = []
+            for lv in range(2, top + 1):
+                if lv in levels:
+                    continue
+                o.mods.append(Mod(src.mid, src.vtype, src.value, lv,
+                                  src.dptr, src.end))
+                added.append(lv)
+            if added:
+                doi += 1
+                print("  -> %-5s %s : bac 1 -> bac %s"
+                      % (name, mid,
+                         "%d..%d" % (added[0], added[-1])
+                         if len(added) > 1 else str(added[0])))
+
+    print("[%d truong nhan ban]" % doi)
+    if dry:
+        print("[dry] khong ghi gi.")
+        return True
+    if doi == 0:
+        print("[ok] khong co gi de doi.")
+        return True
+    return write_back(path, version, orig, custom)
+
+
 def cmd_dump(path):
     (version, orig, custom), raw = read_file(path)
     print("%s -- %d byte, phien ban %d, %s"
@@ -382,6 +455,12 @@ def main():
             print("dung: w3obj.py levels <file.w3a> <so bac> [--dry]")
             return 2
         return 0 if cmd_levels(target, args[0], dry) else 1
+
+    if cmd == "fill":
+        if args:
+            print("dung: w3obj.py fill <file.w3a> [--dry]")
+            return 2
+        return 0 if cmd_fill(target, dry) else 1
 
     if cmd == "set":
         if len(args) != 3:
