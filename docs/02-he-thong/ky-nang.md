@@ -251,31 +251,41 @@ như lỗi, và con số 6 giây thành vô nghĩa.
 Dòng `durField = "adur"` khai tường minh trong `CFG.SKILLS` dù `"adur"` đã là
 mặc định — đọc một dòng đó là biết ngay 6 giây đến từ đâu.
 
-### Ba hằng số đã đo: chúng KHÔNG tồn tại
+### Đã đo bằng `-nat spell` — và hai kết quả là khớp giả
 
-File vết 2026-09-19:
+| gốc | Hằng số | |
+|---|---|---|
+| `AOcl` | `ABILITY_RLF_DAMAGE_PER_TARGET_OCL1` | ✅ thật |
+| `AHfa` | `ABILITY_RLF_DAMAGE_BONUS_HFA1` | ✅ thật |
+| `ACr2` | `ABILITY_RLF_DAMAGE_MULTIPLIER_**OCR2**` | ❌ khớp giả |
+| `AEar` | `ABILITY_*_RE**SEAR**CH_*` | ❌ khớp giả |
+| `Amgl` | — | không có |
 
-```
-skill: KHONG co hang so ABILITY_RLF_DAMAGE_OCL1 -- hieu ung goc VAN CHAY
-skill: KHONG co hang so ABILITY_RLF_DAMAGE_REDUCTION_PER_TARGET_OCL2
-skill: KHONG co hang so ABILITY_RLF_HIT_POINTS_GAINED_CR21
-```
+Trước đó tôi **suy** tên từ quy luật `AOsh → Osh1 → ABILITY_RLF_<TÊN>_OSH1` và
+sai hết: viết `ABILITY_RLF_DAMAGE_OCL1` trong khi thật là
+`..._DAMAGE_PER_TARGET_OCL1`, và bịa hẳn `..._HIT_POINTS_GAINED_CR21`.
 
-Cả ba suy từ quy luật `AOsh → Osh1 → ABILITY_RLF_<TÊN>_OSH1`, và **sai cả ba**.
-Bản 1.31.1 thiếu rất nhiều `ABILITY_RLF_*` — đúng chuyện A003 đã gặp.
+**Hai khớp giả suýt lừa tiếp.** `spells()` bỏ chữ cái đầu rồi tìm **chuỗi con**,
+nên `ACr2 → "CR2"` trúng `..._OCR2` — mà `OCR2` là hậu tố của `AOcr`
+*(Critical Strike)*, một ability khác hẳn. Và `AEar → "EAR"` trúng `RESEARCH`,
+vì `RESEARCH` có chứa `EAR`.
 
-**Hậu quả đang chịu:** hiệu ứng gốc vẫn chạy chồng lên Lua. Với `A008` là một ít
-sát thương phẳng; với `A010` là thêm một lớp hồi máu nữa. Cả hai là số **phẳng**
-nên teo dần ([ADR 0024](../05-quyet-dinh/0024-cong-thi-leo-nhan-thi-phang.md)) —
-khó chịu ở wave đầu, vô nghĩa từ cảnh giới 5.
+Đã sửa `spells()`: tách **khớp mạnh** *(tên kết thúc bằng `<hậu tố><số>`)* khỏi
+**nghi ngờ**, và in nghi ngờ bằng màu xám có dấu `?`. Khớp yếu vẫn in ra — đôi
+khi hậu tố thật không có số ở cuối, và lúc đó nó là manh mối duy nhất.
 
-**Cách sửa thật không phải đoán tiếp tên hằng số**, mà là đọc **mã trường 4 ký
-tự** rồi đi qua `ConvertAbilityRealLevelField` — đúng đường A003 đã đi và
-`fxHot()` đang dùng cho `adur`. Cần `-nat spell` trong game để lấy mã trường
-thật.
+> Một cái tên **sai** trong `SKILL_ZERO_BASE` thì `zeroField()` ghi vết rồi hiệu
+> ứng gốc vẫn chạy — im lặng, và không ai đọc lại dòng vết đó.
 
-> Giữ ba tên sai trong `SKILL_ZERO_BASE` chứ không xoá: mỗi ván chúng đẻ ra một
-> dòng ghi vết, tức một lời nhắc rằng chỗ này chưa xong.
+**`A011` trước đây không có dòng nào ở đây** — thiếu sót thật, và là cái đắt
+nhất: `ABILITY_RLF_DAMAGE_BONUS_HFA1` chính là con số **phẳng** cộng vào mỗi mũi
+tên, tức đúng thứ mà cả thiết kế `burn` dựng ra để thay thế.
+
+**Còn lại `A010`:** không có hằng số nào — *đã đo*, không phải chưa tìm. Nên lớp
+hồi máu gốc 6 giây vẫn chạy chồng lên `fxHot()`. Nó phẳng nên teo dần: rõ ở wave
+đầu, vô nghĩa từ cảnh giới 5. Muốn tắt hẳn thì cần **mã trường 4 ký tự** của
+`Data - Hit Points Gained` — đặt trường đó một giá trị bất kỳ trong World Editor,
+lưu, rồi `python w3obj.py dump` sẽ in ra mã.
 
 ### Hai thứ còn phải đo
 

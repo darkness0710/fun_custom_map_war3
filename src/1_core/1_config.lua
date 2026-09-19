@@ -1563,30 +1563,39 @@ CFG.SKILL_ZERO_BASE = {
   [id('A007')] = { "ABILITY_RLF_DAMAGE_BONUS_HAV3",
                    "ABILITY_RLF_MAGIC_DAMAGE_REDUCTION_HAV4" },
 
-  -- Hvwd. BA TEN DUOI DAY DA DO: CHUNG KHONG TON TAI o ban 1.31.1.
+  -- Hvwd -- DO BANG "-nat spell", 2026-09-19. File vet:
   --
-  -- File vet, 2026-09-19:
-  --   skill: KHONG co hang so ABILITY_RLF_DAMAGE_OCL1 -- hieu ung goc VAN CHAY
-  --   skill: KHONG co hang so ABILITY_RLF_DAMAGE_REDUCTION_PER_TARGET_OCL2
-  --   skill: KHONG co hang so ABILITY_RLF_HIT_POINTS_GAINED_CR21
+  --   spell AOcl: ABILITY_RLF_DAMAGE_PER_TARGET_OCL1
+  --   spell AHfa: ABILITY_RLF_DAMAGE_BONUS_HFA1
+  --   spell ACr2: (chi ra ..._OCR2 -- KHOP GIA, xem duoi)
+  --   spell AEar: (chi ra ..._RESEARCH_* -- KHOP GIA)
+  --   spell Amgl: (khong co gi)
   --
-  -- Toi suy chung tu quy luat cua ba dong tren (AOsh -> Osh1 ->
-  -- ABILITY_RLF_<TEN>_OSH1) va suy SAI ca ba. Giu lai chu khong xoa: cai
-  -- ten sai van la mot dong ghi vet moi van, tuc mot loi nhac rang cho
-  -- nay chua xong.
+  -- Truoc do toi SUY ten tu quy luat AOsh -> Osh1 -> ABILITY_RLF_<TEN>_OSH1
+  -- va sai het: ghi "ABILITY_RLF_DAMAGE_OCL1" trong khi that la
+  -- "..._DAMAGE_PER_TARGET_OCL1", va bia han "..._HIT_POINTS_GAINED_CR21".
   --
-  -- HAU QUA DANG CHIU: hieu ung goc van chay chong len Lua. Voi A008 la
-  -- mot it sat thuong phang; voi A010 la mot lop hoi mau 6 giay nua.
-  -- Ca hai deu la so PHANG nen teo dan (ADR 0024) -- kho chiu o wave
-  -- dau, vo nghia tu canh gioi 5.
+  -- HAI KHOP GIA suyt lua tiep. spells() trong 5_natives.lua bo chu cai
+  -- dau roi tim CHUOI CON, nen:
+  --   ACr2 -> "CR2" -> trung ..._OCR2, ma OCR2 la hau to cua AOcr
+  --                    (Critical Strike), khong lien quan gi
+  --   AEar -> "EAR" -> trung ..._RESEARCH_*, vi RESEARCH chua "EAR"
+  -- Da sua spells() de tach khop MANH (ten ket thuc bang <hau to><so>)
+  -- khoi khop YEU, nen lan sau no tu noi ra.
   --
-  -- CACH SUA THAT: khong phai doan tiep ten hang so, ma la doc MA
-  -- TRUONG 4 ky tu roi di qua ConvertAbilityRealLevelField -- dung
-  -- duong ma A003 da phai di va fxHot() dang dung cho 'adur'. Can
-  -- "-nat spell" trong game de lay ma truong that.
-  [id('A008')] = { "ABILITY_RLF_DAMAGE_OCL1",
-                   "ABILITY_RLF_DAMAGE_REDUCTION_PER_TARGET_OCL2" },
-  [id('A010')] = { "ABILITY_RLF_HIT_POINTS_GAINED_CR21" },
+  -- A011 TRUOC DAY KHONG CO DONG NAO O DAY -- do la thieu sot that, va
+  -- la cai dat nhat trong ca dot: ABILITY_RLF_DAMAGE_BONUS_HFA1 chinh
+  -- la con so PHANG cong vao moi mui ten, tuc dung thu ma ca thiet ke
+  -- 'burn' dung ra de thay the.
+  [id('A008')] = { "ABILITY_RLF_DAMAGE_PER_TARGET_OCL1" },
+  [id('A011')] = { "ABILITY_RLF_DAMAGE_BONUS_HFA1" },
+  -- A010 (ACr2) KHONG co hang so nao -- da do, khong phai chua tim.
+  -- Nen lop hoi mau goc 6 giay van chay chong len fxHot(). No la so
+  -- PHANG nen teo dan (ADR 0024): ro o wave dau, vo nghia tu canh gioi
+  -- 5. Muon tat han thi phai lay MA TRUONG 4 ky tu cua truong "Data -
+  -- Hit Points Gained" roi di qua ConvertAbilityRealLevelField -- cach
+  -- lay: dat truong do mot gia tri bat ky trong World Editor, luu, roi
+  -- "python w3obj.py dump" se in ra ma truong.
 }
 
 -- ---------- Truong goc dung lam VAT MANG ----------

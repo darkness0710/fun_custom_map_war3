@@ -498,21 +498,53 @@ local function spells(pid)
     else
       -- Bo chu cai dau (A/O/H/u...) de khop rong hon: "AOsh" -> "OSH".
       local needle = g:sub(2):upper()
-      local hit = {}
+
+      -- HAI MUC DO KHOP, va viec tach chung ra la co ly do da tra gia.
+      --
+      -- Blizzard dat ten theo kieu ABILITY_RLF_<MO TA>_<HAU TO><SO>,
+      -- trong do <HAU TO> la ma ability bo chu dau: AOsh -> "_OSH1".
+      -- Nen khop MANH = ten ket thuc bang <needle> + mot chu so.
+      --
+      -- Chi tim chuoi con thi ra rac, va rac o day RAT GIONG that:
+      --   ACr2 -> "CR2" trung ..._OCR2, ma OCR2 la hau to cua AOcr
+      --           (Critical Strike) -- mot ability khac han
+      --   AEar -> "EAR" trung ..._RESEARCH_*, vi RESEARCH chua "EAR"
+      --
+      -- Ca hai deu da suyt duoc chep vao CFG.SKILL_ZERO_BASE. Mot cai
+      -- ten SAI o do thi zeroField() ghi vet va hieu ung goc van chay --
+      -- im lang, va khong ai doc lai dong vet do.
+      local strong, weak = {}, {}
       for k, _ in pairs(_G) do
         if type(k) == "string" and k:sub(1, 8) == "ABILITY_"
            and k:find(needle, 1, true) then
-          hit[#hit + 1] = k
+          if k:match(needle .. "%d$") ~= nil then
+            strong[#strong + 1] = k
+          else
+            weak[#weak + 1] = k
+          end
         end
       end
-      table.sort(hit)
+      table.sort(strong)
+      table.sort(weak)
+
       API.msg(pid, CFG.C_JADE .. "   " .. API.pick(sk[i]) .. CFG.C_END ..
-              "  goc " .. g .. "  -> " .. #hit .. " hang so")
-      for k = 1, #hit do
+              "  goc " .. g .. "  -> " .. #strong .. " khop, " ..
+              #weak .. " nghi ngo")
+      for k = 1, #strong do
         if k > 6 then break end
-        API.msg(pid, "      " .. hit[k])
+        API.msg(pid, "      " .. strong[k])
       end
-      API.trace("spell " .. g .. ": " .. table.concat(hit, " "))
+      -- Khop yeu VAN in ra, nhung ghi ro la nghi ngo: doi khi hau to
+      -- that su khong co so o cuoi, va luc do day la manh moi duy nhat.
+      for k = 1, #weak do
+        if k > 3 then break end
+        API.msg(pid, CFG.C_GREY .. "      ? " .. weak[k] .. CFG.C_END)
+      end
+
+      API.trace("spell " .. g .. ": khop " ..
+                (#strong > 0 and table.concat(strong, " ") or "(khong co)") ..
+                "  |  nghi ngo " ..
+                (#weak > 0 and table.concat(weak, " ") or "(khong co)"))
     end
   end
   API.msg(pid, CFG.C_GREY ..
