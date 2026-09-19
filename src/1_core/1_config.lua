@@ -44,9 +44,12 @@ CFG.DEBUG_MONEY = 999999
 -- Xem 2_player/13_cheatguard.lua.
 CFG.CHEAT_WATCH = true
 
--- Giay giua hai lan doi chieu. 2.0 la du: cheat de lai dau vet vinh
--- vien tren thanh tai nguyen, khong phai bat cho kip trong tich tac.
-CFG.CHEAT_TICK = 2.0
+-- Giay giua hai lan doi chieu.
+--
+-- 0.5 chu khong 2.0: tu khi CHEAT_ACTION = "revert" thi nhip nay chinh
+-- la BE RONG CUA SO nguoi choi con giu duoc tien an cap. 2 giay du de
+-- bam mua mot mon; nua giay thi khong.
+CFG.CHEAT_TICK = 0.5
 
 -- Sai so cho phep truoc khi coi la lech. Giu NHO: moi duong cap tien
 -- cua map deu di qua addGold/addLumber nen so cai phai khop tuyet doi;
@@ -55,12 +58,20 @@ CFG.CHEAT_SLACK = 1
 
 -- Lam gi khi bat duoc:
 --   "off"       do nhung im lang (chi ghi file vet)
---   "announce"  bao cho CA BAN DO  <- mac dinh
+--   "announce"  bao cho ca ban do, KHONG dung toi tien
+--   "revert"    bao + THU HOI ve dung con so so cai  <- mac dinh
+--
+-- VI SAO "revert" moi la cau tra loi that. Chan dau vao thi khong the
+-- -- cheat do engine xu ly. Nhung HAU QUA thi thu hoi duoc: so cai giu
+-- con so DUNG, nen dat lai thanh tai nguyen ve con so do la xoa sach
+-- phan an cap. greedisgood van "chay", chi la vo dung sau nua giay.
+--
+-- An toan vi CHI TRU PHAN THUA: neu thanh tai nguyen dang THAP hon so
+-- cai thi khong dong vao -- to oan vi thieu tien la kieu sai te nhat.
 --
 -- KHONG co lua chon "ket thuc van". Mot phep do co the sai, va huy van
--- cua ba nguoi vi mot lan do sai la cai gia qua dat. Bao ra la du: trong
--- co-op, cho nguoi khac doc duoc moi la phan co gia tri.
-CFG.CHEAT_ACTION = "announce"
+-- cua ba nguoi vi mot lan do sai la cai gia qua dat.
+CFG.CHEAT_ACTION = "revert"
 
 -- Lenh chat thu nghiem ("-sp"). Co RIENG mot co, khong di theo DEBUG --
 -- de tat bao cao chi tiet ma van go lenh thu duoc. Tat truoc khi phat hanh.

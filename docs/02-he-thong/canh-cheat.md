@@ -5,13 +5,22 @@
 > **Code:** [13_cheatguard.lua](../../src/2_player/13_cheatguard.lua)
 > **Khoá CFG:** `CHEAT_WATCH` `CHEAT_TICK` `CHEAT_SLACK` `CHEAT_ACTION`
 
-## Nói thẳng trước: KHÔNG chặn được
+## Không chặn được ĐẦU VÀO — nhưng thu hồi được HẬU QUẢ
 
 `greedisgood`, `whosyourdaddy`, `iseedeadpeople`… do **chính engine Warcraft**
 xử lý. Chúng không đi qua trigger nào của map, và **không có native nào tắt
 chúng**. Bất cứ ai hứa "chặn cheat bằng trigger" là nhầm.
 
-Cái làm được là **đo hậu quả**. Hệ này không bắt lúc gõ — nó bắt dấu vết để lại.
+Nhưng sổ cái giữ **con số đúng**, nên đặt lại thanh tài nguyên về con số đó là
+**xoá sạch phần ăn cắp**. `greedisgood` vẫn "chạy" — chỉ là vô dụng sau nửa
+giây.
+
+```
+CFG.CHEAT_TICK = 0.5
+```
+
+Nhịp này chính là **bề rộng cửa sổ** người chơi còn giữ được tiền ăn cắp. 2 giây
+đủ để bấm mua một món; nửa giây thì không.
 
 ## Hai đường đo được
 
@@ -25,7 +34,7 @@ Nhưng map thì chỉ ghi qua `addGold` / `addLumber` — **hai chỗ duy nhất
 
 ```
 mỗi lần map ghi  ->  ghi luôn con số đó vào sổ cái
-mỗi 2 giây       ->  so thật với sổ cái
+mỗi 0.5 giây     ->  so thật với sổ cái
 thật > sổ cái    ->  có kẻ thứ ba ghi vào
 ```
 
@@ -56,21 +65,34 @@ Ba chỗ khác cũng để tránh báo nhầm:
   đường trừ tiền chưa kịp ghi sổ, và tố oan vì *thiếu* tiền là kiểu sai tệ nhất.
 - **Bắt xong nhận con số mới làm mốc**, để không đếm lại cùng một lệch mãi.
 
-## Phản ứng: chỉ báo ra
+## Phản ứng
 
 | `CHEAT_ACTION` | Làm gì |
 |---|---|
 | `"off"` | Đo nhưng im lặng, chỉ ghi file vết |
-| `"announce"` | Báo cho **cả bàn đồ** *(mặc định)* |
+| `"announce"` | Báo cho cả bàn đồ, **không** đụng tới tiền |
+| `"revert"` | Báo + **thu hồi** về đúng con số sổ cái *(mặc định)* |
+
+**Thu hồi an toàn vì chỉ trừ phần thừa.** Thanh tài nguyên đang *thấp* hơn sổ
+cái thì không đụng vào.
+
+**Đây là chỗ thứ ba được gọi `SetPlayerState`**, ngoài `addGold`/`addLumber`.
+Ngoại lệ này an toàn vì nó chỉ đặt về **đúng** con số sổ cái đang giữ — không
+tạo ra một nguồn ghi mới, chỉ xoá một nguồn ghi lạ. Và **không** gọi `addGold`:
+`addGold` cộng *thêm* rồi ghi lại sổ cái, tức lấy con số ăn cắp làm mốc.
+
+Với `whosyourdaddy` thì gỡ bất tử bằng `SetUnitInvulnerable(hero, false)`. Phần
+"một đòn giết ngay" của cheat đó **không gỡ được** — nhưng mất phần bất tử là
+người chơi vẫn chết được, tức vẫn thua được.
 
 **Không có lựa chọn "kết thúc ván".** Một phép đo có thể sai, và huỷ ván của ba
 người vì một lần đo sai là cái giá quá đắt. Trong co-op, **cho người khác đọc
 được** mới là phần có giá trị — báo riêng cho người vừa gõ là vô nghĩa, họ biết
 họ vừa gõ gì.
 
-Báo **một lần cho mỗi kiểu**, không báo mỗi nhịp: gõ `greedisgood` rồi để yên
-thì lệch tồn tại mãi mãi, và báo mỗi 2 giây biến phát hiện thành tiếng ồn — mà
-tiếng ồn thì người ta tắt đi chứ không sửa.
+Báo **một lần cho mỗi kiểu**, nhưng **thu hồi thì mọi lần**. Gõ `greedisgood`
+mười lần thì mười lần bị lấy lại, mà chỉ một dòng chữ — báo mỗi nửa giây biến
+phát hiện thành tiếng ồn, và tiếng ồn thì người ta tắt đi chứ không sửa.
 
 ## Cái KHÔNG bắt được
 
@@ -86,7 +108,7 @@ tiếng ồn thì người ta tắt đi chứ không sửa.
 Dòng này trong `DarknessTrace.txt` lúc vào map:
 
 ```
-cheat: canh so cai vang/go + bat tu, moi 2.0s, phan ung 'announce'
+cheat: canh so cai vang/go + bat tu, moi 0.5s, phan ung 'revert'
 native [Canh cheat (13_cheatguard)] co 2/2
 ```
 
@@ -96,7 +118,8 @@ Nếu nhóm native báo **thiếu `BlzIsUnitInvulnerable`** thì đường bắt
 Lúc bắt được:
 
 ```
-cheat: pid 0 -- gold -- so cai 1250, that 501250
+cheat: pid 0 -- gold   -- so cai 0, that 222 -- da thu hoi
+cheat: pid 0 -- lumber -- so cai 0, that 222 -- da thu hoi
 ```
 
 ← [Kinh tế](kinh-te.md) · [Lệnh debug](../04-map/lenh-debug.md)

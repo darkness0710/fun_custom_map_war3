@@ -5,7 +5,8 @@
 --  (greedisgood, whosyourdaddy...) do CHINH ENGINE xu ly, khong di qua
 --  trigger nao cua map. Khong co native nao tat chung.
 --
---  Nen he nay khong "chan" -- no DO HAU QUA. Hai duong do duoc:
+--  Nen he nay khong chan DAU VAO -- no do HAU QUA roi THU HOI. Hai
+--  duong do duoc:
 --
 --    1. SO CAI TIEN. Vang va Go song tren THANH TAI NGUYEN cua
 --       Warcraft (PLAYER_STATE_RESOURCE_*), va greedisgood bom thang
@@ -24,8 +25,14 @@
 --  ai them mot duong cap tien MOI phai di qua addGold/addLumber, neu
 --  khong he nay se to oan nguoi choi.
 --
---  Phan ung mac dinh chi la BAO RA. Ket thuc van vi mot phep do co the
---  sai la cai gia qua dat -- xem CFG.CHEAT_ACTION.
+--  PHAN UNG MAC DINH LA THU HOI ("revert"). Chan dau vao thi khong
+--  the, nhung hau qua thi thu hoi duoc: so cai giu con so DUNG, nen dat
+--  lai thanh tai nguyen ve con so do la xoa sach phan an cap.
+--  greedisgood van "chay", chi la vo dung sau nua giay.
+--
+--  Day la CHO THU BA duoc goi SetPlayerState, ngoai addGold/addLumber.
+--  Ngoai le nay an toan vi no chi dat ve DUNG con so so cai dang giu --
+--  khong tao ra mot nguon ghi moi, chi xoa mot nguon ghi la.
 --
 --  Nho: goi ham cua file khac phai qua API.
 -- ============================================================
@@ -63,7 +70,7 @@ local function flag(pid, kind, detail)
 
   API.trace("cheat: pid " .. pid .. " -- " .. kind .. " -- " .. detail)
 
-  local act = CFG.CHEAT_ACTION or "announce"
+  local act = CFG.CHEAT_ACTION or "revert"
   if act == "off" then return end
 
   -- Bao cho CA BAN DO, khong bao rieng.
@@ -83,24 +90,32 @@ local function checkOne(pid)
   if led == nil then return end
   local slack = CFG.CHEAT_SLACK or 1
 
-  -- Chi bat khi THUA ra. Thieu di thi khong phai cheat -- co the la mot
-  -- duong tru tien nao do chua kip ghi so, va to oan vi thieu tien la
-  -- kieu sai te nhat.
-  local g = GetPlayerState(Player(pid), PLAYER_STATE_RESOURCE_GOLD)
-  if led.gold ~= nil and g > led.gold + slack then
-    flag(pid, "gold", "so cai " .. led.gold .. ", that " .. g)
-    led.gold = g   -- nhan con so moi lam moc, de khong dem lai lech cu
-  elseif led.gold ~= nil and g < led.gold then
-    led.gold = g
+  local revert = (CFG.CHEAT_ACTION or "revert") == "revert"
+
+  -- Chi xu ly khi THUA ra. Thieu di thi nhan con so moi lam moc -- co
+  -- the la mot duong tru tien nao do chua kip ghi so, va to oan vi
+  -- THIEU tien la kieu sai te nhat.
+  local function guard(kind, state)
+    local cur = GetPlayerState(Player(pid), state)
+    local book = led[kind]
+    if book == nil then return end
+    if cur > book + slack then
+      flag(pid, kind, "so cai " .. book .. ", that " .. cur ..
+                      (revert and " -- da thu hoi" or ""))
+      if revert then
+        -- Dat ve DUNG con so so cai. Khong goi addGold: addGold cong
+        -- THEM va se ghi lai so cai, tuc lay con so an cap lam moc.
+        SetPlayerState(Player(pid), state, book)
+      else
+        led[kind] = cur   -- khong thu hoi thi nhan moc moi
+      end
+    elseif cur < book then
+      led[kind] = cur
+    end
   end
 
-  local l = GetPlayerState(Player(pid), PLAYER_STATE_RESOURCE_LUMBER)
-  if led.lumber ~= nil and l > led.lumber + slack then
-    flag(pid, "lumber", "so cai " .. led.lumber .. ", that " .. l)
-    led.lumber = l
-  elseif led.lumber ~= nil and l < led.lumber then
-    led.lumber = l
-  end
+  guard("gold",   PLAYER_STATE_RESOURCE_GOLD)
+  guard("lumber", PLAYER_STATE_RESOURCE_LUMBER)
 
   -- BAT TU: map khong bao gio dat hero bat tu, nen hero bat tu la
   -- whosyourdaddy. Nha chinh thi CO the bat tu (CFG.HOUSE_INVULNERABLE)
@@ -108,7 +123,14 @@ local function checkOne(pid)
   local h = d.hero
   if h ~= nil and API.alive(h) and BlzIsUnitInvulnerable ~= nil then
     if BlzIsUnitInvulnerable(h) then
-      flag(pid, "invuln", "hero bat tu ma map khong dat")
+      flag(pid, "invuln", "hero bat tu ma map khong dat" ..
+                          (revert and " -- da go" or ""))
+      -- Go bat tu. whosyourdaddy con cho mot don giet ngay, va phan do
+      -- KHONG go duoc -- nhung mat phan bat tu la nguoi choi van chet
+      -- duoc, tuc van thua duoc.
+      if revert and SetUnitInvulnerable ~= nil then
+        SetUnitInvulnerable(h, false)
+      end
     end
   end
 end
@@ -147,7 +169,7 @@ local function startCheatGuard()
 
   API.trace("cheat: canh so cai vang/go + bat tu, moi " ..
             (CFG.CHEAT_TICK or 2.0) .. "s, phan ung '" ..
-            tostring(CFG.CHEAT_ACTION or "announce") .. "'")
+            tostring(CFG.CHEAT_ACTION or "revert") .. "'")
 end
 
 API.cheatNote      = note
