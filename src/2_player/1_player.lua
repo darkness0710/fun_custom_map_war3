@@ -73,13 +73,13 @@ local function initPlayers()
   -- Slot nha chinh trung slot nguoi choi hoac slot dich thi quan he
   -- dong minh o tren se da nhau. Bao ngay thay vi de no hong am tham.
   if CFG.HOUSE_SLOT == CFG.ENEMY_SLOT then
-    API.msg(nil, CFG.C_RED .. "CFG.HOUSE_SLOT trung ENEMY_SLOT -- nha chinh dang"
-      .. " thuoc phe dich." .. CFG.C_END)
+    API.warn(nil, "CFG.HOUSE_SLOT trung ENEMY_SLOT -- nha chinh dang"
+      .. " thuoc phe dich.")
   end
   for i = 1, #CFG.PLAYER_SLOTS do
     if CFG.PLAYER_SLOTS[i] == CFG.HOUSE_SLOT then
-      API.msg(nil, CFG.C_RED .. "CFG.HOUSE_SLOT trung slot nguoi choi "
-        .. CFG.HOUSE_SLOT .. "." .. CFG.C_END)
+      API.warn(nil, "CFG.HOUSE_SLOT trung slot nguoi choi "
+        .. CFG.HOUSE_SLOT .. ".")
     end
   end
 
@@ -115,8 +115,8 @@ local function grantSkillPoints(u, n)
   if u == nil or n == nil or n <= 0 then return false end
   if UnitModifySkillPoints == nil then return false end
   if CFG.STRIP_SKILL_POINTS then
-    API.msg(nil, CFG.C_RED .. "Phat diem ky nang khi STRIP_SKILL_POINTS con bat" ..
-      " -- bo quet se an mat ngay." .. CFG.C_END)
+    API.warn(nil, "Phat diem ky nang khi STRIP_SKILL_POINTS con bat" ..
+      " -- bo quet se an mat ngay.")
   end
   return UnitModifySkillPoints(u, n)
 end

@@ -9,18 +9,18 @@
 -- o day voi thuoc do trong World Editor.
 local function reportGrid()
   local g = S.grid
-  API.msg(nil, CFG.C_GOLD .. "=== Luoi " .. g.cols .. "x" .. g.rows ..
+  API.info(nil, CFG.C_GOLD .. "=== Luoi " .. g.cols .. "x" .. g.rows ..
     " (" .. (g.cols * g.rows) .. " o) ===" .. CFG.C_END)
-  API.msg(nil, "Vung choi duoc : " .. g.tilesW .. " x " .. g.tilesH .. " o dia hinh"
+  API.info(nil, "Vung choi duoc : " .. g.tilesW .. " x " .. g.tilesH .. " o dia hinh"
     .. "  (" .. API.num(g.playMaxX - g.playMinX) .. " x "
     .. API.num(g.playMaxY - g.playMinY) .. " don vi)")
-  API.msg(nil, "Moi block      : " .. g.blockTilesW .. " x " .. g.blockTilesH .. " o"
+  API.info(nil, "Moi block      : " .. g.blockTilesW .. " x " .. g.blockTilesH .. " o"
     .. "  (" .. API.num(g.blockW) .. " x " .. API.num(g.blockH) .. " don vi)")
-  API.msg(nil, "Long song      : " .. g.riverTiles .. " o  ("
+  API.info(nil, "Long song      : " .. g.riverTiles .. " o  ("
     .. API.num(g.river) .. " don vi)")
-  API.msg(nil, "Le hai ben     : " .. g.marginTilesX .. " o ngang, "
+  API.info(nil, "Le hai ben     : " .. g.marginTilesX .. " o ngang, "
     .. g.marginTilesY .. " o doc")
-  API.msg(nil, "Goc luoi (1,1) : " .. API.num(g.originX) .. ", " .. API.num(g.originY))
+  API.info(nil, "Goc luoi (1,1) : " .. API.num(g.originX) .. ", " .. API.num(g.originY))
 end
 
 -- Ping minimap tam moi block de nhin thay luoi ngay khi vao map.
@@ -40,9 +40,9 @@ local function endGame(win, reason)
 
   API.msg(nil, " ")
   if win then
-    API.msg(nil, CFG.C_GOLD .. "THANG -- " .. reason .. CFG.C_END)
+    API.info(nil, CFG.C_GOLD .. "THANG -- " .. reason .. CFG.C_END)
   else
-    API.msg(nil, CFG.C_RED .. "THUA -- " .. reason .. CFG.C_END)
+    API.warn(nil, "THUA -- " .. reason)
   end
 
   API.after(3.0, function()
@@ -65,7 +65,7 @@ local function bootstrap()
   -- In ca DAU THOI GIAN build, khong chi so hieu. CFG.VERSION go tay
   -- nen hai ban build khac nhau van cung mot so -- va luc do "go lenh
   -- moi ma khong thay gi" khong phan biet duoc voi "dang chay ban cu".
-  API.msg(nil, CFG.C_GOLD .. "[build " .. CFG.VERSION ..
+  API.info(nil, CFG.C_GOLD .. "[build " .. CFG.VERSION ..
           (CFG.BUILD and ("  " .. CFG.BUILD) or "") ..
           "] code da chay." .. CFG.C_END)
 
@@ -132,6 +132,9 @@ local function bootstrap()
   API.startShop()      -- V.   Vang
   API.startFortune()      -- Co Duyen (khung rieng, khong phai the)
   API.startUseItem()
+  API.startPet()            -- pet di theo hero
+  API.startHeroGate()       -- HeroMoveRegion -> nha chinh
+  API.startSideQuest()      -- bon Thanh Thu dung san trong hang
   API.startPanel()
 
   API.startSkillFx()

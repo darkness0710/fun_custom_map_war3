@@ -183,8 +183,7 @@ local function startFct()
   S.fct = { pending = {}, count = 0 }
   if not CFG.FCT_ENABLED then return end
   if not eventsAvailable() then
-    API.msg(nil, CFG.C_RED .. "Khong bat duoc su kien sat thuong -- tat chu bay."
-      .. CFG.C_END)
+    API.warn(nil, "Khong bat duoc su kien sat thuong -- tat chu bay.")
     return
   end
 

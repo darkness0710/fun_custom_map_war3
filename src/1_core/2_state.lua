@@ -126,6 +126,32 @@ local function msg(pid, text)
   end
 end
 
+-- CHAN DOAN CHO NGUOI LAM MAP -- khong phai chu cua nguoi choi.
+--
+-- Hai kenh, hai doi tuong doc, hai luat khac nhau:
+--
+--   API.msg   nguoi CHOI doc   -> BAT BUOC qua API.t(), co en/vi
+--   API.warn  nguoi LAM MAP doc -> tieng Viet khong dau, KHONG dich
+--
+-- Vi sao khong dich phan warn: noi dung cua no la ten khoa CFG, ten
+-- native, ten file. "Kiem tra CFG.HOUSE_UNIT" dich sang tieng Anh van
+-- la mot cau nguoi choi khong lam gi duoc -- dich chi ton hai bang
+-- chuoi cho mot doc gia duy nhat la chinh minh.
+--
+-- Tach thanh HAI HAM chu khong phai mot quy uoc, de i18n_hardcode.py
+-- kiem duoc chinh xac: chuoi cung trong API.msg la LOI, trong API.warn
+-- la binh thuong.
+local function warn(pid, text)
+  msg(pid, CFG.C_RED .. text .. CFG.C_END)
+end
+
+-- Bao cao cho nguoi lam map: KHONG mau, nhieu dong, doc nhu mot bang.
+-- Y het msg() ve hanh vi -- ton tai chi de i18n_hardcode.py phan biet
+-- duoc "chu cua nguoi choi" voi "bao cao cua cong cu".
+local function info(pid, text)
+  msg(pid, text)
+end
+
 local function dbg(text)
   if CFG.DEBUG then msg(nil, CFG.C_GREY .. "[dbg] " .. text .. CFG.C_END) end
 end
@@ -204,6 +230,8 @@ API.idToStr = idToStr
 API.trace = trace
 API.msg   = msg
 API.dbg   = dbg
+API.warn  = warn
+API.info  = info
 -- Hieu ung roi tu huy sau khi dien xong.
 local function fx(model, x, y)
   if model == nil then return end

@@ -182,7 +182,14 @@ end
 -- luc do chung da ton tai.
 
 local function region(name)
-  return _G["gg_rct_" .. name]
+  if name == nil then return nil end
+  local r = _G["gg_rct_" .. name]
+  if r ~= nil then return r end
+  -- World Editor cho dat ten co KHOANG TRANG ("Region 004 Copy") nhung
+  -- bien toan cuc thi khong the co khoang trang -- no thay bang gach
+  -- duoi. Thu ca hai de trong CFG viet duoc dung cai ten nhin thay
+  -- trong World Editor, khong phai tu dich sang dang bien.
+  return _G["gg_rct_" .. name:gsub("[^%w]", "_")]
 end
 
 local function regionCenter(r)
@@ -237,13 +244,13 @@ end
 -- Khong phu thuoc CFG.DEBUG: go sai ten vung la loi rat kho doan neu
 -- chi bao "khong thay".
 local function regionMissing(cfgKey, name)
-  API.msg(nil, CFG.C_RED .. "Khong tim thay vung " .. name ..
-    "  (" .. cfgKey .. ")" .. CFG.C_END)
+  API.warn(nil, "Khong tim thay vung " .. name ..
+    "  (" .. cfgKey .. ")")
   local rgns = listRegions()
   if #rgns == 0 then
-    API.msg(nil, "  World Editor chua co vung nao. Tao vung, Save, roi chay lai build.py.")
+    API.info(nil, "  World Editor chua co vung nao. Tao vung, Save, roi chay lai build.py.")
   else
-    API.msg(nil, "  Vung dang co: " .. table.concat(rgns, ", "))
+    API.info(nil, "  Vung dang co: " .. table.concat(rgns, ", "))
   end
 end
 

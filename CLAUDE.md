@@ -33,6 +33,25 @@ API.msg(pid, API.t("boss_enraged"))        -- ĐÚNG
 API.msg(pid, "Boss phat cuong!")           -- SAI: chuỗi cứng
 ```
 
+**Nhưng không phải chữ nào cũng của người chơi.** Ba kênh riêng cho chẩn đoán,
+và chúng **cố ý không dịch** — nội dung là tên khoá `CFG`, tên native, tên file:
+
+```lua
+API.warn(pid, "Kiem tra CFG.HOUSE_UNIT.")   -- người LÀM MAP đọc, đỏ
+API.info(nil, "Nha chinh : " .. x)          -- thân báo cáo, không màu
+API.trace("boss: r16 mau 1204880")          -- file vết
+```
+
+Dịch chúng chỉ tốn hai bảng chuỗi cho một độc giả duy nhất là chính mình.
+
+**Dấu hiệu phân kênh là `API.t()`, không phải màu.** Đợt chuyển 150 chỗ lần đầu
+lấy màu đỏ làm dấu hiệu chẩn đoán — sai, vì đỏ cũng dùng cho lỗi *của người
+chơi* (*"không đủ gỗ"*). 26 câu bị đẩy nhầm sang kênh chẩn đoán, và **không ai
+thấy được**: build vẫn chạy, chữ vẫn hiện đúng, chỉ phân loại sai. Bắt được nhờ
+quét `API.warn(` nào còn chứa `API.t(`.
+
+Chi tiết: [docs/02-he-thong/ngon-ngu.md](docs/02-he-thong/ngon-ngu.md).
+
 **Khoá i18n cũng là tiếng Anh** (`boss_enraged`, không phải `boss_cuong`); chỉ
 *giá trị* trong `T.vi` mới là tiếng Việt.
 

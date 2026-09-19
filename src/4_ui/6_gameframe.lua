@@ -37,6 +37,15 @@ local ROWS   = 4        -- so dong chu cua the Tong Quan
 local TAB_OVERVIEW = 1
 local TAB_QUESTS   = 2
 
+-- Mot hang nhiem vu phu: chu ben trai, nut ben phai.
+-- 4 hang x 0.030 = 0.120, vua trong bodyH() = 0.124. The I va the II
+-- dung chung than bang nen KHONG duoc cao hon no.
+-- 1 dong dau (LINE) + 4 hang x QROW = 0.021 + 0.100 = 0.121, vua trong
+-- bodyH() = 0.124. The I va the II dung chung than bang nen KHONG duoc
+-- cao hon no.
+local QROW   = 0.025
+local QBTN_H = 0.021
+
 -- Le trong THAT = le + vien trang tri cua backdrop. Cung bai hoc voi
 -- bang nhan vat va khung Co Duyen: dat chu o dung PAD la no nam DE LEN
 -- vien go cua EscMenuBackdrop.
@@ -142,12 +151,39 @@ local function buildBody(pid)
                       W - 2 * P(), CFG.PANEL_SCALE_NAME, false)
   end
 
+  -- Hang duoi chia doi: GOI DOT ben trai, VE NHA ben phai.
+  --
+  -- VE NHA nam o the TONG QUAN chu khong o the Nhiem Vu Phu, du no sinh
+  -- ra cho phan pho ban: the Tong Quan la the mo mac dinh, nen dat o day
+  -- moi dung nghia "dung duoc moi luc".
+  local cw = W - 2 * P()
   st.call = button("GameCall", P(), top + ROWS * LINE + GAP,
-                   W - 2 * P(), BTN_H)
+                   cw * 0.62, BTN_H)
+  st.home = button("GameHome", P() + cw * 0.64, top + ROWS * LINE + GAP,
+                   cw * 0.36, BTN_H)
 
-  -- ----- Than the II: mot dong duy nhat -----
-  st.quests = label("GameQuests", bg, P(), top + LINE, W - 2 * P(),
-                    CFG.PANEL_SCALE_NAME, true)
+  -- ----- Than the II: nhiem vu phu -----
+  --
+  -- Dung SAN ca bon hang. Dung theo so luong luc chay thi doi
+  -- CFG.SIDE_QUESTS la phai dung lai khung -- ma khung chi dung mot lan.
+  -- DONG DAU: Tu Vi HIEN TAI cua nguoi choi.
+  --
+  -- Thieu dong nay thi nut chi noi "can Nguyen Anh" ma khong noi minh
+  -- dang o dau -- nguoi choi biet DICH nhung khong biet minh cach no
+  -- bao xa, va the la khong biet bao gio moi lam duoc.
+  st.quests = label("GameQuests", bg, P(), top, W - 2 * P(),
+                    CFG.PANEL_SCALE_NAME, false)
+
+  st.quest = {}
+  local qw = W - 2 * P()
+  for i = 1, #(CFG.SIDE_QUESTS or {}) do
+    local qy = top + LINE + (i - 1) * QROW
+    st.quest[i] = {
+      lbl = label("GameQName" .. i, bg, P(), qy + 0.005, qw * 0.58,
+                  CFG.PANEL_SCALE_NAME, false),
+      btn = button("GameQBtn" .. i, P() + qw * 0.60, qy, qw * 0.40, QBTN_H),
+    }
+  end
 
   BlzFrameSetVisible(bg, false)
   API.trace("gameframe: dung khung pid " .. pid)
@@ -165,7 +201,7 @@ local function build(pid)
   if ok and res ~= false then return res end
 
   API.trace("gameframe: DUNG BANG LOI -- " .. tostring(res))
-  API.msg(pid, CFG.C_RED .. "gameframe: dung bang loi, xem file vet." .. CFG.C_END)
+  API.warn(pid, "gameframe: dung bang loi, xem file vet.")
 
   local st = stateOf(pid)
   if st ~= nil and st.root ~= nil and BlzDestroyFrame ~= nil then
@@ -176,6 +212,58 @@ local function build(pid)
 end
 
 -- ---------- Ve lai ----------
+
+-- ---------- Nhiem vu phu ----------
+
+local function realmName(r)
+  local t = CFG.REALMS and CFG.REALMS[r]
+  return (t ~= nil) and API.pick(t) or tostring(r)
+end
+
+-- BA ly do khoa, va moi ly do phai NOI RA duoc. Mot nut xam khong giai
+-- thich thi nguoi choi tuong giao dien hong -- cung bai hoc voi nut
+-- "CHO Kim Dan" o the Trang Bi.
+local function questState(pid, i)
+  local q = (CFG.SIDE_QUESTS or {})[i]
+  if q == nil then return nil, nil end
+  local rank = (API.cultRank ~= nil) and API.cultRank(pid) or 1
+  if rank < q.rank then return "rank", q end
+  if API.findRegion(q.arrive) == nil then return "norgn", q end
+  return "ok", q
+end
+
+local function fillQuests(pid, st)
+  for i = 1, #(st.quest or {}) do
+    local w = st.quest[i]
+    local why, q = questState(pid, i)
+    local on = (q ~= nil)
+    show(w.lbl, on)
+    if w.btn ~= nil then show(w.btn.btn, on) end
+    if on then
+      -- Canh gioi yeu cau nam o NHAN, luon hien -- ke ca khi da mo
+      -- khoa. Chi hien luc khoa thi nguoi choi khong the lap ke hoach:
+      -- muon biet con sau can gi phai doi toi luc bi chan moi biet.
+      BlzFrameSetText(w.lbl, (why == "ok" and CFG.C_GOLD or CFG.C_GREY)
+        .. API.t("sq_title", i, API.pick(q), realmName(q.rank)) .. CFG.C_END)
+      if w.btn ~= nil and w.btn.txt ~= nil then
+        local txt
+        if why == "ok" then
+          txt = API.t("sq_go")
+        elseif why == "norgn" then
+          -- Day la loi cua NGUOI LAM MAP, khong phai cua nguoi choi --
+          -- nen to mau do chu khong xam.
+          txt = CFG.C_RED .. API.t("sq_norgn") .. CFG.C_END
+        else
+          txt = CFG.C_GREY .. API.t("sq_locked") .. CFG.C_END
+        end
+        BlzFrameSetText(w.btn.txt, txt)
+        if BlzFrameSetEnable ~= nil then
+          BlzFrameSetEnable(w.btn.btn, why == "ok")
+        end
+      end
+    end
+  end
+end
 
 local function refresh(pid)
   local st = stateOf(pid)
@@ -194,10 +282,33 @@ local function refresh(pid)
   local isOverview = (st.tab == TAB_OVERVIEW)
   for i = 1, ROWS do show(st.row[i], isOverview) end
   if st.call ~= nil then show(st.call.btn, isOverview) end
+  if st.home ~= nil then
+    show(st.home.btn, isOverview)
+    if st.home.txt ~= nil then
+      BlzFrameSetText(st.home.txt, API.t("sq_home"))
+    end
+  end
   show(st.quests, not isOverview)
 
+  -- Bon hang nhiem vu. Chi hien o the II.
+  for i = 1, #(st.quest or {}) do
+    local q = st.quest[i]
+    show(q.lbl, not isOverview)
+    if q.btn ~= nil then show(q.btn.btn, not isOverview) end
+  end
+  if not isOverview then fillQuests(pid, st) end
+
   if not isOverview then
-    BlzFrameSetText(st.quests, CFG.C_GREY .. API.t("game_quests_soon") .. CFG.C_END)
+    show(st.quests, true)
+    if #(CFG.SIDE_QUESTS or {}) == 0 then
+      BlzFrameSetText(st.quests, CFG.C_GREY .. API.t("game_quests_soon") .. CFG.C_END)
+    else
+      local cur = (API.cultRank ~= nil) and API.cultRank(pid) or 1
+      BlzFrameSetText(st.quests, CFG.C_GREY .. API.t("sq_head") .. " " ..
+        CFG.C_GOLD .. realmName(cur) .. CFG.C_END ..
+        CFG.C_GREY .. string.format("  (%d/%d)", cur, #(CFG.REALMS or {})) ..
+        CFG.C_END)
+    end
     return
   end
 
@@ -257,6 +368,17 @@ local function setVisible(pid, want)
   st.shown = want
   BlzFrameSetVisible(st.root, false)
   if GetLocalPlayer() == Player(pid) then
+    if want then
+      -- Don khung chat khi MO bang.
+      --
+      -- Frame tu tao deu la con cua ORIGIN_FRAME_GAME_UI, ma khung chat
+      -- cua Warcraft ve DE LEN lop do -- khong co cach nao dua backdrop
+      -- len tren no, nen "lam overlay day hon" khong giai duoc gi.
+      --
+      -- ClearTextMessages() la native CHI dung giao dien, khong doi
+      -- trang thai nao -- goi trong nhanh cuc bo nay la an toan.
+      if ClearTextMessages ~= nil then ClearTextMessages() end
+    end
     BlzFrameSetVisible(st.root, want)
   end
 end
@@ -316,6 +438,22 @@ local function onClick()
           return
         end
       end
+      for i = 1, #(st.quest or {}) do
+        local w = st.quest[i]
+        if w.btn ~= nil and f == w.btn.btn then
+          -- Bam nut la viec CUC BO (frame click chi no o may nguoi bam),
+          -- ma dich chuyen la doi trang thai -- nen chi GUI y dinh. Ben
+          -- nhan chay tren moi may va kiem lai du dieu kien.
+          API.syncSend(pid, CFG.OP_SIDEQUEST, i)
+          return
+        end
+      end
+
+      if st.home ~= nil and f == st.home.btn then
+        API.syncSend(pid, CFG.OP_GO_HOME, 0)
+        return
+      end
+
       if st.call ~= nil and f == st.call.btn then
         -- Chi GUI y dinh. Viec goi dot that chay tren moi may, tu
         -- ham nhan cua kenh dong bo.
@@ -378,15 +516,83 @@ local function bindKey()
   return true
 end
 
+-- ---------- Nhan tu kenh dong bo: dich chuyen toi vung nhiem vu ----------
+--
+-- Chay tren MOI may. KIEM LAI du dieu kien o day chu khong tin cu bam:
+-- ben gui la cuc bo, mot may go trang thai van phai khong lam gi duoc.
+local function onSideQuest(pid, i)
+  local why, q = questState(pid, i)
+  if q == nil then return end
+
+  if why == "rank" then
+    local rank = (API.cultRank ~= nil) and API.cultRank(pid) or 1
+    API.msg(pid, CFG.C_RED .. API.t("sq_need", realmName(q.rank),
+                                    realmName(rank)) .. CFG.C_END)
+    return
+  end
+  if why == "norgn" then
+    local nm = API.regionLabel(q.arrive)
+    API.msg(pid, CFG.C_RED .. API.t("sq_missing", nm) .. CFG.C_END)
+    API.trace("sidequest: thieu vung " .. nm .. " -- chay `python w3region.py gen`")
+    return
+  end
+
+  local d = S.p[pid]
+  if d == nil or d.hero == nil or not API.alive(d.hero) then return end
+
+  local r = API.findRegion(q.arrive)
+  local cx, cy = API.regionCenter(r)
+  local x, y = API.heroFanPoint(pid, cx, cy, CFG.HERO_SPAWN_OFFSET)
+  SetUnitPosition(d.hero, x, y)
+  -- Pet di theo, nhu o cong dich chuyen ve nha chinh.
+  if d.pet ~= nil then SetUnitPosition(d.pet, x, y) end
+  if PanCameraToTimedForPlayer ~= nil then
+    PanCameraToTimedForPlayer(Player(pid), x, y, 0.0)
+  end
+
+  -- Nap chi so cho con boss NGAY LUC NAY: do doi o day moi dung, luc
+  -- sinh (vao map) ca doi con o canh gioi 1.
+  if API.sideQuestArm ~= nil then API.sideQuestArm(i) end
+
+  API.msg(nil, API.t("sq_entered",
+    CFG.C_GOLD .. GetPlayerName(Player(pid)) .. CFG.C_END,
+    CFG.C_JADE .. API.pick(q) .. CFG.C_END))
+  API.trace("sidequest: pid " .. pid .. " -> nhiem vu " .. i)
+end
+
+-- Dua hero (va pet) ve nha chinh. Dung chung duong voi cong
+-- HeroMoveRegion o 1_house.lua -- mot cong thuc xoe quanh diem, nen
+-- khoang cach giua cac hero luon giong nhau du ve bang duong nao.
+local function onGoHome(pid, _)
+  local d = S.p[pid]
+  if d == nil or d.hero == nil or not API.alive(d.hero) then return end
+  local r = API.findRegion(CFG.RGN_HOUSE)
+  if r == nil then
+    API.regionMissing("CFG.RGN_HOUSE", API.regionLabel(CFG.RGN_HOUSE))
+    return
+  end
+  local cx, cy = API.regionCenter(r)
+  local x, y = API.heroFanPoint(pid, cx, cy, CFG.HERO_SPAWN_OFFSET)
+  SetUnitPosition(d.hero, x, y)
+  if d.pet ~= nil then SetUnitPosition(d.pet, x, y) end
+  if PanCameraToTimedForPlayer ~= nil then
+    PanCameraToTimedForPlayer(Player(pid), x, y, 0.0)
+  end
+  API.trace("gohome: pid " .. pid)
+end
+
 local function startGameFrame()
   S.gameUI   = {}
   S.gameTrig = CreateTrigger()
   TriggerAddAction(S.gameTrig, onClick)
   API.syncOn(CFG.OP_WAVE_CALL, onCall)
+  API.syncOn(CFG.OP_SIDEQUEST, onSideQuest)
+  API.syncOn(CFG.OP_GO_HOME,   onGoHome)
   bindKey()
   API.trace("gameframe: san sang")
 end
 
+API.goHome           = onGoHome
 API.gameFrameShow    = showFrame
 API.gameFrameHide    = hideFrame
 API.gameFrameShown   = isShown

@@ -439,8 +439,8 @@ local function startSkillFx()
     TriggerRegisterAnyUnitEventBJ(tDmg, EVENT_PLAYER_UNIT_DAMAGED)
     TriggerAddAction(tDmg, onDamaged)
   else
-    API.msg(nil, CFG.C_RED .. "Khong co EVENT_PLAYER_UNIT_DAMAGED -- " ..
-      "Chem Lan va Da Sat se khong chay." .. CFG.C_END)
+    API.warn(nil, "Khong co EVENT_PLAYER_UNIT_DAMAGED -- " ..
+      "Chem Lan va Da Sat se khong chay.")
   end
 
   API.trace("effect: san sang (cast + damage)")

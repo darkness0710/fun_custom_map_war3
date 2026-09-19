@@ -324,8 +324,8 @@ local function spawnStage(stage)
   end
 
   if S.wave.spawnFail > 0 then
-    API.msg(nil, CFG.C_RED .. "Khong sinh duoc " .. S.wave.spawnFail ..
-      " con -- kiem tra CFG.MOB_UNIT." .. CFG.C_END)
+    API.warn(nil, "Khong sinh duoc " .. S.wave.spawnFail ..
+      " con -- kiem tra CFG.MOB_UNIT.")
   end
   API.trace("stage " .. stage .. " (" .. stageLabel(stage) .. ") P=" ..
             S.wave.players .. " song=" .. S.alive)

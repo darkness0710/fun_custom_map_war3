@@ -32,6 +32,21 @@ local function groups()
         "khong tu gay sat thuong duoc -- moi skill tu viet deu hong" },
     }},
 
+    -- Cau hoi dang cho: pet Tu Thanh Thu can 4 unit hay 1?
+    --
+    -- Model nam TRONG dinh nghia unit, nen bon thu = bon unit... TRU KHI
+    -- doi duoc "da" luc chay. Neu BlzSetUnitSkin co that thi mot unit pet
+    -- duy nhat la du: thu phuc con nao thi doi da sang con do.
+    --
+    -- Khong doan -- do. UnitRemoveAbility di kem vi bo da hero cung phai
+    -- go luon vang sang, va do la nua con lai cua cau hoi.
+    { name = "Doi da unit luc CHAY (pet Tu Thanh Thu)", entries = {
+      { "BlzSetUnitSkin", BlzSetUnitSkin,
+        "moi thu mot unit rieng -- 4 unit chu khong 1" },
+      { "BlzGetUnitSkin", BlzGetUnitSkin, "" },
+      { "UnitRemoveAbility", UnitRemoveAbility, "" },
+    }},
+
     { name = "Sua so lieu ability luc CHAY", entries = {
       { "BlzGetUnitAbility",            BlzGetUnitAbility, "" },
       { "BlzGetUnitAbilityByIndex",     BlzGetUnitAbilityByIndex, "" },
@@ -127,11 +142,11 @@ local function fields(pid, needle)
   end
   table.sort(all)
   table.sort(hit)
-  API.msg(pid, CFG.C_GOLD .. "Hang so chua [" .. needle .. "]: " .. n ..
+  API.info(pid, CFG.C_GOLD .. "Hang so chua [" .. needle .. "]: " .. n ..
     CFG.C_END)
   for i = 1, #hit do API.msg(pid, "   " .. hit[i]) end
   if n > #hit then
-    API.msg(pid, CFG.C_GREY .. "   ... con " .. (n - #hit) ..
+    API.info(pid, CFG.C_GREY .. "   ... con " .. (n - #hit) ..
       " cai nua, loc hep hon di." .. CFG.C_END)
   end
   -- Preload() CAT chuoi dai (do duoc: dong ghi ra chi con 278 ky tu,
@@ -152,13 +167,13 @@ end
 
 local function report(pid)
   local gs = groups()
-  API.msg(pid, CFG.C_GOLD .. "=== Ban " .. CFG.VERSION .. " co nhung gi ===" .. CFG.C_END)
+  API.info(pid, CFG.C_GOLD .. "=== Ban " .. CFG.VERSION .. " co nhung gi ===" .. CFG.C_END)
   for i = 1, #gs do
     local have, missing = countGroup(gs[i])
     local color = (#missing == 0) and CFG.C_JADE or CFG.C_RED
     API.msg(pid, color .. gs[i].name .. ": " .. have .. "/" .. #gs[i].entries .. CFG.C_END)
     for k = 1, #missing do
-      API.msg(pid, "   " .. CFG.C_RED .. "thieu " .. missing[k] .. CFG.C_END)
+      API.info(pid, "   " .. CFG.C_RED .. "thieu " .. missing[k] .. CFG.C_END)
     end
   end
 end
@@ -214,11 +229,11 @@ local function card(pid)
   local d = S.p[pid]
   local u = d and d.hero or nil
   if u == nil then
-    API.msg(pid, CFG.C_RED .. "Chua co hero -- pick hero roi go lai." .. CFG.C_END)
+    API.warn(pid, "Chua co hero -- pick hero roi go lai.")
     return
   end
 
-  API.msg(pid, CFG.C_GOLD .. "=== O command card (4x3) ===" .. CFG.C_END)
+  API.info(pid, CFG.C_GOLD .. "=== O command card (4x3) ===" .. CFG.C_END)
 
   local taken = {}
   -- dem = true: o cua frame nay tinh vao viec do trung o.
@@ -254,10 +269,10 @@ local function card(pid)
   local n = 0
   for _, v in pairs(taken) do if v:find("+", 1, true) then n = n + 1 end end
   if n > 0 then
-    API.msg(pid, CFG.C_RED .. n .. " o bi hai KY NANG cung nhan -- sua " ..
-      "O_CHUDONG/O_BIDONG trong w3skill.py roi chay lai 'gen'." .. CFG.C_END)
+    API.warn(pid, n .. " o bi hai KY NANG cung nhan -- sua " ..
+      "O_CHUDONG/O_BIDONG trong w3skill.py roi chay lai 'gen'.")
   else
-    API.msg(pid, CFG.C_JADE .. "Bay ky nang, bay o, khong o nao trung." .. CFG.C_END)
+    API.info(pid, CFG.C_JADE .. "Bay ky nang, bay o, khong o nao trung." .. CFG.C_END)
   end
 end
 
@@ -316,18 +331,18 @@ local function regen(pid, secs, kind)
   local d = S.p[pid]
   local h = d and d.hero or nil
   if h == nil then
-    API.msg(pid, CFG.C_RED .. "Chua co hero -- pick hero roi go lai." .. CFG.C_END)
+    API.warn(pid, "Chua co hero -- pick hero roi go lai.")
     return
   end
 
   local F = _G[L.field]
-  API.msg(pid, CFG.C_GOLD .. "=== Do hoi " .. L.name .. " (" .. secs ..
+  API.info(pid, CFG.C_GOLD .. "=== Do hoi " .. L.name .. " (" .. secs ..
           "s x2) ===" .. CFG.C_END)
-  API.msg(pid, "   hang so " .. L.field .. ": " ..
+  API.info(pid, "   hang so " .. L.field .. ": " ..
           (F ~= nil and (CFG.C_JADE .. "CO" .. CFG.C_END)
                     or (CFG.C_RED .. "KHONG CO -- go '-nat regen'" .. CFG.C_END)))
   if F == nil or BlzGetUnitRealField == nil or BlzSetUnitRealField == nil then
-    API.msg(pid, CFG.C_RED .. "   thieu native BlzGet/SetUnitRealField -- dung." .. CFG.C_END)
+    API.warn(pid, "   thieu native BlzGet/SetUnitRealField -- dung.")
     return
   end
 
@@ -343,7 +358,7 @@ local function regen(pid, secs, kind)
         if _G["REGENERATION_TYPE_" .. names[k]] == v then name = names[k] end
       end
       local bad = (name == "NIGHT" or name == "BLIGHT" or name == "NONE")
-      API.msg(pid, "   kieu hoi mau (uhrt)        : " ..
+      API.info(pid, "   kieu hoi mau (uhrt)        : " ..
               (bad and CFG.C_RED or CFG.C_JADE) .. name .. CFG.C_END)
     end
   end
@@ -363,7 +378,7 @@ local function regen(pid, secs, kind)
 
   local before = BlzGetUnitRealField(h, F)
   BlzSetUnitRealField(h, F, REG_TEST)
-  API.msg(pid, "   truong truoc / sau khi dat : " ..
+  API.info(pid, "   truong truoc / sau khi dat : " ..
           string.format("%.3f", before) .. " -> " ..
           string.format("%.3f", BlzGetUnitRealField(h, F)))
 
@@ -371,7 +386,7 @@ local function regen(pid, secs, kind)
   -- biet duoc "engine dung chi so goc" voi "dung chi so tong" -- noi
   -- thang ra thay vi de nguoi doc tu suy.
   local sBase, sTotal = L.read(h)
-  API.msg(pid, "   " .. L.statProbe .. " goc / tong" ..
+  API.info(pid, "   " .. L.statProbe .. " goc / tong" ..
           string.rep(" ", 16 - #L.statProbe) .. ": " .. sBase .. " / " .. sTotal ..
           (sBase ~= sTotal and (CFG.C_GOLD .. "  <- khac nhau, phan biet duoc" .. CFG.C_END)
                           or (CFG.C_GREY .. "  (bang nhau -- khong phan biet duoc)" .. CFG.C_END)))
@@ -397,7 +412,7 @@ local function regen(pid, secs, kind)
 
     L.emit(h, sBase + REG_STEP)
     local after = BlzGetUnitRealField(h, F)
-    API.msg(pid, "   truong sau +" .. REG_STEP .. " " .. L.statProbe .. " : " ..
+    API.info(pid, "   truong sau +" .. REG_STEP .. " " .. L.statProbe .. " : " ..
             string.format("%.3f", after) ..
             (math.abs(after - REG_TEST) > 0.01
              and (CFG.C_RED .. "  -> DA BI TINH LAI" .. CFG.C_END)
@@ -434,11 +449,11 @@ local function spells(pid)
   local u = d and d.hero or nil
   local sk = (u ~= nil) and CFG.SKILLS[GetUnitTypeId(u)] or nil
   if sk == nil then
-    API.msg(pid, CFG.C_RED .. "Chua co hero -- pick hero roi go lai." .. CFG.C_END)
+    API.warn(pid, "Chua co hero -- pick hero roi go lai.")
     return
   end
 
-  API.msg(pid, CFG.C_GOLD .. "=== Hang so theo ability goc ===" .. CFG.C_END)
+  API.info(pid, CFG.C_GOLD .. "=== Hang so theo ability goc ===" .. CFG.C_END)
   for i = 1, #sk do
     local g = sk[i].baseAbil
     if g == nil then
@@ -486,11 +501,11 @@ local function statProbe(pid)
   local d = S.p[pid]
   local h = d and d.hero or nil
   if h == nil then
-    API.msg(pid, CFG.C_RED .. "Chua co hero -- pick hero roi go lai." .. CFG.C_END)
+    API.warn(pid, "Chua co hero -- pick hero roi go lai.")
     return
   end
 
-  API.msg(pid, CFG.C_GOLD .. "=== Mot diem chi so doi ra gi ===" .. CFG.C_END)
+  API.info(pid, CFG.C_GOLD .. "=== Mot diem chi so doi ra gi ===" .. CFG.C_END)
 
   local function measureOne(name, getf, setf, readf, unitName)
     if getf == nil or setf == nil then return end
@@ -518,7 +533,7 @@ local function statProbe(pid)
   -- Tra chi so ve dung duong ma du an dung, khong tu dat lai bang tay:
   -- heroRecompute la CHO DUY NHAT duoc ghi chi so hero.
   if API.heroRecompute ~= nil then API.heroRecompute(pid) end
-  API.msg(pid, CFG.C_GREY .. "   Da tra chi so ve nhu cu." .. CFG.C_END)
+  API.info(pid, CFG.C_GREY .. "   Da tra chi so ve nhu cu." .. CFG.C_END)
 end
 
 local function onChat(pid, raw)

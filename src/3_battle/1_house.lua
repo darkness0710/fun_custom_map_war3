@@ -67,7 +67,7 @@ local function createHouse()
   API.trace("house: CreateUnit slot " .. CFG.HOUSE_SLOT)
   S.house = CreateUnit(houseOwner(), CFG.HOUSE_UNIT, x, y, CFG.HOUSE_FACE)
   if S.house == nil then
-    API.msg(nil, CFG.C_RED .. "CreateUnit that bai -- kiem tra CFG.HOUSE_UNIT." .. CFG.C_END)
+    API.warn(nil, "CreateUnit that bai -- kiem tra CFG.HOUSE_UNIT.")
     return nil
   end
   S.houseX, S.houseY = x, y
@@ -189,34 +189,96 @@ end
 
 local function report()
   local rgns = API.listRegions()
-  API.msg(nil, CFG.C_GOLD .. "=== Vung & nha chinh ===" .. CFG.C_END)
-  API.msg(nil, "Vung WE thay duoc (" .. #rgns .. "): " .. table.concat(rgns, ", "))
+  API.info(nil, CFG.C_GOLD .. "=== Vung & nha chinh ===" .. CFG.C_END)
+  API.info(nil, "Vung WE thay duoc (" .. #rgns .. "): " .. table.concat(rgns, ", "))
 
   if S.house ~= nil then
-    API.msg(nil, "Nha chinh : " .. API.num(S.houseX) .. ", " .. API.num(S.houseY) ..
+    API.info(nil, "Nha chinh : " .. API.num(S.houseX) .. ", " .. API.num(S.houseY) ..
       "  -- " .. blockLabel(S.houseX, S.houseY) ..
       CFG.C_GREY .. "  [vung " .. tostring(S.houseRgnName) .. "]" .. CFG.C_END)
-    API.msg(nil, "  chu     : slot " .. CFG.HOUSE_SLOT ..
+    API.info(nil, "  chu     : slot " .. CFG.HOUSE_SLOT ..
       ", dong minh voi " .. #S.pids .. " nguoi choi")
-    API.msg(nil, "  mau     : " .. API.num(GetUnitState(S.house, UNIT_STATE_MAX_LIFE)) ..
+    API.info(nil, "  mau     : " .. API.num(GetUnitState(S.house, UNIT_STATE_MAX_LIFE)) ..
       (S.houseHpSet and "" or CFG.C_RED .. " (dat that bai: can 1.31+)" .. CFG.C_END))
-    API.msg(nil, "  tam nhin: " .. API.num(CFG.HOUSE_SIGHT) ..
+    API.info(nil, "  tam nhin: " .. API.num(CFG.HOUSE_SIGHT) ..
       " qua " .. tostring(S.houseSightVia))
-    API.msg(nil, "  don danh: " ..
+    API.info(nil, "  don danh: " ..
       (CFG.HOUSE_CAN_ATTACK and "con" or "khong tu nham (acquire range 0)"))
-    API.msg(nil, "  chet     : " ..
+    API.info(nil, "  chet     : " ..
       (CFG.HOUSE_INVULNERABLE and (CFG.C_GOLD .. "bat tu, khong chet duoc" .. CFG.C_END)
        or (CFG.HOUSE_DEATH_ENDS_GAME and "thua ngay" or "khong sao")))
   end
 
   if S.enemyRect ~= nil then
-    API.msg(nil, "Vung dich : " .. API.num(S.enemyX) .. ", " .. API.num(S.enemyY) ..
+    API.info(nil, "Vung dich : " .. API.num(S.enemyX) .. ", " .. API.num(S.enemyY) ..
       "  -- " .. blockLabel(S.enemyX, S.enemyY) ..
       CFG.C_GREY .. "  [vung " .. tostring(S.enemyRgnName) ..
       "]  (chua cho quai ra)" .. CFG.C_END)
   end
 end
 
+-- ---------- Cong dich chuyen: HeroMoveRegion -> nha chinh ----------
+--
+-- MOT CHIEU. Vung dich la nha chinh chu khong phai chinh vung nay, nen
+-- khong co vong lap "vao roi lai bi day ve".
+--
+-- Su kien vao vung ban tren MOI may cung luc, nen viec doi vi tri o day
+-- la dong bo san -- khong phai di qua kenh syncSend. Rieng keo camera
+-- moi la viec cuc bo, va PanCameraToTimedForPlayer da nhan pid san.
+local function startHeroGate()
+  local rMove, moveName = API.findRegion(CFG.RGN_HERO_MOVE)
+  if rMove == nil then
+    API.regionMissing("CFG.RGN_HERO_MOVE", API.regionLabel(CFG.RGN_HERO_MOVE))
+    return
+  end
+  local rHouse = API.findRegion(CFG.RGN_HOUSE)
+  if rHouse == nil then
+    API.regionMissing("CFG.RGN_HOUSE", API.regionLabel(CFG.RGN_HOUSE))
+    return
+  end
+  local hx, hy = API.regionCenter(rHouse)
+
+  -- TriggerRegisterEnterRegion doi mot 'region', khong phai 'rect'.
+  -- Vung cua World Editor la rect, nen phai boc lai mot lop.
+  if CreateRegion == nil or RegionAddRect == nil
+     or TriggerRegisterEnterRegion == nil then
+    API.trace("gate: thieu CreateRegion/RegionAddRect/" ..
+              "TriggerRegisterEnterRegion -- khong dat duoc cong")
+    return
+  end
+
+  local rgn = CreateRegion()
+  RegionAddRect(rgn, rMove)
+  local t = CreateTrigger()
+  TriggerRegisterEnterRegion(t, rgn, nil)
+  TriggerAddAction(t, function()
+    local u = GetTriggerUnit()
+    if u == nil then return end
+    -- CHI hero cua nguoi choi. Quai, pet va nha chinh cung di qua day
+    -- duoc, ma dich chuyen chung thi tran dau loan het.
+    local pid = (API.heroPidOf ~= nil) and API.heroPidOf(u) or nil
+    if pid == nil then return end
+
+    local x, y = API.heroFanPoint(pid, hx, hy, CFG.HERO_SPAWN_OFFSET)
+    SetUnitPosition(u, x, y)
+
+    -- Keo pet theo. Khong keo thi no chay bo ca ban do, va con duong do
+    -- di qua bai quai.
+    local d = S.p[pid]
+    if d ~= nil and d.pet ~= nil and SetUnitPosition ~= nil then
+      SetUnitPosition(d.pet, x, y)
+    end
+
+    if PanCameraToTimedForPlayer ~= nil then
+      PanCameraToTimedForPlayer(Player(pid), x, y, 0.0)
+    end
+    API.trace("gate: pid " .. pid .. " tu " .. moveName .. " -> nha chinh")
+  end)
+  S.heroGate = t
+  API.trace("gate: " .. moveName .. " -> " .. (S.houseRgnName or "nha chinh"))
+end
+
+API.startHeroGate      = startHeroGate
 API.blockLabel         = blockLabel
 API.createHouse        = createHouse
 API.onHouseDeath       = onHouseDeath

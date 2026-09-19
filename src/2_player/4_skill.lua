@@ -266,7 +266,7 @@ local function upgrade(pid, index)
       applyLevel(pid, sk, 1)
       API.skillFxRecompute(pid)   -- vua mo khoa mot bi dong
     else
-      API.msg(pid, CFG.C_RED .. "Khong gan duoc " .. API.idToStr(sk.id) ..
+      API.info(pid, CFG.C_RED .. "Khong gan duoc " .. API.idToStr(sk.id) ..
         CFG.C_END)
     end
     API.msg(nil, API.t("skill_unlocked",
@@ -446,10 +446,10 @@ local function applyToHero(pid)
 
   if #missing > 0 then
     API.trace("skill: OE thieu bac -- " .. table.concat(missing, " "))
-    API.msg(pid, CFG.C_RED .. #missing .. "/" .. have ..
+    API.warn(pid, #missing .. "/" .. have ..
       " ky nang chua du " .. CFG.SKILL_MAX_LEVEL .. " bac trong Object Editor" ..
       CFG.C_END .. CFG.C_GREY .. " (" .. table.concat(missing, " ") ..
-      "). Dat Stats - Levels = " .. CFG.SKILL_MAX_LEVEL .. "." .. CFG.C_END)
+      "). Dat Stats - Levels = " .. CFG.SKILL_MAX_LEVEL .. ".")
   end
 end
 

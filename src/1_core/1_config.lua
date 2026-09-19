@@ -78,6 +78,8 @@ CFG.OP_FORTUNE   = 11  -- arg = so thu tu the 1..3 trong luot quay
 CFG.OP_GEAR_DISMANTLE = 12 -- arg = so thu tu mon trong CFG.GEAR (Tien Giai)
 CFG.OP_WAVE_CALL = 13  -- arg = 0. Nut goi dot tren bang tran dau
 CFG.OP_GEAR_UP_ONE = 14 -- arg = so thu tu mon. Luyen DUNG MOT lan
+CFG.OP_SIDEQUEST = 15  -- arg = so thu tu trong CFG.SIDE_QUESTS
+CFG.OP_GO_HOME   = 16  -- arg = 0. Nut Ve Nha tren bang tran dau
 -- Opcode KHONG bi chan o mot chu so: unpackMsg dung math.floor(v/10^7)
 -- nen op 10, 11... van giai duoc. Thu bi chan la arg (< 10^5) va seq
 -- (< 100). Xem src/1_core/3_sync.lua.
@@ -120,6 +122,130 @@ CFG.BLOCK_TILES_OVERRIDE = 0
 -- co (hien du CFG.DEBUG tat).
 CFG.RGN_HOUSE  = { "MyHouseRegion" }
 CFG.RGN_ENEMY  = { "MyEmenyRegion",  "MyEnemyRegion"  }
+
+-- Hero hien ra o day luc pick, khong phai quanh nha chinh nua.
+CFG.RGN_HERO_START = { "HeroStartRegion" }
+
+-- Buoc vao vung nay la dich chuyen ve CFG.RGN_HOUSE. Mot chieu: vung
+-- dich la nha chinh chu khong phai vung nay, nen khong co vong lap.
+CFG.RGN_HERO_MOVE  = { "HeroMoveRegion" }
+
+-- ---------- NHIEM VU PHU: Tu Thanh Thu ----------
+--
+-- The II cua bang tran dau (phim R). Bon con, mo khoa o BON MOC cach
+-- nhau dung 5 canh gioi -- DAU moi khoi 5 con, khong phai cuoi:
+--
+--    canh gioi  1  Pham Nhan   <- mo ngay tu dau van
+--    canh gioi  6  Hoa Than
+--    canh gioi 11  Chan Tien
+--    canh gioi 16  Tien De
+--
+-- Nghia la Chu Tuoc KHONG bi khoa: no mo tu giay dau tien. Dung vay --
+-- no la pho ban day bai, va chi so no bang dung mot hero canh gioi 1,
+-- nen giay dau tien thi thua, vai dot sau thi thang. Cai chan no khong
+-- phai cai nut, ma la suc manh.
+--
+-- unit KHOP VOI THU TU GAP, khong phai thu tu Tu Tuong:
+--   B001 Hac -> B002 Trau -> B003 Ho -> B004 Rong
+--
+-- block: SO THU TU O TRONG LUOI 25, khong phai mot cai ten tu dat.
+--
+-- ADR 0017 da chot: ten vung ma hoa VI TRI (Blk01..Blk25), vai tro song
+-- trong CFG. Vi tri gan nhu khong bao gio doi, vai tro thi doi nhieu
+-- lan -- buoc chung vao mot cai ten nghia la moi lan doi y phai sua file
+-- nhi phan, mo lai World Editor, roi sua moi tham chieu gg_rct_<Ten>.
+--
+-- Doi phong ban cua mot nhiem vu = sua MOT so o day.
+--
+-- Chon hang 5 de cang xa nha chinh cang manh: dia ly noi len tien trinh.
+-- Cot 1 la truc chinh cua van (block 1 hero start, 16 quai ra, 21 nha
+-- chinh) nen tranh ra; ca bon hang 1-4 cot 2-5 van con trong cho ADR
+-- 0014 -- 16 block cho noi dung sau.
+--
+--        cot1   cot2   cot3   cot4   cot5
+--  dong5  NHA    Q1 22  Q2 23  Q3 24  Q4 25
+--
+-- Vung chua sinh thi nut khoa va ghi "thieu vung" mau DO -- do la loi
+-- cua nguoi lam map, khong phai cua nguoi choi. Sinh bang:
+--     python w3region.py gen
+-- mech: DUNG BANG TU VUNG CUA CFG.BOSS_MECH, khong che co che moi. Tam
+-- con boss thuong da chay bang tam co che do; them co che thu chin chi
+-- de phuc vu bon con nay la them mot duong chua ai di.
+--
+-- Thang do: 1 -> 2 -> 2 -> 4 co che. Con dau day MOT bai, con cuoi gom
+-- moi thu. Va moi con mot CAU HOI khac nhau, khong phai "nhieu mau hon":
+--   Chu Tuoc  lao + phat cuong   -> phai ne, va phai ket lieu nhanh
+--   Huyen Vu  khien + phan don   -> danh manh hon la tu giet minh
+--   Bach Ho   lao + xe giap      -> cang keo dai cang vo, phai burst
+--   Thanh Long gom bon           -> phai lam duoc ca ba bai tren
+--
+-- arrive = Gate (cua vao, hero hien ra), lair = Lair (hang, boss dung).
+--
+-- Do tu war3map.w3r: trong moi cap thi Gate nam CAO hon Lair ~2.200 don
+-- vi, tuc o phia GAN nha chinh. Doc nguoc lai thi doi hai ten cho nhau,
+-- khong phai sua code.
+--
+-- Ten cu la "Region 004" / "Region 004 Copy" -- khong noi len vi tri,
+-- khong noi len vai tro. Da doi bang:
+--     python w3region.py rename --doi "Region 004=Quest1Lair" ...
+-- ADR 0028: doi ten cang muon cang dat, vi ten la thu DUY NHAT noi Lua
+-- voi World Editor (bien toan cuc gg_rct_<Ten>).
+--
+-- KHONG co vung cua ra. Duong thoat duy nhat la nut VE NHA tren bang R,
+-- ma mo bang thi khong dung game -- dung yen doc bang trong luc boss
+-- quat CHINH LA cai gia phai tra. Do la thu thach co chu y, khong phai
+-- thieu sot. arrive la cho hero hien
+-- ra, lair la cho boss dung san tu luc vao map. exit la cua ra de bo
+-- chay giua chung. Chua ve thi nut khoa va noi ro thieu vung nao.
+CFG.SIDE_QUESTS = {
+  { unit = id('B001'), vi = "Chu Tuoc",   en = "Vermilion Bird", rank =  1, seconds =  45.0, hits = 16.0,
+    mech = { "charge", "enrage" },
+    arrive = { "Quest1Gate" }, lair = { "Quest1Lair" } },
+
+  { unit = id('B002'), vi = "Huyen Vu",   en = "Black Tortoise", rank =  6, seconds =  70.0, hits = 13.0,
+    mech = { "shield", "reflect" },
+    arrive = { "Quest2Gate" }, lair = { "Quest2Lair" } },
+
+  { unit = id('B003'), vi = "Bach Ho",    en = "White Tiger",    rank = 11, seconds =  95.0, hits = 10.0,
+    mech = { "charge", "shred" },
+    arrive = { "Quest3Gate" }, lair = { "Quest3Lair" } },
+
+  { unit = id('B004'), vi = "Thanh Long", en = "Azure Dragon",   rank = 16, seconds = 130.0, hits =  8.0,
+    mech = { "slam", "summon", "lifesteal", "enrage" },
+    arrive = { "Quest4Gate" }, lair = { "Quest4Lair" } },
+}
+
+-- CHI SO THANH THU: DO DOI, y het boss thuong -- nhung do LUC NGUOI
+-- CHOI BUOC VAO, khong phai luc sinh ra.
+--
+-- LOI DA SHIP: ban dau toi suy chi so tu CANH GIOI cua, nghi rang duong
+-- cong Tu Vi se tu lo phan thu tu. Sai hoan toan. Do tu file vet, canh
+-- gioi 16, mot hero:
+--
+--     chi so THAT cua hero      30.105
+--     phan den tu canh gioi 16     511   <- 1,7%
+--     phan tu trang bi + ky nang 29.594  <- 98,3%, gap 59 LAN
+--
+-- Canh gioi gan nhu KHONG phai suc manh cua nguoi choi; trang bi va ky
+-- nang moi la. Nen con dau (canh gioi 1, chua trang bi) thi qua dai, ba
+-- con sau (da full trang bi) thi vo trong mot nhip.
+--
+-- Gio: mau = dps_ca_doi x seconds, do NGAY LUC BUOC VAO. Thu tu van bi
+-- chan boi nut khoa theo canh gioi; do kho tang dan bang 'seconds' va
+-- 'hits' rieng tung con chu khong bang mot duong cong khong lien quan.
+-- Tam san: du de danh ai buoc vao hang, khong du de duoi ra ngoai.
+CFG.SIDE_QUEST_AGGRO   = 800.0
+-- Day xich: di qua bay nhieu don vi khoi hang thi bi keo ve. Phai LON
+-- hon AGGRO, neu khong no vua duoi mot buoc la bi giat lai -- nhin ra
+-- con boss bi dong kinh.
+CFG.SIDE_QUEST_LEASH   = 1400.0
+CFG.SIDE_QUEST_TICK    = 1.0    -- giay giua hai lan kiem day xich
+CFG.SIDE_QUEST_SCALE   = 1.6    -- Thanh Thu to hon hero, nho hon boss (2.2)
+-- Mac dinh khi mot con khong tu khai 'seconds' / 'hits'.
+--   seconds: bao nhieu giay hoa luc CA DOI de ha. Boss thuong la 40s.
+--   hits   : bao nhieu don de ha MOT hero dung yen. Cang it cang dau.
+CFG.SIDE_QUEST_SECONDS = 60.0
+CFG.SIDE_QUEST_HITS    = 14.0
 
 -- ---------- Nha chinh ----------
 -- Mountain King. Day la HERO, khong phai cong trinh -- xem
@@ -701,6 +827,29 @@ CFG.BOSS_SECONDS = 40.0
 -- 1.0 vi do duoc: 1 Str = 1 sat thuong don danh, va don thuong ~1.6
 -- giay mot nhat -- cong voi ky nang thi tong xap xi dung bang chi so.
 CFG.BOSS_DPS_FACTOR = 1.0
+
+-- ---------- Tu MOT DON sang MOI GIAY ----------
+--
+-- LOI DA SHIP: measureParty() tinh (CULT_DMG_BASE + chi so cao nhat) --
+-- do la sat thuong MOT DON, cung cong thuc ma skill dung. Roi mau boss
+-- lay so do nhan BOSS_SECONDS, tuc coi mot don bang mot giay.
+--
+-- Do duoc tu file vet, canh gioi 16, mot hero:
+--     dps 30122 -> mau 1204880
+-- Hero danh hon mot don moi giay va con ky nang, nen boss chet nhanh
+-- gap may lan 40 giay thiet ke. Nguoi choi bao "oanh ti chet".
+--
+-- Gio chia cho HOI CHIEU DON DANH THAT doc bang native. Native vang mat
+-- thi lui ve so nay va API.trace -- khong nuot.
+CFG.BOSS_ATTACKS_FALLBACK = 1.0    -- don/giay khi khong doc duoc hoi chieu
+
+-- Ky nang gop them bao nhieu vao sat thuong moi giay, tinh theo lan don
+-- thuong. 1.0 = ky nang gop bang dung don thuong -> tong gap doi.
+--
+-- DAY LA UOC LUONG, chua do duoc: no phu thuoc nguoi choi bam bao nhieu
+-- va hoi chieu tung skill. Dong trace luc boss CHET in ra thoi gian
+-- thuc so voi BOSS_SECONDS -- chinh so nay theo do chu dung doan.
+CFG.BOSS_SKILL_SHARE = 1.0
 
 -- Boss ha mot hero dung yen trong bao nhieu don.
 CFG.BOSS_HITS_TO_KILL = 12.0
@@ -1494,6 +1643,51 @@ CFG.GEAR_SLOTS = {
 -- duy nhat khong co nut nen cho do dang trong. Dat o COT GIUA vi no chi
 -- phoi ca tam nut hai ben: mot cai dieu khien tat ca thi phai ngoi giua
 -- chung, khong phai nep ra ria.
+-- ---------- PET ----------
+--
+-- BAN DAU: thuan trang tri, di theo hero. Khong danh, khong an don,
+-- khong cong chi so. O Pet trong the Trang Bi da de san tu truoc.
+--
+-- unit = Hmkg (Mountain King). Chon no vi day la id DA CHUNG MINH ve ra
+-- hinh: probe() cua 3_boss.lua tao thu ca 20 unit boss moi lan vao map,
+-- va Hmkg la boss canh gioi 1. Khong phai doan.
+--
+-- Hmkg la unit HERO, nen phai SuspendHeroXP -- xem chu thich 11_pet.lua.
+CFG.PET = {
+  -- KHONG co pet mac dinh. nil = chua thu phuc con nao thi khong co pet.
+  --
+  -- Truoc day o day la Hmkg (Mountain King) de thu co che, va no DANH
+  -- NGUOI CHOI. Nguyen nhan: chu so huu bj_PLAYER_NEUTRAL_EXTRA la mot
+  -- phe TRUNG LAP THU DICH. Toi muon no tu bang chon tuong -- nhung o do
+  -- unit tao ra roi XOA NGAY trong cung mot khung hinh, nen thu dich hay
+  -- khong chua bao gio quan trong. Chep mot mau dung cho vat the vut di
+  -- sang vat the SONG LAU la sai.
+  --
+  -- Gio pet chi den tu viec thu phuc Thanh Thu (d.petUnit), va
+  -- startPet() dat lien minh ro rang -- xem 11_pet.lua.
+  unit   = nil,
+  -- 'Aloc' = Locust. Khong chon duoc, khong bi nham muc tieu, khong va
+  -- cham. Day la ma goc cua Warcraft, khong phai ability tu tao.
+  locust = id('Aloc'),
+  scale  = 0.55,          -- 'mini' -- hero thuong la 1.0
+  near   = 220.0,         -- xa hon bay nhieu thi moi doi cho
+  tick   = 0.25,          -- giay giua hai lan kiem khoang cach
+  spawnOffset = 120.0,    -- hien ra cach hero bao xa
+
+  -- CHU SO HUU. true = player trung lap, khong phai nguoi choi.
+  --
+  -- Hmkg la unit kieu HERO, ma MOI hero thuoc ve mot nguoi choi deu hien
+  -- o thanh hero goc tren trai. Locust khong go duoc cho do: no lo phan
+  -- chon/nham muc tieu/va cham, khong lo phan giao dien.
+  --
+  -- Doi chu sang player trung lap la xong -- trung lap khong co giao
+  -- dien nen khong co thanh hero. Pet van nhan lenh tu trigger nhu cu,
+  -- vi lenh di qua IssuePointOrder chu khong qua chuot nguoi choi.
+  --
+  -- Doi lai: mat mau co cua nguoi choi, nen phai SetUnitColor tra lai.
+  neutral = true,
+}
+
 CFG.GEAR_TOGGLE_SLOT = { 2, 4 }
 
 CFG.GEAR_PET_SLOT = { 2, 4 }

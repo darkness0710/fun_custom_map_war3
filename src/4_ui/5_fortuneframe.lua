@@ -2,8 +2,12 @@
 --  5_fortuneframe.lua  --  Khung Co Duyen: MOT COT MOI THE
 --
 --  Mo NGAY khi tinh anh/boss chet, khong phai mot the trong bang.
---  Cac cot dat canh nhau, moi cot la MOT the bam duoc -- kieu chon loi
---  cua TFT.
+--  Cac cot dat canh nhau, moi cot mot the va MOT NUT SELECT ngay duoi.
+--
+--  VI SAO NUT RIENG, khong bam ca cot nhu truoc: chon the Co Duyen la
+--  KHONG HOAN TAC duoc -- bam nham mot cai la mat ca luot. Ba cot sat
+--  nhau va phu kin ca khung thi khong co cho nao de "bam hut"; mot nut
+--  nho o duoi thi phai co y moi trung. Cung ly do voi bang chon hero.
 --
 --  SO COT DOC TU CFG.FORTUNE_KINDS, khong go cung. Be ngang khung giu
 --  nguyen, cot tu chia lai -- them hay bot the khong phai sua file nay.
@@ -23,7 +27,12 @@ local W      = 0.46     -- be ngang ca khung
 local PAD    = 0.018
 local GAP    = 0.010
 local HEAD_H = 0.030    -- dong tieu de
-local COT_H  = 0.185    -- cao mot cot
+-- The + nut = dung bang chieu cao cot cu (0.185), nen khung KHONG doi
+-- kich thuoc: 0.153 + 0.006 + 0.026 = 0.185.
+local COT_H  = 0.153    -- cao phan THE (trang tri)
+local BTN_H  = 0.026    -- cao nut SELECT
+local BTN_GAP = 0.006   -- khe giua the va nut
+local BTN_PAD = 0.006   -- nut hep hon the moi ben bay nhieu
 local ICON_H = 0.052
 
 -- Le trong THAT = le + vien trang tri cua backdrop.
@@ -49,7 +58,7 @@ local function colW()
 end
 
 local function frameH()
-  return P() + HEAD_H + GAP + COT_H + P()
+  return P() + HEAD_H + GAP + COT_H + BTN_GAP + BTN_H + P()
 end
 
 local function stateOf(pid)
@@ -109,22 +118,57 @@ local function build(pid)
     local x = P() + (i - 1) * (cw + GAP)
     local c = {}
 
-    -- CA COT la mot nut. Bam dau trong cot cung duoc, khong phai ngam
-    -- vao mot nut nho o duoi -- do la cai lam kieu chon loi cua TFT
-    -- bam thay da tay.
-    c.btn = BlzCreateFrameByType("GLUEBUTTON", "QuayCot" .. i, bg,
+    local d = CFG.PANEL_BTN_BORDER or 0.0016
+
+    -- ----- THE: chi trang tri, KHONG bam duoc -----
+    c.card = BlzCreateFrameByType("BACKDROP", "QuayCot" .. i, bg, "", pid)
+    if c.card == nil then return false end
+    BlzFrameSetSize(c.card, cw, COT_H)
+    BlzFrameSetPoint(c.card, FRAMEPOINT_TOPLEFT, bg, FRAMEPOINT_TOPLEFT,
+                     x, -topY)
+    BlzFrameSetTexture(c.card, CFG.PANEL_BTN_EDGE, 0, true)
+    API.frameDead(c.card)
+
+    -- Ruot thut vao mot vien, cung cach bang nhan vat ve nut: hai o mau
+    -- dac long nhau. Backdrop 9 o (EscMenuBackdrop) co goc khong co lai
+    -- theo frame nen khong dung duoc cho o nho.
+    local fill = BlzCreateFrameByType("BACKDROP", "QuayFill" .. i, c.card, "", pid)
+    if fill ~= nil then
+      BlzFrameSetSize(fill, cw - 2 * d, COT_H - 2 * d)
+      BlzFrameSetPoint(fill, FRAMEPOINT_TOPLEFT, c.card, FRAMEPOINT_TOPLEFT, d, -d)
+      BlzFrameSetTexture(fill, CFG.PANEL_BTN_FILL, 0, true)
+      API.frameDead(fill)
+    end
+
+    c.icon = BlzCreateFrameByType("BACKDROP", "QuayIcon" .. i, c.card, "", pid)
+    if c.icon ~= nil then
+      BlzFrameSetSize(c.icon, ICON_H, ICON_H)
+      BlzFrameSetPoint(c.icon, FRAMEPOINT_TOP, c.card, FRAMEPOINT_TOP,
+                       0.0, -0.014)
+      API.frameDead(c.icon)
+    end
+
+    c.name = label("QuayTen" .. i, c.card, 0.004, 0.014 + ICON_H + 0.010,
+                cw - 0.008, CFG.PANEL_SCALE_NAME, true)
+    c.desc = label("QuayMota" .. i, c.card, 0.004, 0.014 + ICON_H + 0.034,
+                 cw - 0.008, CFG.PANEL_SCALE_SUB, true)
+
+    -- ----- NUT SELECT rieng cua cot nay -----
+    --
+    -- NEO VAO BANG (bg), KHONG vao c.card. c.card da di qua frameDead()
+    -- -- tuc BlzFrameSetEnable(f, false) -- va nut nam trong mot frame
+    -- da TAT thi khong nhan duoc cu bam nao: nhin thi day du, bam thi
+    -- chet lang. Bang chon hero da dinh dung loi nay mot lan.
+    local bw = cw - 2 * BTN_PAD
+    c.btn = BlzCreateFrameByType("GLUEBUTTON", "QuaySel" .. i, bg,
                                  CFG.FRAME_BUTTON_TEMPLATE, pid)
     if c.btn == nil then return false end
-    BlzFrameSetSize(c.btn, cw, COT_H)
+    BlzFrameSetSize(c.btn, bw, BTN_H)
     BlzFrameSetPoint(c.btn, FRAMEPOINT_TOPLEFT, bg, FRAMEPOINT_TOPLEFT,
-                     x, -topY)
+                     x + BTN_PAD, -(topY + COT_H + BTN_GAP))
     BlzTriggerRegisterFrameEvent(S.fortuneTrig, c.btn, FRAMEEVENT_CONTROL_CLICK)
 
-    -- Vien + ruot, cung cach bang nhan vat ve nut: hai o mau dac long
-    -- nhau. Backdrop 9 o (EscMenuBackdrop) co goc khong co lai theo
-    -- frame nen khong dung duoc cho o nho.
-    local d = CFG.PANEL_BTN_BORDER or 0.0016
-    local function o(name, dx, dy, w2, h2, tex)
+    local function plate(name, dx, dy, w2, h2, tex)
       local f = BlzCreateFrameByType("BACKDROP", name, c.btn, "", pid)
       if f == nil then return end
       BlzFrameSetSize(f, w2, h2)
@@ -132,21 +176,14 @@ local function build(pid)
       BlzFrameSetTexture(f, tex, 0, true)
       API.frameDead(f)
     end
-    o("QuayEdge" .. i, 0.0, 0.0, cw, COT_H, CFG.PANEL_BTN_EDGE)
-    o("QuayFill" .. i, d, d, cw - 2 * d, COT_H - 2 * d, CFG.PANEL_BTN_FILL)
+    plate("QuaySelEdge" .. i, 0.0, 0.0, bw, BTN_H, CFG.PANEL_BTN_EDGE)
+    plate("QuaySelFill" .. i, d, d, bw - 2 * d, BTN_H - 2 * d, CFG.PANEL_BTN_FILL)
 
-    c.icon = BlzCreateFrameByType("BACKDROP", "QuayIcon" .. i, c.btn, "", pid)
-    if c.icon ~= nil then
-      BlzFrameSetSize(c.icon, ICON_H, ICON_H)
-      BlzFrameSetPoint(c.icon, FRAMEPOINT_TOP, c.btn, FRAMEPOINT_TOP,
-                       0.0, -0.016)
-      API.frameDead(c.icon)
+    local bt = label("QuaySelTxt" .. i, c.btn, 0.004, (BTN_H - 0.016) * 0.5,
+                     bw - 0.008, CFG.PANEL_SCALE_NAME, true)
+    if bt ~= nil then
+      BlzFrameSetText(bt, CFG.C_GOLD .. API.t("pick_select") .. CFG.C_END)
     end
-
-    c.name = label("QuayTen" .. i, c.btn, 0.004, 0.016 + ICON_H + 0.012,
-                cw - 0.008, CFG.PANEL_SCALE_NAME, true)
-    c.desc = label("QuayMota" .. i, c.btn, 0.004, 0.016 + ICON_H + 0.038,
-                 cw - 0.008, CFG.PANEL_SCALE_SUB, true)
 
     st.col[i] = c
   end

@@ -141,9 +141,9 @@ local function buy(pid, i)
   local it = UnitAddItemById(d.hero, item.item)
   if it == nil then
     API.addGold(pid, item.price)
-    API.msg(pid, CFG.C_RED .. "Khong tao duoc item " ..
+    API.warn(pid, "Khong tao duoc item " ..
       API.idToStr(item.item) .. " -- da hoan " .. API.num(item.price) ..
-      " vang. Kiem CFG.SHOP." .. CFG.C_END)
+      " vang. Kiem CFG.SHOP.")
     flash("fail")
     API.panelRefresh(pid)
     return
@@ -169,8 +169,8 @@ local function give(pid, code, count)
     if CFG.SHOP[i].code == code then item = CFG.SHOP[i] end
   end
   if item == nil then
-    API.msg(pid, CFG.C_RED .. "shopGive: khong co mon '" .. tostring(code) ..
-      "' trong CFG.SHOP." .. CFG.C_END)
+    API.warn(pid, "shopGive: khong co mon '" .. tostring(code) ..
+      "' trong CFG.SHOP.")
     return 0
   end
 
@@ -179,8 +179,8 @@ local function give(pid, code, count)
   if UnitInventorySize ~= nil then
     local n = UnitInventorySize(d.hero)
     if n == nil or n <= 0 then
-      API.msg(nil, CFG.C_RED .. "Hero khong co tui do (thieu ability " ..
-        "Inventory/AInv) -- khong phat duoc " .. tostring(code) .. CFG.C_END)
+      API.warn(nil, "Hero khong co tui do (thieu ability " ..
+        "Inventory/AInv) -- khong phat duoc " .. tostring(code))
       API.trace("shop: hero KHONG CO TUI, bo qua " .. tostring(code))
       return 0
     end
@@ -272,15 +272,15 @@ local function probeItems()
       API.trace("shop: " .. item.code .. " = " .. API.idToStr(item.item) ..
                 ", luot goc " .. c .. ", icon " .. tostring(item.icon))
       if c == 0 then
-        API.msg(nil, CFG.C_GREY .. "[shop] " .. API.pick(item) ..
+        API.info(nil, CFG.C_GREY .. "[shop] " .. API.pick(item) ..
           " co 0 luot -- khong gop o duoc, moi lo se chiem mot o." .. CFG.C_END)
       end
       RemoveItem(it)
     end
   end
   if #bad > 0 then
-    API.msg(nil, CFG.C_RED .. "Shop: khong co item " ..
-      table.concat(bad, " ") .. " -- sua CFG.SHOP." .. CFG.C_END)
+    API.warn(nil, "Shop: khong co item " ..
+      table.concat(bad, " ") .. " -- sua CFG.SHOP.")
   end
 end
 

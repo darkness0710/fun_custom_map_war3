@@ -1,0 +1,170 @@
+-- ============================================================
+--  2_player/11_pet.lua -- Pet di theo hero
+--
+--  BAN DAU: thuan trang tri. Khong danh, khong an don, khong chi so.
+--  O Pet trong the Trang Bi (CFG.GEAR_PET_SLOT) da de san cho no tu
+--  truoc; day moi la con vat that ngoai map.
+--
+--  BA THU PHAI CO, va deu co ly do:
+--    Locust (Aloc)  khong chon duoc, khong bi nham muc tieu, khong va
+--                   cham -- pet di xuyen qua quan chu khong chen duong
+--    bat tu         Locust da chan phan lon, nhung don DIEN RONG (Chan
+--                   Dia cua boss) van cham toi; chet mot cai la pet bien
+--                   mat giua tran ma khong ai hieu vi sao
+--    SuspendHeroXP  Hmkg la unit HERO. Khong khoa thi pet len cap, hien
+--                   bang chon chieu, va an mat kinh nghiem cua nguoi choi
+--
+--  Nho: goi ham cua file khac phai qua API.
+-- ============================================================
+
+-- ---------- Tao ----------
+
+local function remove(pid)
+  local d = S.p[pid]
+  if d == nil or d.pet == nil then return end
+  RemoveUnit(d.pet)
+  d.pet = nil
+end
+
+local function spawn(pid)
+  local cfg = CFG.PET
+  if cfg == nil then return nil end
+
+  local d = S.p[pid]
+  if d == nil or d.hero == nil then return nil end
+
+  -- Con da THU PHUC de len con mac dinh. Ha Thanh Thu nao thi pet thanh
+  -- con do, va ghi de con dang co -- moi luc mot pet.
+  local uid = d.petUnit or cfg.unit
+  if uid == nil then
+    -- Chua thu phuc con nao. Khong phai loi -- chi la chua co pet.
+    return nil
+  end
+
+  -- Doi hero thi bo con cu di, neu khong moi lan doi la them mot con.
+  remove(pid)
+
+  local hx, hy = GetUnitX(d.hero), GetUnitY(d.hero)
+  local x = API.polarX(hx, cfg.spawnOffset or 120.0, 225.0)
+  local y = API.polarY(hy, cfg.spawnOffset or 120.0, 225.0)
+  x, y = API.clampToMap(x, y)
+
+  -- Chu so huu trung lap: xem chu thich CFG.PET.neutral. bj_PLAYER_-
+  -- NEUTRAL_EXTRA la slot ma chinh du an nay da dung cho model hero o
+  -- bang chon tuong -- duong da di roi, khong phai doan.
+  local owner = Player(pid)
+  if cfg.neutral then
+    local slot = _G["bj_PLAYER_NEUTRAL_EXTRA"]
+    if slot ~= nil then
+      owner = Player(slot)
+    else
+      API.trace("pet: khong co bj_PLAYER_NEUTRAL_EXTRA -- pet se hien o " ..
+                "thanh hero cua nguoi choi")
+    end
+  end
+
+  local u = CreateUnit(owner, uid, x, y, GetUnitFacing(d.hero))
+  if u == nil then
+    API.trace("pet: CreateUnit tra ve nil -- kiem id trong CFG.PET")
+    return nil
+  end
+
+  -- Locust: them NGAY sau khi tao. Them muon hon thi unit da kip nam
+  -- trong danh sach chon duoc cua nguoi choi va Locust khong go ra.
+  local locustId = cfg.locust
+  if locustId ~= nil and UnitAddAbility ~= nil then
+    if not UnitAddAbility(u, locustId) then
+      API.trace("pet: KHONG them duoc Locust (" .. API.idToStr(locustId) ..
+                ") -- pet se chon duoc")
+    end
+    -- Khoa lai de khong ai go ra duoc, va de no khong hien o bang chieu.
+    if UnitMakeAbilityPermanent ~= nil then
+      UnitMakeAbilityPermanent(u, true, locustId)
+    end
+  else
+    API.trace("pet: thieu CFG.PET.locust hoac UnitAddAbility")
+  end
+
+  if SetUnitInvulnerable ~= nil then SetUnitInvulnerable(u, true) end
+  if SuspendHeroXP ~= nil then SuspendHeroXP(u, true) end
+
+  SetUnitScale(u, cfg.scale, cfg.scale, cfg.scale)
+
+  -- Tra lai mau cua nguoi choi. Doi chu sang trung lap thi pet mang mau
+  -- trung lap, va ba nguoi choi se co ba con pet giong het nhau -- khong
+  -- ai biet con nao cua minh.
+  if cfg.neutral and SetUnitColor ~= nil and GetPlayerColor ~= nil then
+    SetUnitColor(u, GetPlayerColor(Player(pid)))
+  end
+
+  -- Khong cho no tu di danh: pet ban dau la trang tri, ma mot con tu
+  -- lao vao quai thi nguoi choi se tuong no co tham gia danh.
+  if SetUnitAcquireRange ~= nil then SetUnitAcquireRange(u, 0.0) end
+
+  d.pet = u
+  API.trace("pet: pid " .. pid .. " -> " .. API.idToStr(uid) ..
+            " (scale " .. cfg.scale .. ")")
+  return u
+end
+
+-- ---------- Di theo ----------
+--
+-- Ra lenh CHI KHI di qua xa. Ra lenh moi nhip thi lenh sau huy lenh
+-- truoc, pet dung khong nhuc nhich -- loi kinh dien cua pet trong WC3.
+local function follow()
+  local cfg = CFG.PET
+  if cfg == nil then return end
+  for i = 1, #S.pids do
+    local pid = S.pids[i]
+    local d = S.p[pid]
+    if d ~= nil and d.pet ~= nil then
+      if not API.alive(d.pet) or d.hero == nil or not API.alive(d.hero) then
+        -- Hero chet thi pet dung yen cho, khong chay ve xac.
+      else
+        local px, py = GetUnitX(d.pet), GetUnitY(d.pet)
+        local hx, hy = GetUnitX(d.hero), GetUnitY(d.hero)
+        local dx, dy = hx - px, hy - py
+        if dx * dx + dy * dy > cfg.near * cfg.near then
+          -- Dung lai o RIA vong tron chu khong dam vao giua hero.
+          local a = API.angleXY(hx, hy, px, py)
+          IssuePointOrder(d.pet, "move",
+                          API.polarX(hx, cfg.near * 0.6, a),
+                          API.polarY(hy, cfg.near * 0.6, a))
+        end
+      end
+    end
+  end
+end
+
+-- ---------- Khoi dong ----------
+
+local function startPet()
+  if CFG.PET == nil then
+    API.trace("pet: CFG.PET khong co -- bo qua")
+    return
+  end
+
+  -- LIEN MINH, dat mot lan luc khoi dong.
+  --
+  -- Pet thuoc ve mot phe trung lap de no khong hien o thanh hero cua
+  -- nguoi choi. Nhung trung lap trong Warcraft KHONG mac dinh la than
+  -- thien -- bj_PLAYER_NEUTRAL_EXTRA la phe THU DICH, va pet da danh
+  -- nguoi choi that. Phai noi ro ra, ca hai chieu.
+  local slot = _G["bj_PLAYER_NEUTRAL_EXTRA"]
+  if CFG.PET.neutral and slot ~= nil and SetPlayerAllianceStateBJ ~= nil then
+    local owner = Player(slot)
+    for i = 1, #S.pids do
+      local p = Player(S.pids[i])
+      SetPlayerAllianceStateBJ(owner, p, bj_ALLIANCE_ALLIED_VISION)
+      SetPlayerAllianceStateBJ(p, owner, bj_ALLIANCE_ALLIED_VISION)
+    end
+    API.trace("pet: phe " .. slot .. " da lien minh voi " .. #S.pids .. " nguoi choi")
+  end
+  S.petTimer = CreateTimer()
+  TimerStart(S.petTimer, CFG.PET.tick, true, follow)
+  API.trace("pet: san sang, nhip " .. CFG.PET.tick .. "s")
+end
+
+API.petSpawn  = spawn
+API.petRemove = remove
+API.startPet  = startPet

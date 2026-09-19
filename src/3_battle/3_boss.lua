@@ -47,7 +47,28 @@ local function measureParty()
     if h ~= nil and API.alive(h) then
       n = n + 1
       local top = API.skillTopStat and API.skillTopStat(h) or 0
-      dps = dps + CFG.BOSS_DPS_FACTOR * (CFG.CULT_DMG_BASE + top)
+      local hit = CFG.BOSS_DPS_FACTOR * (CFG.CULT_DMG_BASE + top)
+
+      -- MOT DON, khong phai mot giay. Phai chia cho hoi chieu don danh
+      -- that -- neu khong thi mau boss = 40 DON chu khong phai 40 giay,
+      -- va boss chet trong chop mat.
+      --
+      -- BlzGetUnitAttackCooldown tra ve giay giua hai don, DA tinh ca
+      -- buff toc danh. Vang mat thi lui ve hang so va BAO RA.
+      local cd = nil
+      local fn = _G["BlzGetUnitAttackCooldown"]
+      if fn ~= nil then cd = fn(h, 0) end
+      if cd == nil or cd <= 0.0 then
+        if not S.warnedCooldown then
+          S.warnedCooldown = true
+          API.trace("boss: KHONG doc duoc BlzGetUnitAttackCooldown -- " ..
+                    "lui ve " .. CFG.BOSS_ATTACKS_FALLBACK .. " don/giay")
+        end
+        cd = 1.0 / CFG.BOSS_ATTACKS_FALLBACK
+      end
+
+      -- Ky nang gop them. Uoc luong, chinh theo dong trace luc boss chet.
+      dps = dps + (hit / cd) * (1.0 + CFG.BOSS_SKILL_SHARE)
 
       local cut = damageReduction((BlzGetUnitArmor ~= nil) and BlzGetUnitArmor(h) or 0.0)
       -- Mau hieu dung: bao nhieu sat thuong THO moi ha duoc hero nay.
@@ -119,6 +140,7 @@ local function spawn(stage, realm, x, y, face)
   S.boss = {
     u = u, stage = stage, realm = realm, def = d, mech = mechSet,
     dmg = dmg, maxHp = hp, enraged = false, casting = false,
+    age = 0.0,
     cdSlam = mechNum("slam", "cd"), cdCharge = mechNum("charge", "cd"),
     cdSummon = mechNum("summon", "cd"), cdShield = mechNum("shield", "cd"),
     shield = 0.0,
@@ -267,6 +289,9 @@ local function charge(b)
   if far == nil then return end
   SetUnitPosition(b.u, GetUnitX(far), GetUnitY(far))
   API.fx(CFG.FX_HIT_LINE, GetUnitX(far), GetUnitY(far))
+  -- Truoc day chi co vet lao, khong mot chu nao. Vet thi troi qua trong
+  -- nua giay, con nguoi choi bi lao trung thi khong hieu vua an gi.
+  API.msg(nil, CFG.C_RED .. API.t("boss_charge") .. CFG.C_END)
   strike(b, far, b.dmg * mechNum("charge", "factor") * enrageMult(b))
 end
 
@@ -296,7 +321,18 @@ end
 local function tick()
   local b = S.boss
   if b == nil or b.u == nil then return end
-  if not API.alive(b.u) then S.boss = nil; return end
+  if not API.alive(b.u) then
+    -- VONG PHAN HOI. BOSS_SKILL_SHARE la uoc luong, khong do duoc tu
+    -- ngoai; dong nay bien no thanh thu do duoc. Song ngan hon thiet ke
+    -- thi nang SKILL_SHARE len, dai hon thi ha xuong.
+    API.trace(string.format(
+      "boss: r%d CHET sau %.1fs (thiet ke %.0fs) -- lech %+.0f%%",
+      b.realm or 0, b.age or 0.0, CFG.BOSS_SECONDS,
+      ((b.age or 0.0) / CFG.BOSS_SECONDS - 1.0) * 100.0))
+    S.boss = nil
+    return
+  end
+  b.age = (b.age or 0.0) + CFG.WAVE_TICK
 
   if hasMech(b, "enrage") and not b.enraged then
     if GetUnitState(b.u, UNIT_STATE_LIFE) / b.maxHp <= mechNum("enrage", "at") then
@@ -331,6 +367,34 @@ end
 -- day chi song trong mot tran boss, tron chung vao he bi dong cua hero
 -- thi ca hai ben deu kho doc.
 
+-- ---------- Cho co che AM mot dau hieu ----------
+--
+-- Do duoc truoc khi sua: 3 trong 8 co che KHONG ve gi va KHONG bao gi
+-- (lifesteal, reflect, shred). Hau qua: 8/20 boss co co che nguoi choi
+-- khong the biet la co, va boss 17 (Thanh Nhan Vo Nga) khong lam gi
+-- nhin thay duoc CA -- no la mot con danh thuong to xac.
+--
+-- Mia mai nhat la shred: no la co che quan trong nhat bang (tra loi cho
+-- viec cuoi van hero co 8.070 giap = giam 99,79% sat thuong) ma lai cam
+-- nhat.
+--
+-- Tiet luu theo THOI GIAN SONG cua boss chu khong theo so don: boss
+-- danh vai don moi giay, ve moi don thi man hinh thanh mot dam khoi.
+local function beat1s(b, key)
+  local t = b.age or 0.0
+  if (b[key] or -99.0) + 1.0 > t then return false end
+  b[key] = t
+  return true
+end
+
+-- Dong bao chi MOT lan moi tran: no tra loi cau "chuyen gi dang xay
+-- ra", ma cau do chi can tra loi mot lan.
+local function sayOnce(b, key, msg)
+  if b[key] then return end
+  b[key] = true
+  API.msg(nil, msg)
+end
+
 local function onDamage()
   local b = S.boss
   if b == nil or b.u == nil then return end
@@ -354,6 +418,14 @@ local function onDamage()
       -- lan do src == boss nen khong vao nhanh phan don -- khong de quy.
       UnitDamageTarget(b.u, src, dmg * mechNum("reflect", "ratio"), true, false,
                        ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, WEAPON_TYPE_WHOKNOWS)
+      -- Ve tren KE DANH, khong tren boss: nguoi choi phai thay don cua
+      -- MINH doi chieu, do moi la noi dung cua co che.
+      if beat1s(b, "fxReflect") then
+        API.fx(CFG.FX_HIT_CLEAVE, GetUnitX(src), GetUnitY(src))
+      end
+      sayOnce(b, "saidReflect", CFG.C_RED ..
+              API.t("boss_reflect", math.floor(mechNum("reflect", "ratio") * 100 + 0.5)) ..
+              CFG.C_END)
     end
     return
   end
@@ -364,6 +436,12 @@ local function onDamage()
       local hp = GetUnitState(b.u, UNIT_STATE_LIFE) + dmg * mechNum("lifesteal", "ratio")
       local mx  = GetUnitState(b.u, UNIT_STATE_MAX_LIFE)
       SetUnitState(b.u, UNIT_STATE_LIFE, (hp > mx) and mx or hp)
+      if beat1s(b, "fxSteal") then
+        API.fx(CFG.FX_HIT_HEAL, GetUnitX(b.u), GetUnitY(b.u))
+      end
+      sayOnce(b, "saidSteal", CFG.C_RED ..
+              API.t("boss_lifesteal", math.floor(mechNum("lifesteal", "ratio") * 100 + 0.5)) ..
+              CFG.C_END)
     end
     -- XE GIAP: KHONG sua giap that. Giap la cua engine tu luc
     -- heroRecompute thoi so huu no (xem 7_effect.lua); gianh lai la
@@ -379,6 +457,17 @@ local function onDamage()
         d.bossShred = (d.bossShred or 0.0) + mechNum("shred", "perHit")
         if BlzSetEventDamage ~= nil then
           BlzSetEventDamage(dmg * (1.0 + d.bossShred))
+        end
+        -- Bao theo MOC 25%, khong bao moi don: con so phai nhay du to
+        -- de doc ra "minh dang yeu dan", con tung 2% thi thanh tieng on.
+        local step = math.floor(d.bossShred / 0.25)
+        if step > (d.bossShredSaid or 0) then
+          d.bossShredSaid = step
+          API.msg(pid, CFG.C_RED ..
+                  API.t("boss_shred", math.floor(d.bossShred * 100 + 0.5)) .. CFG.C_END)
+        end
+        if beat1s(b, "fxShred") then
+          API.fx(CFG.FX_HIT_CLEAVE, GetUnitX(tgt), GetUnitY(tgt))
         end
       end
     end
@@ -405,7 +494,7 @@ local function probe()
     end
   end
   if #bad > 0 then
-    API.msg(nil, CFG.C_RED .. "BOSS SAI: " .. table.concat(bad, " | ") .. CFG.C_END)
+    API.warn(nil, "BOSS SAI: " .. table.concat(bad, " | "))
     API.trace("boss: SAI -- " .. table.concat(bad, " | "))
   else
     API.trace("boss: " .. #CFG.BOSSES .. " ban thiet ke hop le (hero, khong bay)")
@@ -422,6 +511,14 @@ local function startBoss()
   end
   API.trace("boss: san sang")
 end
+
+-- Dung chung cho engine rieng cua Thanh Thu (4_sidequest.lua). Ba ham
+-- nay THUAN TUY: khong doc S.boss, khong giu trang thai -- nen chia se
+-- duoc ma khong buoc hai he vao nhau.
+API.bossMeasureParty = measureParty
+API.bossForEachEnemy = forEachEnemy
+API.bossSlamRing     = slamRing
+API.bossMechNum      = mechNum
 
 API.bossSpawn = spawn
 API.bossTick  = tick

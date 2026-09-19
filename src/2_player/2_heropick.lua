@@ -74,8 +74,8 @@ local function giveAbilities(u, uid)
   end
 
   if #bad > 0 then
-    API.msg(nil, CFG.C_RED .. "Khong gan duoc ability: " ..
-      table.concat(bad, " ") .. CFG.C_END)
+    API.warn(nil, "Khong gan duoc ability: " ..
+      table.concat(bad, " "))
   end
   API.trace("abil gan cho " .. GetUnitName(u) .. ": " .. (#list - #bad) ..
             "/" .. #list)
@@ -96,16 +96,36 @@ local function slotIndex(pid)
 end
 
 -- Hero sinh quanh nha chinh, moi nguoi mot huong de khong chong len nhau.
-local function spawnHero(pid, uid)
-  local cx, cy = S.houseX, S.houseY
-  if cx == nil then cx, cy = API.blockCenter(3, 3) end
-
+-- Xoe quanh mot diem theo slot nguoi choi: ba hero cung sinh mot cho
+-- thi chong len nhau va Warcraft day chung ra lung tung.
+--
+-- Dung chung cho CA hai cho -- luc pick, va luc cong dich chuyen dua ve
+-- nha chinh (xem startHeroGate o 1_house.lua). Hai cho mot cong thuc,
+-- nen khoang cach giua cac hero luon giong nhau.
+local function fanPoint(pid, cx, cy, radius)
   local n = #S.pids
   if n < 1 then n = 1 end
   local ang = (360.0 / n) * (slotIndex(pid) - 1)
-  local x = API.polarX(cx, CFG.HERO_SPAWN_OFFSET, ang)
-  local y = API.polarY(cy, CFG.HERO_SPAWN_OFFSET, ang)
-  x, y = API.clampToMap(x, y)
+  local x, y = API.clampToMap(API.polarX(cx, radius, ang),
+                              API.polarY(cy, radius, ang))
+  return x, y, ang
+end
+
+local function spawnHero(pid, uid)
+  -- Hero ra o HeroStartRegion, khong phai quanh nha chinh. Thieu vung
+  -- thi BAO RA roi lui ve nha chinh -- khong im lang sinh nham cho.
+  local cx, cy
+  local r, realName = API.findRegion(CFG.RGN_HERO_START)
+  if r ~= nil then
+    cx, cy = API.regionCenter(r)
+    S.heroStartRgnName = realName
+  else
+    API.regionMissing("CFG.RGN_HERO_START", API.regionLabel(CFG.RGN_HERO_START))
+    cx, cy = S.houseX, S.houseY
+  end
+  if cx == nil then cx, cy = API.blockCenter(3, 3) end
+
+  local x, y, ang = fanPoint(pid, cx, cy, CFG.HERO_SPAWN_OFFSET)
 
   local u = CreateUnit(Player(pid), uid, x, y, ang + 180.0)
   if u ~= nil then
@@ -146,7 +166,7 @@ local function showPicker(pid)
   local list = available()
   if #list == 0 then
     hidePicker(pid)
-    API.msg(pid, CFG.C_RED .. "Khong con hero nao de chon." .. CFG.C_END)
+    API.msg(pid, CFG.C_RED .. API.t("pick_none") .. CFG.C_END)
     return
   end
 
@@ -215,21 +235,27 @@ local function applyHeroPick(pid, uid)
 
   -- Hai nguoi bam cung mot con: nguoi den sau roi vao day.
   if CFG.HERO_UNIQUE and S.heroTaken[uid] then
-    API.msg(pid, CFG.C_RED .. heroNameOf(uid) .. " vua co nguoi lay mat." .. CFG.C_END)
+    API.msg(pid, CFG.C_RED .. API.t("pick_taken", heroNameOf(uid)) .. CFG.C_END)
     pickerShow(pid)
     return false
   end
 
   local u = spawnHero(pid, uid)
   if u == nil then
-    API.msg(pid, CFG.C_RED .. "Khong tao duoc hero -- kiem tra id trong CFG.HEROES."
-      .. CFG.C_END)
+    API.msg(pid, CFG.C_RED .. API.t("pick_failed") .. CFG.C_END)
     pickerShow(pid)
     return false
   end
 
   d.hero = u
   d.heroCount = d.heroCount + 1
+  -- Pet sinh SAU khi co hero, vi no lay toa do tu hero. Doi hero thi
+  -- petSpawn tu bo con cu -- neu khong moi lan doi la them mot con.
+  if API.petSpawn ~= nil then API.petSpawn(pid) end
+  -- Nhac ngay pho ban nao da mo. Moc dau la Pham Nhan nen it nhat mot
+  -- con luon mo san tu giay dau tien -- khong nhac thi nguoi choi khong
+  -- co ly do nao de mo the Nhiem Vu Phu.
+  if API.sideQuestCheck ~= nil then API.sideQuestCheck(pid) end
   if CFG.HERO_UNIQUE then S.heroTaken[uid] = true end
   pickerHide(pid)
 
@@ -333,19 +359,19 @@ local function showSkillPicker(pid)
   if d == nil or not d.active then return false end
 
   if d.hero == nil then
-    API.msg(pid, CFG.C_RED .. "Chua co hero de gan ky nang." .. CFG.C_END)
+    API.msg(pid, CFG.C_RED .. API.t("skill_nohero") .. CFG.C_END)
     return false
   end
   local slots = slotsFor(pid)
   if #slots == 0 then
-    API.msg(pid, CFG.C_RED .. "Hero nay chua khai bao cay skill nao." .. CFG.C_END)
+    API.msg(pid, CFG.C_RED .. API.t("skill_notree") .. CFG.C_END)
     return false
   end
 
   local si = nextEmptySlot(d, slots)
   if si == nil then
     hideSkillPicker(pid)
-    API.msg(pid, CFG.C_GOLD .. "Da chon du " .. #slots .. " slot ky nang."
+    API.msg(pid, CFG.C_GOLD .. API.t("skill_full", #slots)
       .. CFG.C_END)
     return false
   end
@@ -385,8 +411,8 @@ local function onSkillPick()
   if d == nil or d.hero == nil then return end
 
   if not UnitAddAbility(d.hero, aid) then
-    API.msg(pid, CFG.C_RED .. "Khong gan duoc ability " .. API.idToStr(aid) ..
-      " -- id sai, hoac unit khong nhan duoc ability nay." .. CFG.C_END)
+    API.warn(pid, "Khong gan duoc ability " .. API.idToStr(aid) ..
+      " -- id sai, hoac unit khong nhan duoc ability nay.")
     showSkillPicker(pid)
     return
   end
@@ -398,8 +424,9 @@ local function onSkillPick()
 
   d.slots[sp.slot] = aid
   hideSkillPicker(pid)
-  API.msg(pid, CFG.C_GOLD .. "Da hoc " .. CFG.C_JADE ..
-    (slotsFor(pid)[sp.slot].name or "?") .. CFG.C_END .. ".")
+  API.msg(pid, CFG.C_GOLD .. API.t("skill_learned",
+    CFG.C_JADE .. (slotsFor(pid)[sp.slot].name or "?") .. CFG.C_GOLD) ..
+    CFG.C_END)
 
   if CFG.SKILL_PICK_CHAIN then showSkillPicker(pid) end
 end
@@ -447,14 +474,15 @@ API.showSkillPicker   = showSkillPicker
 API.startSkillPicking = startSkillPicking
 
 local function report()
-  API.msg(nil, CFG.C_GOLD .. "=== Chon hero ===" .. CFG.C_END)
-  API.msg(nil, #CFG.HEROES .. " hero  |  moi nguoi toi da " ..
+  API.info(nil, CFG.C_GOLD .. "=== Chon hero ===" .. CFG.C_END)
+  API.info(nil, #CFG.HEROES .. " hero  |  moi nguoi toi da " ..
     CFG.HERO_MAX_PER_PLAYER .. "  |  " ..
     (CFG.HERO_UNIQUE and "khong trung nhau" or "duoc trung nhau"))
-  API.msg(nil, "Popup hien sau " .. CFG.PICK_DELAY .. "s, hero sinh cach nha chinh " ..
+  API.info(nil, "Popup hien sau " .. CFG.PICK_DELAY .. "s, hero sinh cach nha chinh " ..
     API.num(CFG.HERO_SPAWN_OFFSET))
 end
 
 API.showPicker    = showPicker
 API.startPicking  = startPicking
+API.heroFanPoint   = fanPoint
 API.heroPickReport = report

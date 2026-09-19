@@ -50,21 +50,21 @@ local function onChat()
   if raw ~= nil and raw:match("^%s*%-sp%s*$") == nil then return end
 
   if d == nil then
-    API.msg(pid, CFG.C_RED .. "-sp: ban khong nam trong danh sach nguoi choi." .. CFG.C_END)
+    API.warn(pid, "-sp: ban khong nam trong danh sach nguoi choi.")
     return
   end
   if d.hero == nil then
-    API.msg(pid, CFG.C_RED .. "-sp: ban chua chon hero." .. CFG.C_END)
+    API.warn(pid, "-sp: ban chua chon hero.")
     return
   end
   if CFG.SKILL_MODE == "learn" then
     if API.grantSkillPoints(d.hero, 1) then
-      API.msg(pid, CFG.C_GOLD .. "-sp: +1 diem ky nang." .. CFG.C_END ..
+      API.info(pid, CFG.C_GOLD .. "-sp: +1 diem ky nang." .. CFG.C_END ..
         " Bam nut + tren hero de chon.")
-      API.msg(pid, CFG.C_GREY .. "Khong thay nut + nghia la Techtree - Hero" ..
+      API.info(pid, CFG.C_GREY .. "Khong thay nut + nghia la Techtree - Hero" ..
         " Abilities cua hero con rong." .. CFG.C_END)
     else
-      API.msg(pid, CFG.C_RED .. "-sp: UnitModifySkillPoints tu choi." .. CFG.C_END)
+      API.warn(pid, "-sp: UnitModifySkillPoints tu choi.")
     end
 
   elseif CFG.SKILL_MODE == "pick" then
@@ -74,9 +74,8 @@ local function onChat()
     API.showSkillFrame(pid)
 
   else
-    API.msg(pid, CFG.C_RED .. "-sp: SKILL_MODE dang la \"" ..
-      tostring(CFG.SKILL_MODE) .. "\" -- doi sang \"learn\", \"pick\" hoac \"frame\"."
-      .. CFG.C_END)
+    API.warn(pid, "-sp: SKILL_MODE dang la \"" ..
+      tostring(CFG.SKILL_MODE) .. "\" -- doi sang \"learn\", \"pick\" hoac \"frame\".")
   end
 end
 
@@ -90,12 +89,12 @@ local function onWaveCmd()
 
   local n = tonumber(raw:match("^%s*%-wave%s+(%d+)"))
   if n == nil then
-    API.msg(pid, CFG.C_RED .. "Dung: -wave <so tu 1 den " ..
-      API.totalStages() .. ">" .. CFG.C_END)
+    API.warn(pid, "Dung: -wave <so tu 1 den " ..
+      API.totalStages() .. ">")
     return
   end
   API.jumpToStage(n)
-  API.msg(pid, CFG.C_GOLD .. "Nhay toi stage " .. n .. "." .. CFG.C_END)
+  API.info(pid, CFG.C_GOLD .. "Nhay toi stage " .. n .. "." .. CFG.C_END)
 end
 
 -- "-lc" mo bang Linh Can, "-lc up" dot pha thang khong can bang.
@@ -117,7 +116,7 @@ local function onMoneyCmd()
   local n = tonumber(raw:match("^%s*%-go%s+(%d+)"))
   if n ~= nil then
     API.addLumber(pid, n)
-    API.msg(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " go -> " ..
+    API.info(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " go -> " ..
       API.num(API.getLumber(pid)) .. CFG.C_END)
     API.panelRefresh(pid)
     return
@@ -126,13 +125,13 @@ local function onMoneyCmd()
   n = tonumber(raw:match("^%s*%-vang%s+(%d+)"))
   if n ~= nil then
     API.addGold(pid, n)
-    API.msg(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " vang -> " ..
+    API.info(pid, CFG.C_GREY .. "[dev] +" .. API.num(n) .. " vang -> " ..
       API.num(API.getGold(pid)) .. CFG.C_END)
     API.panelRefresh(pid)
     return
   end
 
-  API.msg(pid, CFG.C_RED .. "Dung: -go <so> | -vang <so>" .. CFG.C_END)
+  API.warn(pid, "Dung: -go <so> | -vang <so>")
 end
 
 
@@ -153,9 +152,8 @@ local function onDebugCmd()
   -- Cong tac tat thi NOI RA. Khong lam gi ma cung khong bao la kieu
   -- hong te nhat: nguoi go tuong lenh hong, di sua nham cho khac.
   if not CFG.DEBUG then
-    API.msg(pid, CFG.C_RED .. "-debug can CFG.DEBUG = true" .. CFG.C_END ..
-      CFG.C_GREY .. "  (sua o dau src/1_core/1_config.lua roi chay lai build.py)"
-      .. CFG.C_END)
+    API.warn(pid, "-debug can CFG.DEBUG = true" .. CFG.C_END ..
+      CFG.C_GREY .. "  (sua o dau src/1_core/1_config.lua roi chay lai build.py)")
     API.trace("-debug: TU CHOI -- CFG.DEBUG = false")
     return
   end
@@ -167,7 +165,7 @@ local function onDebugCmd()
   API.addLumber(pid, n)
   if API.addIron ~= nil then API.addIron(pid, n) end
 
-  API.msg(pid, CFG.C_GOLD .. "[debug] +" .. API.num(n) ..
+  API.info(pid, CFG.C_GOLD .. "[debug] +" .. API.num(n) ..
     " moi loai" .. CFG.C_END .. CFG.C_GREY ..
     "  (Linh Khi " .. API.num(API.getQi(pid)) ..
     " | Vang " .. API.num(API.getGold(pid)) ..
@@ -311,18 +309,16 @@ local function registerEvents()
       local pid  = GetPlayerId(GetTriggerPlayer())
       local code = GetEventPlayerChatString():match("^%s*%-icon%s+(%S%S%S%S)")
       if code == nil then
-        API.msg(pid, CFG.C_RED .. "Dung: -icon <4 ky tu>, vi du -icon bspd"
-          .. CFG.C_END)
+        API.warn(pid, "Dung: -icon <4 ky tu>, vi du -icon bspd")
         return
       end
       if CreateItem == nil then
-        API.msg(pid, CFG.C_RED .. "-icon: ban nay khong co CreateItem." .. CFG.C_END)
+        API.warn(pid, "-icon: ban nay khong co CreateItem.")
         return
       end
       local it = CreateItem(FourCC(code), 0.0, 0.0)
       if it == nil then
-        API.msg(pid, CFG.C_RED .. "-icon " .. code .. ": khong co item nay."
-          .. CFG.C_END)
+        API.warn(pid, "-icon " .. code .. ": khong co item nay.")
         API.trace("icon " .. code .. ": KHONG CO")
         return
       end
@@ -361,7 +357,7 @@ local function registerEvents()
       local d = S.p[pid]
       local h = d and d.hero or nil
       if h == nil then
-        API.msg(pid, CFG.C_RED .. "-fx: ban chua co hero." .. CFG.C_END)
+        API.warn(pid, "-fx: ban chua co hero.")
         return
       end
       API.fx(path, GetUnitX(h), GetUnitY(h))
@@ -394,7 +390,7 @@ local function registerEvents()
       end
       local uid = CFG.HEROES[1] and CFG.HEROES[1].id
       local u = CreateUnit(Player(pid), uid, x, y, 270.0)
-      API.msg(pid, CFG.C_GREY .. "[dev] CreateUnit " .. API.idToStr(uid) ..
+      API.info(pid, CFG.C_GREY .. "[dev] CreateUnit " .. API.idToStr(uid) ..
         (u ~= nil and " -> ok" or " -> NIL") .. CFG.C_END)
       API.trace("-spawn: " .. API.idToStr(uid) ..
                 (u ~= nil and " tao duoc" or " TAO THAT BAI"))
@@ -469,14 +465,14 @@ local function registerEvents()
         for i2 = 1, #ds do
           if API.alive(ds[i2]) then KillUnit(ds[i2]); d = d + 1 end
         end
-        API.msg(pid, CFG.C_GREY .. "[dev] da giet " .. d .. " con." .. CFG.C_END)
+        API.info(pid, CFG.C_GREY .. "[dev] da giet " .. d .. " con." .. CFG.C_END)
         return
       end
 
       if raw:match("^%s*%-quay") ~= nil then
         n = n or 10
         if API.fortuneAddRolls ~= nil then API.fortuneAddRolls(pid, n) end
-        API.msg(pid, CFG.C_GREY .. "[dev] +" .. n .. " luot quay." .. CFG.C_END)
+        API.info(pid, CFG.C_GREY .. "[dev] +" .. n .. " luot quay." .. CFG.C_END)
         API.panelRefresh(pid)
         return
       end
@@ -485,7 +481,7 @@ local function registerEvents()
         n = n or 100
         local d = S.p[pid]
         if d ~= nil then API.addIron(pid, n) end
-        API.msg(pid, CFG.C_GREY .. "[dev] +" .. n .. " da." .. CFG.C_END)
+        API.info(pid, CFG.C_GREY .. "[dev] +" .. n .. " da." .. CFG.C_END)
         API.panelRefresh(pid)
         return
       end
@@ -503,7 +499,7 @@ local function registerEvents()
   end
   TriggerAddAction(tRegion, function()
     local pid = GetPlayerId(GetTriggerPlayer())
-    API.msg(pid, CFG.C_GOLD .. "=== Phan vung 25 block ===" .. CFG.C_END)
+    API.info(pid, CFG.C_GOLD .. "=== Phan vung 25 block ===" .. CFG.C_END)
 
     local missing = 0
     -- In tu hang TREN xuong, dung chieu nguoi choi nhin ban do.
@@ -526,9 +522,9 @@ local function registerEvents()
     end)
 
     if missing > 0 then
-      API.msg(pid, CFG.C_RED .. "Thieu " .. missing .. " vung " ..
+      API.warn(pid, "Thieu " .. missing .. " vung " ..
         CFG.BLOCK_RGN_PREFIX .. ".. trong World Editor." .. CFG.C_END ..
-        CFG.C_GREY .. " Chay: python w3region.py gen" .. CFG.C_END)
+        CFG.C_GREY .. " Chay: python w3region.py gen")
     end
     API.msg(pid, CFG.C_GREY ..
       "Chua he nao gan vao block -- day moi la ban do." .. CFG.C_END)

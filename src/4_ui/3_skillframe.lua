@@ -59,8 +59,8 @@ local function framesAvailable()
     API.trace("frame: du native")
   else
     API.trace("frame: THIEU " .. table.concat(missing, " "))
-    API.msg(nil, CFG.C_RED .. "Giao dien tu ve khong chay duoc -- thieu: " ..
-      table.concat(missing, ", ") .. CFG.C_END)
+    API.warn(nil, "Giao dien tu ve khong chay duoc -- thieu: " ..
+      table.concat(missing, ", "))
   end
   return FRAME_OK
 end
@@ -117,13 +117,13 @@ local function buildPanel(pid, slotIndex)
 
   local parent = BlzGetOriginFrame(ORIGIN_FRAME_GAME_UI, 0)
   if parent == nil then
-    API.msg(nil, CFG.C_RED .. "frame: khong lay duoc GAME_UI." .. CFG.C_END)
+    API.warn(nil, "frame: khong lay duoc GAME_UI.")
     return false
   end
 
   st.panel = BlzCreateFrameByType("BACKDROP", "SkillPanel", parent, "", pid)
   if st.panel == nil then
-    API.msg(nil, CFG.C_RED .. "frame: BlzCreateFrameByType tra ve nil." .. CFG.C_END)
+    API.warn(nil, "frame: BlzCreateFrameByType tra ve nil.")
     return false
   end
   BlzFrameSetAbsPoint(st.panel, FRAMEPOINT_CENTER, CFG.FRAME_X, CFG.FRAME_Y)
@@ -135,7 +135,7 @@ local function buildPanel(pid, slotIndex)
     if title ~= nil then
       BlzFrameSetPoint(title, FRAMEPOINT_CENTER, st.panel, FRAMEPOINT_CENTER,
                        0.0, CFG.FRAME_H * 0.36)
-      BlzFrameSetText(title, slot.name or ("Slot " .. slotIndex))
+      BlzFrameSetText(title, slot.name or API.t("skill_slot_n", slotIndex))
       API.frameDead(title)
     end
   end
@@ -186,8 +186,8 @@ local function buildPanel(pid, slotIndex)
   API.trace("frame: pid " .. pid .. " slot " .. slotIndex ..
             " -- tao " .. made .. "/" .. n .. " nut")
   if made == 0 then
-    API.msg(nil, CFG.C_RED .. "frame: khong tao duoc nut nao -- thu doi " ..
-      "CFG.FRAME_BUTTON_TEMPLATE." .. CFG.C_END)
+    API.warn(nil, "frame: khong tao duoc nut nao -- thu doi " ..
+      "CFG.FRAME_BUTTON_TEMPLATE.")
     destroyPanel(pid)
     return false
   end
@@ -202,25 +202,25 @@ end
 
 local function showFrame(pid)
   if not framesAvailable() then
-    API.msg(pid, CFG.C_GOLD .. "Lui ve popup chu." .. CFG.C_END)
+    API.info(pid, CFG.C_GOLD .. "Lui ve popup chu." .. CFG.C_END)
     API.showSkillPicker(pid)
     return false
   end
 
   local d = S.p[pid]
   if d == nil or d.hero == nil then
-    API.msg(pid, CFG.C_RED .. "Chua co hero de gan ky nang." .. CFG.C_END)
+    API.msg(pid, CFG.C_RED .. API.t("skill_nohero") .. CFG.C_END)
     return false
   end
 
   local si, slots = nextSlotIndex(pid)
   if #slots == 0 then
-    API.msg(pid, CFG.C_RED .. "Hero nay chua khai bao cay skill nao." .. CFG.C_END)
+    API.msg(pid, CFG.C_RED .. API.t("skill_notree") .. CFG.C_END)
     return false
   end
   if si == nil then
     hidePanel(pid)
-    API.msg(pid, CFG.C_GOLD .. "Da chon du " .. #slots .. " slot." .. CFG.C_END)
+    API.msg(pid, CFG.C_GOLD .. API.t("skill_full", #slots) .. CFG.C_END)
     return false
   end
 
@@ -239,8 +239,8 @@ local function applyChoice(pid, slotIndex, aid)
   if d.slots[slotIndex] ~= nil then return end
 
   if not UnitAddAbility(d.hero, aid) then
-    API.msg(pid, CFG.C_RED .. "Khong gan duoc ability " .. API.idToStr(aid) ..
-      " -- id sai, hoac unit khong nhan duoc ability nay." .. CFG.C_END)
+    API.warn(pid, "Khong gan duoc ability " .. API.idToStr(aid) ..
+      " -- id sai, hoac unit khong nhan duoc ability nay.")
     return
   end
   SetUnitAbilityLevel(d.hero, aid, 1)

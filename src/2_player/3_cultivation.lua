@@ -182,7 +182,7 @@ local function setRank(pid, newR, dev)
   API.panelRefresh(pid)
 
   if dev then
-    API.msg(pid, CFG.C_GREY .. "[dev] Linh Can -> " .. rankName(newR) ..
+    API.info(pid, CFG.C_GREY .. "[dev] Linh Can -> " .. rankName(newR) ..
       " (bac " .. newR .. ", " .. powerText(newR) .. ")" .. CFG.C_END)
   end
 end
@@ -215,6 +215,10 @@ local function breakthrough(pid)
     API.fx([[Abilities\Spells\Human\Resurrect\ResurrectTarget.mdl]],
            GetUnitX(d.hero), GetUnitY(d.hero))
   end
+
+  -- Canh gioi vua tang -- co the vua mo mot pho ban. Kiem o day chu
+  -- khong bat nguoi choi tu nho moc nao la moc nao.
+  if API.sideQuestCheck ~= nil then API.sideQuestCheck(pid) end
 end
 
 -- Nut "Dot pha" tren bang: KHONG doi trang thai o day. Su kien bam frame
@@ -239,7 +243,7 @@ local function onChat(pid, raw)
     local n = tonumber(raw:match("^%s*%-lc%s+(%d+)"))
     if n ~= nil then
       if not CFG.DEV_COMMANDS then
-        API.msg(pid, CFG.C_RED .. "Lenh dev dang tat (CFG.DEV_COMMANDS)." .. CFG.C_END)
+        API.warn(pid, "Lenh dev dang tat (CFG.DEV_COMMANDS).")
         return
       end
       setRank(pid, n, true)

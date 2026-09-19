@@ -349,8 +349,8 @@ local function buildPanel(pid, list)
   API.trace("herocard: pid " .. pid .. " -- tao " .. made .. "/" .. n ..
             " cot, nen = " .. tostring(how))
   if made == 0 then
-    API.msg(nil, CFG.C_RED .. "herocard: khong tao duoc cot nao -- thu doi " ..
-      "CFG.CARD_BUTTON_TEMPLATE." .. CFG.C_END)
+    API.warn(nil, "herocard: khong tao duoc cot nao -- thu doi " ..
+      "CFG.CARD_BUTTON_TEMPLATE.")
     destroyPanel(pid)
     return false
   end
@@ -365,7 +365,7 @@ end
 
 local function showFrame(pid)
   if not framesAvailable() then
-    API.msg(pid, CFG.C_GOLD .. "Bang chon hero khong ve duoc -- lui ve popup chu."
+    API.info(pid, CFG.C_GOLD .. "Bang chon hero khong ve duoc -- lui ve popup chu."
       .. CFG.C_END)
     return API.showPicker(pid)
   end
@@ -380,7 +380,7 @@ local function showFrame(pid)
   local list = API.heroesAvailable()
   if #list == 0 then
     hideFrame(pid)
-    API.msg(pid, CFG.C_RED .. "Khong con hero nao de chon." .. CFG.C_END)
+    API.msg(pid, CFG.C_RED .. API.t("pick_none") .. CFG.C_END)
     return false
   end
 
@@ -426,8 +426,8 @@ local function startHeroFrame()
   S.hframe = { trig = nil, syncTrig = nil, byPid = {} }
   if CFG.HERO_PICK_MODE ~= "frame" then return end
   if not framesAvailable() then
-    API.msg(nil, CFG.C_RED .. "Khong ve duoc bang chon hero tren ban nay -- " ..
-      "se dung popup chu." .. CFG.C_END)
+    API.warn(nil, "Khong ve duoc bang chon hero tren ban nay -- " ..
+      "se dung popup chu.")
     return
   end
 

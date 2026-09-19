@@ -1196,7 +1196,7 @@ local function build(pid)
   if ok and res ~= false then return res end
 
   API.trace("panel: DUNG BANG LOI -- " .. tostring(res))
-  API.msg(pid, CFG.C_RED .. "panel: dung bang loi, xem file vet." .. CFG.C_END)
+  API.warn(pid, "panel: dung bang loi, xem file vet.")
 
   local st = stateOf(pid)
   if st ~= nil and st.panel ~= nil and BlzDestroyFrame ~= nil then
@@ -1223,6 +1223,17 @@ local function setShown(pid, want)
 
   BlzFrameSetVisible(st.panel, false)
   if GetLocalPlayer() == Player(pid) then
+    if st.shown then
+      -- Don khung chat khi MO bang.
+      --
+      -- Frame tu tao deu la con cua ORIGIN_FRAME_GAME_UI, ma khung chat
+      -- cua Warcraft ve DE LEN lop do -- khong co cach nao dua backdrop
+      -- len tren no, nen "lam overlay day hon" khong giai duoc gi.
+      --
+      -- ClearTextMessages() la native CHI dung giao dien, khong doi
+      -- trang thai nao -- goi trong nhanh cuc bo nay la an toan.
+      if ClearTextMessages ~= nil then ClearTextMessages() end
+    end
     BlzFrameSetVisible(st.panel, st.shown)
   end
 end

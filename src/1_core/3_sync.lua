@@ -258,10 +258,10 @@ local function selfTest()
     -- may chay mot kieu -- dung cai muon tranh ngay tu dau. Bao ra roi
     -- de nguoi sua CFG.SYNC_MODE, build lai.
     if #gone > 0 and S.sync.mode ~= "local" then
-      API.msg(nil, CFG.C_RED .. "Dong bo [" .. S.sync.mode ..
+      API.warn(nil, "Dong bo [" .. S.sync.mode ..
         "] khong nhan duoc tin cua player " .. table.concat(gone, ",") ..
-        " -- nut trong bang se khong an." .. CFG.C_END)
-      API.msg(nil, CFG.C_GOLD .. "Doi CFG.SYNC_MODE trong 1_config.lua sang " ..
+        " -- nut trong bang se khong an.")
+      API.info(nil, CFG.C_GOLD .. "Doi CFG.SYNC_MODE trong 1_config.lua sang " ..
         (S.sync.mode == "cache" and "\"blz\"" or "\"cache\"") ..
         " roi build lai. Go -sync de xem chi tiet." .. CFG.C_END)
     end
@@ -296,7 +296,7 @@ end
 
 local function onChat(pid)
   local lines = statusLines()
-  API.msg(pid, CFG.C_GOLD .. "=== Dong bo ===" .. CFG.C_END)
+  API.info(pid, CFG.C_GOLD .. "=== Dong bo ===" .. CFG.C_END)
   for i = 1, #lines do API.msg(pid, lines[i]) end
   send(pid, CFG.OP_PING, pid)
   API.msg(pid, CFG.C_GREY ..
@@ -321,8 +321,8 @@ local function startSync()
     " cache=" .. tostring(t.gc))
 
   if S.sync.mode == "local" then
-    API.msg(nil, CFG.C_RED .. "Khong co kenh dong bo nao -- bang chi dung duoc " ..
-      "khi choi MOT MINH. Go -sync de xem chi tiet." .. CFG.C_END)
+    API.warn(nil, "Khong co kenh dong bo nao -- bang chi dung duoc " ..
+      "khi choi MOT MINH. Go -sync de xem chi tiet.")
   end
 
   selfTest()

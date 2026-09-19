@@ -102,9 +102,9 @@ local function startQuest()
   call("QuestSetRequired", q, true)
   call("QuestSetDiscovered", q, true)
   call("QuestSetCompleted", q, false)
-  if CFG.QUEST_ICON ~= nil then
-    call("QuestSetIconPath", q, CFG.QUEST_ICON)
-  end
+  -- KHONG dat icon. QuestSetIconPath doi mot duong dan texture, ma moi
+  -- lan DOAN duong dan trong du an nay deu doan sai (xem BTNRingViolet).
+  -- Trang khong icon van doc duoc; icon sai thi ra o xanh la.
 
   -- Nhap nut F9 mot cai luc vao map: khong nhap thi khong ai bam F9,
   -- va mot trang chu khong ai mo thi bang khong viet.
