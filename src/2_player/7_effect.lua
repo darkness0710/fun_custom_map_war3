@@ -704,6 +704,26 @@ local function onDamaged()
   -- nhan doi.
   if sp ~= nil and tgt ~= nil and tp == nil then
     local sk, lv = skillByFx(sp, "bounce")
+
+    -- GHI VET MOT LAN cho moi nguoi, ngay don danh dau tien.
+    --
+    -- "Khong thay no nay" co HAI nguyen nhan rat khac nhau va nhin
+    -- giong het nhau tu ngoai: ky nang CHUA MO KHOA (bac 0), hay da mo
+    -- ma vong lap khong tim ra muc tieu nao trong tam. Mot dong vet
+    -- tach duoc hai cai do; doan thi khong.
+    local d = S.p[sp]
+    if d ~= nil and not d.bounceLogged then
+      d.bounceLogged = true
+      if sk == nil then
+        API.trace("bounce: pid " .. sp ..
+                  " KHONG co ky nang 'bounce' dang mo -- chua mua Nguyet Nhan?")
+      else
+        API.trace("bounce: pid " .. sp .. " co Nguyet Nhan bac " .. lv ..
+                  ", " .. string.format("%.0f%%", API.skillPct(sk, lv) * 100) ..
+                  " moi cu nay, tam " .. (CFG.FX_BOUNCE_HOP or 350.0))
+      end
+    end
+
     if sk ~= nil then
       local share = amount * API.skillPct(sk, lv)
       local hops  = CFG.FX_BOUNCE_MAX or 3
@@ -713,6 +733,7 @@ local function onDamaged()
       -- 'seen' phai chua CA muc tieu dau: khong thi cu nay dau tien
       -- quay nguoc lai chinh con vua an don thuong.
       local seen, cx, cy = { [GetHandleId(tgt)] = true }, GetUnitX(tgt), GetUnitY(tgt)
+      local landed = 0
       for _ = 1, hops do
         if share < 1.0 then break end
         local best, bestD = nil, nil
@@ -726,6 +747,16 @@ local function onDamaged()
         cx, cy = GetUnitX(best), GetUnitY(best)
         hit(src, best, share, CFG.FX_HIT_BOUNCE)
         share = share * fall
+        landed = landed + 1
+      end
+
+      -- Lan dau NAY TRUNG duoc it nhat mot con thi ghi mot dong. Khong
+      -- co dong nay thi "da mo khoa ma van khong thay" khong phan biet
+      -- duoc voi "danh mot con dung mot minh" -- ma truong hop sau la
+      -- binh thuong, khong phai loi.
+      if landed > 0 and d ~= nil and not d.bounceHit then
+        d.bounceHit = true
+        API.trace("bounce: pid " .. sp .. " nay trung " .. landed .. " con")
       end
     end
   end
