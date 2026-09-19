@@ -128,9 +128,10 @@ khỏi đây.
 2. **Qua sông bằng gì?** Cầu, cổng, hay phải phá. Chưa có gì.
 3. **Ba người chơi quan hệ thế nào?** Hiện là đồng minh. Muốn tranh chấp block
    thì phải đổi.
-4. **Tu chính** ([dot-quai.md](02-he-thong/dot-quai.md)) chưa cài, nên 4 tầng
-   của một cảnh giới hiện giống hệt nhau — chỉ số chỉ nhích ×1.054 suốt 4 tầng.
-   Tầng đáng ra phải đổi *cách chơi*; hiện nó chỉ đổi *cái tên*.
+4. **Mẫu lính** — `MOB_UNIT` còn là placeholder, mỗi cõi **một** mẫu thay vì
+   sáu. Suốt 25 stage của một cõi, quái không đổi hình một lần nào. Đây là
+   khoảng trống *nhìn thấy được* lớn nhất còn lại.
+   *(Tu chính đã cài 2026-09-19 — 5 loại, kèm thời tiết và dòng tra cứu ở `R`.)*
 
 ## Bước kế tiếp
 

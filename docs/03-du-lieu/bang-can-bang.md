@@ -279,12 +279,14 @@ Chi tiết: [02-he-thong/quay-thuong.md](../02-he-thong/quay-thuong.md) ·
 Giá định theo **tổng vàng cả ván ~12 400** *(quái 4 000 + Cơ Duyên ~8 400)*,
 không theo bậc. Đá Huyền Thiết `25` là đối thủ đầu tiên của Vàng ngoài lọ thuốc.
 
-## Trang Bị — Kiếm *(chưa cài)*
+## Trang Bị — Kiếm *(đã cài)*
 
 Luật: [02-he-thong/trang-bi-kiem.md](../02-he-thong/trang-bi-kiem.md) ·
 [ADR 0021](../05-quyet-dinh/0021-trang-bi-la-mot-mon-tien-hoa.md).
-**Chưa có khoá nào** — chặn bởi phần chỉ số chưa chốt.
-| `RELIC` | **Đang rỗng** `{}` | Năm món cũ đã xoá (2026-09-16). Hệ này sẽ tiêu **Gỗ**, ngân sách dành sẵn **190 điểm** |
+**Đã cài.** Kiếm là một trong tám món của `CFG.GEAR` (`role = "dmgpct"`), và `API.gearDmgPct` nhân vào đòn đánh trong `onDamaged()` cùng `skillDamage()`.
+
+> Mục này từng ghi *"chưa có khoá nào -- chặn bởi phần chỉ số chưa chốt"*. Chỉ số đã chốt từ lâu; dòng đó nằm lại quá hạn.
+| `RELIC` | **Bốn món**, mở khoá bằng Thánh Thú | Năm món cũ đã xoá (2026-09-16), bản hiện tại dựng lại 2026-09-19 — xem [phap-khi.md](../02-he-thong/phap-khi.md) |
 
 Mỗi món phải **đọc-lúc-dùng**, không món nào được đăng ký trigger riêng — một
 món cần bộ bắt sự kiện riêng là một món có thể hỏng âm thầm, mà cả ván chỉ mua

@@ -426,14 +426,20 @@ lọt bao nhiêu cũng không sao).
 
 ## Chưa làm
 
-- **Chưa chơi thử một giây nào.** Ba chỗ dễ sai nhất: DPS thật của hero ở
-  stage 1, thời gian quái đi bộ tới nhà, và `MOB_EHP_BASE`.
-- **Tu chính chưa cài.** Bảng ở trên còn là phác thảo: chưa có số, chưa có khoá
-  `MODIFIERS` nào trong `CFG`. Hiện 4 tầng của một cảnh giới **chỉ khác nhau ở
-  chỉ số** — mà chỉ số chỉ nhích ×1.054 suốt 4 tầng, nên trên thực tế chúng
-  giống hệt nhau. Theo chính L6 thì đây là khoảng trống lớn nhất còn lại của hệ
-  này: tầng đáng ra phải đổi *cách chơi*, hiện chỉ đổi *cái tên*.
-- **6 mẫu lính chưa có** — `MOB_UNIT` mới là 4 unit gốc WC3 làm placeholder.
-- **Boss chưa có gì riêng**: cùng mẫu lính, chỉ to hơn và đỏ hơn — xem
-  [boss.md](boss.md).
+- **Chưa đo đủ trận thật.** Ba chỗ dễ sai nhất: DPS thật của hero ở stage 1,
+  thời gian quái đi bộ tới nhà, và `MOB_EHP_BASE`.
+- **6 mẫu lính chưa có** — `MOB_UNIT` mới là **4 unit gốc WC3 làm
+  placeholder**, mỗi cõi một mẫu. Bản thiết kế cần `4 cõi × 6 mẫu = 24`. Đây là
+  khoảng trống **nhìn thấy được** lớn nhất còn lại: suốt 25 stage của một cõi,
+  quái không đổi hình một lần nào.
 - Đường đi phương án B, khi địa hình xong.
+
+> **Hai mục đã xong, gỡ khỏi danh sách này 2026-09-19.**
+>
+> **Tu chính đã cài** — `CFG.MODIFIERS` có 5 mục chạy thật, kèm thời tiết và
+> dòng tra cứu ở khung `R`. Mục cũ ghi *"chưa có số, chưa có khoá `MODIFIERS`
+> nào"* và đó là lý do nó phải bị xoá: một dòng "chưa làm" còn nằm lại sau khi
+> đã làm xong thì lần sau không ai tin danh sách này nữa.
+>
+> **Boss đã có riêng** — 20 unit hero, tám cơ chế, và từ 2026-09-19 mỗi con một
+> hào quang. Mục cũ ghi *"cùng mẫu lính, chỉ to hơn và đỏ hơn"*.
