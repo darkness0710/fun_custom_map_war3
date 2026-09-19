@@ -80,13 +80,13 @@ Shooter
 }
 
 STRING 1000
-// Abilities: A005 (Chem Lan), Name (Name)
+// [w3skill.py]
 {
 Chem Lan
 }
 
 STRING 1001
-// Abilities: A005 (Chem Lan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh van 20% sat thuong sang muc tieu ben canh.
 
@@ -94,13 +94,13 @@ Bac 1/10
 }
 
 STRING 1002
-// Abilities: A005 (Chem Lan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chem Lan
 }
 
 STRING 1003
-// Abilities: A005 (Chem Lan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh van 22% sat thuong sang muc tieu ben canh.
 
@@ -108,13 +108,13 @@ Bac 2/10
 }
 
 STRING 1004
-// Abilities: A005 (Chem Lan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chem Lan
 }
 
 STRING 1005
-// Abilities: A005 (Chem Lan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh van 23% sat thuong sang muc tieu ben canh.
 
@@ -122,13 +122,13 @@ Bac 3/10
 }
 
 STRING 1006
-// Abilities: A005 (Chem Lan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chem Lan
 }
 
 STRING 1007
-// Abilities: A005 (Chem Lan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh van 25% sat thuong sang muc tieu ben canh.
 
@@ -136,13 +136,13 @@ Bac 4/10
 }
 
 STRING 1008
-// Abilities: A005 (Chem Lan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chem Lan
 }
 
 STRING 1009
-// Abilities: A005 (Chem Lan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh van 27% sat thuong sang muc tieu ben canh.
 
@@ -150,13 +150,13 @@ Bac 5/10
 }
 
 STRING 1010
-// Abilities: A005 (Chem Lan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chem Lan
 }
 
 STRING 1011
-// Abilities: A005 (Chem Lan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh van 29% sat thuong sang muc tieu ben canh.
 
@@ -164,13 +164,13 @@ Bac 6/10
 }
 
 STRING 1012
-// Abilities: A005 (Chem Lan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chem Lan
 }
 
 STRING 1013
-// Abilities: A005 (Chem Lan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh van 32% sat thuong sang muc tieu ben canh.
 
@@ -178,13 +178,13 @@ Bac 7/10
 }
 
 STRING 1014
-// Abilities: A005 (Chem Lan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chem Lan
 }
 
 STRING 1015
-// Abilities: A005 (Chem Lan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh van 34% sat thuong sang muc tieu ben canh.
 
@@ -192,13 +192,13 @@ Bac 8/10
 }
 
 STRING 1016
-// Abilities: A005 (Chem Lan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chem Lan
 }
 
 STRING 1017
-// Abilities: A005 (Chem Lan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh van 37% sat thuong sang muc tieu ben canh.
 
@@ -206,13 +206,13 @@ Bac 9/10
 }
 
 STRING 1018
-// Abilities: A005 (Chem Lan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chem Lan
 }
 
 STRING 1019
-// Abilities: A005 (Chem Lan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh van 40% sat thuong sang muc tieu ben canh.
 
@@ -220,19 +220,19 @@ Bac 10/10
 }
 
 STRING 1020
-// Abilities: A005 (Chem Lan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chem Lan
 }
 
 STRING 1021
-// Abilities: A001 (Chuong), Name (Name)
+// [w3skill.py]
 {
 Chuong
 }
 
 STRING 1022
-// Abilities: A001 (Chuong), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Gay x1.32 sat thuong len mot duong thang.
 
@@ -242,13 +242,13 @@ hoi 8.0s   mana 50
 }
 
 STRING 1023
-// Abilities: A001 (Chuong), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chuong [|cffffcc00Q|r]
 }
 
 STRING 1024
-// Abilities: A001 (Chuong), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Gay x1.36 sat thuong len mot duong thang.
 
@@ -258,13 +258,13 @@ hoi 7.6s   mana 53
 }
 
 STRING 1025
-// Abilities: A001 (Chuong), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chuong [|cffffcc00Q|r]
 }
 
 STRING 1026
-// Abilities: A001 (Chuong), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Gay x1.41 sat thuong len mot duong thang.
 
@@ -274,13 +274,13 @@ hoi 7.3s   mana 55
 }
 
 STRING 1027
-// Abilities: A001 (Chuong), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chuong [|cffffcc00Q|r]
 }
 
 STRING 1028
-// Abilities: A001 (Chuong), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Gay x1.45 sat thuong len mot duong thang.
 
@@ -290,13 +290,13 @@ hoi 7.0s   mana 58
 }
 
 STRING 1029
-// Abilities: A001 (Chuong), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chuong [|cffffcc00Q|r]
 }
 
 STRING 1030
-// Abilities: A001 (Chuong), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Gay x1.50 sat thuong len mot duong thang.
 
@@ -306,13 +306,13 @@ hoi 6.7s   mana 61
 }
 
 STRING 1031
-// Abilities: A001 (Chuong), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chuong [|cffffcc00Q|r]
 }
 
 STRING 1032
-// Abilities: A001 (Chuong), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Gay x1.55 sat thuong len mot duong thang.
 
@@ -322,13 +322,13 @@ hoi 6.4s   mana 64
 }
 
 STRING 1033
-// Abilities: A001 (Chuong), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chuong [|cffffcc00Q|r]
 }
 
 STRING 1034
-// Abilities: A001 (Chuong), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Gay x1.60 sat thuong len mot duong thang.
 
@@ -338,13 +338,13 @@ hoi 6.1s   mana 67
 }
 
 STRING 1035
-// Abilities: A001 (Chuong), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chuong [|cffffcc00Q|r]
 }
 
 STRING 1036
-// Abilities: A001 (Chuong), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Gay x1.65 sat thuong len mot duong thang.
 
@@ -354,13 +354,13 @@ hoi 5.8s   mana 70
 }
 
 STRING 1037
-// Abilities: A001 (Chuong), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chuong [|cffffcc00Q|r]
 }
 
 STRING 1038
-// Abilities: A001 (Chuong), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Gay x1.70 sat thuong len mot duong thang.
 
@@ -370,13 +370,13 @@ hoi 5.6s   mana 74
 }
 
 STRING 1039
-// Abilities: A001 (Chuong), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chuong [|cffffcc00Q|r]
 }
 
 STRING 1040
-// Abilities: A001 (Chuong), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Gay x1.76 sat thuong len mot duong thang.
 
@@ -386,19 +386,19 @@ hoi 5.3s   mana 78
 }
 
 STRING 1041
-// Abilities: A001 (Chuong), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Chuong [|cffffcc00Q|r]
 }
 
 STRING 1042
-// Abilities: A002 (Ho The), Name (Name)
+// [w3skill.py]
 {
 Ho The
 }
 
 STRING 1043
-// Abilities: A002 (Ho The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.20 mau cho ban than hoac dong doi.
 
@@ -408,13 +408,13 @@ hoi 10.0s   mana 30
 }
 
 STRING 1044
-// Abilities: A002 (Ho The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ho The [|cffffcc00W|r]
 }
 
 STRING 1045
-// Abilities: A002 (Ho The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.27 mau cho ban than hoac dong doi.
 
@@ -424,13 +424,13 @@ hoi 9.6s   mana 32
 }
 
 STRING 1046
-// Abilities: A002 (Ho The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ho The [|cffffcc00W|r]
 }
 
 STRING 1047
-// Abilities: A002 (Ho The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.34 mau cho ban than hoac dong doi.
 
@@ -440,13 +440,13 @@ hoi 9.1s   mana 33
 }
 
 STRING 1048
-// Abilities: A002 (Ho The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ho The [|cffffcc00W|r]
 }
 
 STRING 1049
-// Abilities: A002 (Ho The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.42 mau cho ban than hoac dong doi.
 
@@ -456,13 +456,13 @@ hoi 8.7s   mana 35
 }
 
 STRING 1050
-// Abilities: A002 (Ho The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ho The [|cffffcc00W|r]
 }
 
 STRING 1051
-// Abilities: A002 (Ho The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.50 mau cho ban than hoac dong doi.
 
@@ -472,13 +472,13 @@ hoi 8.4s   mana 36
 }
 
 STRING 1052
-// Abilities: A002 (Ho The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ho The [|cffffcc00W|r]
 }
 
 STRING 1053
-// Abilities: A002 (Ho The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.58 mau cho ban than hoac dong doi.
 
@@ -488,13 +488,13 @@ hoi 8.0s   mana 38
 }
 
 STRING 1054
-// Abilities: A002 (Ho The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ho The [|cffffcc00W|r]
 }
 
 STRING 1055
-// Abilities: A002 (Ho The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.66 mau cho ban than hoac dong doi.
 
@@ -504,13 +504,13 @@ hoi 7.6s   mana 40
 }
 
 STRING 1056
-// Abilities: A002 (Ho The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ho The [|cffffcc00W|r]
 }
 
 STRING 1057
-// Abilities: A002 (Ho The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.75 mau cho ban than hoac dong doi.
 
@@ -520,13 +520,13 @@ hoi 7.3s   mana 42
 }
 
 STRING 1058
-// Abilities: A002 (Ho The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ho The [|cffffcc00W|r]
 }
 
 STRING 1059
-// Abilities: A002 (Ho The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.83 mau cho ban than hoac dong doi.
 
@@ -536,13 +536,13 @@ hoi 7.0s   mana 44
 }
 
 STRING 1060
-// Abilities: A002 (Ho The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ho The [|cffffcc00W|r]
 }
 
 STRING 1061
-// Abilities: A002 (Ho The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.93 mau cho ban than hoac dong doi.
 
@@ -552,19 +552,19 @@ hoi 6.7s   mana 47
 }
 
 STRING 1062
-// Abilities: A002 (Ho The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Ho The [|cffffcc00W|r]
 }
 
 STRING 1063
-// Abilities: A003 (Hieu Lenh), Name (Name)
+// [w3skill.py]
 {
 Hieu Lenh
 }
 
 STRING 1064
-// Abilities: A003 (Hieu Lenh), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% toc danh va toc chay.
 
@@ -572,13 +572,13 @@ Bac 1/10
 }
 
 STRING 1065
-// Abilities: A003 (Hieu Lenh), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hieu Lenh
 }
 
 STRING 1066
-// Abilities: A003 (Hieu Lenh), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% toc danh va toc chay.
 
@@ -586,13 +586,13 @@ Bac 2/10
 }
 
 STRING 1067
-// Abilities: A003 (Hieu Lenh), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hieu Lenh
 }
 
 STRING 1068
-// Abilities: A003 (Hieu Lenh), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% toc danh va toc chay.
 
@@ -600,13 +600,13 @@ Bac 3/10
 }
 
 STRING 1069
-// Abilities: A003 (Hieu Lenh), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hieu Lenh
 }
 
 STRING 1070
-// Abilities: A003 (Hieu Lenh), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% toc danh va toc chay.
 
@@ -614,13 +614,13 @@ Bac 4/10
 }
 
 STRING 1071
-// Abilities: A003 (Hieu Lenh), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hieu Lenh
 }
 
 STRING 1072
-// Abilities: A003 (Hieu Lenh), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% toc danh va toc chay.
 
@@ -628,13 +628,13 @@ Bac 5/10
 }
 
 STRING 1073
-// Abilities: A003 (Hieu Lenh), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hieu Lenh
 }
 
 STRING 1074
-// Abilities: A003 (Hieu Lenh), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% toc danh va toc chay.
 
@@ -642,13 +642,13 @@ Bac 6/10
 }
 
 STRING 1075
-// Abilities: A003 (Hieu Lenh), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hieu Lenh
 }
 
 STRING 1076
-// Abilities: A003 (Hieu Lenh), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% toc danh va toc chay.
 
@@ -656,13 +656,13 @@ Bac 7/10
 }
 
 STRING 1077
-// Abilities: A003 (Hieu Lenh), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hieu Lenh
 }
 
 STRING 1078
-// Abilities: A003 (Hieu Lenh), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% toc danh va toc chay.
 
@@ -670,13 +670,13 @@ Bac 8/10
 }
 
 STRING 1079
-// Abilities: A003 (Hieu Lenh), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hieu Lenh
 }
 
 STRING 1080
-// Abilities: A003 (Hieu Lenh), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% toc danh va toc chay.
 
@@ -684,13 +684,13 @@ Bac 9/10
 }
 
 STRING 1081
-// Abilities: A003 (Hieu Lenh), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hieu Lenh
 }
 
 STRING 1082
-// Abilities: A003 (Hieu Lenh), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% toc danh va toc chay.
 
@@ -698,19 +698,19 @@ Bac 10/10
 }
 
 STRING 1083
-// Abilities: A003 (Hieu Lenh), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hieu Lenh
 }
 
 STRING 1084
-// Abilities: A004 (Luyen The), Name (Name)
+// [w3skill.py]
 {
 Luyen The
 }
 
 STRING 1085
-// Abilities: A004 (Luyen The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 +4 ca ba chi so, nhan them theo bac Tu Vi.
 
@@ -718,13 +718,13 @@ Bac 1/10
 }
 
 STRING 1086
-// Abilities: A004 (Luyen The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Luyen The
 }
 
 STRING 1087
-// Abilities: A004 (Luyen The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 +4 ca ba chi so, nhan them theo bac Tu Vi.
 
@@ -732,13 +732,13 @@ Bac 2/10
 }
 
 STRING 1088
-// Abilities: A004 (Luyen The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Luyen The
 }
 
 STRING 1089
-// Abilities: A004 (Luyen The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 +5 ca ba chi so, nhan them theo bac Tu Vi.
 
@@ -746,13 +746,13 @@ Bac 3/10
 }
 
 STRING 1090
-// Abilities: A004 (Luyen The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Luyen The
 }
 
 STRING 1091
-// Abilities: A004 (Luyen The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 +5 ca ba chi so, nhan them theo bac Tu Vi.
 
@@ -760,13 +760,13 @@ Bac 4/10
 }
 
 STRING 1092
-// Abilities: A004 (Luyen The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Luyen The
 }
 
 STRING 1093
-// Abilities: A004 (Luyen The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 +5 ca ba chi so, nhan them theo bac Tu Vi.
 
@@ -774,13 +774,13 @@ Bac 5/10
 }
 
 STRING 1094
-// Abilities: A004 (Luyen The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Luyen The
 }
 
 STRING 1095
-// Abilities: A004 (Luyen The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 +6 ca ba chi so, nhan them theo bac Tu Vi.
 
@@ -788,13 +788,13 @@ Bac 6/10
 }
 
 STRING 1096
-// Abilities: A004 (Luyen The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Luyen The
 }
 
 STRING 1097
-// Abilities: A004 (Luyen The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 +6 ca ba chi so, nhan them theo bac Tu Vi.
 
@@ -802,13 +802,13 @@ Bac 7/10
 }
 
 STRING 1098
-// Abilities: A004 (Luyen The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Luyen The
 }
 
 STRING 1099
-// Abilities: A004 (Luyen The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 +7 ca ba chi so, nhan them theo bac Tu Vi.
 
@@ -816,13 +816,13 @@ Bac 8/10
 }
 
 STRING 1100
-// Abilities: A004 (Luyen The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Luyen The
 }
 
 STRING 1101
-// Abilities: A004 (Luyen The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 +7 ca ba chi so, nhan them theo bac Tu Vi.
 
@@ -830,13 +830,13 @@ Bac 9/10
 }
 
 STRING 1102
-// Abilities: A004 (Luyen The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Luyen The
 }
 
 STRING 1103
-// Abilities: A004 (Luyen The), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 +8 ca ba chi so, nhan them theo bac Tu Vi.
 
@@ -844,19 +844,19 @@ Bac 10/10
 }
 
 STRING 1104
-// Abilities: A004 (Luyen The), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Luyen The
 }
 
 STRING 1105
-// Abilities: A006 (Da Sat), Name (Name)
+// [w3skill.py]
 {
 Da Sat
 }
 
 STRING 1106
-// Abilities: A006 (Da Sat), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Chet thi tu song lai. Hoi chieu 0%.
 
@@ -864,13 +864,13 @@ Bac 1/10
 }
 
 STRING 1107
-// Abilities: A006 (Da Sat), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Da Sat
 }
 
 STRING 1108
-// Abilities: A006 (Da Sat), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Chet thi tu song lai. Hoi chieu 0%.
 
@@ -878,13 +878,13 @@ Bac 2/10
 }
 
 STRING 1109
-// Abilities: A006 (Da Sat), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Da Sat
 }
 
 STRING 1110
-// Abilities: A006 (Da Sat), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Chet thi tu song lai. Hoi chieu 0%.
 
@@ -892,13 +892,13 @@ Bac 3/10
 }
 
 STRING 1111
-// Abilities: A006 (Da Sat), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Da Sat
 }
 
 STRING 1112
-// Abilities: A006 (Da Sat), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Chet thi tu song lai. Hoi chieu 0%.
 
@@ -906,13 +906,13 @@ Bac 4/10
 }
 
 STRING 1113
-// Abilities: A006 (Da Sat), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Da Sat
 }
 
 STRING 1114
-// Abilities: A006 (Da Sat), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Chet thi tu song lai. Hoi chieu 0%.
 
@@ -920,13 +920,13 @@ Bac 5/10
 }
 
 STRING 1115
-// Abilities: A006 (Da Sat), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Da Sat
 }
 
 STRING 1116
-// Abilities: A006 (Da Sat), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Chet thi tu song lai. Hoi chieu 0%.
 
@@ -934,13 +934,13 @@ Bac 6/10
 }
 
 STRING 1117
-// Abilities: A006 (Da Sat), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Da Sat
 }
 
 STRING 1118
-// Abilities: A006 (Da Sat), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Chet thi tu song lai. Hoi chieu 0%.
 
@@ -948,13 +948,13 @@ Bac 7/10
 }
 
 STRING 1119
-// Abilities: A006 (Da Sat), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Da Sat
 }
 
 STRING 1120
-// Abilities: A006 (Da Sat), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Chet thi tu song lai. Hoi chieu 0%.
 
@@ -962,13 +962,13 @@ Bac 8/10
 }
 
 STRING 1121
-// Abilities: A006 (Da Sat), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Da Sat
 }
 
 STRING 1122
-// Abilities: A006 (Da Sat), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Chet thi tu song lai. Hoi chieu 0%.
 
@@ -976,13 +976,13 @@ Bac 9/10
 }
 
 STRING 1123
-// Abilities: A006 (Da Sat), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Da Sat
 }
 
 STRING 1124
-// Abilities: A006 (Da Sat), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Chet thi tu song lai. Hoi chieu 0%.
 
@@ -990,19 +990,19 @@ Bac 10/10
 }
 
 STRING 1125
-// Abilities: A006 (Da Sat), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Da Sat
 }
 
 STRING 1126
-// Abilities: A007 (Bat Hoai), Name (Name)
+// [w3skill.py]
 {
 Bat Hoai
 }
 
 STRING 1127
-// Abilities: A007 (Bat Hoai), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tang manh giap trong thoi gian ngan.
 
@@ -1011,13 +1011,13 @@ hoi 60.0s   mana 60
 }
 
 STRING 1128
-// Abilities: A007 (Bat Hoai), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1129
-// Abilities: A007 (Bat Hoai), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tang manh giap trong thoi gian ngan.
 
@@ -1026,13 +1026,13 @@ hoi 57.4s   mana 63
 }
 
 STRING 1130
-// Abilities: A007 (Bat Hoai), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1131
-// Abilities: A007 (Bat Hoai), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tang manh giap trong thoi gian ngan.
 
@@ -1041,13 +1041,13 @@ hoi 54.8s   mana 66
 }
 
 STRING 1132
-// Abilities: A007 (Bat Hoai), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1133
-// Abilities: A007 (Bat Hoai), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tang manh giap trong thoi gian ngan.
 
@@ -1056,13 +1056,13 @@ hoi 52.4s   mana 69
 }
 
 STRING 1134
-// Abilities: A007 (Bat Hoai), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1135
-// Abilities: A007 (Bat Hoai), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tang manh giap trong thoi gian ngan.
 
@@ -1071,13 +1071,13 @@ hoi 50.1s   mana 73
 }
 
 STRING 1136
-// Abilities: A007 (Bat Hoai), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1137
-// Abilities: A007 (Bat Hoai), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tang manh giap trong thoi gian ngan.
 
@@ -1086,13 +1086,13 @@ hoi 47.9s   mana 77
 }
 
 STRING 1138
-// Abilities: A007 (Bat Hoai), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1139
-// Abilities: A007 (Bat Hoai), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tang manh giap trong thoi gian ngan.
 
@@ -1101,13 +1101,13 @@ hoi 45.8s   mana 80
 }
 
 STRING 1140
-// Abilities: A007 (Bat Hoai), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1141
-// Abilities: A007 (Bat Hoai), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tang manh giap trong thoi gian ngan.
 
@@ -1116,13 +1116,13 @@ hoi 43.8s   mana 84
 }
 
 STRING 1142
-// Abilities: A007 (Bat Hoai), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1143
-// Abilities: A007 (Bat Hoai), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tang manh giap trong thoi gian ngan.
 
@@ -1131,13 +1131,13 @@ hoi 41.9s   mana 89
 }
 
 STRING 1144
-// Abilities: A007 (Bat Hoai), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1145
-// Abilities: A007 (Bat Hoai), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tang manh giap trong thoi gian ngan.
 
@@ -1146,19 +1146,19 @@ hoi 40.0s   mana 93
 }
 
 STRING 1146
-// Abilities: A007 (Bat Hoai), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Bat Hoai [|cffffcc00E|r]
 }
 
 STRING 1147
-// Abilities: A011 (Thieu Thien), Name (Name)
+// [w3skill.py]
 {
 Thieu Thien
 }
 
 STRING 1148
-// Abilities: A011 (Thieu Thien), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Mui ten thieu dot: them 30% sat thuong cua don danh, rai deu trong 3 giay.
 
@@ -1166,13 +1166,13 @@ Bac 1/10
 }
 
 STRING 1149
-// Units: B002 (Thieu Thien [|cffffcc00E|r]), Name (Name)
+// [w3skill.py]
 {
 Thieu Thien [|cffffcc00E|r]
 }
 
 STRING 1150
-// Abilities: A011 (Thieu Thien), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Mui ten thieu dot: them 32% sat thuong cua don danh, rai deu trong 3 giay.
 
@@ -1180,13 +1180,13 @@ Bac 2/10
 }
 
 STRING 1151
-// Units: B003 (Thieu Thien [|cffffcc00E|r]), Name (Name)
+// [w3skill.py]
 {
 Thieu Thien [|cffffcc00E|r]
 }
 
 STRING 1152
-// Abilities: A011 (Thieu Thien), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Mui ten thieu dot: them 35% sat thuong cua don danh, rai deu trong 3 giay.
 
@@ -1194,13 +1194,13 @@ Bac 3/10
 }
 
 STRING 1153
-// Abilities: A011 (Thieu Thien), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Thieu Thien [|cffffcc00E|r]
 }
 
 STRING 1154
-// Abilities: A011 (Thieu Thien), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Mui ten thieu dot: them 38% sat thuong cua don danh, rai deu trong 3 giay.
 
@@ -1208,13 +1208,13 @@ Bac 4/10
 }
 
 STRING 1155
-// Abilities: A011 (Thieu Thien), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Thieu Thien [|cffffcc00E|r]
 }
 
 STRING 1156
-// Abilities: A011 (Thieu Thien), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Mui ten thieu dot: them 41% sat thuong cua don danh, rai deu trong 3 giay.
 
@@ -1222,13 +1222,13 @@ Bac 5/10
 }
 
 STRING 1157
-// Abilities: A011 (Thieu Thien), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Thieu Thien [|cffffcc00E|r]
 }
 
 STRING 1158
-// Abilities: A011 (Thieu Thien), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Mui ten thieu dot: them 44% sat thuong cua don danh, rai deu trong 3 giay.
 
@@ -1236,13 +1236,13 @@ Bac 6/10
 }
 
 STRING 1159
-// Abilities: A011 (Thieu Thien), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Thieu Thien [|cffffcc00E|r]
 }
 
 STRING 1160
-// Abilities: A011 (Thieu Thien), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Mui ten thieu dot: them 48% sat thuong cua don danh, rai deu trong 3 giay.
 
@@ -1250,13 +1250,13 @@ Bac 7/10
 }
 
 STRING 1161
-// Abilities: A011 (Thieu Thien), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Thieu Thien [|cffffcc00E|r]
 }
 
 STRING 1162
-// Abilities: A011 (Thieu Thien), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Mui ten thieu dot: them 51% sat thuong cua don danh, rai deu trong 3 giay.
 
@@ -1264,13 +1264,13 @@ Bac 8/10
 }
 
 STRING 1163
-// Abilities: A011 (Thieu Thien), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Thieu Thien [|cffffcc00E|r]
 }
 
 STRING 1164
-// Abilities: A011 (Thieu Thien), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Mui ten thieu dot: them 56% sat thuong cua don danh, rai deu trong 3 giay.
 
@@ -1278,13 +1278,13 @@ Bac 9/10
 }
 
 STRING 1165
-// Abilities: A011 (Thieu Thien), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Thieu Thien [|cffffcc00E|r]
 }
 
 STRING 1166
-// Abilities: A011 (Thieu Thien), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Mui ten thieu dot: them 60% sat thuong cua don danh, rai deu trong 3 giay.
 
@@ -1292,19 +1292,19 @@ Bac 10/10
 }
 
 STRING 1167
-// Abilities: A011 (Thieu Thien), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Thieu Thien [|cffffcc00E|r]
 }
 
 STRING 1168
-// Abilities: A008 (Loi Van), Name (Name)
+// [w3skill.py]
 {
 Loi Van
 }
 
 STRING 1169
-// Abilities: A008 (Loi Van), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.10 sat thuong.
 
@@ -1314,13 +1314,13 @@ hoi 9.0s   mana 45
 }
 
 STRING 1170
-// Abilities: A008 (Loi Van), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Loi Van [|cffffcc00Q|r]
 }
 
 STRING 1171
-// Abilities: A008 (Loi Van), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.14 sat thuong.
 
@@ -1330,13 +1330,13 @@ hoi 8.6s   mana 47
 }
 
 STRING 1172
-// Abilities: A008 (Loi Van), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Loi Van [|cffffcc00Q|r]
 }
 
 STRING 1173
-// Abilities: A008 (Loi Van), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.17 sat thuong.
 
@@ -1346,13 +1346,13 @@ hoi 8.2s   mana 50
 }
 
 STRING 1174
-// Abilities: A008 (Loi Van), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Loi Van [|cffffcc00Q|r]
 }
 
 STRING 1175
-// Abilities: A008 (Loi Van), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.21 sat thuong.
 
@@ -1362,13 +1362,13 @@ hoi 7.9s   mana 52
 }
 
 STRING 1176
-// Abilities: A008 (Loi Van), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Loi Van [|cffffcc00Q|r]
 }
 
 STRING 1177
-// Abilities: A008 (Loi Van), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.25 sat thuong.
 
@@ -1378,13 +1378,13 @@ hoi 7.5s   mana 55
 }
 
 STRING 1178
-// Abilities: A008 (Loi Van), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Loi Van [|cffffcc00Q|r]
 }
 
 STRING 1179
-// Abilities: A008 (Loi Van), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.29 sat thuong.
 
@@ -1394,13 +1394,13 @@ hoi 7.2s   mana 57
 }
 
 STRING 1180
-// Abilities: A008 (Loi Van), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Loi Van [|cffffcc00Q|r]
 }
 
 STRING 1181
-// Abilities: A008 (Loi Van), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.33 sat thuong.
 
@@ -1410,13 +1410,13 @@ hoi 6.9s   mana 60
 }
 
 STRING 1182
-// Abilities: A008 (Loi Van), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Loi Van [|cffffcc00Q|r]
 }
 
 STRING 1183
-// Abilities: A008 (Loi Van), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.37 sat thuong.
 
@@ -1426,13 +1426,13 @@ hoi 6.6s   mana 63
 }
 
 STRING 1184
-// Abilities: A008 (Loi Van), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Loi Van [|cffffcc00Q|r]
 }
 
 STRING 1185
-// Abilities: A008 (Loi Van), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.42 sat thuong.
 
@@ -1442,13 +1442,13 @@ hoi 6.3s   mana 66
 }
 
 STRING 1186
-// Abilities: A008 (Loi Van), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Loi Van [|cffffcc00Q|r]
 }
 
 STRING 1187
-// Abilities: A008 (Loi Van), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Tia set nay qua cac muc tieu gan, moi lan nhay yeu di. x1.46 sat thuong.
 
@@ -1458,19 +1458,19 @@ hoi 6.0s   mana 70
 }
 
 STRING 1188
-// Abilities: A008 (Loi Van), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Loi Van [|cffffcc00Q|r]
 }
 
 STRING 1189
-// Abilities: A010 (Hoi Xuan), Name (Name)
+// [w3skill.py]
 {
 Hoi Xuan
 }
 
 STRING 1190
-// Abilities: A010 (Hoi Xuan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.00 mau, rai deu trong thoi gian hieu luc.
 
@@ -1480,13 +1480,13 @@ hoi 12.0s   mana 40
 }
 
 STRING 1191
-// Abilities: A010 (Hoi Xuan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hoi Xuan [|cffffcc00W|r]
 }
 
 STRING 1192
-// Abilities: A010 (Hoi Xuan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.06 mau, rai deu trong thoi gian hieu luc.
 
@@ -1496,13 +1496,13 @@ hoi 11.5s   mana 42
 }
 
 STRING 1193
-// Abilities: A010 (Hoi Xuan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hoi Xuan [|cffffcc00W|r]
 }
 
 STRING 1194
-// Abilities: A010 (Hoi Xuan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.13 mau, rai deu trong thoi gian hieu luc.
 
@@ -1512,13 +1512,13 @@ hoi 11.0s   mana 44
 }
 
 STRING 1195
-// Abilities: A010 (Hoi Xuan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hoi Xuan [|cffffcc00W|r]
 }
 
 STRING 1196
-// Abilities: A010 (Hoi Xuan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.20 mau, rai deu trong thoi gian hieu luc.
 
@@ -1528,13 +1528,13 @@ hoi 10.5s   mana 46
 }
 
 STRING 1197
-// Abilities: A010 (Hoi Xuan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hoi Xuan [|cffffcc00W|r]
 }
 
 STRING 1198
-// Abilities: A010 (Hoi Xuan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.27 mau, rai deu trong thoi gian hieu luc.
 
@@ -1544,13 +1544,13 @@ hoi 10.0s   mana 49
 }
 
 STRING 1199
-// Abilities: A010 (Hoi Xuan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hoi Xuan [|cffffcc00W|r]
 }
 
 STRING 1200
-// Abilities: A010 (Hoi Xuan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.34 mau, rai deu trong thoi gian hieu luc.
 
@@ -1560,13 +1560,13 @@ hoi 9.6s   mana 51
 }
 
 STRING 1201
-// Abilities: A010 (Hoi Xuan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hoi Xuan [|cffffcc00W|r]
 }
 
 STRING 1202
-// Abilities: A010 (Hoi Xuan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.42 mau, rai deu trong thoi gian hieu luc.
 
@@ -1576,13 +1576,13 @@ hoi 9.2s   mana 54
 }
 
 STRING 1203
-// Abilities: A010 (Hoi Xuan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hoi Xuan [|cffffcc00W|r]
 }
 
 STRING 1204
-// Abilities: A010 (Hoi Xuan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.50 mau, rai deu trong thoi gian hieu luc.
 
@@ -1592,13 +1592,13 @@ hoi 8.8s   mana 56
 }
 
 STRING 1205
-// Abilities: A010 (Hoi Xuan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hoi Xuan [|cffffcc00W|r]
 }
 
 STRING 1206
-// Abilities: A010 (Hoi Xuan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.58 mau, rai deu trong thoi gian hieu luc.
 
@@ -1608,13 +1608,13 @@ hoi 8.4s   mana 59
 }
 
 STRING 1207
-// Abilities: A010 (Hoi Xuan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hoi Xuan [|cffffcc00W|r]
 }
 
 STRING 1208
-// Abilities: A010 (Hoi Xuan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Hoi x2.66 mau, rai deu trong thoi gian hieu luc.
 
@@ -1624,19 +1624,19 @@ hoi 8.0s   mana 62
 }
 
 STRING 1209
-// Abilities: A010 (Hoi Xuan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Hoi Xuan [|cffffcc00W|r]
 }
 
 STRING 1210
-// Abilities: A009 (Than Xa), Name (Name)
+// [w3skill.py]
 {
 Than Xa
 }
 
 STRING 1211
-// Abilities: A009 (Than Xa), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% sat thuong danh xa.
 
@@ -1644,13 +1644,13 @@ Bac 1/10
 }
 
 STRING 1212
-// Abilities: A009 (Than Xa), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Than Xa
 }
 
 STRING 1213
-// Abilities: A009 (Than Xa), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% sat thuong danh xa.
 
@@ -1658,13 +1658,13 @@ Bac 2/10
 }
 
 STRING 1214
-// Abilities: A009 (Than Xa), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Than Xa
 }
 
 STRING 1215
-// Abilities: A009 (Than Xa), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% sat thuong danh xa.
 
@@ -1672,13 +1672,13 @@ Bac 3/10
 }
 
 STRING 1216
-// Abilities: A009 (Than Xa), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Than Xa
 }
 
 STRING 1217
-// Abilities: A009 (Than Xa), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% sat thuong danh xa.
 
@@ -1686,13 +1686,13 @@ Bac 4/10
 }
 
 STRING 1218
-// Abilities: A009 (Than Xa), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Than Xa
 }
 
 STRING 1219
-// Abilities: A009 (Than Xa), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% sat thuong danh xa.
 
@@ -1700,13 +1700,13 @@ Bac 5/10
 }
 
 STRING 1220
-// Abilities: A009 (Than Xa), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Than Xa
 }
 
 STRING 1221
-// Abilities: A009 (Than Xa), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% sat thuong danh xa.
 
@@ -1714,13 +1714,13 @@ Bac 6/10
 }
 
 STRING 1222
-// Abilities: A009 (Than Xa), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Than Xa
 }
 
 STRING 1223
-// Abilities: A009 (Than Xa), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% sat thuong danh xa.
 
@@ -1728,13 +1728,13 @@ Bac 7/10
 }
 
 STRING 1224
-// Abilities: A009 (Than Xa), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Than Xa
 }
 
 STRING 1225
-// Abilities: A009 (Than Xa), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% sat thuong danh xa.
 
@@ -1742,13 +1742,13 @@ Bac 8/10
 }
 
 STRING 1226
-// Abilities: A009 (Than Xa), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Than Xa
 }
 
 STRING 1227
-// Abilities: A009 (Than Xa), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% sat thuong danh xa.
 
@@ -1756,13 +1756,13 @@ Bac 9/10
 }
 
 STRING 1228
-// Abilities: A009 (Than Xa), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Than Xa
 }
 
 STRING 1229
-// Abilities: A009 (Than Xa), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Ca doi duoc 0% sat thuong danh xa.
 
@@ -1770,19 +1770,19 @@ Bac 10/10
 }
 
 STRING 1230
-// Abilities: A009 (Than Xa), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Than Xa
 }
 
 STRING 1231
-// Abilities: A012 (Nguyet Nhan), Name (Name)
+// [w3skill.py]
 {
 Nguyet Nhan
 }
 
 STRING 1232
-// Abilities: A012 (Nguyet Nhan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
 
@@ -1790,13 +1790,13 @@ Bac 1/10
 }
 
 STRING 1233
-// Abilities: A012 (Nguyet Nhan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Nguyet Nhan
 }
 
 STRING 1234
-// Abilities: A012 (Nguyet Nhan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
 
@@ -1804,13 +1804,13 @@ Bac 2/10
 }
 
 STRING 1235
-// Abilities: A012 (Nguyet Nhan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Nguyet Nhan
 }
 
 STRING 1236
-// Abilities: A012 (Nguyet Nhan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
 
@@ -1818,13 +1818,13 @@ Bac 3/10
 }
 
 STRING 1237
-// Abilities: A012 (Nguyet Nhan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Nguyet Nhan
 }
 
 STRING 1238
-// Abilities: A012 (Nguyet Nhan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
 
@@ -1832,13 +1832,13 @@ Bac 4/10
 }
 
 STRING 1239
-// Abilities: A012 (Nguyet Nhan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Nguyet Nhan
 }
 
 STRING 1240
-// Abilities: A012 (Nguyet Nhan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
 
@@ -1846,13 +1846,13 @@ Bac 5/10
 }
 
 STRING 1241
-// Abilities: A012 (Nguyet Nhan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Nguyet Nhan
 }
 
 STRING 1242
-// Abilities: A012 (Nguyet Nhan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
 
@@ -1860,13 +1860,13 @@ Bac 6/10
 }
 
 STRING 1243
-// Abilities: A012 (Nguyet Nhan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Nguyet Nhan
 }
 
 STRING 1244
-// Abilities: A012 (Nguyet Nhan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
 
@@ -1874,13 +1874,13 @@ Bac 7/10
 }
 
 STRING 1245
-// Abilities: A012 (Nguyet Nhan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Nguyet Nhan
 }
 
 STRING 1246
-// Abilities: A012 (Nguyet Nhan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
 
@@ -1888,13 +1888,13 @@ Bac 8/10
 }
 
 STRING 1247
-// Abilities: A012 (Nguyet Nhan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Nguyet Nhan
 }
 
 STRING 1248
-// Abilities: A012 (Nguyet Nhan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
 
@@ -1902,13 +1902,13 @@ Bac 9/10
 }
 
 STRING 1249
-// Abilities: A012 (Nguyet Nhan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Nguyet Nhan
 }
 
 STRING 1250
-// Abilities: A012 (Nguyet Nhan), Ubertip (Tooltip - Normal - Extended)
+// [w3skill.py]
 {
 Don danh nay sang muc tieu ben canh, moi lan nhay yeu di.
 
@@ -1916,56 +1916,631 @@ Bac 10/10
 }
 
 STRING 1251
-// Abilities: A012 (Nguyet Nhan), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
 Nguyet Nhan
 }
 
 STRING 1252
-// Abilities: A001 (Chuong), Hotkey (Hotkey - Normal)
+// [w3skill.py]
 {
-Q
+Han Bang
 }
 
 STRING 1253
-// Abilities: A002 (Ho The), Hotkey (Hotkey - Normal)
+// [w3skill.py]
 {
-W
+No mot vong bang quanh muc tieu, x1.20 sat thuong len moi con trong vong.
+
+Bac 1/10
+An theo chi so cao nhat cua hero.
+hoi 8.0s   mana 55
 }
 
 STRING 1254
-// Abilities: A007 (Bat Hoai), Hotkey (Hotkey - Normal)
+// [w3skill.py]
 {
-E
+Han Bang [|cffffcc00Q|r]
 }
 
 STRING 1255
-// Abilities: A008 (Loi Van), Hotkey (Hotkey - Normal)
+// [w3skill.py]
 {
-Q
+No mot vong bang quanh muc tieu, x1.24 sat thuong len moi con trong vong.
+
+Bac 2/10
+An theo chi so cao nhat cua hero.
+hoi 7.6s   mana 58
 }
 
 STRING 1256
-// Abilities: A010 (Hoi Xuan), Hotkey (Hotkey - Normal)
+// [w3skill.py]
 {
-W
+Han Bang [|cffffcc00Q|r]
 }
 
 STRING 1257
-// Abilities: A011 (Thieu Thien), Hotkey (Hotkey - Normal)
+// [w3skill.py]
 {
-E
+No mot vong bang quanh muc tieu, x1.28 sat thuong len moi con trong vong.
+
+Bac 3/10
+An theo chi so cao nhat cua hero.
+hoi 7.3s   mana 61
 }
 
 STRING 1258
-// Abilities: A011 (Thieu Thien), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Thieu Thien [|cffffcc00E|r]
+Han Bang [|cffffcc00Q|r]
 }
 
 STRING 1259
-// Abilities: A011 (Thieu Thien), Tip (Tooltip - Normal)
+// [w3skill.py]
 {
-Thieu Thien [|cffffcc00E|r]
+No mot vong bang quanh muc tieu, x1.32 sat thuong len moi con trong vong.
+
+Bac 4/10
+An theo chi so cao nhat cua hero.
+hoi 7.0s   mana 64
 }
 
+STRING 1260
+// [w3skill.py]
+{
+Han Bang [|cffffcc00Q|r]
+}
+
+STRING 1261
+// [w3skill.py]
+{
+No mot vong bang quanh muc tieu, x1.36 sat thuong len moi con trong vong.
+
+Bac 5/10
+An theo chi so cao nhat cua hero.
+hoi 6.7s   mana 67
+}
+
+STRING 1262
+// [w3skill.py]
+{
+Han Bang [|cffffcc00Q|r]
+}
+
+STRING 1263
+// [w3skill.py]
+{
+No mot vong bang quanh muc tieu, x1.41 sat thuong len moi con trong vong.
+
+Bac 6/10
+An theo chi so cao nhat cua hero.
+hoi 6.4s   mana 70
+}
+
+STRING 1264
+// [w3skill.py]
+{
+Han Bang [|cffffcc00Q|r]
+}
+
+STRING 1265
+// [w3skill.py]
+{
+No mot vong bang quanh muc tieu, x1.45 sat thuong len moi con trong vong.
+
+Bac 7/10
+An theo chi so cao nhat cua hero.
+hoi 6.1s   mana 74
+}
+
+STRING 1266
+// [w3skill.py]
+{
+Han Bang [|cffffcc00Q|r]
+}
+
+STRING 1267
+// [w3skill.py]
+{
+No mot vong bang quanh muc tieu, x1.50 sat thuong len moi con trong vong.
+
+Bac 8/10
+An theo chi so cao nhat cua hero.
+hoi 5.8s   mana 77
+}
+
+STRING 1268
+// [w3skill.py]
+{
+Han Bang [|cffffcc00Q|r]
+}
+
+STRING 1269
+// [w3skill.py]
+{
+No mot vong bang quanh muc tieu, x1.55 sat thuong len moi con trong vong.
+
+Bac 9/10
+An theo chi so cao nhat cua hero.
+hoi 5.6s   mana 81
+}
+
+STRING 1270
+// [w3skill.py]
+{
+Han Bang [|cffffcc00Q|r]
+}
+
+STRING 1271
+// [w3skill.py]
+{
+No mot vong bang quanh muc tieu, x1.60 sat thuong len moi con trong vong.
+
+Bac 10/10
+An theo chi so cao nhat cua hero.
+hoi 5.3s   mana 85
+}
+
+STRING 1272
+// [w3skill.py]
+{
+Han Bang [|cffffcc00Q|r]
+}
+
+STRING 1273
+// [w3skill.py]
+{
+Cam Lo
+}
+
+STRING 1274
+// [w3skill.py]
+{
+Hoi x1.80 mau, nay qua dong doi va yeu dan. Uu tien nguoi thieu mau nhat.
+
+Bac 1/10
+An theo chi so cao nhat cua hero.
+hoi 10.0s   mana 45
+}
+
+STRING 1275
+// [w3skill.py]
+{
+Cam Lo [|cffffcc00W|r]
+}
+
+STRING 1276
+// [w3skill.py]
+{
+Hoi x1.86 mau, nay qua dong doi va yeu dan. Uu tien nguoi thieu mau nhat.
+
+Bac 2/10
+An theo chi so cao nhat cua hero.
+hoi 9.6s   mana 47
+}
+
+STRING 1277
+// [w3skill.py]
+{
+Cam Lo [|cffffcc00W|r]
+}
+
+STRING 1278
+// [w3skill.py]
+{
+Hoi x1.92 mau, nay qua dong doi va yeu dan. Uu tien nguoi thieu mau nhat.
+
+Bac 3/10
+An theo chi so cao nhat cua hero.
+hoi 9.1s   mana 50
+}
+
+STRING 1279
+// [w3skill.py]
+{
+Cam Lo [|cffffcc00W|r]
+}
+
+STRING 1280
+// [w3skill.py]
+{
+Hoi x1.98 mau, nay qua dong doi va yeu dan. Uu tien nguoi thieu mau nhat.
+
+Bac 4/10
+An theo chi so cao nhat cua hero.
+hoi 8.7s   mana 52
+}
+
+STRING 1281
+// [w3skill.py]
+{
+Cam Lo [|cffffcc00W|r]
+}
+
+STRING 1282
+// [w3skill.py]
+{
+Hoi x2.04 mau, nay qua dong doi va yeu dan. Uu tien nguoi thieu mau nhat.
+
+Bac 5/10
+An theo chi so cao nhat cua hero.
+hoi 8.4s   mana 55
+}
+
+STRING 1283
+// [w3skill.py]
+{
+Cam Lo [|cffffcc00W|r]
+}
+
+STRING 1284
+// [w3skill.py]
+{
+Hoi x2.11 mau, nay qua dong doi va yeu dan. Uu tien nguoi thieu mau nhat.
+
+Bac 6/10
+An theo chi so cao nhat cua hero.
+hoi 8.0s   mana 57
+}
+
+STRING 1285
+// [w3skill.py]
+{
+Cam Lo [|cffffcc00W|r]
+}
+
+STRING 1286
+// [w3skill.py]
+{
+Hoi x2.18 mau, nay qua dong doi va yeu dan. Uu tien nguoi thieu mau nhat.
+
+Bac 7/10
+An theo chi so cao nhat cua hero.
+hoi 7.6s   mana 60
+}
+
+STRING 1287
+// [w3skill.py]
+{
+Cam Lo [|cffffcc00W|r]
+}
+
+STRING 1288
+// [w3skill.py]
+{
+Hoi x2.25 mau, nay qua dong doi va yeu dan. Uu tien nguoi thieu mau nhat.
+
+Bac 8/10
+An theo chi so cao nhat cua hero.
+hoi 7.3s   mana 63
+}
+
+STRING 1289
+// [w3skill.py]
+{
+Cam Lo [|cffffcc00W|r]
+}
+
+STRING 1290
+// [w3skill.py]
+{
+Hoi x2.32 mau, nay qua dong doi va yeu dan. Uu tien nguoi thieu mau nhat.
+
+Bac 9/10
+An theo chi so cao nhat cua hero.
+hoi 7.0s   mana 66
+}
+
+STRING 1291
+// [w3skill.py]
+{
+Cam Lo [|cffffcc00W|r]
+}
+
+STRING 1292
+// [w3skill.py]
+{
+Hoi x2.39 mau, nay qua dong doi va yeu dan. Uu tien nguoi thieu mau nhat.
+
+Bac 10/10
+An theo chi so cao nhat cua hero.
+hoi 6.7s   mana 70
+}
+
+STRING 1293
+// [w3skill.py]
+{
+Cam Lo [|cffffcc00W|r]
+}
+
+STRING 1294
+// [w3skill.py]
+{
+Linh Khien
+}
+
+STRING 1295
+// [w3skill.py]
+{
+Bat len thi sat thuong tru vao mana thay vi mau.
+
+Bac 1/10
+}
+
+STRING 1296
+// [w3skill.py]
+{
+Linh Khien [|cffffcc00E|r]
+}
+
+STRING 1297
+// [w3skill.py]
+{
+Bat len thi sat thuong tru vao mana thay vi mau.
+
+Bac 2/10
+}
+
+STRING 1298
+// [w3skill.py]
+{
+Linh Khien [|cffffcc00E|r]
+}
+
+STRING 1299
+// [w3skill.py]
+{
+Bat len thi sat thuong tru vao mana thay vi mau.
+
+Bac 3/10
+}
+
+STRING 1300
+// [w3skill.py]
+{
+Linh Khien [|cffffcc00E|r]
+}
+
+STRING 1301
+// [w3skill.py]
+{
+Bat len thi sat thuong tru vao mana thay vi mau.
+
+Bac 4/10
+}
+
+STRING 1302
+// [w3skill.py]
+{
+Linh Khien [|cffffcc00E|r]
+}
+
+STRING 1303
+// [w3skill.py]
+{
+Bat len thi sat thuong tru vao mana thay vi mau.
+
+Bac 5/10
+}
+
+STRING 1304
+// [w3skill.py]
+{
+Linh Khien [|cffffcc00E|r]
+}
+
+STRING 1305
+// [w3skill.py]
+{
+Bat len thi sat thuong tru vao mana thay vi mau.
+
+Bac 6/10
+}
+
+STRING 1306
+// [w3skill.py]
+{
+Linh Khien [|cffffcc00E|r]
+}
+
+STRING 1307
+// [w3skill.py]
+{
+Bat len thi sat thuong tru vao mana thay vi mau.
+
+Bac 7/10
+}
+
+STRING 1308
+// [w3skill.py]
+{
+Linh Khien [|cffffcc00E|r]
+}
+
+STRING 1309
+// [w3skill.py]
+{
+Bat len thi sat thuong tru vao mana thay vi mau.
+
+Bac 8/10
+}
+
+STRING 1310
+// [w3skill.py]
+{
+Linh Khien [|cffffcc00E|r]
+}
+
+STRING 1311
+// [w3skill.py]
+{
+Bat len thi sat thuong tru vao mana thay vi mau.
+
+Bac 9/10
+}
+
+STRING 1312
+// [w3skill.py]
+{
+Linh Khien [|cffffcc00E|r]
+}
+
+STRING 1313
+// [w3skill.py]
+{
+Bat len thi sat thuong tru vao mana thay vi mau.
+
+Bac 10/10
+}
+
+STRING 1314
+// [w3skill.py]
+{
+Linh Khien [|cffffcc00E|r]
+}
+
+STRING 1315
+// [w3skill.py]
+{
+Linh Tuyen
+}
+
+STRING 1316
+// [w3skill.py]
+{
+Ca doi hoi mana nhanh hon 0%.
+
+Bac 1/10
+}
+
+STRING 1317
+// [w3skill.py]
+{
+Linh Tuyen
+}
+
+STRING 1318
+// [w3skill.py]
+{
+Ca doi hoi mana nhanh hon 0%.
+
+Bac 2/10
+}
+
+STRING 1319
+// [w3skill.py]
+{
+Linh Tuyen
+}
+
+STRING 1320
+// [w3skill.py]
+{
+Ca doi hoi mana nhanh hon 0%.
+
+Bac 3/10
+}
+
+STRING 1321
+// [w3skill.py]
+{
+Linh Tuyen
+}
+
+STRING 1322
+// [w3skill.py]
+{
+Ca doi hoi mana nhanh hon 0%.
+
+Bac 4/10
+}
+
+STRING 1323
+// [w3skill.py]
+{
+Linh Tuyen
+}
+
+STRING 1324
+// [w3skill.py]
+{
+Ca doi hoi mana nhanh hon 0%.
+
+Bac 5/10
+}
+
+STRING 1325
+// [w3skill.py]
+{
+Linh Tuyen
+}
+
+STRING 1326
+// [w3skill.py]
+{
+Ca doi hoi mana nhanh hon 0%.
+
+Bac 6/10
+}
+
+STRING 1327
+// [w3skill.py]
+{
+Linh Tuyen
+}
+
+STRING 1328
+// [w3skill.py]
+{
+Ca doi hoi mana nhanh hon 0%.
+
+Bac 7/10
+}
+
+STRING 1329
+// [w3skill.py]
+{
+Linh Tuyen
+}
+
+STRING 1330
+// [w3skill.py]
+{
+Ca doi hoi mana nhanh hon 0%.
+
+Bac 8/10
+}
+
+STRING 1331
+// [w3skill.py]
+{
+Linh Tuyen
+}
+
+STRING 1332
+// [w3skill.py]
+{
+Ca doi hoi mana nhanh hon 0%.
+
+Bac 9/10
+}
+
+STRING 1333
+// [w3skill.py]
+{
+Linh Tuyen
+}
+
+STRING 1334
+// [w3skill.py]
+{
+Ca doi hoi mana nhanh hon 0%.
+
+Bac 10/10
+}
+
+STRING 1335
+// [w3skill.py]
+{
+Linh Tuyen
+}

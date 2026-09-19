@@ -81,15 +81,16 @@ local function show(win, reason)
     if d ~= nil and d.hero ~= nil then
       local rank = (API.cultRank ~= nil) and API.cultRank(pid) or 1
       local realm = (API.realmName ~= nil) and API.realmName(rank) or rank
+      -- KHONG hien so canh: so bo canh mo duoc SUY RA tu canh gioi
+      -- (CFG.WINGS[i].rank), nen no la cot thua -- noi lai dung cai
+      -- ma cot dau da noi.
       API.info(nil, "  " .. GetPlayerName(Player(pid)) .. "  --  " ..
         realm ..
         "  |  " .. API.t("end_skill", skillTotal(pid)) ..
         "  |  " .. API.t("end_gear",  gearTotal(pid)) ..
         "  |  " .. API.t("end_relic", relicCount(pid)) ..
         "  |  " .. API.t("end_beast",
-                         (API.petOwned ~= nil) and API.petOwned(pid) or 0) ..
-        "  |  " .. API.t("end_wing",
-                         (API.wingOwned ~= nil) and API.wingOwned(pid) or 0))
+                         (API.petOwned ~= nil) and API.petOwned(pid) or 0))
     end
   end
 
