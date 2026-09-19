@@ -117,6 +117,14 @@ Vì thẻ vàng phẳng mà thẻ chỉ số thì leo, **nửa sau ván gần nh
 vàng nữa** — 60 vàng ở cảnh giới 18 là vô nghĩa. Thu nhập vàng thực tế do đó
 dồn về nửa đầu.
 
+## Thẻ IV — Pháp Khí
+
+**Chỗ tiêu của Gỗ** kể từ 2026-09-19. Cả ván kiếm ~292 Gỗ, kỹ năng ăn 70, còn
+**~222**; bốn Pháp Khí cộng lại **250** nên mua được ba, phải bỏ một.
+
+Trước đó Gỗ là đồng tiền chết ở nửa sau: sau khi max bảy kỹ năng thì 76% số Gỗ
+cả ván không mua được gì. Chi tiết: [phap-khi.md](phap-khi.md).
+
 ## Thẻ VI — Nâng cấp Nhà Chính
 
 Một đường (**Kiên Cố** — cộng Sức Mạnh cho nhà) × 10 cấp,

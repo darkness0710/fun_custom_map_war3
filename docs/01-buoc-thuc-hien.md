@@ -102,11 +102,15 @@ Những thứ mới cài, chưa ai nhìn thấy chạy:
 
 ---
 
-## ⏸ Bước 7 — Trang Bị & Pháp Khí (đã cài, **đang khoá**)
+## ✅ Bước 7 — Trang Bị & Pháp Khí
 
 [5_gear.lua](../src/2_player/5_gear.lua) ·
-[6_relic.lua](../src/2_player/6_relic.lua) — code chạy được, thẻ vẫn
-hiện, nhưng `GEAR_LOCKED` và `RELIC_LOCKED` đều `true`.
+[6_relic.lua](../src/2_player/6_relic.lua) — **cả hai đã mở.**
+`GEAR_LOCKED` đã xoá hẳn; `RELIC_LOCKED = false` từ 2026-09-19 khi
+`CFG.RELIC` có bốn món — [phap-khi.md](02-he-thong/phap-khi.md).
+
+Phần dưới giữ lại vì lý do khoá lúc đó vẫn đáng đọc: **mở khoá không
+đơn giản là đặt `false`**, phải có nội dung trước.
 
 **Vì sao khoá, và vì sao mở lại không đơn giản là đặt `false`:**
 

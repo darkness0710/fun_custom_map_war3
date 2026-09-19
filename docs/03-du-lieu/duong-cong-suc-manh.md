@@ -341,8 +341,8 @@ trên là **bản cũ**; bản đang chạy là:
 | Tu Vi | ×1.00 so với quái | Linh Khí | **Đã cài** — [3_cultivation.lua](../../src/2_player/3_cultivation.lua) |
 | Cơ Duyên | **+40%** chỉ số | *(rơi ra)* | **Đã cài** — [10_fortune.lua](../../src/2_player/10_fortune.lua) |
 | Kỹ Năng | bậc 1→10 | **Gỗ** | **Đã cài**, `SKILL_DATA_LIVE = true` từ 2026-09-16 |
-| Trang Bị | ×8.3 nếu mở | Linh Khí | ⏸ **khoá** — [5_gear.lua](../../src/2_player/5_gear.lua) |
-| Pháp Khí | chưa có nội dung | **Gỗ** | ⏸ **khoá** — [6_relic.lua](../../src/2_player/6_relic.lua) |
+| Trang Bị | ×8.3 | **Đá Huyền Thiết** | **Đã mở** — `GEAR_LOCKED` đã xoá — [5_gear.lua](../../src/2_player/5_gear.lua) |
+| Pháp Khí | 4 món, mua **3** | **Gỗ** | **Đã mở 2026-09-19** — [phap-khi.md](../02-he-thong/phap-khi.md) |
 
 > **Cột "Nhân" đã hết nghĩa từ 2026-09-17.** `MOB_EHP_FOLLOW_CULT` làm EHP
 > quái **định nghĩa bằng** hệ số Tu Vi, nên không còn tích nào phải đạt ×967 —

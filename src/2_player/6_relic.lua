@@ -39,6 +39,21 @@ local function anyHas(code)
   return false
 end
 
+-- So cua mot mon, hoac 0 neu nguoi do chua mua.
+--
+-- Cho nao can thi goi cai nay, khong ai dang ky trigger rieng -- xem
+-- luat "doc-luc-dung" o dau file. Tra 0 chu khong nil de ben goi khong
+-- phai chot nil moi cho.
+local function valOf(pid, code, field)
+  local d = S.p[pid]
+  if d == nil or d.relic == nil or not d.relic[code] then return 0.0 end
+  for i = 1, #CFG.RELIC do
+    local r = CFG.RELIC[i]
+    if r.code == code then return r[field] or 0.0 end
+  end
+  return 0.0
+end
+
 local function defOf(code)
   for i = 1, #CFG.RELIC do
     if CFG.RELIC[i].code == code then return CFG.RELIC[i] end
@@ -143,6 +158,7 @@ local function startRelic()
   API.trace("relic: " .. #CFG.RELIC .. " mon, the san sang")
 end
 
+API.relicVal      = valOf
 API.relicHas      = has
 API.relicAnyHas    = anyHas
 API.relicDef     = defOf

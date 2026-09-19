@@ -239,6 +239,16 @@ local function onDamaged()
                        spell and "mitig_magic" or "mitig_phys"))
     end
 
+    -- Phap Khi "Huyen Quy Giap": -20% sat thuong nhan, CA HAI loai.
+    --
+    -- Nhan vao 'keep' chu khong tru thang: no phai chong len Khien/Ao
+    -- Choang theo kieu NHAN, neu khong hai nguon giam cong lai se vuot
+    -- tran va bien hero thanh bat tu.
+    if API.relicVal ~= nil then
+      local rv = API.relicVal(tp, "huyenquy", "mitig")
+      if rv > 0.0 then keep = keep * (1.0 - rv) end
+    end
+
     -- Tran cung mot lan nua, de mot lan chinh so tay khong bien hero
     -- thanh bat tu ma khong ai nhan ra.
     local least = 1.0 - (CFG.GEAR_MITIG_CAP or 1.0)
@@ -266,6 +276,14 @@ local function onDamaged()
   if sp ~= nil and tp == nil and BlzSetEventDamage ~= nil
      and API.gearDmgPct ~= nil then
     local pct = API.gearDmgPct(sp)
+    -- Phap Khi "Hoa Vu Linh Chau": +25% sat thuong gay ra.
+    --
+    -- CONG vao cung mot 'pct' roi nhan MOT lan, khong nhan hai lan noi
+    -- tiep: hai lan nhan thi Kiem va Phap Khi tu khuech dai nhau, va
+    -- duong cong x967 khong con dung o cuoi van.
+    if API.relicVal ~= nil then
+      pct = pct + API.relicVal(sp, "hoavu", "dmgUp")
+    end
     if pct > 0.0 then
       amount = amount * (1.0 + pct)
       BlzSetEventDamage(amount)

@@ -2203,10 +2203,68 @@ CFG.GEAR_MITIG_CAP = 0.40
 -- mua duoc gi, va moi hieu ung tra ve false. Them mon moi la them dong
 -- vao bang nay VA viet cho doc 'ma' cua no -- khong co bang dieu phoi
 -- tu dong nao ca.
--- KHOA TAM THOI, cung ly do voi CFG.GEAR_LOCKED.
-CFG.RELIC_LOCKED = true
+-- MO KHOA 2026-09-19. Bang co noi dung roi.
+CFG.RELIC_LOCKED = false
 
-CFG.RELIC = {}
+-- Bon Phap Khi. MUA MOT LAN, KHONG CO CAP.
+--
+-- Y TUONG COT LOI: moi mon la CAU TRA LOI cho mot ap luc cu the, khong
+-- phai mot nac thang nua. Trang Bi da la cai thang -- ai cung leo cung
+-- mot thang, chi khac leo cao bao nhieu. Neu Phap Khi cung la "+8% sat
+-- thuong, +8% nua" thi no chi la Trang Bi thu hai doi ten.
+--
+-- KHONG DU TIEN MUA HET, va do la diem. Ca van kiem ~292 Go, ky nang
+-- tieu 70, con ~222. Tong gia bon mon la 250 -- mua duoc DUNG BA, phai
+-- bo mot. Do la cho duy nhat trong map nguoi choi phai CHON.
+--
+-- Hai mon "cong vao nha chinh" (nhahp/nharegen) DA BO khoi thiet ke:
+-- the VI da lam dung viec do roi, va hai he cung sua mot con so la hai
+-- noi cung khai mot thu -- som muon lech. Hai ma do van con trong
+-- rescaleHouse() va luon tra false; giu lai vo hai.
+--
+-- HIEU UNG TO CO CHU DICH (+25% chu khong +8%): mot mon mua-mot-lan-
+-- khong-co-cap phai cam thay duoc NHU MOT SU KIEN. Mua xong ma khong
+-- thay gi doi thi 70 Go do la tien vut di.
+--
+-- ICON dung CHAN DUNG BON THANH THU, khong go duong dan BTN* theo tri
+-- nho. Hai ly do: duong dan sai thi ra O XANH LA chu khong bao loi --
+-- im lang, dung kieu bay cua map nay; va bon anh do DA IMPORT that
+-- (w3import.py list thay avatar\B001..B004.blp), nen chac chan co.
+--
+-- Tien the no noi dung y do: mon nay mo khoa bang con thu nao.
+--
+-- Doc-luc-dung: khong mon nao dang ky trigger rieng. Cho nao can thi
+-- hoi API.relicHas. Them mon moi la them dong o day VA viet cho doc ma
+-- cua no -- khong co bang dieu phoi tu dong nao ca.
+CFG.RELIC = {
+  { code = "hoavu", price = 70,
+    vi = "Hoa Vu Linh Chau", en = "Vermilion Pearl",
+    icon = [[avatar\B001.blp]],   -- chan dung Chu Tuoc
+    dmgUp = 0.25,
+    desc    = "Sat thuong gay ra +25%.",
+    desc_en = "Deal 25% more damage." },
+
+  { code = "huyenquy", price = 70,
+    vi = "Huyen Quy Giap", en = "Black Tortoise Mail",
+    icon = [[avatar\B002.blp]],   -- chan dung Huyen Vu
+    mitig = 0.20,
+    desc    = "Sat thuong nhan -20%, ca don danh lan phep.",
+    desc_en = "Take 20% less damage, both physical and spell." },
+
+  { code = "luongnghi", price = 55,
+    vi = "Luong Nghi Chau", en = "Duality Orb",
+    icon = [[avatar\B004.blp]],   -- chan dung Thanh Long
+    modCut = 0.50,
+    desc    = "Tu chinh Chan Phep / Day Da chi con cat MOT NUA.",
+    desc_en = "Spell Ward / Thick Hide traits cut only HALF as much." },
+
+  { code = "batdong", price = 55,
+    vi = "Bat Dong Minh Vuong", en = "Immovable King",
+    icon = [[avatar\B003.blp]],   -- chan dung Bach Ho
+    halve = 0.50,
+    desc    = "No Tan va Xe Giap cua boss deu chi con mot nua.",
+    desc_en = "Volatile bursts and boss Sunder are both halved." },
+}
 
 
 -- (CFG.RELIC_LIVE da bo: khong file nao doc no.)

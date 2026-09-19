@@ -284,7 +284,21 @@ local function onDamaged()
   end
 
   if spell ~= (m.spell == true) then return end
-  BlzSetEventDamage(dmg * (1.0 - (m.cut or 0.0)))
+
+  -- Phap Khi "Luong Nghi Chau": tu chinh nay chi con cat mot nua.
+  --
+  -- Loc theo NGUOI GAY sat thuong, khong theo muc tieu: muc tieu la con
+  -- quai, ma mon do la cua hero. Ai khong mua thi van an du 50%, nen
+  -- hai nguoi trong mot doi co the danh khac nhau.
+  local cut = m.cut or 0.0
+  if API.relicVal ~= nil and API.heroPidOf ~= nil then
+    local sp = API.heroPidOf(GetEventDamageSource())
+    if sp ~= nil then
+      local half = API.relicVal(sp, "luongnghi", "modCut")
+      if half > 0.0 then cut = cut * (1.0 - half) end
+    end
+  end
+  BlzSetEventDamage(dmg * (1.0 - cut))
 end
 
 -- ---------- Chet thi no ----------
@@ -315,7 +329,13 @@ local function onDeath()
     local h = d and d.hero or nil
     if h ~= nil and API.alive(h)
        and API.distXY(x, y, GetUnitX(h), GetUnitY(h)) <= r then
-      UnitDamageTarget(u, h, dmg, true, false,
+      -- Phap Khi "Bat Dong Minh Vuong": vu no chi con mot nua.
+      local one = dmg
+      if API.relicVal ~= nil then
+        local half = API.relicVal(S.pids[i], "batdong", "halve")
+        if half > 0.0 then one = one * (1.0 - half) end
+      end
+      UnitDamageTarget(u, h, one, true, false,
                        ATTACK_TYPE_NORMAL, DAMAGE_TYPE_NORMAL, WEAPON_TYPE_WHOKNOWS)
     end
   end

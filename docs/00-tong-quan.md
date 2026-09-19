@@ -35,8 +35,8 @@ thiết kế, và là chỗ mọi con số quy về —
 | **Cơ Duyên** | [10_fortune.lua](../src/2_player/10_fortune.lua) · [5_fortuneframe.lua](../src/4_ui/5_fortuneframe.lua) | Khung riêng, mở ngay khi tinh anh/boss chết. **Hai thẻ** — vàng hoặc chỉ số |
 | **Dùng đồ bằng hàng số trên** | [9_useitem.lua](../src/2_player/9_useitem.lua) | Thêm vào numpad sẵn có, không thay |
 | **Trang Bị** | [5_gear.lua](../src/2_player/5_gear.lua) | **8 món × 100 bậc**, trần là Tu Vi. Mỗi món một vai, chỉ số đã chạy. Lưới ô kiểu hình nhân vật — [trang-bi-kiem.md](02-he-thong/trang-bi-kiem.md) |
-| **Pháp Khí** | [6_relic.lua](../src/2_player/6_relic.lua) | ⏸ **đang khoá** (`RELIC_LOCKED`) — thẻ vẫn hiện để người chơi biết hệ tồn tại |
-| Bảng nhân vật (phím **ESC**) | [1_panel.lua](../src/4_ui/1_panel.lua) | 5 thẻ, **ba** kiểu thân bảng: `list` · `focus` · `grid` |
+| **Pháp Khí** | [6_relic.lua](../src/2_player/6_relic.lua) | **4 món, mua một lần.** 250 Gỗ trên ngân sách ~222 → mua được 3, phải bỏ 1 — [phap-khi.md](02-he-thong/phap-khi.md) |
+| Bảng nhân vật (phím **ESC**) | [1_panel.lua](../src/4_ui/1_panel.lua) | **6 thẻ**, ba kiểu thân bảng: `list` · `focus` · `grid` |
 | **Bảng trận đấu (phím R)** | [6_gameframe.lua](../src/4_ui/6_gameframe.lua) | Tổng Quan + Nhiệm Vụ Phụ. **Nút gọi đợt** thay hẳn đồng hồ — [ADR 0026](05-quyet-dinh/0026-nhip-van-do-nguoi-choi-goi.md) |
 | Chữ bay | [4_fct.lua](../src/4_ui/4_fct.lua) | Cộng dồn sát thương trước khi vẽ |
 | Lưới 25 block, 4+4 dòng sông | [4_geometry.lua](../src/1_core/4_geometry.lua) | Có vùng thật `Blk01..Blk25` trong World Editor; địa hình chưa vẽ |
@@ -86,7 +86,7 @@ quái; mọi nguồn khác là phần **vượt lên thuần**:
 | Cơ Duyên | **+40%** chỉ số cả ván | *(rơi ra)* | Đã cài |
 | Kỹ Năng | bậc 1→10 | Gỗ | Đã cài và **đã có hiệu lực** |
 | Trang Bị | **+20% mỗi món** *(≈17% Tu Vi)* | Đá Huyền Thiết | Đã cài. Tiền chỉ đủ ~2.6 trong 8 món |
-| Pháp Khí | chưa có nội dung | Gỗ | ⏸ **khoá** — 190 Gỗ dành sẵn |
+| Pháp Khí | 4 món, mua một lần | Gỗ | **Đã mở** — 250 Gỗ, ngân sách ~222 nên phải chọn |
 
 Điều kiện duy nhất: người chơi phải lên **đúng một bậc mỗi cảnh giới**. Đó là
 giao kèo `CULT_COST_BASE = 500` phẳng + một cảnh giới kiếm đúng 500 Linh Khí.

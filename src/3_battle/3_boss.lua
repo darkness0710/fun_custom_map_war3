@@ -454,7 +454,15 @@ local function onDamage()
       local pid = API.heroPidOf(tgt)
       if pid ~= nil and S.p[pid] ~= nil then
         local d = S.p[pid]
-        d.bossShred = (d.bossShred or 0.0) + mechNum("shred", "perHit")
+        -- Phap Khi "Bat Dong Minh Vuong": moi don xe giap chi con mot
+        -- nua. Giam luc CONG DON chu khong luc doc ra -- giam luc doc
+        -- thi con so bao cho nguoi choi va con so that se lech.
+        local per = mechNum("shred", "perHit")
+        if API.relicVal ~= nil then
+          local half = API.relicVal(pid, "batdong", "halve")
+          if half > 0.0 then per = per * (1.0 - half) end
+        end
+        d.bossShred = (d.bossShred or 0.0) + per
         if BlzSetEventDamage ~= nil then
           BlzSetEventDamage(dmg * (1.0 + d.bossShred))
         end
