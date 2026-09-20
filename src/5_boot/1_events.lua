@@ -475,17 +475,78 @@ local function registerEvents()
   --            chi thu duoc cai bang, con -don thu ca day chuyen.
   -- "-quay N"  cong thang N luot quay.
   -- "-da N"    cong thang N da Huyen Thiet.
+-- ---------- Phep do chu tieng Viet co dau ----------
+--
+-- CAU HOI: ban 1.31.1 co ve duoc chu tieng Viet co dau khong?
+--
+-- Ca du an dang viet KHONG DAU vi tin rang khong ve duoc -- nhung chua
+-- ai do. Lenh "-font" tra loi bang mot phep thu duy nhat.
+--
+-- GHEP TU MA UNICODE, khong go chu co dau thang vao file. Hai ly do:
+--   1. ascii.py cam ky tu ngoai ASCII trong src/
+--   2. quan trong hon: cach nay CHUNG MINH byte gui di la byte nao,
+--      khong phu thuoc vao viec file duoc luu bang ma hoa gi
+local function u8(cp)
+  if cp < 0x80 then return string.char(cp) end
+  if cp < 0x800 then
+    return string.char(0xC0 + math.floor(cp / 0x40), 0x80 + cp % 0x40)
+  end
+  return string.char(0xE0 + math.floor(cp / 0x1000),
+                     0x80 + math.floor(cp / 0x40) % 0x40,
+                     0x80 + cp % 0x40)
+end
+
+-- Sau ma RIENG cua tieng Viet -- khong nam trong Latin-1, nen font nao
+-- chi phu Latin-1 (nhu VNARIAL) se truot het sau cai.
+local VN = {
+  { 0x1EA3, "a hoi" }, { 0x1EC7, "e nang" }, { 0x01B0, "u moc" },
+  { 0x0110, "D gach" }, { 0x1EF9, "y nga" }, { 0x1EDF, "o hoi" },
+}
+
+-- In ra CA HAI noi, va do la ca phep do:
+--
+--   man hinh dung + file vet dung  -> ve duoc, khong can nhap font
+--   man hinh SAI  + file vet dung  -> byte qua build.py nguyen ven,
+--                                     font THIEU GLYPH -> nhap font
+--   file vet SAI                   -> build.py lam hong byte,
+--                                     nhap font cung vo ich
+local function fontProbe(pid)
+  local line = ""
+  for i = 1, #VN do
+    line = line .. VN[i][2] .. "=[" .. u8(VN[i][1]) .. "]  "
+  end
+  API.info(pid, CFG.C_GOLD .. "[dev] chu co dau:" .. CFG.C_END)
+  API.info(pid, "   " .. line)
+  API.msg(pid, "   " .. line)
+  API.trace("font: " .. line)
+  for i = 1, #VN do
+    API.trace(string.format("font:   U+%04X %-8s byte %s",
+      VN[i][1], VN[i][2],
+      (function()
+        local b, out = u8(VN[i][1]), {}
+        for k = 1, #b do out[#out + 1] = string.format("%02X", b:byte(k)) end
+        return table.concat(out, " ")
+      end)()))
+  end
+end
+
   if CFG.DEV_COMMANDS then
     local tDev = CreateTrigger()
     for i = 1, #S.pids do
       TriggerRegisterPlayerChatEvent(tDev, Player(S.pids[i]), "-don", false)
       TriggerRegisterPlayerChatEvent(tDev, Player(S.pids[i]), "-quay", false)
       TriggerRegisterPlayerChatEvent(tDev, Player(S.pids[i]), "-da", false)
+      TriggerRegisterPlayerChatEvent(tDev, Player(S.pids[i]), "-font", false)
     end
     TriggerAddAction(tDev, function()
       local pid = GetPlayerId(GetTriggerPlayer())
       local raw = GetEventPlayerChatString() or ""
       local n   = tonumber(raw:match("(%d+)"))
+
+      if raw:match("^%s*%-font") ~= nil then
+        fontProbe(pid)
+        return
+      end
 
       if raw:match("^%s*%-don") ~= nil then
         -- Gom ra danh sach TRUOC khi giet: onMobDeath xoa khoi S.mobs
