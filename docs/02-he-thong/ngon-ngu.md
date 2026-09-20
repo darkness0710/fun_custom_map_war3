@@ -231,3 +231,105 @@ mỗi lần.**
 > ```
 > Hai bản map khác tiếng cần hai lần sinh — và vì `w3skill.py` ghi thẳng vào thư
 > mục map, **không build song song hai tiếng cùng lúc được**.
+
+## Chữ có dấu — đo xong 2026-09-20, và **chạy được**
+
+> Cả dự án viết **không dấu** vì tin rằng Warcraft không vẽ được. Chưa ai đo.
+> Giờ đã đo, và niềm tin đó **sai một nửa**.
+
+### Ba phép đo, mỗi cái loại một khả năng
+
+Lệnh dev **`-font`** ghép chữ từ **mã Unicode** bằng `string.char` — không gõ chữ
+có dấu vào file. Hai lý do: `ascii.py` cấm ký tự ngoài ASCII trong `src/`, và
+quan trọng hơn, cách đó **chứng minh byte gửi đi là byte nào**, không phụ thuộc
+file được lưu bằng mã hoá gì.
+
+**1. Byte có qua nổi đường ống không?**
+
+```
+file vết   a hoi=[ả]  e nang=[ệ]  u moc=[ư]  D gach=[Đ]     ĐÚNG HẾT
+byte thô   E1 BA A3 · E1 BB 87 · C6 B0 · C4 90              chuẩn UTF-8
+màn hình   sáu cặp ngoặc RỖNG
+```
+
+`build.py` → `war3map.lua` → Lua → file vết: **nguyên vẹn**. Nên lỗi nằm ở khâu
+vẽ, không ở khâu dựng.
+
+**2. Bộ vẽ hiểu UTF-8, hay đọc từng byte?**
+
+Hai khả năng này **nhìn từ ngoài giống hệt nhau** — cả hai đều ra ngoặc rỗng, và
+chúng dẫn tới hai kết luận ngược nhau. In `é` *(U+00E9, nằm trong Latin-1 nên
+font gốc gần như chắc chắn có)*:
+
+| Kết quả | |
+|---|---|
+| `e sac=[é]` `o mu=[ô]` `A huyen=[À]` — **đúng** | bộ vẽ **hiểu UTF-8** |
+| byte thô `E9` làm **mất luôn dấu `]`** phía sau | đúng hành vi bộ phân tích UTF-8 gặp byte hỏng |
+
+Nếu nó đọc theo codepage thì cả hai đã ngược lại. **Vấn đề thuần tuý là font
+thiếu glyph** — và thế là hướng này có cửa.
+
+**3. Font nào, và nạp bằng cách nào?**
+
+`fonts/VNARIAL.TTF` *(font VNI trong các bài hướng dẫn cũ)* — đọc bảng `cmap`:
+
+```
+U+00E0 à (Latin-1)   CÓ
+U+1EA3 ả             KHÔNG
+U+1EC7 ệ             KHÔNG
+U+01B0 ư             KHÔNG
+U+0110 Đ             KHÔNG
+```
+
+Nó **có** bảng Unicode nhưng chỉ phủ tới Latin-1. Glyph tiếng Việt của nó nằm
+trong bảng **Macintosh 8-bit**, chỉ với tới được bằng bảng mã **VNI**. Đó là lý
+do các bài hướng dẫn ấy ra dấu `?` — không phải cài sai.
+
+Quét font hệ thống: `arial` `tahoma` `segoeui` `times` `verdana` `calibri`
+`consola` đều **6/6**. Chọn **`verdana`** vì nó nhẹ nhất — `237 KB` so với Arial
+`1 012 KB`, mà map đã 21 MB.
+
+### Cách nạp: `war3mapSkin.txt`, **không** phải đè đường dẫn
+
+Ba lần thử đè lên `Fonts\FRIZQT__.TTF` · `MORPHEUS` · `ARIALN` đều **trượt** — và
+biết chắc vì **font giao diện không hề đổi**. Bản 1.31.1 dùng CASC; file trong
+map không đè được asset của game theo đường dẫn nữa.
+
+Cách đúng — font ở **gốc map, đúng tên file**:
+
+```ini
+; test2.w3x/war3mapSkin.txt
+[CustomSkin]
+ChatFont=verdana.ttf
+EscMenuTextFont=verdana.ttf
+TextTagFont=verdana.ttf
+InfoPanelTextFont=verdana.ttf
+MessageFont=verdana.ttf
+MasterFont=verdana.ttf
+```
+
+> World Editor bản này đã **bỏ nhóm `Font -`** khỏi Game Interface *(chỉ còn
+> Text/Image/Model/Icon)*, nên viết tay là cách duy nhất.
+
+### Một phần tiếng Việt vốn đã chạy
+
+Font gốc phủ Latin-1, tức đã có sẵn:
+
+```
+à á â ã   è é ê   ì í   ò ó ô õ   ù ú   ý
+```
+
+Thiếu **ả ạ ă ơ ư đ Đ** và mọi dấu hỏi/nặng — khoảng `30%`. Đó là lý do không
+nên dùng "một phần tiếng Việt": thiếu lỗ chỗ trông tệ hơn không dấu.
+
+### Chưa chuyển — và đây là cái giá
+
+| | |
+|---|---|
+| Số chuỗi phải gõ lại | **~383** *(229 ở `T.vi`, 116 `vi=`, 38 `desc_vi`)* |
+| `ascii.py` | đang **cấm** ký tự ngoài ASCII trong `src/` — phải dạy nó phân biệt chuỗi với chú thích |
+| `CLAUDE.md` | luật hiện tại cấm dấu ở **cả** chú thích lẫn chuỗi; lý do cho chuỗi *(font thiếu glyph)* **đã bị bác** |
+| Bản quyền | Verdana là font của Microsoft. Phát hành rộng thì thay bằng **Be Vietnam Pro** / **Noto Sans** — đổi một file và sáu dòng |
+
+**Không tự sinh được.** `"Chu Tuoc"` → `Chu Tước` hay `Chú Tước`? 383 lần quyết
+định như thế, và sai thì ship thẳng ra người chơi.
