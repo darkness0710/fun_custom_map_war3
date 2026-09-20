@@ -1,0 +1,7 @@
+[CustomSkin]
+ChatFont=verdana.ttf
+EscMenuTextFont=verdana.ttf
+TextTagFont=verdana.ttf
+InfoPanelTextFont=verdana.ttf
+MessageFont=verdana.ttf
+MasterFont=verdana.ttf
