@@ -503,6 +503,30 @@ local VN = {
   { 0x0110, "D gach" }, { 0x1EF9, "y nga" }, { 0x1EDF, "o hoi" },
 }
 
+-- BA MA LATIN-1, va day moi la phep do QUYET DINH.
+--
+-- 'e sac' U+00E9 nam trong Latin-1 nen font goc cua Warcraft GAN NHU
+-- CHAC CHAN co glyph cho no. Ket qua tach duoc hai kha nang ma tu ngoai
+-- nhin giong het nhau:
+--
+--   hien "e sac"  -> bo ve chu DOC HIEU UTF-8. Van de chi la font
+--                    thieu glyph tieng Viet -> nhap font la sua duoc
+--   hien HAI ky tu la (kieu "A~ (c)") -> bo ve chu doc TUNG BYTE theo
+--                    codepage, khong hieu UTF-8. Luc do KHONG font nao
+--                    cuu duoc, va phai bo huong nay
+--
+-- 'o mu' U+00F4 nam trong CA Latin-1 LAN tieng Viet -- neu no hien
+-- duoc thi mot phan tieng Viet dung duoc ngay ca khi khong nhap font.
+local L1 = {
+  { 0x00E9, "e sac " }, { 0x00F4, "o mu  " }, { 0x00C0, "A huyen" },
+}
+
+-- Byte THO trong khoang 128-255, khong boc UTF-8.
+--
+-- Neu day hien ra chu ma L1 o tren thi khong, dieu do chung minh bo ve
+-- doc theo BYTE chu khong theo ma Unicode.
+local RAW = { 0xE9, 0xF4, 0xC0 }
+
 -- In ra CA HAI noi, va do la ca phep do:
 --
 --   man hinh dung + file vet dung  -> ve duoc, khong can nhap font
@@ -515,10 +539,25 @@ local function fontProbe(pid)
   for i = 1, #VN do
     line = line .. VN[i][2] .. "=[" .. u8(VN[i][1]) .. "]  "
   end
-  API.info(pid, CFG.C_GOLD .. "[dev] chu co dau:" .. CFG.C_END)
+  local l1 = ""
+  for i = 1, #L1 do
+    l1 = l1 .. L1[i][2] .. "=[" .. u8(L1[i][1]) .. "]  "
+  end
+  local rw = ""
+  for i = 1, #RAW do
+    rw = rw .. string.format("%02X", RAW[i]) .. "=[" ..
+         string.char(RAW[i]) .. "]  "
+  end
+
+  API.info(pid, CFG.C_GOLD .. "[dev] 1. Latin-1 boc UTF-8 (phep do CHINH):" .. CFG.C_END)
+  API.info(pid, "   " .. l1)
+  API.info(pid, CFG.C_GOLD .. "[dev] 2. byte tho 128-255:" .. CFG.C_END)
+  API.info(pid, "   " .. rw)
+  API.info(pid, CFG.C_GOLD .. "[dev] 3. chu tieng Viet:" .. CFG.C_END)
   API.info(pid, "   " .. line)
-  API.msg(pid, "   " .. line)
-  API.trace("font: " .. line)
+  API.trace("font: L1  " .. l1)
+  API.trace("font: RAW " .. rw)
+  API.trace("font: VN  " .. line)
   for i = 1, #VN do
     API.trace(string.format("font:   U+%04X %-8s byte %s",
       VN[i][1], VN[i][2],
